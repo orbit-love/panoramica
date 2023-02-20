@@ -83,9 +83,21 @@ body .carousel.carousel-slider .control-arrow {
   @apply h-full;
 }
 
-.axis text,
 .point-label {
-  font: 11px sans-serif;
+  font: 9px monospace;
+}
+
+.rect {
+  @apply rounded-sm;
+}
+
+svg circle,
+.point-label {
+  cursor: pointer;
+}
+
+.axis text {
+  font: 13px sans-serif;
 }
 
 .axis line,

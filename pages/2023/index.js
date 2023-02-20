@@ -62,7 +62,7 @@ export default function Index() {
   const [defaultTimer, setDefaultTimer] = useState(startDate);
   const [timer, setTimer] = useState(defaultTimer);
   const [zoomTransform, setZoomTransform] = useState(
-    d3.zoomIdentity.translate(0, 0).scale(1.1)
+    d3.zoomIdentity.translate(0, 0).scale(1.2)
   );
 
   const grayColor = "#459";
@@ -248,6 +248,16 @@ export default function Index() {
         return r(max - d[1]);
       });
 
+    function onMouseOver(d, i) {
+      d3.select(this).transition().duration("50").attr("opacity", ".85");
+      d3.select(this).select(".rect").attr("class", "rect");
+    }
+
+    function onMouseOut(d, i) {
+      d3.select(this).transition().duration("50").attr("opacity", "1");
+      d3.select(this).select(".rect").attr("class", "rect hidden");
+    }
+
     rect
       .selectAll("point")
       .data(data)
@@ -263,7 +273,11 @@ export default function Index() {
       })
       .attr("fill", function (d, i) {
         return color(d[1]);
-      });
+      })
+      .on("mouseover", onMouseOver)
+      .on("mouseout", onMouseOut);
+
+    var size = 40;
 
     rect
       .selectAll("point")
@@ -283,12 +297,35 @@ export default function Index() {
         // return 52 - d[1];
         // return d[1];
         // return d[2];
+        const ol = orbitLevel(d[1], orbits);
+        if (ol === 1 || ol === 2) {
+          return d[2].slice(0, 6);
+        }
         // return d[2].slice(0, 1);
         // return 52 - d[1];
       })
       .attr("fill", function (d, i) {
         return color(d[1]);
-      });
+      })
+      .on("mouseover", onMouseOver)
+      .on("mouseout", onMouseOut);
+    // .enter()
+    // .append("rect")
+    // .attr("class", "rect")
+    // .attr("width", size)
+    // .attr("height", size)
+    // .attr("x", -size / 2)
+    // .attr("y", -size)
+    // .attr("transform", function (d) {
+    //   const coors = line([d]).slice(1).slice(0, -1);
+    //   return "translate(" + coors + ")";
+    // })
+    // .attr("fill", "gold");
+
+    // var tooltip = rect
+    //   .selectAll("point")
+    //   .data(data)
+    //   .enter()
 
     return () => clearInterval(interval);
   }, [
@@ -329,7 +366,7 @@ export default function Index() {
       const width = document.getElementById("container").clientWidth,
         height = document.getElementById("container").clientHeight;
       setZoomTransform(
-        d3.zoomIdentity.translate(width / 2, height / 2).scale(1.1)
+        d3.zoomIdentity.translate(width / 2, height / 2).scale(1.2)
       );
     }
 
