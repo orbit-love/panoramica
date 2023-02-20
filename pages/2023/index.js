@@ -210,7 +210,8 @@ export default function Index() {
       .attr("fill", grayColor)
       .style("text-anchor", "middle")
       .text(function (d, i) {
-        return max - d + "+ wks";
+        if (max - d === 3) return "active " + (max - d) + "+ wks / last 52";
+        else return max - d + "+ wks";
       });
 
     gr.append("text")
@@ -385,21 +386,23 @@ export default function Index() {
         <div
           className={`${panelBackgroundClasses} flex absolute bottom-2 right-3 flex-col pt-3 px-4 pb-6 space-y-2 text-right`}
         >
-          <div className="text-xl font-semibold">
-            {timer.format("MMMM D, YYYY")}
+          <div className="">
+            <div className="text-lg font-semibold">
+              <div>Orbit Community</div>
+            </div>
+            <div>{timer.format("MMMM D, YYYY")}</div>
+            <div>{o1234_members} members</div>
           </div>
-          <div>{o1234_members} members</div>
-          <div />
           <div />
           <div className="flex justify-end space-x-2">
             {!timer.isSame(minDate) && (
-              <button className="btn btn-blue" onClick={previousWeek}>
-                Previous
+              <button className="btn btn-slate w-20" onClick={previousWeek}>
+                &lsaquo; {moment(timer).subtract(1, "week").format("MMM D")}
               </button>
             )}
             {!timer.isSame(maxDate) && (
-              <button className="btn btn-blue" onClick={nextWeek}>
-                Next
+              <button className="btn btn-slate w-20" onClick={nextWeek}>
+                {moment(timer).add(1, "week").format("MMM D")} &rsaquo;
               </button>
             )}
             {!animate && (

@@ -115,15 +115,15 @@ svg circle,
 .btn {
   @apply py-1 px-2 text-sm font-semibold rounded;
 }
-.btn-blue {
-  @apply text-white bg-blue-400;
+.btn-slate {
+  @apply text-white bg-slate-700;
 }
-.btn-blue:hover {
-  @apply bg-blue-500;
+.btn-slate:hover {
+  @apply bg-slate-800;
 }
 .btn-purple {
-  @apply text-white bg-purple-400;
+  @apply text-white bg-purple-800;
 }
 .btn-purple:hover {
-  @apply bg-purple-500;
+  @apply bg-purple-900;
 }
