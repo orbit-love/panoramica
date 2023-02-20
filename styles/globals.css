@@ -77,3 +77,41 @@ body .carousel.carousel-slider .control-arrow {
   transform: translateX(0);
   transition: display 400ms, transform 400ms;
 }
+
+/* for om 2023 */
+#__next {
+  @apply h-full;
+}
+
+.axis text,
+.point-label {
+  font: 11px sans-serif;
+}
+
+.axis line,
+.axis circle {
+  fill: none;
+  stroke: #459;
+  stroke-dasharray: 4;
+}
+
+/* .axis:last-of-type circle { */
+/* stroke: white; */
+/* stroke-dasharray: none; */
+/* } */
+
+.btn {
+  @apply py-1 px-2 text-sm font-semibold rounded;
+}
+.btn-blue {
+  @apply text-white bg-blue-400;
+}
+.btn-blue:hover {
+  @apply bg-blue-500;
+}
+.btn-purple {
+  @apply text-white bg-purple-400;
+}
+.btn-purple:hover {
+  @apply bg-purple-500;
+}
