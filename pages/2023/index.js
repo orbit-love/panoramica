@@ -34,9 +34,12 @@ const getMemberData = (week, radials) => {
         elem.weeks_active_last_52 >= 3
     )
     .map((elem) => [
-      elem.member_id % radials,
+      elem.member_id,
       elem.weeks_active_last_52,
+      elem.member_slug,
+      elem.weeks_active_last_6,
       elem.member_name,
+      elem.member_id % radials,
     ]);
 };
 
@@ -66,6 +69,7 @@ export default function Index() {
   const [zoomTransform, setZoomTransform] = useState(
     d3.zoomIdentity.translate(0, 0).scale(defaultScale)
   );
+  const [memberId, selectMemberId] = useState(null);
 
   const grayColor = "#459";
   const dotColor = "#ececec";
@@ -111,6 +115,11 @@ export default function Index() {
     .domain(colorDomain)
     .range([dotColorFaded, dotColor]);
 
+  const hotColdColor = d3
+    .scaleLinear()
+    .domain([0, 6])
+    .range([dotColorFaded, "red"]);
+
   const previousWeek = () => {
     const d = moment(timer);
     d.subtract(1, "weeks");
@@ -127,6 +136,7 @@ export default function Index() {
   };
   const resetTimer = () => {
     setTimer(startDate);
+    selectMemberId(null);
   };
 
   const nextWeek = useCallback(() => {
@@ -246,18 +256,14 @@ export default function Index() {
     const line = d3
       .lineRadial()
       .angle(function (d) {
-        return angle(d[0]);
+        return angle(d[5]);
       })
       .radius(function (d) {
         return r(max - d[1]);
       });
 
     function onMouseOver(d, i) {
-      // d3.select(this).transition().duration("50").attr("opacity", ".85");
-      // d3.select(this).select(".hideable").attr("class", "hideable");
-
       const size = 100;
-
       const tooltip = d3.select(this);
 
       tooltip
@@ -295,8 +301,8 @@ export default function Index() {
       d3.select(this).selectAll(".tooltip").remove();
     }
 
-    function onClick(d, i) {
-      console.log("clicked");
+    function onClick(e, d) {
+      selectMemberId(d[0]);
     }
 
     const g = innerG
@@ -309,8 +315,8 @@ export default function Index() {
         const coors = line([d]).slice(1).slice(0, -1);
         return "translate(" + coors + ")";
       })
-      .on("mouseover", onMouseOver)
-      .on("mouseout", onMouseOut)
+      // .on("mouseover", onMouseOver)
+      // .on("mouseout", onMouseOut)
       .on("click", onClick);
 
     g.append("circle")
@@ -319,7 +325,12 @@ export default function Index() {
         return 5 - orbitLevel(d[1], orbits);
       })
       .attr("fill", function (d, i) {
-        return color(d[1]);
+        return hotColdColor(d[3]);
+      })
+      .attr("stroke", function (d, i) {
+        if (d[0] === memberId) {
+          return "yellow";
+        }
       });
 
     g.append("text")
@@ -339,7 +350,11 @@ export default function Index() {
         // return 52 - d[1];
       })
       .attr("fill", function (d, i) {
-        return color(d[1]);
+        if (d[0] === memberId) {
+          return "yellow";
+        } else {
+          return color(d[1]);
+        }
       });
 
     return () => clearInterval(interval);
@@ -352,10 +367,13 @@ export default function Index() {
     nextWeek,
     zoomTransform,
     color,
+    hotColdColor,
     orbit1,
     orbit2,
     orbit3,
     orbit4,
+    memberId,
+    selectMemberId,
   ]);
 
   useEffect(() => {
@@ -389,6 +407,8 @@ export default function Index() {
   }, [zoomTransform.x, zoomTransform.y, zoomTransform.k, zoomTransform]);
 
   console.log("render");
+
+  const member = data.find((elem) => elem[0] === memberId);
 
   return (
     <div id="outer-container" className="flex justify-end w-full h-full">
@@ -441,16 +461,31 @@ export default function Index() {
             </button>
           }
         </div>
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="flex flex-col">
+        {member && (
+          <div className="flex flex-col">
             <div className="h-2" />
-            <div className="text-lg font-semibold">Level {i}</div>
-            <div className="italic">{orbits[4 - i]}+ weeks active</div>
-            {/* <div className="h-1" /> */}
-            <div className="">{eval("orbit" + i)} members</div>
-            <div className="">{eval("o" + i + "_percent")}%</div>
+            <div className="text-lg italic font-semibold">{member[2]}</div>
+            <div className="text-lg font-semibold">{member[4]}</div>
+            <div className="">
+              Level {orbitLevel(member[1], orbits)} — {member[1]}/52 wks
+            </div>
+            <div className="" style={{ color: hotColdColor(member[3]) }}>
+              Active {member[3]} / 6 last weeks
+            </div>
           </div>
-        ))}
+        )}
+        {!memberId &&
+          data.length > 0 &&
+          [1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex flex-col">
+              <div className="h-2" />
+              <div className="text-lg font-semibold">Level {i}</div>
+              <div className="italic">{orbits[4 - i]}+ weeks active</div>
+              {/* <div className="h-1" /> */}
+              <div className="">{eval("orbit" + i)} members</div>
+              <div className="">{eval("o" + i + "_percent")}%</div>
+            </div>
+          ))}
       </div>
     </div>
   );
