@@ -52,6 +52,8 @@ const orbitLevel = (weeks_active, orbits) => {
   }
 };
 
+const defaultScale = 1.4;
+
 export default function Index() {
   const radials = 365;
   const animationDelay = 250;
@@ -62,14 +64,14 @@ export default function Index() {
   const [defaultTimer, setDefaultTimer] = useState(startDate);
   const [timer, setTimer] = useState(defaultTimer);
   const [zoomTransform, setZoomTransform] = useState(
-    d3.zoomIdentity.translate(0, 0).scale(1.2)
+    d3.zoomIdentity.translate(0, 0).scale(defaultScale)
   );
 
   const grayColor = "#459";
   const dotColor = "#ececec";
   const dotColorFaded = grayColor;
   const containerBackgroundClasses = "bg-[#0F0A25]";
-  const panelBackgroundClasses = "bg-opacity-40 bg-[#0F0A25]";
+  const panelBackgroundClasses = "bg-opacity-10 bg-white";
 
   // get the data that'll be used for this render based on the timer
   // this is expensive, just cache it with the timer?
@@ -97,9 +99,10 @@ export default function Index() {
   const orbit4 = data.filter((d) => orbitLevel(d[1], orbits) === 4).length;
   const o123_members = orbit1 + orbit2 + orbit3;
   const o1234_members = orbit1 + orbit2 + orbit3 + orbit4;
-  // const o1_percent = Math.round((orbit1 / o123_members) * 100);
-  // const o2_percent = Math.round((orbit2 / o123_members) * 100);
-  // const o3_percent = Math.round((orbit3 / o123_members) * 100);
+  const o1_percent = Math.round((orbit1 / o123_members) * 100);
+  const o2_percent = Math.round((orbit2 / o123_members) * 100);
+  const o3_percent = Math.round((orbit3 / o123_members) * 100);
+  const o4_percent = Math.round((orbit4 / o1234_members) * 100);
 
   const colorDomain = [minWeeks, maxWeeks];
   const color = d3
@@ -378,7 +381,7 @@ export default function Index() {
       const width = document.getElementById("container").clientWidth,
         height = document.getElementById("container").clientHeight;
       setZoomTransform(
-        d3.zoomIdentity.translate(width / 2, height / 2).scale(1.2)
+        d3.zoomIdentity.translate(width / 2, height / 2).scale(defaultScale)
       );
     }
 
@@ -388,68 +391,66 @@ export default function Index() {
   console.log("render");
 
   return (
-    <div id="outer-container" className="w-full h-full">
+    <div id="outer-container" className="flex justify-end w-full h-full">
+      <Head />
       <div
         id="container"
-        className={`${containerBackgroundClasses} relative w-full h-full`}
+        className={`${containerBackgroundClasses} absolute w-full h-full`}
       >
-        <Head />
-        <div
-          className={`${panelBackgroundClasses} flex absolute bottom-2 right-3 flex-col pt-3 px-4 pb-6 space-y-2 text-right`}
-        >
-          <div className="">
-            <div className="text-lg font-semibold">
-              <div>Orbit Community</div>
-            </div>
-            <div>{timer.format("MMMM D, YYYY")}</div>
-            <div>{o1234_members} members</div>
-          </div>
-          <div />
-          <div className="flex justify-end space-x-2">
-            {!timer.isSame(minDate) && (
-              <button className="btn btn-slate w-20" onClick={previousWeek}>
-                &lsaquo; {moment(timer).subtract(1, "week").format("MMM D")}
-              </button>
-            )}
-            {!timer.isSame(maxDate) && (
-              <button className="btn btn-slate w-20" onClick={nextWeek}>
-                {moment(timer).add(1, "week").format("MMM D")} &rsaquo;
-              </button>
-            )}
-            {!animate && (
-              <button className="btn btn-purple" onClick={playAnimation}>
-                Play
-              </button>
-            )}
-            {animate && (
-              <button className="btn btn-purple" onClick={pauseAnimation}>
-                Pause
-              </button>
-            )}
-            {
-              <button className="btn btn-purple" onClick={resetTimer}>
-                Reset
-              </button>
-            }
-          </div>
-          {/* <div /> */}
-          {/* <div className="flex flex-col text-right">
-            <div>
-              Orbit 1: {orbit1} {o1_percent}%
-            </div>
-            <div>
-              Orbit 2: {orbit2} {o2_percent}%
-            </div>
-            <div>
-              Orbit 3: {orbit3} {o3_percent}%
-            </div>
-            <div></div>
-            <div>Orbit 4: {orbit4}</div>
-          </div> */}
-        </div>
         <svg ref={svgRef} style={{ width: "100%", height: "100%" }}>
           <g></g>
         </svg>
+      </div>
+      <div
+        className={`${panelBackgroundClasses} flex z-10 flex-col pt-3 px-6 pb-6 space-y-2 text-left`}
+      >
+        <div className="">
+          <div className="text-lg font-semibold">
+            <div>Orbit Community</div>
+          </div>
+          <div>{timer.format("MMMM D, YYYY")}</div>
+          <div>{o1234_members} members</div>
+        </div>
+        <div />
+        <div className="flex space-x-2 w-48">
+          {!timer.isSame(minDate) && (
+            <button className="btn btn-slate w-20" onClick={previousWeek}>
+              &lsaquo; {moment(timer).subtract(1, "week").format("MMM D")}
+            </button>
+          )}
+          {!timer.isSame(maxDate) && (
+            <button className="btn btn-slate w-20" onClick={nextWeek}>
+              {moment(timer).add(1, "week").format("MMM D")} &rsaquo;
+            </button>
+          )}
+        </div>
+        <div className="flex space-x-2">
+          {!animate && (
+            <button className="btn btn-purple" onClick={playAnimation}>
+              Play
+            </button>
+          )}
+          {animate && (
+            <button className="btn btn-purple" onClick={pauseAnimation}>
+              Pause
+            </button>
+          )}
+          {
+            <button className="btn btn-slate" onClick={resetTimer}>
+              Reset
+            </button>
+          }
+        </div>
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="flex flex-col">
+            <div className="h-2" />
+            <div className="text-lg font-semibold">Level {i}</div>
+            <div className="italic">{orbits[4 - i]}+ weeks active</div>
+            {/* <div className="h-1" /> */}
+            <div className="">{eval("orbit" + i)} members</div>
+            <div className="">{eval("o" + i + "_percent")}%</div>
+          </div>
+        ))}
       </div>
     </div>
   );
