@@ -343,7 +343,7 @@ export default function Index() {
         // return d[1];
         // return d[2];
         const ol = orbitLevel(d[1], orbits);
-        if (ol === 1 || ol === 2) {
+        if (ol === 1 || ol === 2 || d[0] === memberId) {
           return d[2].slice(0, 6);
         }
         // return d[2].slice(0, 1);
