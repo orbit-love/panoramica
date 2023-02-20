@@ -164,18 +164,18 @@ export default function Index() {
     const svg = d3.select(svgRef.current);
 
     // get the g element
-    const rect = svg.select("g");
+    const innerG = svg.select("g");
     // remove everything in there
-    rect.selectAll("*").remove();
+    innerG.selectAll("*").remove();
     // set the dimensions and initial transformation of the rectangle
 
     // set the attributes
-    rect
+    innerG
       .attr("width", width)
       .attr("height", height)
       .attr("transform", zoomTransform);
 
-    const gr = rect
+    const gr = innerG
       .append("g")
       .attr("class", "r axis")
       .selectAll("g")
@@ -225,7 +225,7 @@ export default function Index() {
         return eval(`orbit${4 - i}`) + "";
       });
 
-    const ga = rect
+    const ga = innerG
       .append("g")
       .attr("class", "a axis")
       .selectAll("g")
@@ -250,49 +250,79 @@ export default function Index() {
       });
 
     function onMouseOver(d, i) {
-      d3.select(this).transition().duration("50").attr("opacity", ".85");
-      d3.select(this).select(".rect").attr("class", "rect");
+      // d3.select(this).transition().duration("50").attr("opacity", ".85");
+      // d3.select(this).select(".hideable").attr("class", "hideable");
+
+      const size = 100;
+
+      const tooltip = d3.select(this);
+
+      tooltip
+        .append("rect")
+        .attr("class", "tooltip tooltip-rect")
+        .attr("width", size)
+        .attr("height", size)
+        .attr("x", -size / 2)
+        .attr("y", -size);
+
+      const tooltipContent = tooltip
+        .append("text")
+        .attr("class", "tooltip tooltip-content")
+        .attr("text-anchor", "middle")
+        .attr("x", 0)
+        .attr("y", -size + 20);
+
+      tooltipContent
+        .append("tspan")
+        .attr("x", 0)
+        .attr("dy", "1.2em")
+        .text(function (d, i) {
+          return d[2];
+        });
+      tooltipContent
+        .append("tspan")
+        .attr("x", 0)
+        .attr("dy", "1.2em")
+        .text(function (d, i) {
+          return `${d[1]} weeks`;
+        });
     }
 
     function onMouseOut(d, i) {
-      d3.select(this).transition().duration("50").attr("opacity", "1");
-      d3.select(this).select(".rect").attr("class", "rect hidden");
+      d3.select(this).selectAll(".tooltip").remove();
     }
 
-    rect
+    function onClick(d, i) {
+      console.log("clicked");
+    }
+
+    const g = innerG
       .selectAll("point")
       .data(data)
       .enter()
-      .append("circle")
-      .attr("class", "point")
+      .append("g")
+      .attr("class", "member")
       .attr("transform", function (d) {
         const coors = line([d]).slice(1).slice(0, -1);
         return "translate(" + coors + ")";
       })
+      .on("mouseover", onMouseOver)
+      .on("mouseout", onMouseOut)
+      .on("click", onClick);
+
+    g.append("circle")
+      .attr("class", "point")
       .attr("r", function (d, i) {
         return 5 - orbitLevel(d[1], orbits);
       })
       .attr("fill", function (d, i) {
         return color(d[1]);
-      })
-      .on("mouseover", onMouseOver)
-      .on("mouseout", onMouseOut);
+      });
 
-    var size = 40;
-
-    rect
-      .selectAll("point")
-      .data(data)
-      .enter()
-      .append("text")
+    g.append("text")
       .attr("class", "point-label")
-      .attr("dx", "0")
-      .attr("dy", "1.5em")
-      .style("text-anchor", "middle")
-      .attr("transform", function (d) {
-        const coors = line([d]).slice(1).slice(0, -1);
-        return "translate(" + coors + ")";
-      })
+      .attr("dx", "7px")
+      .style("alignment-baseline", "middle")
       .text(function (d, i) {
         // return d[0];
         // return 52 - d[1];
@@ -307,26 +337,7 @@ export default function Index() {
       })
       .attr("fill", function (d, i) {
         return color(d[1]);
-      })
-      .on("mouseover", onMouseOver)
-      .on("mouseout", onMouseOut);
-    // .enter()
-    // .append("rect")
-    // .attr("class", "rect")
-    // .attr("width", size)
-    // .attr("height", size)
-    // .attr("x", -size / 2)
-    // .attr("y", -size)
-    // .attr("transform", function (d) {
-    //   const coors = line([d]).slice(1).slice(0, -1);
-    //   return "translate(" + coors + ")";
-    // })
-    // .attr("fill", "gold");
-
-    // var tooltip = rect
-    //   .selectAll("point")
-    //   .data(data)
-    //   .enter()
+      });
 
     return () => clearInterval(interval);
   }, [
