@@ -7,12 +7,6 @@ import Head from "components/head";
 // import Header from "components/header";
 // import Footer from "components/footer";
 
-// moment(
-//   Math.min(
-//     null,
-//     dataFile.map((elem) => moment(elem.week_start))
-//   )
-// );
 const maxDate = moment("2023-01-16");
 //  moment(
 //   Math.max.apply(
@@ -20,9 +14,12 @@ const maxDate = moment("2023-01-16");
 //     dataFile.map((elem) => moment(elem.week_start))
 //   )
 // );
-const ll = moment(maxDate);
-ll.subtract(52, "weeks");
-const minDate = ll;
+const minDate = moment(
+  Math.min.apply(
+    null,
+    dataFile.map((elem) => moment(elem.week_start))
+  )
+);
 
 const getMemberData = (week, radials) => {
   // find members who have a non-zero trailing 52w average
@@ -210,7 +207,7 @@ export default function Index() {
       .attr("transform", "rotate(0)")
       .attr("fill", grayColor)
       .style("text-anchor", "middle")
-      .style("font-size", "1.1em")
+      .style("font-size", "1.3em")
       .text(function (d, i) {
         return "L" + (4 - i);
       });
@@ -426,7 +423,7 @@ export default function Index() {
       >
         <div className="">
           <div className="text-lg font-semibold">
-            <div>Orbit Community</div>
+            <div>A Community</div>
           </div>
           <div>{timer.format("MMMM D, YYYY")}</div>
           <div>{o1234_members} members</div>
