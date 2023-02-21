@@ -1,121 +1,35 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
-import moment from "moment";
+import c from "components/2023/common";
+import Community from "components/2023/community";
+import Member from "components/2023/member";
 import * as d3 from "d3";
+import moment from "moment";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import dataFile from "./data-mid.json";
 
 import Head from "components/head";
-// import Header from "components/header";
-// import Footer from "components/footer";
 
-const maxDate = moment("2023-01-16");
-//  moment(
-//   Math.max.apply(
-//     null,
-//     dataFile.map((elem) => moment(elem.week_start))
-//   )
-// );
-const minDate = moment(
-  Math.min.apply(
-    null,
-    dataFile.map((elem) => moment(elem.week_start))
-  )
-);
-
-const getMemberData = (week, radials) => {
-  // find members who have a non-zero trailing 52w average
-  // from the perspective of the week passed in
-  return dataFile
-    .filter(
-      (elem) =>
-        elem.week_start === week.format("YYYY-MM-DD") &&
-        elem.weeks_active_last_52 >= 3
-    )
-    .map((elem) => [
-      elem.member_id,
-      elem.weeks_active_last_52,
-      elem.member_slug,
-      elem.weeks_active_last_6,
-      elem.member_name,
-      elem.member_id % radials,
-    ]);
-};
-
-const orbitLevel = (weeks_active, orbits) => {
-  if (weeks_active >= orbits[3]) {
-    return 1;
-  } else if (weeks_active >= orbits[2]) {
-    return 2;
-  } else if (weeks_active >= orbits[1]) {
-    return 3;
-  } else if (weeks_active >= orbits[0]) {
-    return 4;
-  }
-};
-
-const defaultScale = 1.4;
+const minDate = c.minDate(dataFile);
+const maxDate = c.maxDate(dataFile);
 
 export default function Index() {
-  const radials = 365;
-  const animationDelay = 250;
   const startDate = maxDate;
 
   const [animate, setAnimate] = useState(false);
-  const [orbits, setOrbits] = useState([3, 9, 20, 36]);
-  const [defaultTimer, setDefaultTimer] = useState(startDate);
+  const [orbits] = useState(c.defaultOrbits);
+  const [defaultTimer] = useState(startDate);
   const [timer, setTimer] = useState(defaultTimer);
   const [zoomTransform, setZoomTransform] = useState(
-    d3.zoomIdentity.translate(0, 0).scale(defaultScale)
+    d3.zoomIdentity.translate(0, 0).scale(c.defaultScale)
   );
   const [memberId, selectMemberId] = useState(null);
 
-  const grayColor = "#459";
-  const dotColor = "#ececec";
-  const dotColorFaded = grayColor;
-  const containerBackgroundClasses = "bg-[#0F0A25]";
-  const panelBackgroundClasses = "bg-opacity-10 bg-white";
-
-  // get the data that'll be used for this render based on the timer
-  // this is expensive, just cache it with the timer?
-
-  // color according to the member
-  // const color = d3
-  //   .scaleOrdinal(d3.schemeCategory10)
-  //   .domain(Array.from(Array(radials).keys()));
-
   // color according to distance from center
   // this can be done via OL, just set OL in the data object based on orbitLevel method
-  const data = getMemberData(timer, radials);
-  const minWeeks = Math.min.apply(
-    null,
-    data.map((d) => d[1])
-  );
-  const maxWeeks = Math.max.apply(
-    null,
-    data.map((d) => d[1])
-  );
+  const data = c.getMemberData(timer, c.radials, dataFile);
+  const orbiters = c.membersByOrbitLevel(data, orbits);
 
-  const orbit1 = data.filter((d) => orbitLevel(d[1], orbits) === 1).length;
-  const orbit2 = data.filter((d) => orbitLevel(d[1], orbits) === 2).length;
-  const orbit3 = data.filter((d) => orbitLevel(d[1], orbits) === 3).length;
-  const orbit4 = data.filter((d) => orbitLevel(d[1], orbits) === 4).length;
-  const o123_members = orbit1 + orbit2 + orbit3;
-  const o1234_members = orbit1 + orbit2 + orbit3 + orbit4;
-  const o1_percent = Math.round((orbit1 / o123_members) * 100);
-  const o2_percent = Math.round((orbit2 / o123_members) * 100);
-  const o3_percent = Math.round((orbit3 / o123_members) * 100);
-  const o4_percent = Math.round((orbit4 / o1234_members) * 100);
-
-  const colorDomain = [minWeeks, maxWeeks];
-  const color = d3
-    .scalePow()
-    .exponent(0.25)
-    .domain(colorDomain)
-    .range([dotColorFaded, dotColor]);
-
-  const hotColdColor = d3
-    .scaleLinear()
-    .domain([0, 6])
-    .range([dotColorFaded, "red"]);
+  const colorScale = c.colorScale(data);
+  const hotColdColorScale = c.hotColdColorScale();
 
   const previousWeek = () => {
     const d = moment(timer);
@@ -135,7 +49,6 @@ export default function Index() {
     setTimer(startDate);
     selectMemberId(null);
   };
-
   const nextWeek = useCallback(() => {
     const d = moment(timer);
     d.add(1, "weeks");
@@ -155,7 +68,7 @@ export default function Index() {
           nextWeek();
         }
       }
-    }, animationDelay);
+    }, c.animationDelay);
 
     const width = document.getElementById("container").clientWidth,
       height = document.getElementById("container").clientHeight,
@@ -165,7 +78,7 @@ export default function Index() {
 
     const angle = d3
       .scaleLinear()
-      .domain([0, radials])
+      .domain([0, c.radials])
       .range([0, 2 * Math.PI]);
 
     const r = d3.scalePow().exponent(1.4).domain([0, max]).range([0, radius]);
@@ -205,7 +118,7 @@ export default function Index() {
         return -r(d) + 26;
       })
       .attr("transform", "rotate(0)")
-      .attr("fill", grayColor)
+      .attr("fill", c.grayColor)
       .style("text-anchor", "middle")
       .style("font-size", "1.3em")
       .text(function (d, i) {
@@ -217,7 +130,7 @@ export default function Index() {
         return -r(d) - 8;
       })
       .attr("transform", "rotate(-45)")
-      .attr("fill", grayColor)
+      .attr("fill", c.grayColor)
       .style("text-anchor", "middle")
       .text(function (d, i) {
         if (max - d === 3) return "active " + (max - d) + "+ wks / last 52";
@@ -229,10 +142,10 @@ export default function Index() {
         return r(d) - 12;
       })
       .attr("transform", "rotate(0)")
-      .attr("fill", grayColor)
+      .attr("fill", c.grayColor)
       .style("text-anchor", "middle")
       .text(function (d, i) {
-        return eval(`orbit${4 - i}`) + "";
+        return orbiters[4 - i];
       });
 
     const ga = innerG
@@ -319,10 +232,10 @@ export default function Index() {
     g.append("circle")
       .attr("class", "point")
       .attr("r", function (d, i) {
-        return 5 - orbitLevel(d[1], orbits);
+        return 5 - c.orbitLevel(d[1], orbits);
       })
       .attr("fill", function (d, i) {
-        return hotColdColor(d[3]);
+        return hotColdColorScale(d[3]);
       })
       .attr("stroke", function (d, i) {
         if (d[0] === memberId) {
@@ -339,7 +252,7 @@ export default function Index() {
         // return 52 - d[1];
         // return d[1];
         // return d[2];
-        const ol = orbitLevel(d[1], orbits);
+        const ol = c.orbitLevel(d[1], orbits);
         if (ol === 1 || ol === 2 || d[0] === memberId) {
           return d[2].slice(0, 6);
         }
@@ -350,7 +263,7 @@ export default function Index() {
         if (d[0] === memberId) {
           return "yellow";
         } else {
-          return color(d[1]);
+          return colorScale(d[1]);
         }
       });
 
@@ -363,14 +276,12 @@ export default function Index() {
     animate,
     nextWeek,
     zoomTransform,
-    color,
-    hotColdColor,
-    orbit1,
-    orbit2,
-    orbit3,
-    orbit4,
+    colorScale,
+    hotColdColorScale,
     memberId,
     selectMemberId,
+    maxDate,
+    orbiters,
   ]);
 
   useEffect(() => {
@@ -396,7 +307,7 @@ export default function Index() {
       const width = document.getElementById("container").clientWidth,
         height = document.getElementById("container").clientHeight;
       setZoomTransform(
-        d3.zoomIdentity.translate(width / 2, height / 2).scale(defaultScale)
+        d3.zoomIdentity.translate(width / 2, height / 2).scale(c.defaultScale)
       );
     }
 
@@ -412,21 +323,21 @@ export default function Index() {
       <Head />
       <div
         id="container"
-        className={`${containerBackgroundClasses} absolute w-full h-full`}
+        className={`${c.containerBackgroundClasses} absolute w-full h-full`}
       >
         <svg ref={svgRef} style={{ width: "100%", height: "100%" }}>
           <g></g>
         </svg>
       </div>
       <div
-        className={`${panelBackgroundClasses} flex z-10 flex-col pt-3 px-6 pb-6 space-y-2 text-left`}
+        className={`${c.panelBackgroundClasses} flex z-10 flex-col pt-3 px-6 pb-6 space-y-2 text-left`}
       >
         <div className="">
           <div className="text-lg font-semibold">
             <div>A Community</div>
           </div>
           <div>{timer.format("MMMM D, YYYY")}</div>
-          <div>{o1234_members} members</div>
+          <div>{data.length} members</div>
         </div>
         <div />
         <div className="flex space-x-2 w-48">
@@ -458,31 +369,10 @@ export default function Index() {
             </button>
           }
         </div>
-        {member && (
-          <div className="flex flex-col">
-            <div className="h-2" />
-            <div className="text-lg italic font-semibold">{member[2]}</div>
-            <div className="text-lg font-semibold">{member[4]}</div>
-            <div className="">
-              Level {orbitLevel(member[1], orbits)} — {member[1]}/52 wks
-            </div>
-            <div className="" style={{ color: hotColdColor(member[3]) }}>
-              Active {member[3]} / 6 last weeks
-            </div>
-          </div>
+        {member && <Member data={data} orbits={orbits} memberId={memberId} />}
+        {!memberId && data.length > 0 && (
+          <Community data={data} orbits={orbits} memberId={memberId} />
         )}
-        {!memberId &&
-          data.length > 0 &&
-          [1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex flex-col">
-              <div className="h-2" />
-              <div className="text-lg font-semibold">Level {i}</div>
-              <div className="italic">{orbits[4 - i]}+ weeks active</div>
-              {/* <div className="h-1" /> */}
-              <div className="">{eval("orbit" + i)} members</div>
-              <div className="">{eval("o" + i + "_percent")}%</div>
-            </div>
-          ))}
       </div>
     </div>
   );
