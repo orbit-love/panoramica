@@ -1,6 +1,7 @@
 import c from "components/2023/common";
 import Community from "components/2023/community";
 import Member from "components/2023/member";
+import TimeControl from "components/2023/time_control";
 import * as d3 from "d3";
 import moment from "moment";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -19,7 +20,7 @@ export default function Index() {
   const [defaultTimer] = useState(startDate);
   const [timer, setTimer] = useState(defaultTimer);
   const [zoomTransform, setZoomTransform] = useState(
-    d3.zoomIdentity.translate(0, 0).scale(c.defaultScale)
+    d3.zoomIdentity.translate(0, 0).scale(c.initialZoomScale)
   );
   const [memberId, selectMemberId] = useState(null);
 
@@ -31,30 +32,6 @@ export default function Index() {
   const colorScale = c.colorScale(data);
   const hotColdColorScale = c.hotColdColorScale();
 
-  const previousWeek = () => {
-    const d = moment(timer);
-    d.subtract(1, "weeks");
-    setTimer(d);
-  };
-  const playAnimation = () => {
-    if (timer.isSame(startDate)) {
-      setTimer(minDate);
-    }
-    setAnimate(true);
-  };
-  const pauseAnimation = () => {
-    setAnimate(false);
-  };
-  const resetTimer = () => {
-    setTimer(startDate);
-    selectMemberId(null);
-  };
-  const nextWeek = useCallback(() => {
-    const d = moment(timer);
-    d.add(1, "weeks");
-    setTimer(d);
-  }, [timer]);
-
   const svgRef = useRef();
 
   // post render
@@ -65,7 +42,10 @@ export default function Index() {
         if (timer.isSame(maxDate)) {
           setAnimate(false);
         } else {
-          nextWeek();
+          // set the next week
+          const d = moment(timer);
+          d.add(1, "weeks");
+          setTimer(d);
         }
       }
     }, c.animationDelay);
@@ -81,7 +61,11 @@ export default function Index() {
       .domain([0, c.radials])
       .range([0, 2 * Math.PI]);
 
-    const r = d3.scalePow().exponent(1.4).domain([0, max]).range([0, radius]);
+    const r = d3
+      .scalePow()
+      .exponent(c.rAxisExponent)
+      .domain([0, max])
+      .range([0, radius]);
 
     // get the svg element in the DOM
     const svg = d3.select(svgRef.current);
@@ -274,13 +258,11 @@ export default function Index() {
     orbits,
     data,
     animate,
-    nextWeek,
     zoomTransform,
     colorScale,
     hotColdColorScale,
     memberId,
     selectMemberId,
-    maxDate,
     orbiters,
   ]);
 
@@ -307,7 +289,9 @@ export default function Index() {
       const width = document.getElementById("container").clientWidth,
         height = document.getElementById("container").clientHeight;
       setZoomTransform(
-        d3.zoomIdentity.translate(width / 2, height / 2).scale(c.defaultScale)
+        d3.zoomIdentity
+          .translate(width / 2, height / 2)
+          .scale(c.initialZoomScale)
       );
     }
 
@@ -340,35 +324,17 @@ export default function Index() {
           <div>{data.length} members</div>
         </div>
         <div />
-        <div className="flex space-x-2 w-48">
-          {!timer.isSame(minDate) && (
-            <button className="btn btn-slate w-20" onClick={previousWeek}>
-              &lsaquo; {moment(timer).subtract(1, "week").format("MMM D")}
-            </button>
-          )}
-          {!timer.isSame(maxDate) && (
-            <button className="btn btn-slate w-20" onClick={nextWeek}>
-              {moment(timer).add(1, "week").format("MMM D")} &rsaquo;
-            </button>
-          )}
-        </div>
-        <div className="flex space-x-2">
-          {!animate && (
-            <button className="btn btn-purple" onClick={playAnimation}>
-              Play
-            </button>
-          )}
-          {animate && (
-            <button className="btn btn-purple" onClick={pauseAnimation}>
-              Pause
-            </button>
-          )}
-          {
-            <button className="btn btn-slate" onClick={resetTimer}>
-              Reset
-            </button>
-          }
-        </div>
+        {
+          <TimeControl
+            timer={timer}
+            setTimer={setTimer}
+            minDate={minDate}
+            maxDate={maxDate}
+            selectMemberId={selectMemberId}
+            animate={animate}
+            setAnimate={setAnimate}
+          />
+        }
         {member && <Member data={data} orbits={orbits} memberId={memberId} />}
         {!memberId && data.length > 0 && (
           <Community data={data} orbits={orbits} memberId={memberId} />

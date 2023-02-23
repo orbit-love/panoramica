@@ -48,8 +48,9 @@ const common = {
   radials: 365,
   animationDelay: 250,
 
-  defaultScale: 1.4,
+  initialZoomScale: 1.4,
   defaultOrbits: [3, 9, 20, 36],
+  rAxisExponent: 1.4,
 
   colorScale,
   hotColdColorScale,
