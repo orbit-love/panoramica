@@ -6,6 +6,7 @@ const dotColor = "#ececec";
 const grayColor = "#459";
 const dotColorFaded = grayColor;
 const hotColdColorRange = [dotColorFaded, "red"];
+const backgroundColor = "#0F0A25";
 
 const orbitLevel = (weeks_active, orbits) => {
   if (weeks_active >= orbits[3]) {
@@ -43,7 +44,7 @@ const common = {
   dotColor,
   grayColor,
   dotColorFaded,
-  containerBackgroundClasses: "bg-[#0F0A25]",
+  containerBackgroundClasses: `bg-[${backgroundColor}]`,
   panelBackgroundClasses: "bg-opacity-10 bg-white",
   radials: 365,
   animationDelay: 250,

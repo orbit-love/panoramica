@@ -156,43 +156,27 @@ export default function Index() {
         return r(max - d[1]);
       });
 
-    function onMouseOver(d, i) {
-      const size = 100;
-      const tooltip = d3.select(this);
-
-      tooltip
-        .append("rect")
-        .attr("class", "tooltip tooltip-rect")
-        .attr("width", size)
-        .attr("height", size)
-        .attr("x", -size / 2)
-        .attr("y", -size);
-
-      const tooltipContent = tooltip
-        .append("text")
-        .attr("class", "tooltip tooltip-content")
-        .attr("text-anchor", "middle")
-        .attr("x", 0)
-        .attr("y", -size + 20);
-
-      tooltipContent
-        .append("tspan")
-        .attr("x", 0)
-        .attr("dy", "1.2em")
-        .text(function (d, i) {
-          return d[2];
-        });
-      tooltipContent
-        .append("tspan")
-        .attr("x", 0)
-        .attr("dy", "1.2em")
-        .text(function (d, i) {
-          return `${d[1]} weeks`;
-        });
+    function onMouseOver(e, d, i) {
+      d3.select(this)
+        .select(".point-label")
+        .attr("fill", "white")
+        .text(pointLabelText(d, i, e, true));
     }
 
-    function onMouseOut(d, i) {
-      d3.select(this).selectAll(".tooltip").remove();
+    function onMouseOut(e, d, i) {
+      // d3.select(this).select(".point").attr("stroke", hotColdColorScale(d[3]));
+      // var fill = d[0] === memberId ? "yellow" : colorScale(d[1]);
+      // d3.select(this).select(".point-label").attr("fill", fill);
+      var fill;
+      if (d[0] === memberId) {
+        fill = "yellow";
+      } else {
+        fill = colorScale(d[1]);
+      }
+      d3.select(this)
+        .select(".point-label")
+        .text(pointLabelText(d))
+        .attr("fill", fill);
     }
 
     function onClick(e, d) {
@@ -209,8 +193,8 @@ export default function Index() {
         const coors = line([d]).slice(1).slice(0, -1);
         return "translate(" + coors + ")";
       })
-      // .on("mouseover", onMouseOver)
-      // .on("mouseout", onMouseOut)
+      .on("mouseover", onMouseOver)
+      .on("mouseout", onMouseOut)
       .on("click", onClick);
 
     g.append("circle")
@@ -227,22 +211,24 @@ export default function Index() {
         }
       });
 
+    const pointLabelText = (d, i, e, force) => {
+      // return d[0];
+      // return 52 - d[1];
+      // return d[1];
+      // return d[2];
+      // return d[2].slice(0, 1);
+      // return 52 - d[1];
+      const ol = c.orbitLevel(d[1], orbits);
+      if (ol === 1 || ol === 2 || d[0] === memberId || force) {
+        return d[2].slice(0, 6);
+      }
+    };
+
     g.append("text")
       .attr("class", "point-label")
       .attr("dx", "7px")
       .style("alignment-baseline", "middle")
-      .text(function (d, i) {
-        // return d[0];
-        // return 52 - d[1];
-        // return d[1];
-        // return d[2];
-        const ol = c.orbitLevel(d[1], orbits);
-        if (ol === 1 || ol === 2 || d[0] === memberId) {
-          return d[2].slice(0, 6);
-        }
-        // return d[2].slice(0, 1);
-        // return 52 - d[1];
-      })
+      .text(pointLabelText)
       .attr("fill", function (d, i) {
         if (d[0] === memberId) {
           return "yellow";

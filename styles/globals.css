@@ -91,14 +91,6 @@ svg g.member {
   cursor: pointer;
 }
 
-svg rect.tooltip-rect {
-  fill: #459;
-}
-svg text.tooltip-content {
-  fill: white;
-  font-size: 10px;
-}
-
 .axis text {
   font: 13px sans-serif;
 }
