@@ -168,9 +168,9 @@ export default function Starmap() {
         .attr("dy", memberRadius(member) / 2)
         .text(member.member_name)
         .attr("fill", frozen ? c.tracingColor : null)
-        // don't raise it, otherwise it prevents hovers on the voronoi
-        // can be solved by putting it in a group with the circle
-        .lower();
+        // put it on top of the voronoi path but don't trap events
+        .attr("pointer-events", "none")
+        .raise();
     };
 
     const addCircles = (member) => {
