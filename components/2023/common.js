@@ -2,6 +2,7 @@ import React from "react";
 import moment from "moment";
 import * as d3 from "d3";
 
+const orbitPink = "#EF04F3";
 const dotColor = "#ececec";
 const grayColor = "#459";
 const dotColorFaded = grayColor;
@@ -45,8 +46,9 @@ const common = {
   grayColor,
   dotColorFaded,
   backgroundColor,
+  tracingColor: orbitPink,
   containerBackgroundClasses: `bg-[${backgroundColor}]`,
-  panelBackgroundClasses: "bg-opacity-10 bg-white",
+  panelBackgroundClasses: "bg-opacity-90 bg-gray-800",
   radials: 360,
   animationDelay: 250,
 
@@ -71,6 +73,13 @@ const common = {
       orbit1 + orbit2 + orbit3,
       orbit1 + orbit2 + orbit3 + orbit4,
     ];
+  },
+  getMemberDataNew: (week, dataFile) => {
+    return dataFile.filter(
+      (elem) =>
+        elem.week_start === week.format("YYYY-MM-DD") &&
+        elem.weeks_active_last_52 >= 3
+    );
   },
   // todo: get the data that'll be used for this render based on the timer
   // this is expensive, just cache it with the timer?

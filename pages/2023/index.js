@@ -321,9 +321,9 @@ export default function Index() {
             setAnimate={setAnimate}
           />
         }
-        {member && <Member data={data} orbits={orbits} memberId={memberId} />}
+        {member && <Member orbits={orbits} member={member} />}
         {!memberId && data.length > 0 && (
-          <Community data={data} orbits={orbits} memberId={memberId} />
+          <Community data={data} orbits={orbits} />
         )}
       </div>
     </div>
