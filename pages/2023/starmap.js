@@ -186,13 +186,13 @@ export default function Starmap() {
         );
     };
 
-    // the lower is here so that hovering on the text doesn't
-    // cause a mouseover of the path
+    addCircles(member);
+
+    // add these after circles so they sit on top
     if (member) {
       updateAscensions(member);
       addLabel(member);
     }
-    addCircles(member);
 
     const voronoi = d3.Delaunay.from(data.map(projection)).voronoi([
       0,
