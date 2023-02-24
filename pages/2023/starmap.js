@@ -48,6 +48,7 @@ export default function Starmap() {
 
   // post render
   useEffect(() => {
+    console.log("use Effect canvas");
     const width = document.getElementById("container").clientWidth,
       height = document.getElementById("container").clientHeight;
 
@@ -97,6 +98,7 @@ export default function Starmap() {
   // explicitly don't put zoom identity here so there's no re-render
 
   useEffect(() => {
+    console.log("use Effect Member");
     const findMember = (memberId) => {
       return data.find((elem) => elem.member_id === memberId);
     };
@@ -124,6 +126,22 @@ export default function Starmap() {
       .attr("fill", "none")
       .attr("stroke", c.tracingColor);
 
+    const updateAscensions = (member) => {
+      if (member) {
+        const [px, py] = projection(member);
+        const dx = px - cx;
+        const dy = py - cy;
+        const a = Math.atan2(dy, dx);
+        focusDeclination.attr("r", Math.hypot(dx, dy));
+        focusRightAscension
+          .attr("x2", cx + 1e3 * Math.cos(a))
+          .attr("y2", cy + 1e3 * Math.sin(a));
+      } else {
+        focusDeclination.attr("r", null);
+        focusRightAscension.attr("x2", cx).attr("y2", cy);
+      }
+    };
+
     // the tracing line - cx and cy are equal so doesn't show at first
     const focusRightAscension = g
       .append("line")
@@ -132,20 +150,6 @@ export default function Starmap() {
       .attr("x2", cx)
       .attr("y2", cy)
       .attr("stroke", c.tracingColor);
-
-    if (member) {
-      const [px, py] = projection(member);
-      const dx = px - cx;
-      const dy = py - cy;
-      const a = Math.atan2(dy, dx);
-      focusDeclination.attr("r", Math.hypot(dx, dy));
-      focusRightAscension
-        .attr("x2", cx + 1e3 * Math.cos(a))
-        .attr("y2", cy + 1e3 * Math.sin(a));
-    } else {
-      focusDeclination.attr("r", null);
-      focusRightAscension.attr("x2", cx).attr("y2", cy);
-    }
 
     // this is the scale for the star sizes
     const starRadius = d3
@@ -156,9 +160,7 @@ export default function Starmap() {
 
     const memberRadius = (d) => starRadius(d.weeks_active_last_52);
 
-    if (member) {
-      // the lower is here so that hovering on the text doesn't
-      // cause a mouseover of the path
+    const addLabel = (member) => {
       g.append("text")
         .attr("class", "label")
         .attr("transform", `translate(${projection(member)})`)
@@ -166,19 +168,31 @@ export default function Starmap() {
         .attr("dy", memberRadius(member) / 2)
         .text(member.member_name)
         .attr("fill", frozen ? c.tracingColor : null)
-        .raise();
-    }
+        // don't raise it, otherwise it prevents hovers on the voronoi
+        // can be solved by putting it in a group with the circle
+        .lower();
+    };
 
-    // magnitude is the size
-    g.append("g")
-      .selectAll("circle")
-      .data(data)
-      .join("circle")
-      .attr("r", memberRadius)
-      .attr("transform", (d) => `translate(${projection(d)})`)
-      .attr("fill", (d) =>
-        member && d.member_id === member.member_id ? c.tracingColor : null
-      );
+    const addCircles = (member) => {
+      // magnitude is the size
+      g.append("g")
+        .selectAll("circle")
+        .data(data)
+        .join("circle")
+        .attr("r", memberRadius)
+        .attr("transform", (d) => `translate(${projection(d)})`)
+        .attr("fill", (d) =>
+          member && d.member_id === member.member_id ? c.tracingColor : null
+        );
+    };
+
+    // the lower is here so that hovering on the text doesn't
+    // cause a mouseover of the path
+    if (member) {
+      updateAscensions(member);
+      addLabel(member);
+    }
+    addCircles(member);
 
     const voronoi = d3.Delaunay.from(data.map(projection)).voronoi([
       0,
@@ -194,33 +208,37 @@ export default function Starmap() {
       .selectAll("path")
       .data(data)
       .join("path")
-      .on("mouseover", (e, d) => mouseovered(e, d, frozen))
-      .on("mouseout", (e, d) => mouseouted(e, d, frozen))
+      .on("mouseover", mouseovered)
+      .on("mouseout", mouseouted)
       .on("click", clickd)
       .attr("d", (d, i) => voronoi.renderCell(i));
 
-    function mouseovered(e, d, frozen) {
-      console.log("mouseover; frozen=" + frozen);
+    function mouseovered(e, d) {
       if (!frozen) {
+        addLabel(d);
+        updateAscensions(d);
         setMember(findMember(d.member_id));
       }
     }
 
-    function mouseouted(event, d, frozen) {
+    function mouseouted(event, d) {
       if (!frozen) {
         // avoid loops, don't do anything if there is no selected member
         if (member) setMember(null);
-        // g.selectAll(".label").remove();
-        // focusDeclination.attr("r", null);
-        // focusRightAscension.attr("x2", cx).attr("y2", cy);
+        g.selectAll(".label").remove();
+        focusDeclination.attr("r", null);
+        focusRightAscension.attr("x2", cx).attr("y2", cy);
       }
     }
 
     function clickd(event, d) {
       // todo freeze
+      if (frozen) {
+        setMember(null);
+      }
       setFrozen(!frozen);
     }
-  }, [data, member, frozen]);
+  }, [data, frozen]);
 
   console.log("render");
 
