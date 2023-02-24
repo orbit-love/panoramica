@@ -20,18 +20,24 @@ defaultData = defaultData.map((d) => {
 // removing clip extent prevents the projection from getting
 // cut off at the viewport boundary
 // but the boundary is where we lose the click events
+const getExtent = (width, height) => {
+  return [
+    [-0.75 * width, -height],
+    [width * 1.75, height * 2],
+  ];
+};
 const getProjection = (scale, width, height) => {
-  return d3
-    .geoStereographic()
-    .reflectY(true)
-    .scale(scale)
-    .clipExtent([
-      [0, 0],
-      [width, height],
-    ])
-    .rotate([0, -90])
-    .translate([width / 2, height / 2])
-    .precision(0.1);
+  return (
+    d3
+      .geoStereographic()
+      .reflectY(true)
+      .scale(scale)
+      // this keeps the rays shooting out farther
+      .clipExtent(getExtent(width, height))
+      .rotate([0, -90])
+      .translate([width / 2, height / 2])
+      .precision(0.1)
+  );
 };
 
 const getScale = (width) => (width - 100) * 0.4;
@@ -62,13 +68,15 @@ export default function Starmap() {
       .style("background", "radial-gradient(#081f2b 0%, #061616 100%)");
 
     const g = svg.select("g").empty() ? svg.append("g") : svg.select("g");
-    g.selectAll("path").remove();
+    g.selectAll(".outline-circle").remove();
+    g.selectAll(".grid").remove();
 
     const zoom = d3
       .zoom()
-      // .extent([0, 0], [width, height])
-      // .scaleExtent([0.5, 3])
+      .scaleExtent([0.5, 3])
+      .translateExtent(getExtent(width, height))
       .on("zoom", (e, d) => {
+        console.log(e.transform);
         g.attr("transform", e.transform);
         setZoomIdentity(e.transform);
       });
@@ -83,6 +91,7 @@ export default function Starmap() {
 
     // the circle around the whole thing
     g.append("path")
+      .attr("class", "outline-circle")
       .attr("d", path(outline))
       .attr("fill", "none")
       .attr("stroke", "currentColor")
@@ -90,10 +99,11 @@ export default function Starmap() {
 
     // the grid
     g.append("path")
+      .attr("class", "grid")
       .attr("d", path(graticule))
       .attr("fill", "none")
       .attr("stroke", "currentColor")
-      .attr("stroke-opacity", 0.2);
+      .attr("stroke-opacity", 0.3);
   }, [data, frozen]);
   // explicitly don't put zoom identity here so there's no re-render
 
@@ -105,6 +115,7 @@ export default function Starmap() {
 
     const svg = d3.select(svgRef.current);
     const g = svg.select("g").empty() ? svg.append("g") : svg.select("g");
+    g.selectAll("g").remove();
     g.selectAll("circle").remove();
     g.selectAll("line").remove();
     g.selectAll("text").remove();
@@ -239,6 +250,7 @@ export default function Starmap() {
       setFrozen(!frozen);
     }
   }, [data, frozen]);
+  // member is deliberately not here to avoid the rerender
 
   console.log("render");
 
