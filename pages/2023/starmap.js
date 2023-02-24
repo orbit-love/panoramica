@@ -40,7 +40,7 @@ const getProjection = (scale, width, height) => {
   );
 };
 
-const getScale = (width) => (width - 100) * 0.4;
+const getScale = (width) => (width - 100) * 0.45;
 
 export default function Starmap() {
   const svgRef = useRef();
@@ -62,10 +62,14 @@ export default function Starmap() {
     const svg = d3
       .select(svgRef.current)
       .attr("font-family", "sans-serif")
-      .attr("font-size", 12)
+      .attr("font-size", 10)
       .attr("fill", "currentColor")
       .style("color", "white")
-      .style("background", "radial-gradient(#081f2b 0%, #061616 100%)");
+      .style(
+        "background",
+        "radial-gradient(rgb(8, 31, 43) 0%, rgb(6, 20, 20) 100%)"
+      )
+      .style("display", "block");
 
     const g = svg.select("g").empty() ? svg.append("g") : svg.select("g");
     g.selectAll(".outline-circle").remove();
@@ -76,7 +80,6 @@ export default function Starmap() {
       .scaleExtent([0.5, 3])
       .translateExtent(getExtent(width, height))
       .on("zoom", (e, d) => {
-        console.log(e.transform);
         g.attr("transform", e.transform);
         setZoomIdentity(e.transform);
       });
@@ -95,7 +98,7 @@ export default function Starmap() {
       .attr("d", path(outline))
       .attr("fill", "none")
       .attr("stroke", "currentColor")
-      .attr("stroke-opacity", 0.4);
+      .attr("stroke-opacity", 0.3);
 
     // the grid
     g.append("path")
@@ -103,7 +106,7 @@ export default function Starmap() {
       .attr("d", path(graticule))
       .attr("fill", "none")
       .attr("stroke", "currentColor")
-      .attr("stroke-opacity", 0.3);
+      .attr("stroke-opacity", 0.1);
   }, [data, frozen]);
   // explicitly don't put zoom identity here so there's no re-render
 
@@ -135,8 +138,20 @@ export default function Starmap() {
       .attr("cx", cx)
       .attr("cy", cy)
       .attr("fill", "none")
-      .attr("stroke", c.tracingColor);
+      .attr("stroke", c.tracingColor)
+      .attr("stroke-opacity", 0.8);
 
+    // the tracing line - cx and cy are equal so doesn't show at first
+    const focusRightAscension = g
+      .append("line")
+      .attr("x1", cx)
+      .attr("y1", cy)
+      .attr("x2", cx)
+      .attr("y2", cy)
+      .attr("stroke", c.tracingColor)
+      .attr("stroke-opacity", 0.8);
+
+    // update on mouseover or on re-render
     const updateAscensions = (member) => {
       if (member) {
         const [px, py] = projection(member);
@@ -153,21 +168,12 @@ export default function Starmap() {
       }
     };
 
-    // the tracing line - cx and cy are equal so doesn't show at first
-    const focusRightAscension = g
-      .append("line")
-      .attr("x1", cx)
-      .attr("y1", cy)
-      .attr("x2", cx)
-      .attr("y2", cy)
-      .attr("stroke", c.tracingColor);
-
     // this is the scale for the star sizes
     const starRadius = d3
       .scalePow()
       .exponent(0.8)
       .domain([0, 52])
-      .range([1, 5]);
+      .range([0, 4]);
 
     const memberRadius = (d) => starRadius(d.weeks_active_last_52);
 
@@ -175,8 +181,8 @@ export default function Starmap() {
       g.append("text")
         .attr("class", "label")
         .attr("transform", `translate(${projection(member)})`)
-        .attr("dx", memberRadius(member) + 3)
-        .attr("dy", memberRadius(member) / 2)
+        .attr("dx", memberRadius(member) + 5)
+        .attr("dy", memberRadius(member) / 2 + 1)
         .text(member.member_name)
         .attr("fill", frozen ? c.tracingColor : null)
         // put it on top of the voronoi path but don't trap events
@@ -269,19 +275,23 @@ export default function Starmap() {
         <svg ref={svgRef} style={{ width: "100%", height: "100%" }}></svg>
       </div>
       <div
-        className={`${c.panelBackgroundClasses} w-56 z-10 fixed bottom-4 right-4 flex flex-col pt-3 px-8 pb-6 space-y-2 text-left`}
+        className={`flex absolute right-0 z-10 flex-col justify-center pt-3 px-4 pb-6 space-y-6 h-full text-left pointer-events-none`}
       >
+        <div className="flex-1" />
         {member && (
-          <Member
-            orbits={c.defaultOrbits}
-            member={member}
-            expanded={frozen}
-            onReset={onReset}
-          />
+          <div className={`${c.panelBackgroundClasses}`}>
+            <Member
+              orbits={c.defaultOrbits}
+              member={member}
+              expanded={frozen}
+              onReset={onReset}
+            />
+          </div>
         )}
-        <div className="">
+        <div className="flex-1" />
+        <div className={`${c.panelBackgroundClasses}`}>
           <div className="text-lg font-semibold">
-            <div>A Community</div>
+            <div>Orbit Community</div>
           </div>
           <div>{data.length} members</div>
         </div>

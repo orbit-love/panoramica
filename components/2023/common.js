@@ -6,7 +6,7 @@ const orbitPink = "#EF04F3";
 const dotColor = "#ececec";
 const grayColor = "#459";
 const dotColorFaded = grayColor;
-const hotColdColorRange = [dotColorFaded, "red"];
+const hotColdColorRange = ["blue", orbitPink];
 const backgroundColor = "#0F0A25";
 
 const orbitLevel = (weeks_active, orbits) => {
@@ -46,9 +46,10 @@ const common = {
   grayColor,
   dotColorFaded,
   backgroundColor,
+  orbitPink,
   tracingColor: orbitPink,
   containerBackgroundClasses: `bg-[${backgroundColor}]`,
-  panelBackgroundClasses: "bg-opacity-90 bg-gray-800",
+  panelBackgroundClasses: "bg-opacity-80 bg-white text-black py-4 px-6 rounded",
   radials: 360,
   animationDelay: 250,
 

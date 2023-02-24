@@ -83,8 +83,10 @@ body .carousel.carousel-slider .control-arrow {
   @apply h-full;
 }
 
-.point-label {
-  font: 8px monospace;
+.label {
+  font-family: monospace;
+  font-variant: small-caps;
+  font-weight: semi-bold;
 }
 
 svg g.member {
@@ -121,4 +123,11 @@ svg g.member {
 }
 .btn-purple:hover {
   @apply bg-purple-900;
+}
+
+.btn-pink {
+  background-color: #ef04f3;
+  @apply text-white;
+}
+.btn-pink:hover {
 }
