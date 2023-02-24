@@ -44,9 +44,10 @@ const common = {
   dotColor,
   grayColor,
   dotColorFaded,
+  backgroundColor,
   containerBackgroundClasses: `bg-[${backgroundColor}]`,
   panelBackgroundClasses: "bg-opacity-10 bg-white",
-  radials: 365,
+  radials: 360,
   animationDelay: 250,
 
   initialZoomScale: 1.4,
