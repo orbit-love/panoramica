@@ -83,13 +83,11 @@ body .carousel.carousel-slider .control-arrow {
   @apply h-full;
 }
 
-.label {
-  font-family: monospace;
-  font-variant: small-caps;
-  font-weight: semi-bold;
+.member-label {
+  font-weight: 100;
+  cursor: pointer;
 }
-
-svg g.member {
+.member-circle {
   cursor: pointer;
 }
 

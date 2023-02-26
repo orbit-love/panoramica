@@ -4,7 +4,7 @@ import * as d3 from "d3";
 
 const orbitPink = "#EF04F3";
 const dotColor = "#ececec";
-const grayColor = "#459";
+const grayColor = "#67a";
 const dotColorFaded = grayColor;
 const hotColdColorRange = ["blue", orbitPink];
 const backgroundColor = "#0F0A25";
@@ -49,11 +49,15 @@ const common = {
   orbitPink,
   tracingColor: orbitPink,
   containerBackgroundClasses: `bg-[${backgroundColor}]`,
-  panelBackgroundClasses: "bg-opacity-80 bg-white text-black py-4 px-6 rounded",
+  panelBackgroundClasses: "bg-white text-black w-72",
   radials: 360,
   animationDelay: 250,
 
-  initialZoomScale: 1.4,
+  textColor: grayColor,
+  hoverTextColor: dotColor,
+  selectedTextColor: orbitPink,
+
+  initialZoomScale: 1,
   defaultOrbits: [3, 9, 20, 36],
   rAxisExponent: 1.4,
 

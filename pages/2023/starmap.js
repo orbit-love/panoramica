@@ -6,14 +6,47 @@ import React, { useEffect, useRef, useState } from "react";
 import dataFile from "./data-mid.json";
 import Head from "components/head";
 
+const initials = (name) => {
+  var array = name.split(" ");
+  var part1 = array[0];
+  var part2 = array.length > 1 ? array[1].slice(0, 1) : null;
+  if (part2 && part2.length > 0) {
+    part2 = " " + part2;
+    part1 += part2;
+  }
+  return part1;
+};
+
 // d[0] is longitude, d[1] is latitude
 // d[0] should be between 0 and 24 * 15
 // d[1] should be between -90, 0, and 90
 var defaultData = c.getMemberDataNew(moment("2023-01-16"), dataFile);
-const degreeScale = d3.scaleLinear().domain([0, 52]).range([0, 90]);
+// the exponent scrunches together the inside where the gaps between weeks are large
+// at the edges it's much smaller
+const boundary = 9; // weeks
+const degreeScaleO12 = d3
+  .scalePow()
+  .exponent(0.7)
+  .domain([boundary + 1, 52])
+  .range([0, 90]);
+const degreeScaleO34 = d3
+  .scalePow()
+  .exponent(1.4)
+  .domain([0, boundary])
+  .range([-55, -5]);
+//
 defaultData = defaultData.map((d) => {
+  var degree = 0;
+  // so at the edges, we scale out further
+  if (d.weeks_active_last_52 < 10) {
+    degree += degreeScaleO34(d.weeks_active_last_52);
+    // add some randomness so dots aren't on top of each other
+    degree += 2 - (d.member_id % 5);
+  } else {
+    degree += degreeScaleO12(d.weeks_active_last_52);
+  }
   d[0] = d.member_id % 360;
-  d[1] = degreeScale(d.weeks_active_last_52);
+  d[1] = degree;
   return d;
 });
 
@@ -47,9 +80,8 @@ export default function Starmap() {
 
   const [data] = useState(defaultData);
   const [member, setMember] = useState(null);
-  const [frozen, setFrozen] = useState(false);
   const [zoomIdentity, setZoomIdentity] = useState(
-    d3.zoomIdentity.translate(0, 0).scale(1)
+    d3.zoomIdentity.translate(0, 0).scale(c.initialZoomScale)
   );
 
   // post render
@@ -75,6 +107,7 @@ export default function Starmap() {
     g.selectAll(".outline-circle").remove();
     g.selectAll(".grid").remove();
 
+    // make it as simple as - in the viewport, show, otherwise hide
     const zoom = d3
       .zoom()
       .scaleExtent([0.5, 3])
@@ -107,7 +140,7 @@ export default function Starmap() {
       .attr("fill", "none")
       .attr("stroke", "currentColor")
       .attr("stroke-opacity", 0.1);
-  }, [data, frozen]);
+  }, [data]);
   // explicitly don't put zoom identity here so there's no re-render
 
   useEffect(() => {
@@ -119,6 +152,7 @@ export default function Starmap() {
     const svg = d3.select(svgRef.current);
     const g = svg.select("g").empty() ? svg.append("g") : svg.select("g");
     g.selectAll("g").remove();
+    // do we need these if we remove the g?
     g.selectAll("circle").remove();
     g.selectAll("line").remove();
     g.selectAll("text").remove();
@@ -129,65 +163,36 @@ export default function Starmap() {
     const scale = getScale(width);
     const projection = getProjection(scale, width, height);
 
-    const cx = width / 2;
-    const cy = height / 2;
-
-    // the tracing circle - radius is 0 so doesn't show at first
-    const focusDeclination = g
-      .append("circle")
-      .attr("cx", cx)
-      .attr("cy", cy)
-      .attr("fill", "none")
-      .attr("stroke", c.tracingColor)
-      .attr("stroke-opacity", 0.8);
-
-    // the tracing line - cx and cy are equal so doesn't show at first
-    const focusRightAscension = g
-      .append("line")
-      .attr("x1", cx)
-      .attr("y1", cy)
-      .attr("x2", cx)
-      .attr("y2", cy)
-      .attr("stroke", c.tracingColor)
-      .attr("stroke-opacity", 0.8);
-
-    // update on mouseover or on re-render
-    const updateAscensions = (member) => {
-      if (member) {
-        const [px, py] = projection(member);
-        const dx = px - cx;
-        const dy = py - cy;
-        const a = Math.atan2(dy, dx);
-        focusDeclination.attr("r", Math.hypot(dx, dy));
-        focusRightAscension
-          .attr("x2", cx + 1e3 * Math.cos(a))
-          .attr("y2", cy + 1e3 * Math.sin(a));
-      } else {
-        focusDeclination.attr("r", null);
-        focusRightAscension.attr("x2", cx).attr("y2", cy);
-      }
-    };
-
     // this is the scale for the star sizes
     const starRadius = d3
       .scalePow()
       .exponent(0.8)
       .domain([0, 52])
-      .range([0, 4]);
+      .range([3, 10]);
 
     const memberRadius = (d) => starRadius(d.weeks_active_last_52);
 
-    const addLabel = (member) => {
-      g.append("text")
-        .attr("class", "label")
-        .attr("transform", `translate(${projection(member)})`)
-        .attr("dx", memberRadius(member) + 5)
-        .attr("dy", memberRadius(member) / 2 + 1)
-        .text(member.member_name)
-        .attr("fill", frozen ? c.tracingColor : null)
-        // put it on top of the voronoi path but don't trap events
-        .attr("pointer-events", "none")
-        .raise();
+    const colorForMember = (d, member) => {
+      return member && d.member_id == member.member_id
+        ? c.selectedTextColor
+        : c.textColor;
+    };
+
+    const addLabels = (member) => {
+      g.append("g")
+        .selectAll("text")
+        .data(data)
+        .join("text")
+        .attr("class", "member-label")
+        .attr("transform", (d) => `translate(${projection(d)})`)
+        .attr("text-anchor", "middle")
+        // .attr("dx", (d) => memberRadius(d) + 3)
+        .attr("dy", (d) => memberRadius(d) * 2 + 4)
+        .text((d) => initials(d.member_name))
+        .attr("fill", (d) => colorForMember(d, member))
+        .on("mouseover", mouseovered)
+        .on("mouseout", mouseouted)
+        .on("click", clickd);
     };
 
     const addCircles = (member) => {
@@ -196,73 +201,49 @@ export default function Starmap() {
         .selectAll("circle")
         .data(data)
         .join("circle")
+        .attr("class", "member-circle")
         .attr("r", memberRadius)
         .attr("transform", (d) => `translate(${projection(d)})`)
-        .attr("fill", (d) =>
-          member && d.member_id === member.member_id ? c.tracingColor : null
-        );
+        .attr("fill", (d) => colorForMember(d, member))
+        .on("mouseover", mouseovered)
+        .on("mouseout", mouseouted)
+        .on("click", clickd);
     };
 
     addCircles(member);
-
-    // add these after circles so they sit on top
-    if (member) {
-      updateAscensions(member);
-      addLabel(member);
-    }
-
-    const voronoi = d3.Delaunay.from(data.map(projection)).voronoi([
-      0,
-      0,
-      width,
-      height,
-    ]);
-
-    // there are the cells; d attribute is the path for each data
-    g.append("g")
-      .attr("pointer-events", "all")
-      .attr("fill", "none")
-      .selectAll("path")
-      .data(data)
-      .join("path")
-      .on("mouseover", mouseovered)
-      .on("mouseout", mouseouted)
-      .on("click", clickd)
-      .attr("d", (d, i) => voronoi.renderCell(i));
+    addLabels(member);
 
     function mouseovered(e, d) {
-      if (!frozen) {
-        addLabel(d);
-        updateAscensions(d);
-        setMember(findMember(d.member_id));
-      }
+      g.selectAll("g")
+        .selectAll("circle, text")
+        .filter(
+          (dd) =>
+            d.member_id === dd.member_id && d.member_id !== member?.member_id
+        )
+        .attr("fill", c.hoverTextColor);
     }
 
     function mouseouted(event, d) {
-      if (!frozen) {
-        // avoid loops, don't do anything if there is no selected member
-        if (member) setMember(null);
-        g.selectAll(".label").remove();
-        focusDeclination.attr("r", null);
-        focusRightAscension.attr("x2", cx).attr("y2", cy);
-      }
+      g.selectAll("g")
+        .selectAll("circle, text")
+        .filter(
+          (dd) =>
+            d.member_id === dd.member_id && d.member_id !== member?.member_id
+        )
+        .attr("fill", c.textColor);
     }
 
     function clickd(event, d) {
-      // todo freeze
-      if (frozen) {
-        setMember(null);
-      }
-      setFrozen(!frozen);
+      setMember(findMember(d.member_id));
     }
-  }, [data, frozen]);
+  }, [data, member]);
   // member is deliberately not here to avoid the rerender
 
   console.log("render");
 
   const onReset = () => {
     setMember(null);
-    setFrozen(false);
+    // setFrozen(false);
   };
 
   return (
@@ -275,25 +256,26 @@ export default function Starmap() {
         <svg ref={svgRef} style={{ width: "100%", height: "100%" }}></svg>
       </div>
       <div
-        className={`flex absolute right-0 z-10 flex-col justify-center pt-3 px-4 pb-6 space-y-6 h-full text-left pointer-events-none`}
+        className={`flex absolute left-0 z-10 flex-col justify-start pt-3 px-4 pb-6 space-y-6 h-full text-left pointer-events-none`}
       >
-        <div className="flex-1" />
         {member && (
           <div className={`${c.panelBackgroundClasses}`}>
             <Member
               orbits={c.defaultOrbits}
               member={member}
-              expanded={frozen}
+              expanded={true}
               onReset={onReset}
             />
           </div>
         )}
         <div className="flex-1" />
         <div className={`${c.panelBackgroundClasses}`}>
-          <div className="text-lg font-semibold">
-            <div>Orbit Community</div>
+          <div className="py-3 px-4">
+            <div className="text-lg font-semibold">
+              <div>Orbit Community</div>
+            </div>
+            <div>{data.length} members</div>
           </div>
-          <div>{data.length} members</div>
         </div>
       </div>
     </div>

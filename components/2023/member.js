@@ -5,11 +5,11 @@ export default function Member({ member, orbits, expanded, onReset }) {
   const hotColdColorScale = c.hotColdColorScale();
 
   return (
-    <div className="flex flex-col pointer-events-auto">
+    <div className="flex relative flex-col py-1 px-4 pointer-events-auto">
       {expanded && (
-        <div>
+        <div className="absolute top-2 right-2">
           <button className={`btn btn-pink mb-2`} onClick={onReset}>
-            Clear
+            X
           </button>
         </div>
       )}
