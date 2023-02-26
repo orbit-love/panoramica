@@ -35,16 +35,20 @@ const degreeScaleO34 = d3
   .domain([0, boundary])
   .range([-55, -5]);
 //
-defaultData = defaultData.map((d) => {
+const getDegree = (number) => {
   var degree = 0;
-  // so at the edges, we scale out further
-  if (d.weeks_active_last_52 < 10) {
-    degree += degreeScaleO34(d.weeks_active_last_52);
-    // add some randomness so dots aren't on top of each other
-    degree += 2 - (d.member_id % 5);
+  if (number <= boundary) {
+    degree += degreeScaleO34(number);
   } else {
-    degree += degreeScaleO12(d.weeks_active_last_52);
+    degree += degreeScaleO12(number);
   }
+  return degree;
+};
+defaultData = defaultData.map((d) => {
+  // so at the edges, we scale out further
+  var degree = getDegree(d.weeks_active_last_52);
+  // add some randomness so dots aren't on top of each other
+  if (d.weeks_active_last_52 <= boundary) degree += 2 - (d.member_id % 5);
   d[0] = d.member_id % 360;
   d[1] = degree;
   return d;
@@ -121,17 +125,23 @@ export default function Starmap() {
 
     const scale = getScale(width);
     const projection = getProjection(scale, width, height);
-    const graticule = d3.geoGraticule().stepMinor([15, 10])();
+    const graticule = d3.geoGraticule().stepMinor([30, 20])();
     const path = d3.geoPath(projection);
-    const outline = d3.geoCircle().radius(90).center([0, 90])();
 
-    // the circle around the whole thing
-    g.append("path")
-      .attr("class", "outline-circle")
-      .attr("d", path(outline))
-      .attr("fill", "none")
-      .attr("stroke", "currentColor")
-      .attr("stroke-opacity", 0.3);
+    c.defaultOrbits.forEach((orbit) => {
+      console.log(orbit, getDegree(orbit));
+      var outline = d3
+        .geoCircle()
+        .radius(90 - getDegree(orbit))
+        .center([0, 90])();
+      // the circle around the whole thing
+      g.append("path")
+        .attr("class", "outline-circle")
+        .attr("d", path(outline))
+        .attr("fill", "none")
+        .attr("stroke", "currentColor")
+        .attr("stroke-opacity", 0.25);
+    });
 
     // the grid
     g.append("path")
@@ -139,7 +149,7 @@ export default function Starmap() {
       .attr("d", path(graticule))
       .attr("fill", "none")
       .attr("stroke", "currentColor")
-      .attr("stroke-opacity", 0.1);
+      .attr("stroke-opacity", 0.05);
   }, [data]);
   // explicitly don't put zoom identity here so there's no re-render
 
@@ -164,11 +174,7 @@ export default function Starmap() {
     const projection = getProjection(scale, width, height);
 
     // this is the scale for the star sizes
-    const starRadius = d3
-      .scalePow()
-      .exponent(0.8)
-      .domain([0, 52])
-      .range([3, 10]);
+    const starRadius = d3.scalePow().exponent(1).domain([0, 52]).range([4, 12]);
 
     const memberRadius = (d) => starRadius(d.weeks_active_last_52);
 
@@ -186,9 +192,8 @@ export default function Starmap() {
         .attr("class", "member-label")
         .attr("transform", (d) => `translate(${projection(d)})`)
         .attr("text-anchor", "middle")
-        // .attr("dx", (d) => memberRadius(d) + 3)
         .attr("dy", (d) => memberRadius(d) * 2 + 4)
-        .text((d) => initials(d.member_name))
+        .text((d) => initials(d.member_name) + " " + d.weeks_active_last_52)
         .attr("fill", (d) => colorForMember(d, member))
         .on("mouseover", mouseovered)
         .on("mouseout", mouseouted)
