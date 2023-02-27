@@ -193,7 +193,7 @@ export default function Starmap() {
         .attr("transform", (d) => `translate(${projection(d)})`)
         .attr("text-anchor", "middle")
         .attr("dy", (d) => memberRadius(d) * 2 + 4)
-        .text((d) => initials(d.member_name) + " " + d.weeks_active_last_52)
+        .text((d) => initials(d.member_name))
         .attr("fill", (d) => colorForMember(d, member))
         .on("mouseover", mouseovered)
         .on("mouseout", mouseouted)
