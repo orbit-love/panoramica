@@ -1,5 +1,6 @@
 import c from "components/2023/common";
 import Member from "components/2023/member";
+import Community from "components/2023/community";
 import * as d3 from "d3";
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
@@ -23,7 +24,7 @@ const initials = (name) => {
 var defaultData = c.getMemberDataNew(moment("2023-01-16"), dataFile);
 // the exponent scrunches together the inside where the gaps between weeks are large
 // at the edges it's much smaller
-const boundary = 9; // weeks
+const boundary = 11; // weeks
 const degreeScaleO12 = d3
   .scalePow()
   .exponent(0.7)
@@ -280,6 +281,7 @@ export default function Starmap() {
               <div>Orbit Community</div>
             </div>
             <div>{data.length} members</div>
+            <Community data={data} orbits={c.defaultOrbits} />
           </div>
         </div>
       </div>

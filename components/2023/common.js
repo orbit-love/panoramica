@@ -58,7 +58,7 @@ const common = {
   selectedTextColor: orbitPink,
 
   initialZoomScale: 1,
-  defaultOrbits: [3, 9, 20, 36],
+  defaultOrbits: [3, 6, 11, 22],
   rAxisExponent: 1.4,
 
   colorScale,
@@ -66,10 +66,18 @@ const common = {
 
   orbitLevel,
   membersByOrbitLevel: (data, orbits) => {
-    const orbit1 = data.filter((d) => orbitLevel(d[1], orbits) === 1).length;
-    const orbit2 = data.filter((d) => orbitLevel(d[1], orbits) === 2).length;
-    const orbit3 = data.filter((d) => orbitLevel(d[1], orbits) === 3).length;
-    const orbit4 = data.filter((d) => orbitLevel(d[1], orbits) === 4).length;
+    const orbit1 = data.filter(
+      (d) => orbitLevel(d.weeks_active_last_52, orbits) === 1
+    ).length;
+    const orbit2 = data.filter(
+      (d) => orbitLevel(d.weeks_active_last_52, orbits) === 2
+    ).length;
+    const orbit3 = data.filter(
+      (d) => orbitLevel(d.weeks_active_last_52, orbits) === 3
+    ).length;
+    const orbit4 = data.filter(
+      (d) => orbitLevel(d.weeks_active_last_52, orbits) === 4
+    ).length;
     return [
       orbit1,
       orbit2,
