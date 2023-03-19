@@ -18,36 +18,40 @@ export default function Index() {
 
     // create a scale for the orbit x radius
     const rx = d3
-      .scaleLinear()
+      .scalePow()
+      .exponent(0.9)
       .range([0, width / 2 - 50])
       .domain([1, 100]);
 
     // create a scale for the orbit y radius
     const ry = d3
-      .scaleLinear()
-      .range([0, height / 4])
+      .scalePow()
+      .exponent(1)
+      .range([0, height / 3])
       .domain([1, 100]);
 
-    const rpm = d3.scaleLinear().range([0, 20000]).domain([1, 100]);
+    const yOffset = d3.scalePow().exponent(2).range([0, 80]).domain([1, 100]);
+
+    const rpm = d3.scaleLinear().range([8000, 10000]).domain([1, 100]);
     const planetSize = d3.scaleLinear().range([21, 7]).domain([1, 100]);
     const planetColor = d3
       .scaleLinear()
       .domain([1, 100])
-      .range(["red", "orange"]);
+      .range(["red", "blue"]);
 
     // create orbit level rings on a 1-100 scale
-    const baseNumbers = [25, 50, 75, 95];
+    const baseNumbers = [25, 50, 73, 95];
     const [o1] = baseNumbers;
 
     // the center where each orbit ellipse is placed
     const cx = width / 2;
-    const cy = height / 2 - 20;
+    const cy = height / 2 - 90;
 
     // Define the orbits
     const orbits = baseNumbers.map((o) => ({
       o: o,
       cx,
-      cy,
+      cy: cy + yOffset(o),
       rx: rx(o),
       ry: ry(o),
       rpm: rpm(o),
@@ -57,6 +61,7 @@ export default function Index() {
 
     // set the size of the sun
     const sunRadius = rx(o1) / 2.5;
+    const sunColor = "orange";
 
     // add a clip path
     svg
@@ -71,8 +76,8 @@ export default function Index() {
     // draw the sun
     svg
       .append("circle")
-      .attr("fill", "yellow")
-      .attr("stroke", "orange")
+      .attr("fill", sunColor)
+      .attr("stroke", "black")
       .attr("stroke-width", 5)
       .attr("r", sunRadius)
       .attr("cx", cx)
@@ -83,7 +88,7 @@ export default function Index() {
       .selectAll("ellipse")
       .data(orbits)
       .join("ellipse")
-      .attr("stroke", "#ddd")
+      .attr("stroke", (d) => d.planetColor)
       .attr("fill", "none")
       .attr("rx", (d) => d.rx)
       .attr("ry", (d) => d.ry)
@@ -138,8 +143,8 @@ export default function Index() {
     // draw a clipped yellow circle to cover the back of the ring
     svg
       .append("circle")
-      .attr("fill", "yellow")
-      .attr("stroke", "orange")
+      .attr("fill", sunColor)
+      .attr("stroke", "black")
       .attr("stroke-width", 5)
       .attr("r", sunRadius)
       .attr("cx", cx)
