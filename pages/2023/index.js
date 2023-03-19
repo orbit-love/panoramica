@@ -1,10 +1,5 @@
-import c from "components/2023/common";
-import Community from "components/2023/community";
-import Member from "components/2023/member";
-import TimeControl from "components/2023/time_control";
 import * as d3 from "d3";
-import moment from "moment";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Head from "components/head";
 
 export default function Index() {
@@ -21,40 +16,47 @@ export default function Index() {
     // set the attributes
     svg.attr("width", width).attr("height", height);
 
+    // create a scale for the orbit x radius
     const rx = d3
       .scaleLinear()
-      .range([0, width / 2 - 30])
+      .range([0, width / 2 - 50])
       .domain([1, 100]);
 
+    // create a scale for the orbit y radius
     const ry = d3
       .scaleLinear()
-      .range([0, height / 3 - 30])
+      .range([0, height / 4])
       .domain([1, 100]);
 
-    const [o1, o2, o3, o4] = [20, 45, 70, 95];
+    const rpm = d3.scaleLinear().range([0, 20000]).domain([1, 100]);
+    const planetSize = d3.scaleLinear().range([21, 7]).domain([1, 100]);
+    const planetColor = d3
+      .scaleLinear()
+      .domain([1, 100])
+      .range(["red", "orange"]);
 
+    // create orbit level rings on a 1-100 scale
+    const baseNumbers = [25, 50, 75, 95];
+    const [o1] = baseNumbers;
+
+    // the center where each orbit ellipse is placed
     const cx = width / 2;
-    const cy = height / 2;
+    const cy = height / 2 - 20;
 
     // Define the orbits
-    const orbits = [
-      { o: o1, rx: rx(o1), ry: ry(o1), cx, cy },
-      { o: o2, rx: rx(o2), ry: ry(o2), cx, cy },
-      { o: o3, rx: rx(o3), ry: ry(o3), cx, cy },
-      { o: o4, rx: rx(o4), ry: ry(o4), cx, cy },
-    ];
+    const orbits = baseNumbers.map((o) => ({
+      o: o,
+      cx,
+      cy,
+      rx: rx(o),
+      ry: ry(o),
+      rpm: rpm(o),
+      planetSize: planetSize(o),
+      planetColor: planetColor(o),
+    }));
 
-    // Define the planets
-    const planets = orbits.map((orbit, index) => {
-      return {
-        id: index,
-        r: 10,
-        cx: orbit.cx + orbit.rx,
-        cy: orbit.cy,
-      };
-    });
-
-    const sunRadius = rx(o1) / 2;
+    // set the size of the sun
+    const sunRadius = rx(o1) / 2.5;
 
     // add a clip path
     svg
@@ -62,14 +64,16 @@ export default function Index() {
       .attr("id", "clip-path-1")
       .append("rect")
       .attr("x", cx - sunRadius)
-      .attr("y", cy - sunRadius)
+      .attr("y", cy - sunRadius - 5) // for the stroke on the circle
       .attr("width", sunRadius * 2)
       .attr("height", sunRadius);
 
-    // draw the yellow circle
+    // draw the sun
     svg
       .append("circle")
       .attr("fill", "yellow")
+      .attr("stroke", "orange")
+      .attr("stroke-width", 5)
       .attr("r", sunRadius)
       .attr("cx", cx)
       .attr("cy", cy);
@@ -87,14 +91,70 @@ export default function Index() {
       .attr("cy", (d) => d.cy)
       .attr("stroke-width", 2);
 
-    // draw the yellow circle
+    // Create a group to put the planets in
+    const planetGroup = svg
+      .selectAll("g.planet-group")
+      .data(orbits)
+      .enter()
+      .append("g")
+      .attr("class", "planet-group");
+
+    // Draw a circle for each planet
+    planetGroup
+      .append("circle")
+      .attr("r", (d) => d.planetSize)
+      .attr("fill", (d) => d.planetColor);
+
+    // Animate the planets
+    planetGroup.each(function (orbit) {
+      // Create an elliptical path using the SVG path A command
+      const pathData = `M ${orbit.cx - orbit.rx},${orbit.cy}
+        a ${orbit.rx} ${orbit.ry} 0 1 1 ${orbit.rx * 2},0,
+        a ${orbit.rx} ${orbit.ry} 0 1 1 ${orbit.rx * -2},0`;
+
+      const pathNode = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path"
+      );
+      pathNode.setAttribute("d", pathData);
+
+      function transition(selection) {
+        d3.select(selection)
+          .transition()
+          .duration(orbit.rpm)
+          .ease(d3.easeLinear)
+          .attrTween("transform", () => {
+            const pathLength = pathNode.getTotalLength();
+            return function (t) {
+              const point = pathNode.getPointAtLength(t * pathLength);
+              return `translate(${point.x}, ${point.y})`;
+            };
+          })
+          .on("end", () => transition(selection));
+      }
+      transition(this);
+    });
+
+    // draw a clipped yellow circle to cover the back of the ring
     svg
       .append("circle")
       .attr("fill", "yellow")
+      .attr("stroke", "orange")
+      .attr("stroke-width", 5)
       .attr("r", sunRadius)
       .attr("cx", cx)
       .attr("cy", cy)
       .attr("clip-path", "url(#clip-path-1)");
+
+    // draw the text on the circle
+    svg
+      .append("text")
+      .attr("x", cx)
+      .attr("y", cy + 3) // push it down so it is in the middle of the circle
+      .attr("fill", "black")
+      .attr("text-anchor", "middle")
+      .attr("font-weight", "500")
+      .text("Mission");
   });
 
   return (
