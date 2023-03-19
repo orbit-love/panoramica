@@ -63,6 +63,7 @@ const common = {
 
   colorScale,
   hotColdColorScale,
+  hotColdColorRange,
 
   orbitLevel,
   membersByOrbitLevel: (data, orbits) => {

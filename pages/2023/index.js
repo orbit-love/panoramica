@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import c from "components/2023/common";
 import React, { useEffect, useRef } from "react";
 import Head from "components/head";
 
@@ -19,7 +20,7 @@ export default function Index() {
     // create a scale for the orbit x radius
     const rx = d3
       .scalePow()
-      .exponent(0.9)
+      .exponent(0.8)
       .range([0, width / 2 - 50])
       .domain([1, 100]);
 
@@ -27,9 +28,10 @@ export default function Index() {
     const ry = d3
       .scalePow()
       .exponent(1)
-      .range([0, height / 3])
+      .range([0, height / 4])
       .domain([1, 100]);
 
+    // tighten up the orbits at the top
     const yOffset = d3.scalePow().exponent(2).range([0, 80]).domain([1, 100]);
 
     const rpm = d3.scaleLinear().range([8000, 10000]).domain([1, 100]);
@@ -38,6 +40,9 @@ export default function Index() {
       .scaleLinear()
       .domain([1, 100])
       .range(["red", "blue"]);
+
+    // olnames
+    const names = ["Advocates", "Contributors", "Users", "Explorers"];
 
     // create orbit level rings on a 1-100 scale
     const baseNumbers = [25, 50, 73, 95];
@@ -48,20 +53,23 @@ export default function Index() {
     const cy = height / 2 - 90;
 
     // Define the orbits
-    const orbits = baseNumbers.map((o) => ({
-      o: o,
+    const orbits = baseNumbers.map((o, i) => ({
+      i,
+      o,
       cx,
+      name: names[i],
       cy: cy + yOffset(o),
       rx: rx(o),
       ry: ry(o),
       rpm: rpm(o),
       planetSize: planetSize(o),
       planetColor: planetColor(o),
+      numPlanets: o / 2,
     }));
-
     // set the size of the sun
-    const sunRadius = rx(o1) / 2.5;
+    const sunRadius = rx(o1) / 3;
     const sunColor = "orange";
+    const strokeColor = c.backgroundColor;
 
     // add a clip path
     svg
@@ -77,11 +85,25 @@ export default function Index() {
     svg
       .append("circle")
       .attr("fill", sunColor)
-      .attr("stroke", "black")
+      .attr("stroke", strokeColor)
       .attr("stroke-width", 5)
       .attr("r", sunRadius)
       .attr("cx", cx)
       .attr("cy", cy);
+
+    // put orbit level labels
+    svg
+      .selectAll("text.orbit-label")
+      .data(orbits)
+      .join("text")
+      .attr("class", "orbit-label")
+      .attr("text-anchor", "middle")
+      .attr("x", (d) => d.cx)
+      .attr("y", (d) => d.cy + d.ry + 35)
+      .attr("font-size", 12)
+      .attr("font-weight", 500)
+      .attr("fill", (d) => d.planetColor)
+      .text((d) => d.name);
 
     // draw the orbits
     svg
@@ -94,12 +116,21 @@ export default function Index() {
       .attr("ry", (d) => d.ry)
       .attr("cx", (d) => d.cx)
       .attr("cy", (d) => d.cy)
+      .attr("stroke-opacity", 0.7)
       .attr("stroke-width", 2);
+
+    const planets = [];
+    orbits.forEach((orbit) => {
+      for (var i = 0; i < orbit.numPlanets; i++) {
+        planets.push({ ...orbit, planetNumber: i });
+      }
+    });
+    console.log(planets);
 
     // Create a group to put the planets in
     const planetGroup = svg
       .selectAll("g.planet-group")
-      .data(orbits)
+      .data(planets)
       .enter()
       .append("g")
       .attr("class", "planet-group");
@@ -108,7 +139,9 @@ export default function Index() {
     planetGroup
       .append("circle")
       .attr("r", (d) => d.planetSize)
-      .attr("fill", (d) => d.planetColor);
+      .attr("fill", (d) => d.planetColor)
+      .attr("stroke", strokeColor)
+      .attr("stroke-width", 3);
 
     // Animate the planets
     planetGroup.each(function (orbit) {
@@ -122,6 +155,7 @@ export default function Index() {
         "path"
       );
       pathNode.setAttribute("d", pathData);
+      const pathLength = pathNode.getTotalLength();
 
       function transition(selection) {
         d3.select(selection)
@@ -129,9 +163,10 @@ export default function Index() {
           .duration(orbit.rpm)
           .ease(d3.easeLinear)
           .attrTween("transform", () => {
-            const pathLength = pathNode.getTotalLength();
             return function (t) {
-              const point = pathNode.getPointAtLength(t * pathLength);
+              const point = pathNode.getPointAtLength(
+                t * pathLength + orbit.planetNumber * 100
+              );
               return `translate(${point.x}, ${point.y})`;
             };
           })
@@ -144,7 +179,7 @@ export default function Index() {
     svg
       .append("circle")
       .attr("fill", sunColor)
-      .attr("stroke", "black")
+      .attr("stroke", strokeColor)
       .attr("stroke-width", 5)
       .attr("r", sunRadius)
       .attr("cx", cx)
@@ -156,7 +191,7 @@ export default function Index() {
       .append("text")
       .attr("x", cx)
       .attr("y", cy + 3) // push it down so it is in the middle of the circle
-      .attr("fill", "black")
+      .attr("fill", strokeColor)
       .attr("text-anchor", "middle")
       .attr("font-weight", "500")
       .text("Mission");
