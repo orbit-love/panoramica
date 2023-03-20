@@ -29,26 +29,26 @@ body .carousel.carousel-slider .control-arrow {
 }
 
 .side-navigation-panel-select-option {
-  @apply flex justify-between items-center py-2 w-full text-lg cursor-pointer;
+  @apply flex justify-between items-center py-1 w-full text-lg cursor-pointer;
 }
 .side-navigation-panel-select-option:hover {
-  @apply text-indigo-400;
+  @apply text-indigo-700;
 }
 .side-navigation-panel-select-option-selected {
-  @apply text-indigo-400;
+  @apply text-indigo-800;
 }
 
 .side-navigation-panel-select-inner {
   @apply pb-2;
 }
 .side-navigation-panel-select-inner-option {
-  @apply flex justify-between items-center py-0.5 px-3 text-slate-300 cursor-pointer;
+  @apply flex justify-between items-center px-2 cursor-pointer;
 }
 .side-navigation-panel-select-inner-option-selected {
-  @apply text-indigo-400;
+  @apply text-indigo-800;
 }
-.side-navigation-panel-select-inner-option-selected:hover {
-  @apply text-indigo-400;
+.side-navigation-panel-select-inner-option:hover {
+  @apply text-indigo-700;
 }
 
 .header-background {

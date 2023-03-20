@@ -1,9 +1,8 @@
 import * as d3 from "d3";
 import c from "components/2023/common";
 import React, { useEffect, useRef } from "react";
-import Head from "components/head";
 
-export default function Index() {
+export default function Orbits() {
   const svgRef = useRef();
 
   useEffect(() => {
@@ -12,7 +11,7 @@ export default function Index() {
     svg.selectAll("*").remove();
 
     const width = window.innerWidth,
-      height = window.innerHeight * 0.75;
+      height = window.innerHeight * 0.7;
 
     // set the attributes
     svg.attr("width", width).attr("height", height);
@@ -32,11 +31,15 @@ export default function Index() {
       .domain([1, 100]);
 
     // tighten up the orbits at the top
-    const yOffset = d3.scalePow().exponent(2).range([0, 80]).domain([1, 100]);
+    const yOffset = d3
+      .scalePow()
+      .exponent(1.5)
+      .range([0, 100])
+      .domain([1, 100]);
 
     const ringOpacity = 0.6;
-    const rpm = d3.scaleLinear().range([18000, 20000]).domain([1, 100]);
-    const planetSize = d3.scaleLinear().range([28, 13]).domain([1, 100]);
+    const rpm = d3.scaleLinear().range([19000, 32000]).domain([1, 100]);
+    const planetSize = d3.scaleLinear().range([28, 18]).domain([1, 100]);
     const fontSize = d3.scaleLinear().range([18, 12]).domain([1, 100]);
     const planetColor = d3
       .scaleLinear()
@@ -49,35 +52,37 @@ export default function Index() {
         size: 30,
         name: "Advocates",
         planets: [
-          { name: "Speakers - 20" },
-          { name: "Workshop leaders - 25" },
-          { name: "Ambassadors - 18" },
+          { name: "Product Champions", amount: "100" },
+          { name: "Customer Council", amount: "50" },
+          { name: "Meetup Organizers", amount: "25" },
         ],
       },
       {
-        size: 55,
+        size: 53,
         name: "Contributors",
         planets: [
-          { name: "Merged PR - 200" },
-          { name: "Gave feedback - 1.1k" },
-          { name: "Superusers - 90" },
+          { name: "Dev Conference", amount: "250" },
+          { name: "Beta Users", amount: "200" },
+          { name: "GitHub Contributors", amount: "80" },
+          { name: "Translators", amount: "25" },
         ],
       },
       {
-        size: 75,
+        size: 77,
         name: "Users",
         planets: [
-          { name: "Product users - 15k" },
-          { name: "Partner users - 1k" },
+          { name: "Product Users", amount: "15k" },
+          { name: "Discord Community", amount: "3k" },
+          { name: "API Users", amount: "1k" },
         ],
       },
       {
         size: 97,
         name: "Explorers",
         planets: [
-          { name: "Twitter followers - 90k" },
-          { name: "Newsletter subscribers - 30k" },
-          { name: "Discord members - 9k" },
+          { name: "Twitter Followers", amount: "40k" },
+          { name: "Blog Readers", amount: "30k" },
+          { name: "Newsletter Subscribers", amount: "9k" },
         ],
       },
     ];
@@ -105,8 +110,8 @@ export default function Index() {
     }));
 
     // set the size of the sun
-    const sunRadius = rx(o1) / 3;
-    const sunColor = "orange";
+    const sunRadius = rx(o1) / 4;
+    const sunColor = "gold";
     const strokeColor = c.backgroundColor;
 
     // add a clip path
@@ -137,8 +142,8 @@ export default function Index() {
       .attr("class", "orbit-label")
       .attr("text-anchor", "middle")
       .attr("x", (d) => d.cx)
-      .attr("y", (d) => d.cy + d.ry + 35)
-      .attr("font-size", 14)
+      .attr("y", (d) => d.cy + d.ry + 25)
+      .attr("font-size", 16)
       .attr("font-weight", 500)
       .attr("opacity", ringOpacity)
       .attr("fill", (d) => d.planetColor)
@@ -156,7 +161,7 @@ export default function Index() {
       .attr("cx", (d) => d.cx)
       .attr("cy", (d) => d.cy)
       .attr("stroke-opacity", ringOpacity)
-      .attr("stroke-width", 2);
+      .attr("stroke-width", 3);
 
     const planets = [];
     // reverse the array so the closest planets are drawn last and stay on top
@@ -179,7 +184,7 @@ export default function Index() {
     planetGroup
       .append("rect")
       .attr("fill", strokeColor)
-      .attr("width", 160) // this isn't right for all text
+      .attr("width", 130) // this isn't right for all text
       .attr("height", (d) => d.orbit.fontSize * 2)
       .attr("opacity", 0.7)
       // don't let lines peek through between the planet and the text
@@ -194,6 +199,17 @@ export default function Index() {
       .attr("stroke", strokeColor)
       .attr("stroke-width", 3);
 
+    // Add the amount of people inside the planet
+    planetGroup
+      .append("text")
+      .attr("fill", "white")
+      .attr("text-anchor", "middle")
+      .attr("font-size", (d) => d.orbit.fontSize * 0.9)
+      .attr("font-weight", 500)
+      .attr("dx", (d) => 0)
+      .attr("dy", (d) => 5)
+      .text((d) => d.amount);
+
     // Add the example text next to the planet
     planetGroup
       .append("text")
@@ -205,11 +221,9 @@ export default function Index() {
       .attr("dy", 5)
       .text((d) => d.name);
 
-    const planetDelay = 2500;
-
     // Animate the planets
     planetGroup
-      .sort(() => 0.5 - Math.random())
+      // .sort(() => 0.5 - Math.random())
       .each(function (planet, i) {
         const self = this;
         const orbit = planet.orbit;
@@ -224,6 +238,16 @@ export default function Index() {
         );
         pathNode.setAttribute("d", pathData);
         const pathLength = pathNode.getTotalLength();
+
+        const startDelay = 1000;
+        const baseDelay = 2500;
+        const newPlanetAfter = startDelay + i * baseDelay;
+        const hideTextAfter = startDelay + (i + 1) * baseDelay;
+
+        function hideText(selection) {
+          // d3.select(selection).selectAll("text").attr("opacity", 0);
+          // d3.select(selection).selectAll("rect").attr("opacity", 0);
+        }
 
         function transition(selection) {
           d3.select(selection)
@@ -241,8 +265,10 @@ export default function Index() {
         }
         setTimeout(() => {
           transition(self);
-        }, i * planetDelay);
-        // }, i * planetDelay + (planet.i * orbit.rpm) / orbit.planets.length);
+        }, newPlanetAfter);
+        setTimeout(() => {
+          hideText(self);
+        }, hideTextAfter);
       });
 
     // draw a clipped yellow circle to cover the back of the ring
@@ -268,14 +294,8 @@ export default function Index() {
   });
 
   return (
-    <div id="outer-container" className="flex flex-col w-full">
-      <Head />
-      <div id="container" className="bg-[#0F0A25]">
-        <svg ref={svgRef} style={{ width: "100%", height: "100%" }}>
-          <g></g>
-        </svg>
-      </div>
-      <div className="p-24 text-center">There will be content here.</div>
-    </div>
+    <svg ref={svgRef} style={{ width: "100%", height: "100%" }}>
+      <g></g>
+    </svg>
   );
 }

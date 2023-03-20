@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <div>
-      <nav className="header-background flex fixed top-0 z-10 z-20 items-center py-5 px-8 w-full whitespace-nowrap">
+      <nav className="flex fixed top-0 z-10 z-20 items-center py-5 px-8 w-full whitespace-nowrap bg-none">
         <div>
           <button
             className="inline-flex justify-center p-3 mr-1 ml-auto w-10 text-white rounded outline-none hover:text-white hover:bg-slate-700 md:hidden"
@@ -44,16 +44,6 @@ export default function Header() {
 
         <div className="hidden md:block">
           <div className="flex justify-end items-center">
-            <Link href="/about">
-              <a className="justify-center items-center py-2 px-3 w-full font-bold text-white rounded">
-                About
-              </a>
-            </Link>
-            <Link href="/introduction">
-              <a className="justify-center items-center py-2 px-3 mr-4 w-full font-bold text-white rounded">
-                Guides
-              </a>
-            </Link>
             <iframe
               src="https://ghbtns.com/github-btn.html?user=orbit-love&repo=orbit-model&type=star&count=true"
               frameBorder="0"
