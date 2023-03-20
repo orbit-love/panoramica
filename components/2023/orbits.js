@@ -52,9 +52,9 @@ export default function Orbits() {
         size: 30,
         name: "Advocates",
         planets: [
-          { name: "Product Champions", amount: "100" },
-          { name: "Customer Council", amount: "50" },
-          { name: "Meetup Organizers", amount: "25" },
+          { name: "Product Champions", amount: "50" },
+          { name: "Customer Council", amount: "35" },
+          { name: "Meetup Organizers", amount: "12" },
         ],
       },
       {
@@ -63,7 +63,7 @@ export default function Orbits() {
         planets: [
           { name: "Dev Conference", amount: "250" },
           { name: "Beta Users", amount: "200" },
-          { name: "GitHub Contributors", amount: "80" },
+          { name: "Code Contributors", amount: "80" },
           { name: "Translators", amount: "25" },
         ],
       },
@@ -71,9 +71,9 @@ export default function Orbits() {
         size: 77,
         name: "Users",
         planets: [
-          { name: "Product Users", amount: "15k" },
+          { name: "Product Users", amount: "11k" },
           { name: "Discord Community", amount: "3k" },
-          { name: "API Users", amount: "1k" },
+          { name: "API Users", amount: "600" },
         ],
       },
       {
@@ -82,7 +82,7 @@ export default function Orbits() {
         planets: [
           { name: "Twitter Followers", amount: "40k" },
           { name: "Blog Readers", amount: "30k" },
-          { name: "Newsletter Subscribers", amount: "9k" },
+          { name: "Newsletter Subscribers", amount: "25k" },
         ],
       },
     ];
