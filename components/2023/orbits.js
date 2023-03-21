@@ -77,7 +77,7 @@ export default function Orbits() {
         ],
       },
       {
-        size: 97,
+        size: 100,
         name: "Explorers",
         planets: [
           { name: "Twitter Followers", amount: "40k" },

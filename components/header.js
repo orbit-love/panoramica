@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <div>
-      <nav className="flex fixed top-0 z-10 z-20 items-center py-5 px-8 w-full whitespace-nowrap bg-none">
+      <nav className="flex fixed bg-[#0F0A25] top-0 z-10 z-20 items-center py-4 px-8 w-full whitespace-nowrap bg-none">
         <div>
           <button
             className="inline-flex justify-center p-3 mr-1 ml-auto w-10 text-white rounded outline-none hover:text-white hover:bg-slate-700 md:hidden"
