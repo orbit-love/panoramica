@@ -11,7 +11,7 @@ export default function Orbits() {
     svg.selectAll("*").remove();
 
     const width = window.innerWidth,
-      height = window.innerHeight * 0.7;
+      height = window.innerHeight * 0.65;
 
     // set the attributes
     svg.attr("width", width).attr("height", height);
@@ -21,30 +21,30 @@ export default function Orbits() {
       .scalePow()
       .exponent(0.5)
       .range([0, width / 2 - 50])
-      .domain([1, 100]);
+      .domain([5, 100]);
 
     // create a scale for the orbit y radius
     const ry = d3
       .scalePow()
       .exponent(1)
-      .range([0, height / 3])
-      .domain([1, 100]);
+      .range([0, height / 3.5])
+      .domain([0, 100]);
 
     // tighten up the orbits at the top
     const yOffset = d3
       .scalePow()
-      .exponent(1.5)
+      .exponent(1.0)
       .range([0, 100])
       .domain([1, 100]);
 
-    const ringOpacity = 0.6;
-    const rpm = d3.scaleLinear().range([19000, 32000]).domain([1, 100]);
-    const planetSize = d3.scaleLinear().range([28, 18]).domain([1, 100]);
-    const fontSize = d3.scaleLinear().range([18, 12]).domain([1, 100]);
+    const ringOpacity = 0.4;
+    const revolution = d3.scaleLinear().range([10000, 40000]).domain([1, 100]);
+    const planetSize = d3.scaleLinear().range([25, 18]).domain([1, 100]);
+    const fontSize = d3.scaleLinear().range([17, 12]).domain([1, 100]);
     const planetColor = d3
       .scaleLinear()
-      .domain([1, 100])
-      .range(["red", "CornflowerBlue"]);
+      .domain([0, 100])
+      .range(["#F503EA", "#8F85FF"]);
 
     // create orbit level rings on a 1-100 scale
     const levels = [
@@ -103,36 +103,17 @@ export default function Orbits() {
       cy: cy + yOffset(size),
       rx: rx(size),
       ry: ry(size),
-      rpm: rpm(size),
+      revolution: revolution(size),
       planetSize: planetSize(size),
       planetColor: planetColor(size),
       fontSize: fontSize(size),
     }));
 
     // set the size of the sun
-    const sunRadius = rx(o1) / 4;
-    const sunColor = "gold";
+    const sunRadius = rx(o1) / 3.5;
+    const sunColor = "#FCFDFE";
     const strokeColor = c.backgroundColor;
-
-    // add a clip path
-    svg
-      .append("clipPath")
-      .attr("id", "clip-path-1")
-      .append("rect")
-      .attr("x", cx - sunRadius)
-      .attr("y", cy - sunRadius - 5) // for the stroke on the circle
-      .attr("width", sunRadius * 2)
-      .attr("height", sunRadius);
-
-    // draw the sun
-    svg
-      .append("circle")
-      .attr("fill", sunColor)
-      .attr("stroke", strokeColor)
-      .attr("stroke-width", 5)
-      .attr("r", sunRadius)
-      .attr("cx", cx)
-      .attr("cy", cy);
+    const sunCy = cy - 5 - 15;
 
     // put orbit level labels
     svg
@@ -171,7 +152,7 @@ export default function Orbits() {
       }
     });
 
-    // Create a group to put the planets in
+    // Create a group for each planet
     const planetGroup = svg
       .selectAll("g.planet-group")
       .data(planets)
@@ -186,7 +167,7 @@ export default function Orbits() {
       .attr("fill", strokeColor)
       .attr("width", 130) // this isn't right for all text
       .attr("height", (d) => d.orbit.fontSize * 2)
-      .attr("opacity", 0.7)
+      .attr("opacity", 0)
       // don't let lines peek through between the planet and the text
       .attr("x", (d) => d.orbit.planetSize - 10)
       .attr("y", (d) => -d.orbit.fontSize);
@@ -222,54 +203,76 @@ export default function Orbits() {
       .text((d) => d.name);
 
     // Animate the planets
-    planetGroup
-      // .sort(() => 0.5 - Math.random())
-      .each(function (planet, i) {
-        const self = this;
-        const orbit = planet.orbit;
-        // Create an elliptical path using the SVG path A command
-        const pathData = `M ${orbit.cx - orbit.rx},${orbit.cy}
+    planetGroup.each(function (planet, i) {
+      const self = this;
+      const orbit = planet.orbit;
+      // Create an elliptical path using the SVG path A command
+      const pathData = `M ${orbit.cx - orbit.rx},${orbit.cy}
         a ${orbit.rx} ${orbit.ry} 0 1 1 ${orbit.rx * 2},0,
         a ${orbit.rx} ${orbit.ry} 0 1 1 ${orbit.rx * -2},0`;
 
-        const pathNode = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "path"
-        );
-        pathNode.setAttribute("d", pathData);
-        const pathLength = pathNode.getTotalLength();
+      const pathNode = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path"
+      );
+      pathNode.setAttribute("d", pathData);
+      const pathLength = pathNode.getTotalLength();
 
-        const startDelay = 1000;
-        const baseDelay = 2500;
-        const newPlanetAfter = startDelay + i * baseDelay;
-        const hideTextAfter = startDelay + (i + 1) * baseDelay;
+      const startDelay = 0;
+      const baseDelay = 2500;
+      // spread the planets evenly amongst each ring
+      const newPlanetAfter =
+        1000 * orbit.i +
+        1 +
+        planet.i * (orbit.revolution / orbit.planets.length);
+      const hideTextAfter = startDelay + (planet.i + 1) * baseDelay;
 
-        function hideText(selection) {
-          // d3.select(selection).selectAll("text").attr("opacity", 0);
-          // d3.select(selection).selectAll("rect").attr("opacity", 0);
-        }
+      function hideText(selection) {
+        // d3.select(selection).selectAll("text").attr("opacity", 0);
+        // d3.select(selection).selectAll("rect").attr("opacity", 0);
+      }
 
-        function transition(selection) {
-          d3.select(selection)
-            .attr("opacity", 1)
-            .transition()
-            .duration(orbit.rpm)
-            .ease(d3.easeLinear)
-            .attrTween("transform", () => {
-              return function (t) {
-                const point = pathNode.getPointAtLength(t * pathLength);
-                return `translate(${point.x}, ${point.y})`;
-              };
-            })
-            .on("end", () => transition(selection));
-        }
-        setTimeout(() => {
-          transition(self);
-        }, newPlanetAfter);
-        setTimeout(() => {
-          hideText(self);
-        }, hideTextAfter);
-      });
+      function transition(selection) {
+        d3.select(selection)
+          .attr("opacity", 1)
+          .transition()
+          .duration(orbit.revolution)
+          .ease(d3.easeLinear)
+          .attrTween("transform", () => {
+            return function (t) {
+              const point = pathNode.getPointAtLength(t * pathLength);
+              return `translate(${point.x}, ${point.y})`;
+            };
+          })
+          .on("end", () => transition(selection));
+      }
+      setTimeout(() => {
+        transition(self);
+      }, newPlanetAfter);
+      setTimeout(() => {
+        hideText(self);
+      }, hideTextAfter);
+    });
+
+    // add a clip path
+    svg
+      .append("clipPath")
+      .attr("id", "clip-path-1")
+      .append("rect")
+      .attr("x", cx - sunRadius)
+      .attr("y", sunCy - sunRadius - 5) // for the stroke on the circle
+      .attr("width", sunRadius * 2)
+      .attr("height", sunRadius);
+
+    // draw the sun
+    svg
+      .append("circle")
+      .attr("fill", sunColor)
+      .attr("stroke", strokeColor)
+      .attr("stroke-width", 5)
+      .attr("r", sunRadius)
+      .attr("cx", cx)
+      .attr("cy", sunCy);
 
     // draw a clipped yellow circle to cover the back of the ring
     svg
@@ -279,17 +282,17 @@ export default function Orbits() {
       .attr("stroke-width", 5)
       .attr("r", sunRadius)
       .attr("cx", cx)
-      .attr("cy", cy)
+      .attr("cy", sunCy)
       .attr("clip-path", "url(#clip-path-1)");
 
     // draw the text on the circle
     svg
       .append("text")
       .attr("x", cx)
-      .attr("y", cy + 3) // push it down so it is in the middle of the circle
+      .attr("y", sunCy + 3) // push it down so it is in the middle of the circle
       .attr("fill", strokeColor)
       .attr("text-anchor", "middle")
-      .attr("font-weight", "500")
+      .attr("font-weight", 700)
       .text("Mission");
   });
 
