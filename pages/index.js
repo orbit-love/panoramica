@@ -25,7 +25,6 @@ export default function Index() {
           </h1>
           <Intro />
           <a className="block my-12" id="gravity"></a>
-          <Gravity />
         </div>
         <div className="my-64"></div>
       </div>

@@ -9,24 +9,4 @@ export const items = [
     title: "Introduction",
     itemId: "#introduction",
   },
-  {
-    title: "Gravity",
-    itemId: "#gravity",
-  },
-  {
-    title: "Love",
-    itemId: "#love",
-  },
-  {
-    title: "Reach",
-    itemId: "#reach",
-  },
-  {
-    title: "Orbit Levels",
-    itemId: "#levels",
-  },
-  {
-    title: "Community",
-    itemId: "#community",
-  },
 ];
