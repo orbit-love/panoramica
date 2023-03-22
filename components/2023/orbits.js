@@ -2,16 +2,21 @@ import * as d3 from "d3";
 import c from "components/2023/common";
 import React, { useEffect, useRef } from "react";
 
-export default function Orbits() {
+export default function Orbits({ width, height }) {
   const svgRef = useRef();
 
   useEffect(() => {
+    if (!width || !height) {
+      return;
+    }
     const svg = d3.select(svgRef.current);
     // remove everything in there
     svg.selectAll("*").remove();
 
-    const width = window.innerWidth,
-      height = window.innerHeight * 0.65;
+    // const width = width || document.getElementById("container").clientWidth,
+    //   height = height || document.getElementById("container").clientHeight;
+    // const width = width || document.getElementById("container").clientWidth,
+    //   height = height || document.getElementById("container").clientHeight;
 
     // set the attributes
     svg.attr("width", width).attr("height", height);
@@ -296,9 +301,5 @@ export default function Orbits() {
       .text("Mission");
   });
 
-  return (
-    <svg ref={svgRef} style={{ width: "100%", height: "100%" }}>
-      <g></g>
-    </svg>
-  );
+  return <svg ref={svgRef} style={{ width: "100%", height: "100%" }}></svg>;
 }
