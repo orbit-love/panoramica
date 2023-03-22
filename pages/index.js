@@ -5,7 +5,7 @@ import Header from "components/header";
 import Footer from "components/footer";
 import Sidebar from "components/sidebar";
 import Intro from "content/intro.mdx";
-import Gravity from "content/gravity.mdx";
+import Model from "content/model.mdx";
 
 export default function Index() {
   const containerRef = useRef();
@@ -55,7 +55,9 @@ export default function Index() {
             Product adoption: it takes a community
           </h1>
           <Intro />
-          <a className="block my-12" id="gravity"></a>
+          <div className="my-12"></div>
+          <a className="anchor" id="model"></a>
+          <Model />
         </div>
         <div className="my-64"></div>
       </div>

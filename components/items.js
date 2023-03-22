@@ -9,4 +9,12 @@ export const items = [
     title: "Introduction",
     itemId: "#introduction",
   },
+  {
+    title: "How the model works",
+    itemId: "#model",
+  },
+  {
+    title: "Orbit levels",
+    itemId: "#orbit-levels",
+  },
 ];

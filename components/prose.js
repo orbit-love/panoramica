@@ -26,6 +26,6 @@ export default function Prose({ children }) {
   //   "prose-td:pl-0",
   //   "pb-12",
   // ];
-  const proseClasses = ["prose"];
+  const proseClasses = ["prose", "prose-h2:text-3xl", "prose-h3:text-2xl"];
   return <div className={proseClasses.join(" ")}>{children}</div>;
 }
