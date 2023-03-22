@@ -6,6 +6,7 @@ import Footer from "components/footer";
 import Sidebar from "components/sidebar";
 import Intro from "content/intro.mdx";
 import Model from "content/model.mdx";
+import OrbitLevels from "content/orbit-levels.mdx";
 
 export default function Index() {
   const containerRef = useRef();
@@ -58,6 +59,9 @@ export default function Index() {
           <div className="my-12"></div>
           <a className="anchor" id="model"></a>
           <Model />
+          <div className="my-12"></div>
+          <a className="anchor" id="orbit-levels"></a>
+          <OrbitLevels />
         </div>
         <div className="my-64"></div>
       </div>
