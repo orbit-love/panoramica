@@ -49,7 +49,7 @@ export default function Index() {
       >
         <Orbits width={dimensions.width} height={dimensions.height} />
       </div>
-      <div className="flex py-3 px-9 pt-10 mb-9 bg-white md:space-x-16">
+      <div className="flex py-3 px-9 pt-10 pb-20 bg-white md:space-x-16">
         <Sidebar />
         <div className="w-full">
           <a className="anchor" id="introduction"></a>
@@ -64,7 +64,6 @@ export default function Index() {
           <a className="anchor" id="orbit-levels"></a>
           <OrbitLevels />
         </div>
-        <div className="my-64"></div>
       </div>
       <Footer />
     </>
