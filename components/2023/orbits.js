@@ -42,7 +42,7 @@ export default function Orbits({ width, height }) {
       .range([0, 100])
       .domain([1, 100]);
 
-    const ringOpacity = 0.4;
+    const ringOpacity = 0.5;
     const revolution = d3.scaleLinear().range([10000, 40000]).domain([1, 100]);
     const planetSize = d3.scaleLinear().range([25, 18]).domain([1, 100]);
     const fontSize = d3.scaleLinear().range([17, 12]).domain([1, 100]);

@@ -136,3 +136,13 @@ a.anchor {
   top: -100px;
   visibility: hidden;
 }
+
+canvas {
+  position: fixed;
+  inset: 0;
+  /* background: hsl(0, 0%, 15%); */
+  background: #0f0a25;
+  z-index: -1;
+  height: 100vh;
+  width: 100vw;
+}

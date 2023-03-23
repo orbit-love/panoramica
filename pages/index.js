@@ -7,6 +7,7 @@ import Sidebar from "components/sidebar";
 import Intro from "content/intro.mdx";
 import Model from "content/model.mdx";
 import OrbitLevels from "content/orbit-levels.mdx";
+import Stars from "components/stars";
 
 export default function Index() {
   const containerRef = useRef();
@@ -40,15 +41,15 @@ export default function Index() {
     <>
       <Head />
       <Header />
+      <Stars />
       <div
         ref={containerRef}
         id="container"
-        className="bg-[#0F0A25]"
-        style={{ height: "65vh" }}
+        style={{ height: "65vh", marginTop: "-80px" }}
       >
         <Orbits width={dimensions.width} height={dimensions.height} />
       </div>
-      <div className="flex py-3 px-9 mb-9 mt-10 md:space-x-16">
+      <div className="flex py-3 px-9 pt-10 mb-9 bg-white md:space-x-16">
         <Sidebar />
         <div className="w-full">
           <a className="anchor" id="introduction"></a>
