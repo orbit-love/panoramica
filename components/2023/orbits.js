@@ -24,15 +24,15 @@ export default function Orbits({ width, height }) {
     // create a scale for the orbit x radius
     const rx = d3
       .scalePow()
-      .exponent(0.5)
-      .range([0, width / 2 - 50])
+      .exponent(0.7)
+      .range([0, width / 2 - 100])
       .domain([5, 100]);
 
     // create a scale for the orbit y radius
     const ry = d3
       .scalePow()
       .exponent(1)
-      .range([0, height / 3.5])
+      .range([0, height / 3])
       .domain([0, 100]);
 
     // tighten up the orbits at the top
@@ -115,7 +115,7 @@ export default function Orbits({ width, height }) {
     }));
 
     // set the size of the sun
-    const sunRadius = rx(o1) / 3.5;
+    const sunRadius = rx(o1) / 3;
     const sunColor = "#FCFDFE";
     const strokeColor = c.backgroundColor;
     const sunCy = cy - 5 - 15;
@@ -141,6 +141,7 @@ export default function Orbits({ width, height }) {
       .data(orbits)
       .join("ellipse")
       .attr("stroke", (d) => d.planetColor)
+      .attr("stroke-dasharray", 1)
       .attr("fill", "none")
       .attr("rx", (d) => d.rx)
       .attr("ry", (d) => d.ry)
