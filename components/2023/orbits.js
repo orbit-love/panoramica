@@ -43,9 +43,9 @@ export default function Orbits({ width, height }) {
       .domain([1, 100]);
 
     const ringOpacity = 0.5;
-    const revolution = d3.scaleLinear().range([10000, 40000]).domain([1, 100]);
-    const planetSize = d3.scaleLinear().range([25, 18]).domain([1, 100]);
-    const fontSize = d3.scaleLinear().range([17, 12]).domain([1, 100]);
+    const revolution = d3.scaleLinear().range([35000, 140000]).domain([1, 100]);
+    const planetSize = d3.scaleLinear().range([22, 17]).domain([1, 100]);
+    const fontSize = d3.scaleLinear().range([15, 11]).domain([1, 100]);
     const planetColor = d3
       .scaleLinear()
       .domain([0, 100])
@@ -231,11 +231,10 @@ export default function Orbits({ width, height }) {
         1000 * orbit.i +
         1 +
         planet.i * (orbit.revolution / orbit.planets.length);
-      const hideTextAfter = startDelay + (planet.i + 1) * baseDelay;
 
-      function hideText(selection) {
-        // d3.select(selection).selectAll("text").attr("opacity", 0);
-        // d3.select(selection).selectAll("rect").attr("opacity", 0);
+      function translate(t) {
+        const point = pathNode.getPointAtLength(t * pathLength);
+        return `translate(${point.x}, ${point.y})`;
       }
 
       function transition(selection) {
@@ -245,19 +244,30 @@ export default function Orbits({ width, height }) {
           .duration(orbit.revolution)
           .ease(d3.easeLinear)
           .attrTween("transform", () => {
-            return function (t) {
-              const point = pathNode.getPointAtLength(t * pathLength);
-              return `translate(${point.x}, ${point.y})`;
+            return (t) => {
+              let it = initialT(orbit, planet);
+              let total = t + it;
+              if (total > 1) {
+                total = total - 1;
+              }
+              return translate(total);
             };
           })
           .on("end", () => transition(selection));
       }
-      setTimeout(() => {
-        transition(self);
-      }, newPlanetAfter);
-      setTimeout(() => {
-        hideText(self);
-      }, hideTextAfter);
+      function initialT(orbit, planet) {
+        return orbit.i * 0.2 + planet.i / orbit.planets.length;
+      }
+      d3.select(self)
+        .attr("opacity", 1)
+        .attr("transform", translate(initialT(orbit, planet)));
+      transition(self);
+
+      // setTimeout(() => {
+      // }, newPlanetAfter);
+      // setTimeout(() => {
+      //   hideText(self);
+      // }, hideTextAfter);
     });
 
     // add a clip path
