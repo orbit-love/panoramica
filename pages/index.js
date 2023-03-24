@@ -15,17 +15,13 @@ export default function Index() {
     height: null,
     width: null,
   });
-  // const [scrollTop, setScrollTop] = useState(0);
   const [fix, setFix] = useState(false);
 
   useEffect(() => {
     const handleScroll = (event) => {
-      // setScrollTop(window.scrollY);
       const containerHeight = containerRef.current.offsetHeight - 78;
       const newFix = window.scrollY >= containerHeight;
-      // if (fix !== newFix) {
       setFix(newFix);
-      // }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -58,7 +54,7 @@ export default function Index() {
 
   const fixClass = fix ? "pl-64 mt-24" : "";
   return (
-    <div>
+    <>
       <Head />
       <Header fix={fix} />
       <Stars />
@@ -87,6 +83,6 @@ export default function Index() {
         </div>
       </div>
       <Footer />
-    </div>
+    </>
   );
 }

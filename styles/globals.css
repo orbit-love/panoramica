@@ -138,7 +138,7 @@ a.anchor {
 }
 
 canvas {
-  position: absolute;
+  position: fixed;
   inset: 0;
   /* background: hsl(0, 0%, 15%); */
   background: #0f0a25;
