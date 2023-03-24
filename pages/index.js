@@ -8,6 +8,15 @@ import Intro from "content/intro.mdx";
 import Model from "content/model.mdx";
 import OrbitLevels from "content/orbit-levels.mdx";
 import Stars from "components/stars";
+import {
+  Link,
+  Button,
+  Element,
+  Events,
+  animateScroll as scroll,
+  scrollSpy,
+  scroller,
+} from "react-scroll";
 
 export default function Index() {
   const containerRef = useRef();
@@ -15,6 +24,25 @@ export default function Index() {
     height: null,
     width: null,
   });
+  // const [scrollTop, setScrollTop] = useState(0);
+  const [fix, setFix] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = (event) => {
+      // setScrollTop(window.scrollY);
+      const containerHeight = containerRef.current.clientHeight - 100;
+      const newFix = window.scrollY >= containerHeight;
+      // if (fix !== newFix) {
+      setFix(newFix);
+      // }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -37,10 +65,11 @@ export default function Index() {
     };
   }, [setDimensions]);
 
+  const fixClass = fix ? "pl-64 mt-24" : "";
   return (
-    <>
+    <div>
       <Head />
-      <Header />
+      <Header fix={fix} />
       <Stars />
       <div
         ref={containerRef}
@@ -50,22 +79,23 @@ export default function Index() {
         <Orbits width={dimensions.width} height={dimensions.height} />
       </div>
       <div className="flex py-3 px-9 pt-10 pb-20 bg-white md:space-x-16">
-        <Sidebar />
-        <div className="w-full">
-          <a className="anchor" id="introduction"></a>
-          <h1 className="mb-6 text-4xl font-bold">
-            Product adoption: it takes a community
-          </h1>
-          <Intro />
-          <div className="my-12"></div>
-          <a className="anchor" id="model"></a>
-          <Model />
-          <div className="my-12"></div>
-          <a className="anchor" id="orbit-levels"></a>
-          <OrbitLevels />
+        <Sidebar fix={fix} />
+        <div className={`${fixClass} flex flex-col space-y-10 w-full`}>
+          <section className="anchor" id="introduction">
+            <h1 className="mb-6 text-4xl font-bold">
+              Build a high-gravity community
+            </h1>
+            <Intro />
+          </section>
+          <section id="model">
+            <Model />
+          </section>
+          <section id="orbit-levels">
+            <OrbitLevels />
+          </section>
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 }

@@ -31,6 +31,7 @@
     "react-minimal-side-navigation": "^1.9.2",
     "react-modal": "^3.14.4",
     "react-responsive-carousel": "^3.2.23",
+    "react-scroll": "^1.8.9",
     "react-scroll-motion": "^0.2.6",
     "react-transition-group": "^4.4.2",
     "remark-gfm": "^3.0.1"

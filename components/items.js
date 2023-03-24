@@ -7,18 +7,18 @@
 export const items = [
   {
     title: "Introduction",
-    itemId: "#introduction",
+    itemId: "introduction",
   },
   {
     title: "How the model works",
-    itemId: "#model",
+    itemId: "model",
   },
   {
     title: "Orbit levels",
-    itemId: "#orbit-levels",
+    itemId: "orbit-levels",
   },
   {
     title: "Pockets",
-    itemId: "#pockets",
+    itemId: "pockets",
   },
 ];

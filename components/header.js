@@ -7,15 +7,19 @@ import headerLogo from "public/header_logo.svg";
 import Link from "next/link";
 import MobileNav from "./mobile_nav";
 
-export default function Header() {
+export default function Header({ fix }) {
   const [active, setActive] = useState(false);
   const handleClick = () => {
     setActive(!active);
   };
 
+  const fixClass = fix ? "fixed top-0 left-0 bg-[#0F0A25]" : "block bg-none";
+
   return (
     <div>
-      <nav className="flex items-center py-4 px-8 w-full whitespace-nowrap bg-none">
+      <nav
+        className={`${fixClass} flex items-center py-4 px-8 w-full whitespace-nowrap`}
+      >
         <div>
           <button
             className="inline-flex justify-center p-3 mr-1 ml-auto w-10 text-white rounded outline-none hover:text-white hover:bg-slate-700 md:hidden"
