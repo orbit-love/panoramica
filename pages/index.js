@@ -52,7 +52,7 @@ export default function Index() {
     };
   }, [setDimensions]);
 
-  const fixClass = fix ? "pl-64 mt-24" : "";
+  const fixClass = fix ? "md:pl-64 mt-24" : "";
   return (
     <>
       <Head />
