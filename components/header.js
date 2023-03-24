@@ -13,7 +13,7 @@ export default function Header({ fix }) {
     setActive(!active);
   };
 
-  const fixClass = fix ? "fixed top-0 left-0 bg-[#0F0A25]" : "block bg-none";
+  const fixClass = fix ? "fixed top-0 left-0 bg-[#0F0A25]" : "block";
 
   return (
     <div>

@@ -8,15 +8,6 @@ import Intro from "content/intro.mdx";
 import Model from "content/model.mdx";
 import OrbitLevels from "content/orbit-levels.mdx";
 import Stars from "components/stars";
-import {
-  Link,
-  Button,
-  Element,
-  Events,
-  animateScroll as scroll,
-  scrollSpy,
-  scroller,
-} from "react-scroll";
 
 export default function Index() {
   const containerRef = useRef();
@@ -30,7 +21,7 @@ export default function Index() {
   useEffect(() => {
     const handleScroll = (event) => {
       // setScrollTop(window.scrollY);
-      const containerHeight = containerRef.current.clientHeight - 100;
+      const containerHeight = containerRef.current.offsetHeight - 78;
       const newFix = window.scrollY >= containerHeight;
       // if (fix !== newFix) {
       setFix(newFix);
