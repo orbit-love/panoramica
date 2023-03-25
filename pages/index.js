@@ -83,14 +83,14 @@ export default function Index() {
           <section id="orbit-levels" className="pb-12">
             <OrbitLevels />
           </section>
+          <section id="stages" className="pb-12">
+            <Stages />
+          </section>
           <section id="pockets" className="pb-12">
             <Pockets />
           </section>
           <section id="assignment" className="pb-12">
             <Assignment />
-          </section>
-          <section id="stages" className="pb-12">
-            <Stages />
           </section>
           <div className="my-24"></div>
         </div>
