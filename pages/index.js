@@ -8,6 +8,7 @@ import Intro from "content/intro.mdx";
 import Gravity from "content/gravity.mdx";
 import OrbitLevels from "content/orbit-levels.mdx";
 import Pockets from "content/pockets.mdx";
+import Assignment from "content/assignment.mdx";
 import Stars from "components/stars";
 
 export default function Index() {
@@ -84,6 +85,10 @@ export default function Index() {
           <section id="pockets" className="pb-12">
             <Pockets />
           </section>
+          <section id="assignment" className="pb-12">
+            <Assignment />
+          </section>
+          <div className="my-24"></div>
         </div>
       </div>
       <Footer />

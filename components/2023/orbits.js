@@ -6,17 +6,18 @@ export default function Orbits({ width, height }) {
   const svgRef = useRef();
 
   useEffect(() => {
+    // don't do anything until width and height are established
     if (!width || !height) {
       return;
     }
     const svg = d3.select(svgRef.current);
+    // short circuit, comment out when developing
+    // this also breaks resize
+    if (svg.selectAll("*").size() > 0) {
+      return;
+    }
     // remove everything in there
     svg.selectAll("*").remove();
-
-    // const width = width || document.getElementById("container").clientWidth,
-    //   height = height || document.getElementById("container").clientHeight;
-    // const width = width || document.getElementById("container").clientWidth,
-    //   height = height || document.getElementById("container").clientHeight;
 
     // set the attributes
     svg.attr("width", width).attr("height", height);

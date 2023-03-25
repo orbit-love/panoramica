@@ -22,11 +22,15 @@ export const items = [
     itemId: "pockets",
   },
   {
-    title: "Love",
-    itemId: "love",
+    title: "Assignment",
+    itemId: "assignment",
   },
-  {
-    title: "Reach",
-    itemId: "reach",
-  },
+  // {
+  //   title: "Love",
+  //   itemId: "love",
+  // },
+  // {
+  //   title: "Reach",
+  //   itemId: "reach",
+  // },
 ];
