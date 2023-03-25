@@ -25,6 +25,10 @@ export const items = [
     title: "Assignment",
     itemId: "assignment",
   },
+  {
+    title: "Stages",
+    itemId: "stages",
+  },
   // {
   //   title: "Love",
   //   itemId: "love",
