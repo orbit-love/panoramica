@@ -53,6 +53,14 @@ export default function Orbits({ width, height }) {
 
     // create orbit level rings on a 1-100 scale
     const levels = [
+      // {
+      //   size: 18,
+      //   name: "Leaders",
+      //   planets: [
+      //     { name: "Community Team", amount: "5" },
+      //     { name: "Developer Advocates", amount: "2" },
+      //   ],
+      // },
       {
         size: 30,
         name: "Advocates",
@@ -74,7 +82,7 @@ export default function Orbits({ width, height }) {
       },
       {
         size: 77,
-        name: "Users",
+        name: "Participants",
         planets: [
           { name: "Product Users", amount: "11k" },
           { name: "Discord Community", amount: "3k" },
@@ -302,14 +310,16 @@ export default function Orbits({ width, height }) {
       .attr("clip-path", "url(#clip-path-1)");
 
     // draw the text on the circle
-    svg
+    const text = svg
       .append("text")
       .attr("x", cx)
-      .attr("y", sunCy + 3) // push it down so it is in the middle of the circle
+      .attr("y", sunCy - 5) // push it down so it is in the middle of the circle
       .attr("fill", strokeColor)
       .attr("text-anchor", "middle")
-      .attr("font-weight", 700)
-      .text("Mission");
+      .attr("font-weight", 600);
+
+    text.append("tspan").text("Leaders +");
+    text.append("tspan").attr("dx", -70).attr("dy", 20).text("Mission");
   });
 
   return <svg ref={svgRef} style={{ width: "100%", height: "100%" }}></svg>;

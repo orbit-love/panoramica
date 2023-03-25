@@ -10,19 +10,23 @@ export const items = [
     itemId: "introduction",
   },
   {
-    title: "Love",
-    itemId: "love",
-  },
-  {
-    title: "Reach",
-    itemId: "reach",
+    title: "Gravity",
+    itemId: "gravity",
   },
   {
     title: "Orbit Levels",
     itemId: "orbit-levels",
   },
   {
-    title: "Gravity",
-    itemId: "gravity",
+    title: "Pockets",
+    itemId: "pockets",
+  },
+  {
+    title: "Love",
+    itemId: "love",
+  },
+  {
+    title: "Reach",
+    itemId: "reach",
   },
 ];

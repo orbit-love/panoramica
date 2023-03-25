@@ -5,8 +5,9 @@ import Header from "components/header";
 import Footer from "components/footer";
 import Sidebar from "components/sidebar";
 import Intro from "content/intro.mdx";
-import Model from "content/model.mdx";
+import Gravity from "content/gravity.mdx";
 import OrbitLevels from "content/orbit-levels.mdx";
+import Pockets from "content/pockets.mdx";
 import Stars from "components/stars";
 
 export default function Index() {
@@ -67,18 +68,21 @@ export default function Index() {
       </div>
       <div className="flex py-3 px-9 pt-10 pb-20 bg-white md:space-x-16">
         <Sidebar fix={fix} />
-        <div className={`${fixClass} flex flex-col space-y-10 w-full`}>
-          <section className="anchor" id="introduction">
+        <div className={`${fixClass} flex flex-col w-full`}>
+          <section className="anchor pb-12" id="introduction">
             <h1 className="mb-6 text-4xl font-bold">
               Build a high-gravity community
             </h1>
             <Intro />
           </section>
-          <section id="model">
-            <Model />
+          <section id="gravity" className="pb-12">
+            <Gravity />
           </section>
-          <section id="orbit-levels">
+          <section id="orbit-levels" className="pb-12">
             <OrbitLevels />
+          </section>
+          <section id="pockets" className="pb-12">
+            <Pockets />
           </section>
         </div>
       </div>
