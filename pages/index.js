@@ -64,7 +64,7 @@ export default function Index() {
       <div
         ref={containerRef}
         id="container"
-        style={{ height: "65vh", marginTop: "-80px" }}
+        style={{ height: "80vh", marginTop: "-80px" }}
       >
         <Orbits width={dimensions.width} height={dimensions.height} />
       </div>

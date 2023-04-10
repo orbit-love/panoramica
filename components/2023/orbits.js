@@ -1,6 +1,8 @@
 import * as d3 from "d3";
 import c from "components/2023/common";
 import React, { useEffect, useRef } from "react";
+import levelsData from "data/levels";
+import Simulation from "components/2023/simulation";
 
 export default function Orbits({ width, height }) {
   const svgRef = useRef();
@@ -14,7 +16,7 @@ export default function Orbits({ width, height }) {
     // short circuit, comment out when developing
     // this also breaks resize
     if (svg.selectAll("*").size() > 0) {
-      return;
+      // return;
     }
     // remove everything in there
     svg.selectAll("*").remove();
@@ -43,77 +45,27 @@ export default function Orbits({ width, height }) {
       .range([0, 100])
       .domain([1, 100]);
 
-    const ringOpacity = 0.5;
+    const ringOpacity = 0.8;
     const revolution = d3.scaleLinear().range([35000, 140000]).domain([1, 100]);
-    const planetSize = d3.scaleLinear().range([22, 17]).domain([1, 100]);
-    const fontSize = d3.scaleLinear().range([15, 11]).domain([1, 100]);
+    const planetSize = d3.scaleLinear().range([24, 17]).domain([1, 100]);
+    const fontSize = d3.scaleLinear().range([18, 12]).domain([1, 100]);
     const planetColor = d3
       .scaleLinear()
       .domain([0, 100])
       .range(["#F503EA", "#8F85FF"]);
 
-    // create orbit level rings on a 1-100 scale
-    const levels = [
-      // {
-      //   size: 18,
-      //   name: "Leaders",
-      //   planets: [
-      //     { name: "Community Team", amount: "5" },
-      //     { name: "Developer Advocates", amount: "2" },
-      //   ],
-      // },
-      {
-        size: 30,
-        name: "Advocates",
-        planets: [
-          { name: "Product Champions", amount: "50" },
-          { name: "Customer Council", amount: "35" },
-          { name: "Meetup Organizers", amount: "12" },
-        ],
-      },
-      {
-        size: 53,
-        name: "Contributors",
-        planets: [
-          { name: "Dev Conference", amount: "250" },
-          { name: "Beta Users", amount: "200" },
-          { name: "Code Contributors", amount: "80" },
-          { name: "Translators", amount: "25" },
-        ],
-      },
-      {
-        size: 77,
-        name: "Participants",
-        planets: [
-          { name: "Product Users", amount: "11k" },
-          { name: "Discord Community", amount: "3k" },
-          { name: "API Users", amount: "600" },
-        ],
-      },
-      {
-        size: 100,
-        name: "Explorers",
-        planets: [
-          { name: "Twitter Followers", amount: "40k" },
-          { name: "Blog Readers", amount: "30k" },
-          { name: "Newsletter Subscribers", amount: "25k" },
-        ],
-      },
-    ];
-
     // orbit level 1
-    const o1 = levels[0].size;
+    const o1 = levelsData[0].size;
 
     // the center where each orbit ellipse is placed
     const cx = width / 2;
     const cy = height / 2 - 90;
 
     // Define the orbits
-    const orbits = levels.map(({ name, size, planets }, i) => ({
+    const orbits = levelsData.map(({ name, size }, i) => ({
       i,
       cx,
       name,
-      planets,
       cy: cy + yOffset(size),
       rx: rx(size),
       ry: ry(size),
@@ -124,10 +76,10 @@ export default function Orbits({ width, height }) {
     }));
 
     // set the size of the sun
-    const sunRadius = rx(o1) / 3;
+    const sunRadius = ry(o1);
     const sunColor = "#FCFDFE";
     const strokeColor = c.backgroundColor;
-    const sunCy = cy - 5 - 15;
+    const sunCy = cy + 10;
 
     // put orbit level labels
     svg
@@ -159,125 +111,8 @@ export default function Orbits({ width, height }) {
       .attr("stroke-opacity", ringOpacity)
       .attr("stroke-width", 3);
 
-    const planets = [];
-    // reverse the array so the closest planets are drawn last and stay on top
-    orbits.reverse().forEach((orbit) => {
-      for (var i = 0; i < orbit.planets.length; i++) {
-        planets.push({ ...orbit.planets[i], orbit, i });
-      }
-    });
-
-    // Create a group for each planet
-    const planetGroup = svg
-      .selectAll("g.planet-group")
-      .data(planets)
-      .enter()
-      .append("g")
-      .attr("class", "planet-group")
-      .attr("opacity", 0);
-
-    // add a dark rectangle behind the text and the circle
-    planetGroup
-      .append("rect")
-      .attr("fill", strokeColor)
-      .attr("width", 130) // this isn't right for all text
-      .attr("height", (d) => d.orbit.fontSize * 2)
-      .attr("opacity", 0)
-      // don't let lines peek through between the planet and the text
-      .attr("x", (d) => d.orbit.planetSize - 10)
-      .attr("y", (d) => -d.orbit.fontSize);
-
-    // Draw a circle for each planet
-    planetGroup
-      .append("circle")
-      .attr("r", (d) => d.orbit.planetSize)
-      .attr("fill", (d) => d.orbit.planetColor)
-      .attr("stroke", strokeColor)
-      .attr("stroke-width", 3);
-
-    // Add the amount of people inside the planet
-    planetGroup
-      .append("text")
-      .attr("fill", "white")
-      .attr("text-anchor", "middle")
-      .attr("font-size", (d) => d.orbit.fontSize * 0.9)
-      .attr("font-weight", 500)
-      .attr("dx", (d) => 0)
-      .attr("dy", (d) => 5)
-      .text((d) => d.amount);
-
-    // Add the example text next to the planet
-    planetGroup
-      .append("text")
-      .attr("fill", (d) => d.orbit.planetColor)
-      .attr("text-anchor", "left")
-      .attr("font-size", (d) => d.orbit.fontSize)
-      .attr("font-weight", 500)
-      .attr("dx", (d) => d.orbit.planetSize + 4)
-      .attr("dy", 5)
-      .text((d) => d.name);
-
-    // Animate the planets
-    planetGroup.each(function (planet, i) {
-      const self = this;
-      const orbit = planet.orbit;
-      // Create an elliptical path using the SVG path A command
-      const pathData = `M ${orbit.cx - orbit.rx},${orbit.cy}
-        a ${orbit.rx} ${orbit.ry} 0 1 1 ${orbit.rx * 2},0,
-        a ${orbit.rx} ${orbit.ry} 0 1 1 ${orbit.rx * -2},0`;
-
-      const pathNode = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path"
-      );
-      pathNode.setAttribute("d", pathData);
-      const pathLength = pathNode.getTotalLength();
-
-      const startDelay = 0;
-      const baseDelay = 2500;
-      // spread the planets evenly amongst each ring
-      const newPlanetAfter =
-        1000 * orbit.i +
-        1 +
-        planet.i * (orbit.revolution / orbit.planets.length);
-
-      function translate(t) {
-        const point = pathNode.getPointAtLength(t * pathLength);
-        return `translate(${point.x}, ${point.y})`;
-      }
-
-      function transition(selection) {
-        d3.select(selection)
-          .attr("opacity", 1)
-          .transition()
-          .duration(orbit.revolution)
-          .ease(d3.easeLinear)
-          .attrTween("transform", () => {
-            return (t) => {
-              let it = initialT(orbit, planet);
-              let total = t + it;
-              if (total > 1) {
-                total = total - 1;
-              }
-              return translate(total);
-            };
-          })
-          .on("end", () => transition(selection));
-      }
-      function initialT(orbit, planet) {
-        return orbit.i * 0.2 + planet.i / orbit.planets.length;
-      }
-      d3.select(self)
-        .attr("opacity", 1)
-        .attr("transform", translate(initialT(orbit, planet)));
-      transition(self);
-
-      // setTimeout(() => {
-      // }, newPlanetAfter);
-      // setTimeout(() => {
-      //   hideText(self);
-      // }, hideTextAfter);
-    });
+    // Add the bodies
+    Simulation({ svg, orbits });
 
     // add a clip path
     svg
@@ -319,8 +154,8 @@ export default function Orbits({ width, height }) {
       .attr("text-anchor", "middle")
       .attr("font-weight", 600);
 
-    text.append("tspan").text("Leaders +");
-    text.append("tspan").attr("dx", -70).attr("dy", 20).text("Mission");
+    text.append("tspan").text("Mission").attr("dy", 10);
+    // text.append("tspan").attr("dx", -70).attr("dy", 20).text("Mission");
   });
 
   return <svg ref={svgRef} style={{ width: "100%", height: "100%" }}></svg>;
