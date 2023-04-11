@@ -10,7 +10,12 @@ export default function Simulation({ svg, orbits }) {
   // reverse the array so the closest bodies are drawn last and stay on top
   for (var i = 0; i < bodiesData.length; i++) {
     var bodyData = bodiesData[i];
-    bodies.push({ ...bodyData, orbit: orbits[bodyData.orbit - 1], i });
+    bodies.push({
+      ...bodyData,
+      orbit: orbits[bodyData.orbit - 1],
+      i,
+      t: bodyData.t || [0, 0],
+    });
   }
 
   // Create a group for each body
@@ -50,7 +55,9 @@ export default function Simulation({ svg, orbits }) {
     .attr("font-weight", 500)
     .attr("dx", (d) => 0)
     .attr("dy", (d) => 5)
-    .text((d) => d.amount);
+    .text((d) =>
+      typeof d.amount === "number" ? c.formatNumber(d.amount) : d.amount
+    );
 
   // Add the name of the body
   bodyGroup
@@ -63,9 +70,11 @@ export default function Simulation({ svg, orbits }) {
     .attr("dy", 5)
     .text((d) => d.name);
 
-  const counter = 0;
-  setInterval(() => {
+  function run() {
     bodyGroup.attr("opacity", (d, i) => {
+      if (typeof d.t !== "object") {
+        return;
+      }
       const [t0, t1] = d.t;
       if (counter >= t0 && (counter < t1 || !t1)) {
         return 1;
@@ -74,7 +83,11 @@ export default function Simulation({ svg, orbits }) {
       }
     });
     counter += 1;
-  }, 1000);
+  }
+
+  const counter = 0;
+  setInterval(run, 1000);
+  run();
 
   // Animate the bodies
   bodyGroup.each(function (body, i) {

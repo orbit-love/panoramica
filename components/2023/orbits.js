@@ -46,9 +46,9 @@ export default function Orbits({ width, height }) {
       .domain([1, 100]);
 
     const ringOpacity = 0.8;
-    const revolution = d3.scaleLinear().range([35000, 140000]).domain([1, 100]);
-    const planetSize = d3.scaleLinear().range([24, 17]).domain([1, 100]);
-    const fontSize = d3.scaleLinear().range([18, 12]).domain([1, 100]);
+    const revolution = d3.scaleLinear().range([70000, 280000]).domain([1, 100]);
+    const planetSize = d3.scaleLinear().range([21, 17]).domain([1, 100]);
+    const fontSize = d3.scaleLinear().range([15, 12]).domain([1, 100]);
     const planetColor = d3
       .scaleLinear()
       .domain([0, 100])
