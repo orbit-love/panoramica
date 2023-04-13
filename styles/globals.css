@@ -56,6 +56,10 @@ body .carousel.carousel-slider .control-arrow {
     #0f0a25;
 }
 
+svg .clickable {
+  cursor: pointer;
+}
+
 /* These four classes are necessary for the mobile-nav menu transition */
 .mobile-nav-enter {
   display: hidden;

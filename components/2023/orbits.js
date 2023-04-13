@@ -1,11 +1,13 @@
 import * as d3 from "d3";
 import c from "components/2023/common";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import levelsData from "data/levels";
 import Simulation from "components/2023/simulation";
+import Selection from "components/2023/selection";
 
 export default function Orbits({ width, height }) {
   const svgRef = useRef();
+  const [selection, setSelection] = useState(null);
 
   useEffect(() => {
     // don't do anything until width and height are established
@@ -15,11 +17,11 @@ export default function Orbits({ width, height }) {
     const svg = d3.select(svgRef.current);
     // short circuit, comment out when developing
     // this also breaks resize
-    if (svg.selectAll("*").size() > 0) {
-      // return;
-    }
+    // if (svg.selectAll("*").size() > 0) {
+    // return;
+    // }
     // remove everything in there
-    svg.selectAll("*").remove();
+    // svg.selectAll("*").remove();
 
     // set the attributes
     svg.attr("width", width).attr("height", height);
@@ -45,14 +47,8 @@ export default function Orbits({ width, height }) {
       .range([0, 100])
       .domain([1, 100]);
 
-    const ringOpacity = 0.8;
+    const ringOpacity = 0.7;
     const revolution = d3.scaleLinear().range([70000, 280000]).domain([1, 100]);
-    const planetSize = d3.scaleLinear().range([21, 17]).domain([1, 100]);
-    const fontSize = d3.scaleLinear().range([15, 12]).domain([1, 100]);
-    const planetColor = d3
-      .scaleLinear()
-      .domain([0, 100])
-      .range(["#F503EA", "#8F85FF"]);
 
     // orbit level 1
     const o1 = levelsData[0].size;
@@ -70,14 +66,11 @@ export default function Orbits({ width, height }) {
       rx: rx(size),
       ry: ry(size),
       revolution: revolution(size),
-      planetSize: planetSize(size),
-      planetColor: planetColor(size),
-      fontSize: fontSize(size),
     }));
 
     // set the size of the sun
-    const sunRadius = ry(o1);
-    const sunColor = "#FCFDFE";
+    const sunRadius = ry(o1) - 20;
+    const sunColor = c.whiteColor;
     const strokeColor = c.backgroundColor;
     const sunCy = cy + 10;
 
@@ -86,33 +79,41 @@ export default function Orbits({ width, height }) {
       .selectAll("text.orbit-label")
       .data(orbits)
       .join("text")
-      .attr("class", "orbit-label")
+      .attr("class", "orbit-label clickable")
       .attr("text-anchor", "middle")
       .attr("x", (d) => d.cx)
-      .attr("y", (d) => d.cy + d.ry + 25)
+      .attr("y", (d) => d.cy + d.ry + 30)
       .attr("font-size", 16)
       .attr("font-weight", 500)
       .attr("opacity", ringOpacity)
-      .attr("fill", (d) => d.planetColor)
-      .text((d) => d.name);
+      .attr("fill", c.neutralColor)
+      .text((d) => d.name)
+      .on("mouseover", function () {
+        d3.select(this).attr("opacity", 1);
+      })
+      .on("mouseout", function () {
+        d3.select(this).attr("opacity", ringOpacity);
+      })
+      .on("click", (_, d) => {
+        setSelection(d);
+      });
 
     // draw the orbits
     svg
       .selectAll("ellipse")
       .data(orbits)
       .join("ellipse")
-      .attr("stroke", (d) => d.planetColor)
-      .attr("stroke-dasharray", 1)
+      .attr("stroke", c.neutralColor)
       .attr("fill", "none")
       .attr("rx", (d) => d.rx)
       .attr("ry", (d) => d.ry)
       .attr("cx", (d) => d.cx)
       .attr("cy", (d) => d.cy)
-      .attr("stroke-opacity", ringOpacity)
-      .attr("stroke-width", 3);
+      .attr("stroke-opacity", ringOpacity - 0.3)
+      .attr("stroke-width", 2);
 
     // Add the bodies
-    Simulation({ svg, orbits });
+    Simulation({ svg, orbits, selection, setSelection });
 
     // add a clip path
     svg
@@ -127,27 +128,36 @@ export default function Orbits({ width, height }) {
     // draw the sun
     svg
       .append("circle")
-      .attr("fill", sunColor)
-      .attr("stroke", strokeColor)
-      .attr("stroke-width", 5)
-      .attr("r", sunRadius)
-      .attr("cx", cx)
-      .attr("cy", sunCy);
-
-    // draw a clipped yellow circle to cover the back of the ring
-    svg
-      .append("circle")
+      .attr("class", "clickable")
       .attr("fill", sunColor)
       .attr("stroke", strokeColor)
       .attr("stroke-width", 5)
       .attr("r", sunRadius)
       .attr("cx", cx)
       .attr("cy", sunCy)
-      .attr("clip-path", "url(#clip-path-1)");
+      .on("click", (_) => {
+        setSelection({ name: "Mission" });
+      });
+
+    // draw a clipped circle to cover the back of the ring
+    svg
+      .append("circle")
+      .attr("class", "clickable")
+      .attr("fill", sunColor)
+      .attr("stroke", strokeColor)
+      .attr("stroke-width", 5)
+      .attr("r", sunRadius)
+      .attr("cx", cx)
+      .attr("cy", sunCy)
+      .attr("clip-path", "url(#clip-path-1)")
+      .on("click", (_) => {
+        setSelection({ name: "Mission" });
+      });
 
     // draw the text on the circle
     const text = svg
       .append("text")
+      .attr("class", "pointer-events-none")
       .attr("x", cx)
       .attr("y", sunCy - 5) // push it down so it is in the middle of the circle
       .attr("fill", strokeColor)
@@ -156,7 +166,14 @@ export default function Orbits({ width, height }) {
 
     text.append("tspan").text("Mission").attr("dy", 10);
     // text.append("tspan").attr("dx", -70).attr("dy", 20).text("Mission");
-  });
+  }, [width, height]);
 
-  return <svg ref={svgRef} style={{ width: "100%", height: "100%" }}></svg>;
+  return (
+    <>
+      <div>
+        <svg ref={svgRef} style={{ width: "100%", height: "100%" }}></svg>
+      </div>
+      {selection && <Selection selection={selection} />}
+    </>
+  );
 }

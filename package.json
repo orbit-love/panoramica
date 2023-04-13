@@ -37,7 +37,7 @@
     "remark-gfm": "^3.0.1"
   },
   "devDependencies": {
-    "@faker-js/faker": "^6.1.2",
+    "@faker-js/faker": "^7.6.0",
     "@tailwindcss/typography": "^0.5.2",
     "autoprefixer": "^10.4.4",
     "eslint": "8.11.0",

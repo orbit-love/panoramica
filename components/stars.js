@@ -86,7 +86,8 @@ export default function Starscape({
 
     // Set up event handling
     window.addEventListener("resize", LOAD);
-    document.addEventListener("pointermove", UPDATE);
+    // remove effect for now while we figure out other effects
+    // document.addEventListener("pointermove", UPDATE);
     return () => {
       window.removeEventListener("resize", LOAD);
       document.removeEventListener("pointermove", UPDATE);

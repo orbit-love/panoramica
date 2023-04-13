@@ -2,12 +2,14 @@ import React from "react";
 import moment from "moment";
 import * as d3 from "d3";
 
+const whiteColor = "#e1e2e3";
 const orbitPink = "#EF04F3";
 const dotColor = "#ececec";
 const grayColor = "#67a";
 const dotColorFaded = grayColor;
 const hotColdColorRange = ["blue", orbitPink];
 const backgroundColor = "#0F0A25";
+const neutralColor = "#8F85FF";
 
 const orbitLevel = (weeks_active, orbits) => {
   if (weeks_active >= orbits[3]) {
@@ -47,9 +49,11 @@ const common = {
   dotColorFaded,
   backgroundColor,
   orbitPink,
+  neutralColor,
+  whiteColor,
   tracingColor: orbitPink,
   containerBackgroundClasses: `bg-[${backgroundColor}]`,
-  panelBackgroundClasses: "bg-white text-black w-72",
+  panelBackgroundClasses: "bg-violet-100 text-black w-72",
   radials: 360,
   animationDelay: 250,
 
@@ -149,6 +153,14 @@ const common = {
     return item
       ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol
       : "0";
+  },
+  initials: (name) => {
+    var [w0, w1] = name.split(" ");
+    if (w1) {
+      return w0.slice(0, 1) + w1.slice(0, 1);
+    } else {
+      return w0.slice(0, 2);
+    }
   },
 };
 

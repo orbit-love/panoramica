@@ -1,33 +1,20 @@
 import * as d3 from "d3";
 import c from "components/2023/common";
-import membersData from "data/members";
+import bodiesData from "data/bodies";
 
-export default function Simulation({ svg, orbits, selection, setSelection }) {
+export default function Simulation({ svg, orbits }) {
   const strokeColor = c.backgroundColor;
   const bodies = [];
-  const lowOpacity = 0.8;
-
-  const fontSize = d3.scaleLinear().range([15, 10]).domain([1, 4]);
-  const planetSize = d3.scaleLinear().range([24, 13]).domain([1, 4]);
-  const planetColor = d3
-    .scaleLinear()
-    .domain([1, 4])
-    .range(["#F503EA", "#B15AF8"]);
+  const lowOpacity = 0.0;
 
   // reverse the array so the closest bodies are drawn last and stay on top
-  for (var i = 0; i < membersData.length; i++) {
-    var bodyData = membersData[i];
-    var scale = d3.scaleLinear().range([0, 1]).domain([0, membersData.length]);
-    var position = scale(i);
+  for (var i = 0; i < bodiesData.length; i++) {
+    var bodyData = bodiesData[i];
     bodies.push({
       ...bodyData,
       orbit: orbits[bodyData.orbit - 1],
       i,
-      position,
-      planetSize: planetSize(bodyData.orbit),
-      planetColor: planetColor(bodyData.orbit),
-      fontSize: fontSize(bodyData.orbit),
-      initials: c.initials(bodyData.name),
+      t: bodyData.t || [0, 0],
     });
   }
 
@@ -37,70 +24,64 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     .data(bodies)
     .enter()
     .append("g")
-    .attr("class", "body-group clickable")
-    .attr("opacity", lowOpacity)
-    .on("mouseover", function () {
-      d3.select(this).attr("opacity", 1);
-    })
-    .on("mouseout", function () {
-      d3.select(this).attr("opacity", lowOpacity);
-    })
-    .on("click", (_, d) => {
-      setSelection(d);
-    });
+    .attr("class", "body-group")
+    .attr("opacity", lowOpacity);
 
   // add a dark rectangle behind the text and the circle
-  bodyGroup
-    .append("rect")
-    .attr("class", "clickable")
-    .attr("width", (d) => d.planetSize * 6) // this isn't right for all text
-    .attr("height", (d) => d.fontSize * 3)
-    .attr("opacity", 0) // invisible as its a click target
-    // don't let lines peek through between the body and the text
-    .attr("x", (d) => -d.planetSize)
-    .attr("y", (d) => -d.planetSize);
+  // bodyGroup
+  //   .append("rect")
+  //   .attr("fill", strokeColor)
+  //   .attr("width", 130) // this isn't right for all text
+  //   .attr("height", (d) => d.orbit.fontSize * 2)
+  //   .attr("opacity", 0)
+  //   // don't let lines peek through between the body and the text
+  //   .attr("x", (d) => d.orbit.planetSize - 10)
+  //   .attr("y", (d) => -d.orbit.fontSize);
 
   // Draw a circle for each body
   bodyGroup
     .append("circle")
-    .attr("r", (d) => d.planetSize)
-    .attr("fill", (d) => d.planetColor)
+    .attr("r", (d) => d.orbit.planetSize)
+    .attr("fill", (d) => d.orbit.planetColor)
     .attr("stroke", strokeColor)
     .attr("stroke-width", 3);
 
-  // Add the initials of people inside the body
+  // Add the amount of people inside the body
   bodyGroup
     .append("text")
-    .attr("fill", c.whiteColor)
+    .attr("fill", "white")
     .attr("text-anchor", "middle")
-    .attr("font-size", (d) => d.planetSize * 0.7)
+    .attr("font-size", (d) => d.orbit.fontSize * 0.9)
     .attr("font-weight", 500)
-    .attr("dy", (d) => d.planetSize / 4)
-    .text((d) => d.initials);
+    .attr("dx", (d) => 0)
+    .attr("dy", (d) => 5)
+    .text((d) =>
+      typeof d.amount === "number" ? c.formatNumber(d.amount) : d.amount
+    );
 
   // Add the name of the body
   bodyGroup
     .append("text")
-    .attr("fill", c.whiteColor)
+    .attr("fill", (d) => d.orbit.planetColor)
     .attr("text-anchor", "left")
-    .attr("font-size", (d) => d.fontSize)
-    .attr("font-weight", 400)
-    .attr("dx", (d) => d.planetSize + 4)
+    .attr("font-size", (d) => d.orbit.fontSize)
+    .attr("font-weight", 500)
+    .attr("dx", (d) => d.orbit.planetSize + 4)
     .attr("dy", 5)
     .text((d) => d.name);
 
   function run() {
-    // bodyGroup.attr("opacity", (d, i) => {
-    //   if (typeof d.t !== "object") {
-    //     return;
-    //   }
-    //   const [t0, t1] = d.t;
-    //   if (counter >= t0 && (counter < t1 || !t1)) {
-    //     return 1;
-    //   } else {
-    //     return lowOpacity;
-    //   }
-    // });
+    bodyGroup.attr("opacity", (d, i) => {
+      if (typeof d.t !== "object") {
+        return;
+      }
+      const [t0, t1] = d.t;
+      if (counter >= t0 && (counter < t1 || !t1)) {
+        return 1;
+      } else {
+        return lowOpacity;
+      }
+    });
     counter += 1;
   }
 
