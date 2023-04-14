@@ -17,14 +17,17 @@ export default function Orbits({ width, height }) {
     const svg = d3.select(svgRef.current);
     // short circuit, comment out when developing
     // this also breaks resize
-    // if (svg.selectAll("*").size() > 0) {
-    // return;
-    // }
+    if (svg.selectAll("*").size() > 0) {
+      return;
+    }
     // remove everything in there
-    // svg.selectAll("*").remove();
+    svg.selectAll("*").remove();
 
     // set the attributes
     svg.attr("width", width).attr("height", height);
+
+    // when the svg is clicked, reset the selection
+    svg.on("click", () => setSelection(null));
 
     // create a scale for the orbit x radius
     const rx = d3
@@ -51,21 +54,22 @@ export default function Orbits({ width, height }) {
     const revolution = d3.scaleLinear().range([70000, 280000]).domain([1, 100]);
 
     // orbit level 1
-    const o1 = levelsData[0].size;
+    const o1 = levelsData[0].distance;
 
     // the center where each orbit ellipse is placed
     const cx = width / 2;
     const cy = height / 2 - 90;
 
     // Define the orbits
-    const orbits = levelsData.map(({ name, size }, i) => ({
+    const orbits = levelsData.map(({ name, distance }, i) => ({
       i,
       cx,
       name,
-      cy: cy + yOffset(size),
-      rx: rx(size),
-      ry: ry(size),
-      revolution: revolution(size),
+      distance,
+      cy: cy + yOffset(distance),
+      rx: rx(distance),
+      ry: ry(distance),
+      revolution: revolution(distance),
     }));
 
     // set the size of the sun
@@ -94,7 +98,8 @@ export default function Orbits({ width, height }) {
       .on("mouseout", function () {
         d3.select(this).attr("opacity", ringOpacity);
       })
-      .on("click", (_, d) => {
+      .on("click", (e, d) => {
+        e.stopPropagation();
         setSelection(d);
       });
 
@@ -135,7 +140,8 @@ export default function Orbits({ width, height }) {
       .attr("r", sunRadius)
       .attr("cx", cx)
       .attr("cy", sunCy)
-      .on("click", (_) => {
+      .on("click", (e) => {
+        e.stopPropagation();
         setSelection({ name: "Mission" });
       });
 
@@ -150,7 +156,8 @@ export default function Orbits({ width, height }) {
       .attr("cx", cx)
       .attr("cy", sunCy)
       .attr("clip-path", "url(#clip-path-1)")
-      .on("click", (_) => {
+      .on("click", (e) => {
+        e.stopPropagation();
         setSelection({ name: "Mission" });
       });
 
@@ -173,7 +180,7 @@ export default function Orbits({ width, height }) {
       <div>
         <svg ref={svgRef} style={{ width: "100%", height: "100%" }}></svg>
       </div>
-      {selection && <Selection selection={selection} />}
+      <Selection selection={selection} />
     </>
   );
 }

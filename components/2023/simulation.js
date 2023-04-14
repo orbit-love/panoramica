@@ -45,7 +45,8 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     .on("mouseout", function () {
       d3.select(this).attr("opacity", lowOpacity);
     })
-    .on("click", (_, d) => {
+    .on("click", (e, d) => {
+      e.stopPropagation();
       setSelection(d);
     });
 
