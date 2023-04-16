@@ -20,10 +20,10 @@ export default function Selection({ selection }) {
   }
 
   return (
-    <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-3 py-4 space-y-6 pointer-events-none">
+    <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-6 pointer-events-none">
       {markup && (
-        <div className={`${c.panelBackgroundClasses} bg-opacity-80 rounded`}>
-          <div className="flex relative flex-col py-3 px-4 pointer-events-auto">
+        <div className={`bg-opacity-80 w-80 bg-indigo-100 rounded`}>
+          <div className="flex relative flex-col pt-4 px-5 pb-6 pointer-events-auto">
             {markup}
           </div>
         </div>

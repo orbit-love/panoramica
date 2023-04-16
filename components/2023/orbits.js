@@ -27,7 +27,7 @@ export default function Orbits({ width, height }) {
     svg.attr("width", width).attr("height", height);
 
     // when the svg is clicked, reset the selection
-    svg.on("click", () => setSelection({}));
+    svg.on("click", () => setSelection(null));
 
     // create a scale for the orbit x radius
     const rx = d3
