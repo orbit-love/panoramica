@@ -57,6 +57,10 @@ function orbitsFactory(width, height) {
   }));
 }
 
+function clearSelection(svg) {
+  svg.selectAll(".show-me").attr("opacity", 0);
+}
+
 export default function Orbits({ width, height }) {
   const svgRef = useRef();
   const [selection, setSelection] = useState(null);
@@ -79,7 +83,10 @@ export default function Orbits({ width, height }) {
     svg.attr("width", width).attr("height", height);
 
     // when the svg is clicked, reset the selection
-    svg.on("click", () => setSelection(null));
+    svg.on("click", function () {
+      clearSelection(svg);
+      setSelection(null);
+    });
   }, [width, height]);
 
   useEffect(() => {
@@ -119,6 +126,7 @@ export default function Orbits({ width, height }) {
       .text((d) => d.name)
       .on("click", (e, d) => {
         e.stopPropagation();
+        clearSelection(svg);
         setSelection(d);
       });
 
@@ -173,6 +181,7 @@ export default function Orbits({ width, height }) {
       .attr("cy", sunCy)
       .on("click", (e) => {
         e.stopPropagation();
+        clearSelection(svg);
         setSelection({ name: "Mission" });
       });
 
@@ -191,6 +200,7 @@ export default function Orbits({ width, height }) {
       .attr("clip-path", "url(#clip-path-1)")
       .on("click", (e) => {
         e.stopPropagation();
+        clearSelection(svg);
         setSelection({ name: "Mission" });
       });
 
