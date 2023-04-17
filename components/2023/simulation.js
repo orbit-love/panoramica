@@ -5,9 +5,8 @@ import membersData from "data/members";
 export default function Simulation({ svg, orbits, selection, setSelection }) {
   const strokeColor = c.backgroundColor;
   const bodies = [];
-  const lowOpacity = 0.8;
 
-  const fontSize = d3.scaleLinear().range([15, 10]).domain([1, 4]);
+  const fontSize = d3.scaleLinear().range([16, 12]).domain([1, 4]);
   const planetSize = d3.scaleLinear().range([24, 13]).domain([1, 4]);
   const planetColor = d3
     .scaleLinear()
@@ -17,18 +16,28 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
   // reverse the array so the closest bodies are drawn last and stay on top
   for (var i = 0; i < membersData.length; i++) {
     var bodyData = membersData[i];
-    var scale = d3.scaleLinear().range([0, 1]).domain([0, membersData.length]);
-    var position = scale(i);
+    var positionScale = d3
+      .scaleLinear()
+      .range([0, 1])
+      .domain([0, membersData.length]);
     bodies.push({
       ...bodyData,
       orbit: orbits[bodyData.orbit - 1],
+      level: bodyData.orbit,
       i,
-      position,
+      position: positionScale(i),
       planetSize: planetSize(bodyData.orbit),
       planetColor: planetColor(bodyData.orbit),
       fontSize: fontSize(bodyData.orbit),
       initials: c.initials(bodyData.name),
     });
+  }
+
+  function onClick(e, d) {
+    e.stopPropagation();
+    setSelection(d);
+    svg.selectAll(".show-me").attr("opacity", 0);
+    d3.select(this.parentNode).selectAll(".show-me").attr("opacity", 1);
   }
 
   // Create a group for each body
@@ -37,55 +46,39 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     .data(bodies)
     .enter()
     .append("g")
-    .attr("class", "body-group clickable")
-    .attr("opacity", lowOpacity)
-    .on("mouseover", function () {
-      d3.select(this).attr("opacity", 1);
-    })
-    .on("mouseout", function () {
-      d3.select(this).attr("opacity", lowOpacity);
-    })
-    .on("click", (e, d) => {
-      e.stopPropagation();
-      setSelection(d);
-    });
-
-  // add a dark rectangle behind the text and the circle
-  bodyGroup
-    .append("rect")
-    .attr("class", "clickable")
-    .attr("width", (d) => d.planetSize * 6) // this isn't right for all text
-    .attr("height", (d) => d.fontSize * 3)
-    .attr("opacity", 0) // invisible as its a click target
-    // don't let lines peek through between the body and the text
-    .attr("x", (d) => -d.planetSize)
-    .attr("y", (d) => -d.planetSize);
+    .attr("class", "body-group");
 
   // Draw a circle for each body
   bodyGroup
     .append("circle")
+    .attr("class", "clickable")
     .attr("r", (d) => d.planetSize)
     .attr("fill", (d) => d.planetColor)
     .attr("stroke", strokeColor)
-    .attr("stroke-width", 3);
+    .attr("stroke-width", 3)
+    .on("click", onClick);
 
   // Add the initials of people inside the body
   bodyGroup
     .append("text")
+    .attr("class", "clickable")
     .attr("fill", c.whiteColor)
     .attr("text-anchor", "middle")
     .attr("font-size", (d) => d.planetSize * 0.7)
     .attr("font-weight", 500)
     .attr("dy", (d) => d.planetSize / 4)
-    .text((d) => d.initials);
+    .text((d) => d.initials)
+    .on("click", onClick);
 
   // Add the name of the body
   bodyGroup
     .append("text")
-    .attr("fill", c.whiteColor)
+    .attr("class", "show-me")
+    .attr("fill", c.selectedColor)
+    .attr("opacity", (d) => (selection && selection.name === d.name ? 1 : 0))
     .attr("text-anchor", "left")
     .attr("font-size", (d) => d.fontSize)
-    .attr("font-weight", 400)
+    .attr("font-weight", 300)
     .attr("dx", (d) => d.planetSize + 4)
     .attr("dy", 5)
     .text((d) => d.name);
@@ -132,7 +125,6 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
 
     function transition(selection) {
       d3.select(selection)
-        // .attr("opacity", 1)
         .transition()
         .duration(orbit.revolution)
         .ease(d3.easeLinear)

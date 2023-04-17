@@ -10,6 +10,7 @@ const dotColorFaded = grayColor;
 const hotColdColorRange = ["blue", orbitPink];
 const backgroundColor = "#0F0A25";
 const neutralColor = "#8F85FF";
+const selectedColor = "#FFF87B";
 
 const orbitLevel = (weeks_active, orbits) => {
   if (weeks_active >= orbits[3]) {
@@ -51,6 +52,7 @@ const common = {
   orbitPink,
   neutralColor,
   whiteColor,
+  selectedColor,
   tracingColor: orbitPink,
   containerBackgroundClasses: `bg-[${backgroundColor}]`,
   panelBackgroundClasses: "bg-violet-100 text-black w-72",

@@ -5,6 +5,58 @@ import levelsData from "data/levels";
 import Simulation from "components/2023/simulation";
 import Selection from "components/2023/selection";
 
+function rxFactory(width) {
+  return d3
+    .scalePow()
+    .exponent(0.7)
+    .range([0, width / 2 - 100])
+    .domain([5, 100]);
+}
+
+// create a scale for the orbit y radius
+function ryFactory(height) {
+  return d3
+    .scalePow()
+    .exponent(1)
+    .range([0, height / 3])
+    .domain([0, 100]);
+}
+
+function cxFactory(width) {
+  return width / 2;
+}
+function cyFactory(height) {
+  return height / 2 - 90;
+}
+
+function orbitsFactory(width, height) {
+  // create a scale for the orbit x radius
+  const rx = rxFactory(width);
+  // create a scale for the orbit y radius
+  const ry = ryFactory(height);
+  // the center where each orbit ellipse is placed
+  const cx = cxFactory(width);
+  const cy = cyFactory(height);
+
+  // tighten up the orbits at the top
+  const yOffset = d3.scalePow().exponent(1.0).range([0, 100]).domain([1, 100]);
+  // how fast bodies move in orbit
+  const revolution = d3.scaleLinear().range([70000, 280000]).domain([1, 100]);
+
+  // Define the orbits
+  return levelsData.map(({ name, distance, description }, i) => ({
+    i,
+    cx,
+    name,
+    distance,
+    description,
+    cy: cy + yOffset(distance),
+    rx: rx(distance),
+    ry: ry(distance),
+    revolution: revolution(distance),
+  }));
+}
+
 export default function Orbits({ width, height }) {
   const svgRef = useRef();
   const [selection, setSelection] = useState(null);
@@ -28,55 +80,25 @@ export default function Orbits({ width, height }) {
 
     // when the svg is clicked, reset the selection
     svg.on("click", () => setSelection(null));
+  }, [width, height]);
 
-    // create a scale for the orbit x radius
-    const rx = d3
-      .scalePow()
-      .exponent(0.7)
-      .range([0, width / 2 - 100])
-      .domain([5, 100]);
+  useEffect(() => {
+    // don't do anything until width and height are established
+    if (!width || !height) {
+      return;
+    }
 
-    // create a scale for the orbit y radius
-    const ry = d3
-      .scalePow()
-      .exponent(1)
-      .range([0, height / 3])
-      .domain([0, 100]);
+    const svg = d3.select(svgRef.current);
+    const ry = ryFactory(height);
 
-    // tighten up the orbits at the top
-    const yOffset = d3
-      .scalePow()
-      .exponent(1.0)
-      .range([0, 100])
-      .domain([1, 100]);
+    const cx = cxFactory(width);
+    const cy = cyFactory(height);
 
+    // constants that don't depend on width and height
     const ringOpacity = 0.7;
-    const revolution = d3.scaleLinear().range([70000, 280000]).domain([1, 100]);
 
-    // orbit level 1
-    const o1 = levelsData[0].distance;
-
-    // the center where each orbit ellipse is placed
-    const cx = width / 2;
-    const cy = height / 2 - 90;
-
-    // Define the orbits
-    const orbits = levelsData.map(({ name, distance }, i) => ({
-      i,
-      cx,
-      name,
-      distance,
-      cy: cy + yOffset(distance),
-      rx: rx(distance),
-      ry: ry(distance),
-      revolution: revolution(distance),
-    }));
-
-    // set the size of the sun
-    const sunRadius = ry(o1) - 20;
-    const sunColor = c.whiteColor;
-    const strokeColor = c.backgroundColor;
-    const sunCy = cy + 10;
+    // get the orbits
+    const orbits = orbitsFactory(width, height);
 
     // put orbit level labels
     svg
@@ -88,16 +110,13 @@ export default function Orbits({ width, height }) {
       .attr("x", (d) => d.cx)
       .attr("y", (d) => d.cy + d.ry + 30)
       .attr("font-size", 16)
-      .attr("font-weight", 500)
-      .attr("opacity", ringOpacity)
-      .attr("fill", c.neutralColor)
+      .attr("font-weight", 400)
+      .attr("fill", (d) =>
+        selection && selection.name === d.name
+          ? c.selectedColor
+          : c.neutralColor
+      )
       .text((d) => d.name)
-      .on("mouseover", function () {
-        d3.select(this).attr("opacity", 1);
-      })
-      .on("mouseout", function () {
-        d3.select(this).attr("opacity", ringOpacity);
-      })
       .on("click", (e, d) => {
         e.stopPropagation();
         setSelection(d);
@@ -108,7 +127,11 @@ export default function Orbits({ width, height }) {
       .selectAll("ellipse")
       .data(orbits)
       .join("ellipse")
-      .attr("stroke", c.neutralColor)
+      .attr("stroke", (d) =>
+        selection && selection.name === d.name
+          ? c.selectedColor
+          : c.neutralColor
+      )
       .attr("fill", "none")
       .attr("rx", (d) => d.rx)
       .attr("ry", (d) => d.ry)
@@ -117,8 +140,14 @@ export default function Orbits({ width, height }) {
       .attr("stroke-opacity", ringOpacity - 0.3)
       .attr("stroke-width", 2);
 
-    // Add the bodies
-    Simulation({ svg, orbits, selection, setSelection });
+    // orbit level 1
+    const o1 = levelsData[0].distance;
+
+    // set the size of the sun
+    const sunRadius = ry(o1) - 20;
+    const sunColor = c.whiteColor;
+    const strokeColor = c.backgroundColor;
+    const sunCy = cy + 10;
 
     // add a clip path
     svg
@@ -134,8 +163,10 @@ export default function Orbits({ width, height }) {
     svg
       .append("circle")
       .attr("class", "clickable")
-      .attr("fill", sunColor)
       .attr("stroke", strokeColor)
+      .attr("fill", (_) =>
+        selection && selection.name === "Mission" ? c.selectedColor : sunColor
+      )
       .attr("stroke-width", 5)
       .attr("r", sunRadius)
       .attr("cx", cx)
@@ -149,7 +180,9 @@ export default function Orbits({ width, height }) {
     svg
       .append("circle")
       .attr("class", "clickable")
-      .attr("fill", sunColor)
+      .attr("fill", (_) =>
+        selection && selection.name === "Mission" ? c.selectedColor : sunColor
+      )
       .attr("stroke", strokeColor)
       .attr("stroke-width", 5)
       .attr("r", sunRadius)
@@ -172,13 +205,29 @@ export default function Orbits({ width, height }) {
       .attr("font-weight", 600);
 
     text.append("tspan").text("Mission").attr("dy", 10);
-    // text.append("tspan").attr("dx", -70).attr("dy", 20).text("Mission");
+  }, [width, height, selection, setSelection]);
+
+  // draw the simulation last so that the bodies are on top
+  useEffect(() => {
+    // don't do anything if width and height aren't specified yet
+    if (!width || !height) {
+      return;
+    }
+
+    const svg = d3.select(svgRef.current);
+    const orbits = orbitsFactory(width, height);
+    // Add the bodies
+    Simulation({ svg, orbits, selection, setSelection });
   }, [width, height]);
 
   return (
     <>
       <div>
-        <svg ref={svgRef} style={{ width: "100%", height: "100%" }}></svg>
+        <svg
+          className="unselectable"
+          ref={svgRef}
+          style={{ width: "100%", height: "100%" }}
+        ></svg>
       </div>
       <Selection selection={selection} />
     </>
