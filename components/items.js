@@ -17,14 +17,14 @@ export const items = [
     title: "Orbit Levels",
     itemId: "orbit-levels",
   },
-  // {
-  //   title: "Stages",
-  //   itemId: "stages",
-  // },
-  // {
-  //   title: "Pockets",
-  //   itemId: "pockets",
-  // },
+  {
+    title: "Love",
+    itemId: "love",
+  },
+  {
+    title: "Reach",
+    itemId: "reach",
+  },
   // {
   //   title: "Assignment",
   //   itemId: "assignment",

@@ -7,9 +7,9 @@ import Sidebar from "components/sidebar";
 import Intro from "content/intro.mdx";
 import Gravity from "content/gravity.mdx";
 import OrbitLevels from "content/orbit-levels.mdx";
-import Pockets from "content/pockets.mdx";
-import Assignment from "content/assignment.mdx";
-import Stages from "content/stages.mdx";
+// import Pockets from "content/pockets.mdx";
+import Reach from "content/reach.mdx";
+import Love from "content/love.mdx";
 import Stars from "components/stars";
 
 export default function Index() {
@@ -84,15 +84,12 @@ export default function Index() {
           <section id="orbit-levels" className="pb-12">
             <OrbitLevels />
           </section>
-          {/* <section id="stages" className="pb-12">
-            <Stages />
-          </section> */}
-          {/* <section id="pockets" className="pb-12">
-            <Pockets />
+          <section id="love" className="pb-12">
+            <Love />
           </section>
-          <section id="assignment" className="pb-12">
-            <Assignment />
-          </section> */}
+          <section id="reach" className="pb-12">
+            <Reach />
+          </section>
           <div className="my-24"></div>
         </div>
       </div>
