@@ -7,7 +7,7 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
   const bodies = [];
 
   const fontSize = d3.scaleLinear().range([16, 12]).domain([1, 4]);
-  const planetSize = d3.scaleLinear().range([24, 13]).domain([1, 4]);
+  const planetSize = d3.scaleLinear().range([8, 24]).domain([1, 25]);
   const planetColor = d3
     .scaleLinear()
     .domain([1, 4])
@@ -26,7 +26,7 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
       level: bodyData.orbit,
       i,
       position: positionScale(i),
-      planetSize: planetSize(bodyData.orbit),
+      planetSize: planetSize(bodyData.reach),
       planetColor: planetColor(bodyData.orbit),
       fontSize: fontSize(bodyData.orbit),
       initials: c.initials(bodyData.name),
@@ -66,6 +66,7 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     .attr("text-anchor", "middle")
     .attr("font-size", (d) => d.planetSize * 0.7)
     .attr("font-weight", 500)
+    .attr("opacity", (d) => (d.planetSize > 10 ? 1 : 0))
     .attr("dy", (d) => d.planetSize / 4)
     .text((d) => d.initials)
     .on("click", onClick);
