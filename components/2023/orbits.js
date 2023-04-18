@@ -73,9 +73,9 @@ export default function Orbits({ width, height }) {
     const svg = d3.select(svgRef.current);
     // short circuit, comment out when developing
     // this also breaks resize
-    if (svg.selectAll("*").size() > 0) {
-      return;
-    }
+    // if (svg.selectAll("*").size() > 0) {
+    //   return;
+    // }
     // remove everything in there
     svg.selectAll("*").remove();
 
