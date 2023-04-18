@@ -6,7 +6,7 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
   const strokeColor = c.backgroundColor;
   const bodies = [];
 
-  const fontSize = d3.scaleLinear().range([16, 12]).domain([1, 4]);
+  const fontSize = d3.scaleLinear().range([12, 16]).domain([1, 25]);
   const planetSize = d3.scaleLinear().range([8, 24]).domain([1, 25]);
   const planetColor = d3
     .scaleLinear()
@@ -28,7 +28,7 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
       position: positionScale(i),
       planetSize: planetSize(bodyData.reach),
       planetColor: planetColor(bodyData.orbit),
-      fontSize: fontSize(bodyData.orbit),
+      fontSize: fontSize(bodyData.reach),
       initials: c.initials(bodyData.name),
     });
   }
