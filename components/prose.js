@@ -28,10 +28,10 @@ export default function Prose({ children }) {
   // ];
   const proseClasses = [
     "prose",
-    "prose-lg",
-    "prose-h2:text-3xl",
-    "prose-h3:text-2xl",
-    "prose-h4:text-xl",
+    // "prose-lg",
+    // "prose-h2:text-3xl",
+    // "prose-h3:text-2xl",
+    // "prose-h4:text-xl",
   ];
   return <div className={proseClasses.join(" ")}>{children}</div>;
 }

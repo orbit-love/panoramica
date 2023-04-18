@@ -115,7 +115,7 @@ export default function Orbits({ width, height }) {
       .attr("class", "orbit-label clickable")
       .attr("text-anchor", "middle")
       .attr("x", (d) => d.cx)
-      .attr("y", (d) => d.cy + d.ry + 30)
+      .attr("y", (d) => d.cy + d.ry + 24)
       .attr("font-size", 16)
       .attr("font-weight", 400)
       .attr("fill", (d) =>

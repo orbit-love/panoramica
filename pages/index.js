@@ -65,7 +65,7 @@ export default function Index() {
         ref={containerRef}
         id="container"
         className="relative"
-        style={{ height: "80vh", marginTop: "-80px" }}
+        style={{ height: "80vh", marginTop: "-100px" }}
       >
         <Orbits width={dimensions.width} height={dimensions.height} />
       </div>
@@ -74,7 +74,7 @@ export default function Index() {
         <div className={`${fixClass} flex flex-col w-full`}>
           <section className="anchor pb-12" id="introduction">
             <h1 className="mb-6 text-4xl font-bold">
-              Build a high-gravity community
+              Build strong, scalable communities
             </h1>
             <Intro />
           </section>
