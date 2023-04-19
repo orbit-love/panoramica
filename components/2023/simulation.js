@@ -13,6 +13,8 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     .domain([1, 4])
     .range(["#F503EA", "#B15AF8"]);
 
+  const planetOpacity = d3.scaleLinear().domain([0, 1]).range([0.2, 1]);
+
   // reverse the array so the closest bodies are drawn last and stay on top
   for (var i = 0; i < membersData.length; i++) {
     var bodyData = membersData[i];
@@ -27,7 +29,8 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
       i,
       position: positionScale(i),
       planetSize: planetSize(bodyData.reach),
-      planetColor: planetColor(bodyData.orbit),
+      planetColor: c.whiteColor,
+      planetOpacity: planetOpacity(bodyData.love),
       fontSize: fontSize(bodyData.reach),
       initials: c.initials(bodyData.name),
     });
@@ -37,7 +40,11 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     e.stopPropagation();
     setSelection(d);
     svg.selectAll(".show-me").attr("opacity", 0);
+    svg.selectAll(".planet").attr("fill", c.whiteColor);
     d3.select(this.parentNode).selectAll(".show-me").attr("opacity", 1);
+    d3.select(this.parentNode)
+      .selectAll(".planet")
+      .attr("fill", c.selectedColor);
   }
 
   // Create a group for each body
@@ -51,9 +58,12 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
   // Draw a circle for each body
   bodyGroup
     .append("circle")
-    .attr("class", "clickable")
+    .attr("class", "planet clickable")
     .attr("r", (d) => d.planetSize)
-    .attr("fill", (d) => d.planetColor)
+    .attr("fill", (d) =>
+      selection && selection.name === d.name ? c.selectedColor : c.whiteColor
+    )
+    .attr("opacity", (d) => d.planetOpacity)
     .attr("stroke", strokeColor)
     .attr("stroke-width", 3)
     .on("click", onClick);
@@ -62,7 +72,7 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
   bodyGroup
     .append("text")
     .attr("class", "clickable")
-    .attr("fill", c.whiteColor)
+    // .attr("fill", c.whiteColor)
     .attr("text-anchor", "middle")
     .attr("font-size", (d) => d.planetSize * 0.7)
     .attr("font-weight", 500)
@@ -79,7 +89,7 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     .attr("opacity", (d) => (selection && selection.name === d.name ? 1 : 0))
     .attr("text-anchor", "left")
     .attr("font-size", (d) => d.fontSize)
-    .attr("font-weight", 300)
+    .attr("font-weight", 400)
     .attr("dx", (d) => d.planetSize + 4)
     .attr("dy", 5)
     .text((d) => d.name);
