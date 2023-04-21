@@ -58,8 +58,7 @@ function orbitsFactory(width, height) {
 }
 
 function clearSelection(svg) {
-  svg.selectAll(".show-me").attr("opacity", 0);
-  svg.selectAll(".planet").attr("fill", c.whiteColor);
+  svg.selectAll(".show-me").attr("visibility", "hidden");
 }
 
 export default function Orbits({ width, height }) {

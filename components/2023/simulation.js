@@ -6,14 +6,18 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
   const strokeColor = c.backgroundColor;
   const bodies = [];
 
-  const fontSize = d3.scaleLinear().range([12, 16]).domain([1, 25]);
-  const planetSize = d3.scaleLinear().range([8, 24]).domain([1, 25]);
+  const fontSize = d3.scaleLinear().range([11, 15]).domain([0, 2]);
+  const planetSizes = {
+    1: d3.scaleLinear().range([16, 24]).domain([0, 2]),
+    2: d3.scaleLinear().range([12, 20]).domain([0, 2]),
+    3: d3.scaleLinear().range([8, 16]).domain([0, 2]),
+    4: d3.scaleLinear().range([6, 12]).domain([0, 2]),
+  };
+
   const planetColor = d3
     .scaleLinear()
-    .domain([1, 4])
-    .range(["#F503EA", "#B15AF8"]);
-
-  const planetOpacity = d3.scaleLinear().domain([0, 1]).range([0.2, 1]);
+    .domain([0, 1, 2])
+    .range(["#1a237e", "#e1bee7", "#ec407a"]);
 
   // reverse the array so the closest bodies are drawn last and stay on top
   for (var i = 0; i < membersData.length; i++) {
@@ -28,9 +32,8 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
       level: bodyData.orbit,
       i,
       position: positionScale(i),
-      planetSize: planetSize(bodyData.reach),
-      planetColor: c.whiteColor,
-      planetOpacity: planetOpacity(bodyData.love),
+      planetSize: planetSizes[bodyData.orbit](bodyData.reach),
+      planetColor: planetColor(bodyData.love),
       fontSize: fontSize(bodyData.reach),
       initials: c.initials(bodyData.name),
     });
@@ -39,12 +42,14 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
   function onClick(e, d) {
     e.stopPropagation();
     setSelection(d);
-    svg.selectAll(".show-me").attr("opacity", 0);
-    svg.selectAll(".planet").attr("fill", c.whiteColor);
-    d3.select(this.parentNode).selectAll(".show-me").attr("opacity", 1);
+    svg.selectAll(".show-me").attr("visibility", "hidden");
+    // svg.selectAll(".planet").attr("stroke", strokeColor);
     d3.select(this.parentNode)
-      .selectAll(".planet")
-      .attr("fill", c.selectedColor);
+      .selectAll(".show-me")
+      .attr("visibility", "visible");
+    // d3.select(this.parentNode)
+    //   .selectAll(".planet")
+    //   .attr("stroke", c.selectedColor);
   }
 
   // Create a group for each body
@@ -60,10 +65,7 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     .append("circle")
     .attr("class", "planet clickable")
     .attr("r", (d) => d.planetSize)
-    .attr("fill", (d) =>
-      selection && selection.name === d.name ? c.selectedColor : c.whiteColor
-    )
-    .attr("opacity", (d) => d.planetOpacity)
+    .attr("fill", (d) => d.planetColor)
     .attr("stroke", strokeColor)
     .attr("stroke-width", 3)
     .on("click", onClick);
@@ -72,11 +74,10 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
   bodyGroup
     .append("text")
     .attr("class", "clickable")
-    // .attr("fill", c.whiteColor)
     .attr("text-anchor", "middle")
     .attr("font-size", (d) => d.planetSize * 0.7)
     .attr("font-weight", 500)
-    .attr("opacity", (d) => (d.planetSize > 10 ? 1 : 0))
+    .attr("visibility", (d) => (d.planetSize > 10 ? "visible" : "hidden"))
     .attr("dy", (d) => d.planetSize / 4)
     .text((d) => d.initials)
     .on("click", onClick);
@@ -86,7 +87,9 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     .append("text")
     .attr("class", "show-me")
     .attr("fill", c.selectedColor)
-    .attr("opacity", (d) => (selection && selection.name === d.name ? 1 : 0))
+    .attr("visibility", (d) =>
+      selection && selection.name === d.name ? "visible" : "hidden"
+    )
     .attr("text-anchor", "left")
     .attr("font-size", (d) => d.fontSize)
     .attr("font-weight", 400)
