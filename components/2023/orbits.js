@@ -184,18 +184,6 @@ export default function Orbits({ width, height }) {
         clearSelection(svg);
         setSelection({ name: "Mission" });
       });
-
-    // draw the text on the circle
-    const text = svg
-      .append("text")
-      .attr("class", "pointer-events-none")
-      .attr("x", cx)
-      .attr("y", sunCy - 5) // push it down so it is in the middle of the circle
-      .attr("fill", strokeColor)
-      .attr("text-anchor", "middle")
-      .attr("font-weight", 600);
-
-    text.append("tspan").text("Mission").attr("dy", 10);
   }, [width, height, selection, setSelection]);
 
   // draw the simulation last so that the bodies are on top
@@ -241,6 +229,18 @@ export default function Orbits({ width, height }) {
         clearSelection(svg);
         setSelection({ name: "Mission" });
       });
+
+    // draw the text on the circle
+    const text = svg
+      .append("text")
+      .attr("class", "pointer-events-none")
+      .attr("x", cx)
+      .attr("y", sunCy - 5) // push it down so it is in the middle of the circle
+      .attr("fill", strokeColor)
+      .attr("text-anchor", "middle")
+      .attr("font-weight", 600);
+
+    text.append("tspan").text("Mission").attr("dy", 10);
   }, [height]);
 
   return (
