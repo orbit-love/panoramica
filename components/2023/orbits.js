@@ -241,7 +241,7 @@ export default function Orbits({ width, height }) {
       .attr("font-weight", 600);
 
     text.append("tspan").text("Mission").attr("dy", 10);
-  }, [height]);
+  }, [width, height, selection, setSelection]);
 
   return (
     <>

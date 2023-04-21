@@ -47,8 +47,8 @@ const members = function () {
     array.push({
       name: faker.name.firstName() + " " + faker.name.lastName(),
       orbit: levelScale(rand()),
-      love: loveScale(rand()),
-      reach: reachScale(rand()),
+      love: Math.round(loveScale(rand()) * 10) / 10,
+      reach: Math.round(reachScale(rand()) * 10) / 10,
     });
   }
   return array;
