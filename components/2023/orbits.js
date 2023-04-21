@@ -185,25 +185,6 @@ export default function Orbits({ width, height }) {
         setSelection({ name: "Mission" });
       });
 
-    // draw a clipped circle to cover the back of the ring
-    svg
-      .append("circle")
-      .attr("class", "clickable")
-      .attr("fill", (_) =>
-        selection && selection.name === "Mission" ? c.selectedColor : sunColor
-      )
-      .attr("stroke", strokeColor)
-      .attr("stroke-width", 5)
-      .attr("r", sunRadius)
-      .attr("cx", cx)
-      .attr("cy", sunCy)
-      .attr("clip-path", "url(#clip-path-1)")
-      .on("click", (e) => {
-        e.stopPropagation();
-        clearSelection(svg);
-        setSelection({ name: "Mission" });
-      });
-
     // draw the text on the circle
     const text = svg
       .append("text")
@@ -229,6 +210,38 @@ export default function Orbits({ width, height }) {
     // Add the bodies
     Simulation({ svg, orbits, selection, setSelection });
   }, [width, height]);
+
+  // this is its own effect because it has to come after the simulation
+  // so the sun in the back is on top of the planets
+  useEffect(() => {
+    const svg = d3.select(svgRef.current);
+    const ry = ryFactory(height);
+    const cx = cxFactory(width);
+    const cy = cyFactory(height);
+    const o1 = levelsData[0].distance;
+    const sunRadius = ry(o1) - 20;
+    const sunColor = c.whiteColor;
+    const strokeColor = c.backgroundColor;
+    const sunCy = cy + 10;
+    // draw a clipped circle to cover the back of the ring
+    svg
+      .append("circle")
+      .attr("class", "clickable")
+      .attr("fill", (_) =>
+        selection && selection.name === "Mission" ? c.selectedColor : sunColor
+      )
+      .attr("stroke", strokeColor)
+      .attr("stroke-width", 5)
+      .attr("r", sunRadius)
+      .attr("cx", cx)
+      .attr("cy", sunCy)
+      .attr("clip-path", "url(#clip-path-1)")
+      .on("click", (e) => {
+        e.stopPropagation();
+        clearSelection(svg);
+        setSelection({ name: "Mission" });
+      });
+  }, [height]);
 
   return (
     <>

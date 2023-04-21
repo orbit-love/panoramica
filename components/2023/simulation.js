@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import c from "components/2023/common";
-import membersData from "data/members";
+import membersGen from "data/membersGen";
 
 export default function Simulation({ svg, orbits, selection, setSelection }) {
   const strokeColor = c.backgroundColor;
@@ -19,7 +19,7 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     .domain([0, 1, 2])
     .range(["#1a237e", "#e1bee7", "#ec407a"]);
 
-  // reverse the array so the closest bodies are drawn last and stay on top
+  const membersData = membersGen();
   for (var i = 0; i < membersData.length; i++) {
     var bodyData = membersData[i];
     var positionScale = d3
@@ -75,9 +75,9 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     .append("text")
     .attr("class", "clickable")
     .attr("text-anchor", "middle")
-    .attr("font-size", (d) => d.planetSize * 0.7)
+    .attr("font-size", (d) => d.planetSize * 0.6)
     .attr("font-weight", 500)
-    .attr("visibility", (d) => (d.planetSize > 10 ? "visible" : "hidden"))
+    .attr("visibility", (d) => (d.planetSize > 12 ? "visible" : "hidden"))
     .attr("dy", (d) => d.planetSize / 4)
     .text((d) => d.initials)
     .on("click", onClick);
