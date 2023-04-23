@@ -41,6 +41,7 @@ const members = function () {
   var levelScale = d3.scaleQuantize().range([1, 2, 3, 4]).domain([0, 1]);
   var array = [];
   var seed = cyrb128("apples");
+  faker.seed(seed);
   var rand = mulberry32(seed[0]);
 
   for (var i = 0; i < number; i++) {
