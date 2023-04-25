@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import gsap from "gsap";
 
 export default function Starscape({
-  densityRatio = 0.5,
+  densityRatio = 0.3,
   sizeLimit = 5,
   defaultAlpha = 0.2,
   scaleLimit = 2,
