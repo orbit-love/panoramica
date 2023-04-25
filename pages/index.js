@@ -7,9 +7,10 @@ import Sidebar from "components/sidebar";
 import Intro from "content/intro.mdx";
 import Gravity from "content/gravity.mdx";
 import OrbitLevels from "content/orbit-levels.mdx";
-// import Pockets from "content/pockets.mdx";
 import Reach from "content/reach.mdx";
 import Love from "content/love.mdx";
+import Conclusion from "content/conclusion.mdx";
+import Funnel from "content/funnel.mdx";
 import Stars from "components/stars";
 
 export default function Index() {
@@ -69,9 +70,9 @@ export default function Index() {
       >
         <Orbits width={dimensions.width} height={dimensions.height} />
       </div>
-      <div className="flex py-3 px-9 pt-10 pb-20 bg-white md:space-x-16">
+      <div className="flex py-3 px-9 pt-10 pb-20 bg-white">
         <Sidebar fix={fix} />
-        <div className={`${fixClass} flex flex-col w-full`}>
+        <div className={`${fixClass} flex flex-col`}>
           <section className="anchor pb-12" id="introduction">
             <h1 className="mb-6 text-4xl font-bold">
               Build strong, scalable communities
@@ -90,7 +91,15 @@ export default function Index() {
           <section id="reach" className="pb-12">
             <Reach />
           </section>
-          <div className="my-24"></div>
+          <section id="conclusion" className="pb-12">
+            <Conclusion />
+          </section>
+          <section id="funnel" className="prose pb-12">
+            <div className="px-6 py-8 bg-violet-50">
+              <Funnel />
+            </div>
+          </section>
+          <div className="my-8"></div>
         </div>
       </div>
       <Footer />
