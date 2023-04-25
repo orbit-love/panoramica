@@ -12,6 +12,7 @@ import Love from "content/love.mdx";
 import Conclusion from "content/conclusion.mdx";
 import Funnel from "content/funnel.mdx";
 import Stars from "components/stars";
+import { useRouter } from "next/router";
 
 export default function Index() {
   const containerRef = useRef();
@@ -20,6 +21,7 @@ export default function Index() {
     width: null,
   });
   const [fix, setFix] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = (event) => {
@@ -57,6 +59,20 @@ export default function Index() {
   }, [setDimensions]);
 
   const fixClass = fix ? "md:pl-64 mt-24" : "";
+
+  const queryKey = "n";
+  var number =
+    router.query[queryKey] ||
+    router.asPath.match(new RegExp(`[&?]${queryKey}=(.*)(&|$)`));
+  if (typeof number === "object") {
+    if (number !== null) {
+      number = parseInt(number[1]);
+    }
+  }
+  if (!number) {
+    number = 100;
+  }
+
   return (
     <>
       <Head />
@@ -68,7 +84,11 @@ export default function Index() {
         className="relative"
         style={{ height: "80vh", marginTop: "-100px" }}
       >
-        <Orbits width={dimensions.width} height={dimensions.height} />
+        <Orbits
+          width={dimensions.width}
+          height={dimensions.height}
+          number={number}
+        />
       </div>
       <div className="flex py-3 px-9 pt-10 pb-20 bg-white">
         <Sidebar fix={fix} />

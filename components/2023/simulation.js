@@ -2,7 +2,13 @@ import * as d3 from "d3";
 import c from "components/2023/common";
 import membersGen from "data/membersGen";
 
-export default function Simulation({ svg, orbits, selection, setSelection }) {
+export default function Simulation({
+  svg,
+  orbits,
+  selection,
+  setSelection,
+  number,
+}) {
   const strokeColor = c.backgroundColor;
   const bodies = [];
 
@@ -10,8 +16,8 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
   const planetSizes = {
     1: d3.scaleLinear().range([16, 24]).domain([0, 2]),
     2: d3.scaleLinear().range([12, 20]).domain([0, 2]),
-    3: d3.scaleLinear().range([8, 16]).domain([0, 2]),
-    4: d3.scaleLinear().range([6, 12]).domain([0, 2]),
+    3: d3.scaleLinear().range([10, 16]).domain([0, 2]),
+    4: d3.scaleLinear().range([4, 10]).domain([0, 2]),
   };
 
   const planetColor = d3
@@ -19,39 +25,38 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     .domain([0, 1, 2])
     .range(["#1a237e", "#e1bee7", "#ec407a"]);
 
-  const membersData = membersGen();
-  for (var i = 0; i < membersData.length; i++) {
-    var bodyData = membersData[i];
-    var positionScale = d3
-      .scaleLinear()
-      .range([0, 1])
-      .domain([0, membersData.length]);
-    bodies.push({
-      ...bodyData,
-      orbit: orbits[bodyData.orbit - 1],
-      level: bodyData.orbit,
-      i,
-      position: positionScale(i),
-      planetSize: planetSizes[bodyData.orbit](bodyData.reach),
-      planetColor: planetColor(bodyData.love),
-      fontSize: fontSize(bodyData.reach),
-      initials: c.initials(bodyData.name),
-    });
-  }
-
   function onClick(e, d) {
     e.stopPropagation();
     setSelection(d);
     svg.selectAll(".show-me").attr("visibility", "hidden");
-    // svg.selectAll(".planet").attr("stroke", strokeColor);
     d3.select(this.parentNode)
       .selectAll(".show-me")
       .attr("visibility", "visible");
-    // d3.select(this.parentNode)
-    //   .selectAll(".planet")
-    //   .attr("stroke", c.selectedColor);
+    d3.select(this.parentNode).raise();
   }
 
+  const levels = membersGen({ number });
+  levels.forEach((level) => {
+    var membersData = level.members;
+    for (var i = 0; i < membersData.length; i++) {
+      var member = membersData[i];
+      var positionScale = d3
+        .scaleLinear()
+        .range([0, 1])
+        .domain([0, membersData.length]);
+      bodies.push({
+        ...member,
+        i,
+        orbit: orbits[level.number - 1],
+        level: level.number,
+        position: positionScale(i),
+        planetSize: planetSizes[member.orbit](member.reach),
+        planetColor: planetColor(member.love),
+        fontSize: fontSize(member.reach),
+        initials: c.initials(member.name),
+      });
+    }
+  });
   // Create a group for each body
   const bodyGroup = svg
     .selectAll("g.body-group")
@@ -95,20 +100,9 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
     .attr("font-weight", 400)
     .attr("dx", (d) => d.planetSize + 4)
     .attr("dy", 5)
-    .text((d) => d.name);
+    .text((d) => d.name.split(" ")[0]);
 
   function run() {
-    // bodyGroup.attr("opacity", (d, i) => {
-    //   if (typeof d.t !== "object") {
-    //     return;
-    //   }
-    //   const [t0, t1] = d.t;
-    //   if (counter >= t0 && (counter < t1 || !t1)) {
-    //     return 1;
-    //   } else {
-    //     return lowOpacity;
-    //   }
-    // });
     counter += 1;
   }
 
@@ -120,10 +114,12 @@ export default function Simulation({ svg, orbits, selection, setSelection }) {
   bodyGroup.each(function (body, i) {
     const self = this;
     const orbit = body.orbit;
+    var rx = orbit.rx;
+    var ry = orbit.ry;
     // Create an elliptical path using the SVG path A command
-    const pathData = `M ${orbit.cx - orbit.rx},${orbit.cy}
-        a ${orbit.rx} ${orbit.ry} 0 1 1 ${orbit.rx * 2},0,
-        a ${orbit.rx} ${orbit.ry} 0 1 1 ${orbit.rx * -2},0`;
+    const pathData = `M ${orbit.cx - rx},${orbit.cy}
+        a ${rx} ${ry} 0 1 1 ${rx * 2},0,
+        a ${rx} ${ry} 0 1 1 ${rx * -2},0`;
 
     const pathNode = document.createElementNS(
       "http://www.w3.org/2000/svg",

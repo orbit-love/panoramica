@@ -41,7 +41,11 @@ function orbitsFactory(width, height) {
   // tighten up the orbits at the top
   const yOffset = d3.scalePow().exponent(1.0).range([0, 100]).domain([1, 100]);
   // how fast bodies move in orbit
-  const revolution = d3.scaleLinear().range([70000, 280000]).domain([1, 100]);
+  const revolution = d3
+    .scalePow()
+    .exponent(2)
+    .range([15000, 700000])
+    .domain([1, 100]);
 
   // Define the orbits
   return levelsData.map(({ name, distance, description }, i) => ({
@@ -61,7 +65,7 @@ function clearSelection(svg) {
   svg.selectAll(".show-me").attr("visibility", "hidden");
 }
 
-export default function Orbits({ width, height }) {
+export default function Orbits({ width, height, number }) {
   const svgRef = useRef();
   const [selection, setSelection] = useState(null);
 
@@ -189,14 +193,14 @@ export default function Orbits({ width, height }) {
   // draw the simulation last so that the bodies are on top
   useEffect(() => {
     // don't do anything if width and height aren't specified yet
-    if (!width || !height) {
+    if (!width || !height || !number) {
       return;
     }
 
     const svg = d3.select(svgRef.current);
     const orbits = orbitsFactory(width, height);
     // Add the bodies
-    Simulation({ svg, orbits, selection, setSelection });
+    Simulation({ svg, orbits, selection, setSelection, number });
   }, [width, height]);
 
   // this is its own effect because it has to come after the simulation
