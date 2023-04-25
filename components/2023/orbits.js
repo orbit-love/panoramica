@@ -106,7 +106,7 @@ export default function Orbits({ width, height, number }) {
     const cy = cyFactory(height);
 
     // constants that don't depend on width and height
-    const ringOpacity = 0.7;
+    const ringOpacity = 0.6;
 
     // get the orbits
     const orbits = orbitsFactory(width, height);

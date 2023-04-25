@@ -110,12 +110,21 @@ export default function Simulation({
   setInterval(run, 1000);
   run();
 
+  var seed = c.cyrb128("apples");
+  var rand = c.mulberry32(seed[0]);
+
+  function fuzz(value, factor = 0.0) {
+    var r = rand();
+    var shift = r * value * factor;
+    return value + shift;
+  }
+
   // Animate the bodies
   bodyGroup.each(function (body, i) {
     const self = this;
     const orbit = body.orbit;
-    var rx = orbit.rx;
-    var ry = orbit.ry;
+    var rx = fuzz(orbit.rx);
+    var ry = fuzz(orbit.ry);
     // Create an elliptical path using the SVG path A command
     const pathData = `M ${orbit.cx - rx},${orbit.cy}
         a ${rx} ${ry} 0 1 1 ${rx * 2},0,
