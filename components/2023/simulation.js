@@ -17,9 +17,9 @@ export default function Simulation({
 
   const fontSize = d3.scaleLinear().range([11, 15]).domain([0, 2]);
   const planetSizes = {
-    1: d3.scaleLinear().range([15, 22]).domain([0, 2]),
-    2: d3.scaleLinear().range([11, 18]).domain([0, 2]),
-    3: d3.scaleLinear().range([9, 15]).domain([0, 2]),
+    1: d3.scaleLinear().range([13, 25]).domain([0, 2]),
+    2: d3.scaleLinear().range([10, 20]).domain([0, 2]),
+    3: d3.scaleLinear().range([8, 16]).domain([0, 2]),
     4: d3.scaleLinear().range([4, 9]).domain([0, 2]),
   };
 
