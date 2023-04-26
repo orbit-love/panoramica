@@ -70,7 +70,7 @@ export default function Index() {
     }
   }
   if (!number) {
-    number = 100;
+    number = 75;
   }
 
   return (
