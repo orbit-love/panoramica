@@ -2,6 +2,9 @@ import * as d3 from "d3";
 import c from "components/2023/common";
 import membersGen from "data/membersGen";
 
+var seed = c.cyrb128("apples");
+var rand = c.mulberry32(seed[0]);
+
 export default function Simulation({
   svg,
   orbits,
@@ -14,10 +17,10 @@ export default function Simulation({
 
   const fontSize = d3.scaleLinear().range([11, 15]).domain([0, 2]);
   const planetSizes = {
-    1: d3.scaleLinear().range([16, 24]).domain([0, 2]),
-    2: d3.scaleLinear().range([12, 20]).domain([0, 2]),
-    3: d3.scaleLinear().range([10, 16]).domain([0, 2]),
-    4: d3.scaleLinear().range([4, 10]).domain([0, 2]),
+    1: d3.scaleLinear().range([15, 22]).domain([0, 2]),
+    2: d3.scaleLinear().range([11, 18]).domain([0, 2]),
+    3: d3.scaleLinear().range([9, 15]).domain([0, 2]),
+    4: d3.scaleLinear().range([4, 9]).domain([0, 2]),
   };
 
   const planetColor = d3
@@ -49,7 +52,7 @@ export default function Simulation({
         i,
         orbit: orbits[level.number - 1],
         level: level.number,
-        position: positionScale(i),
+        position: fuzz(positionScale(i), 0.04),
         planetSize: planetSizes[member.orbit](member.reach),
         planetColor: planetColor(member.love),
         fontSize: fontSize(member.reach),
@@ -110,11 +113,8 @@ export default function Simulation({
   setInterval(run, 1000);
   run();
 
-  var seed = c.cyrb128("apples");
-  var rand = c.mulberry32(seed[0]);
-
-  function fuzz(value, factor = 0.0) {
-    var r = rand();
+  function fuzz(value, factor = 0.15) {
+    var r = rand() - 0.5;
     var shift = r * value * factor;
     return value + shift;
   }

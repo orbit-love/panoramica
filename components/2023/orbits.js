@@ -18,7 +18,7 @@ function ryFactory(height) {
   return d3
     .scalePow()
     .exponent(1)
-    .range([0, height / 3])
+    .range([0, height / 2.5])
     .domain([0, 100]);
 }
 
@@ -44,7 +44,7 @@ function orbitsFactory(width, height) {
   const revolution = d3
     .scalePow()
     .exponent(2)
-    .range([15000, 700000])
+    .range([100000, 600000])
     .domain([1, 100]);
 
   // Define the orbits
@@ -156,7 +156,7 @@ export default function Orbits({ width, height, number }) {
     const o1 = levelsData[0].distance;
 
     // set the size of the sun
-    const sunRadius = ry(o1) - 20;
+    const sunRadius = ry(o1) - 30;
     const sunColor = c.whiteColor;
     const strokeColor = c.backgroundColor;
     const sunCy = cy + 10;
@@ -211,7 +211,7 @@ export default function Orbits({ width, height, number }) {
     const cx = cxFactory(width);
     const cy = cyFactory(height);
     const o1 = levelsData[0].distance;
-    const sunRadius = ry(o1) - 20;
+    const sunRadius = ry(o1) - 30;
     const sunColor = c.whiteColor;
     const strokeColor = c.backgroundColor;
     const sunCy = cy + 10;
