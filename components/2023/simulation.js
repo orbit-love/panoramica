@@ -26,7 +26,8 @@ export default function Simulation({
   const planetColor = d3
     .scaleLinear()
     .domain([0, 1, 2])
-    .range(["#1a237e", "#e1bee7", "#ec407a"]);
+    // .range(["#1a237e", "#e1bee7", "#ec407a"]);
+    .range(["#312e81", "#c7d2fe", "#fff"]);
 
   function onClick(e, d) {
     e.stopPropagation();
