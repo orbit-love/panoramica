@@ -1,5 +1,4 @@
 import React from "react";
-import c from "components/2023/common";
 import Member from "components/2023/member_new";
 import OrbitLevel from "components/2023/orbit_level";
 import WelcomeCard from "content/cards/welcome.mdx";
@@ -20,7 +19,7 @@ export default function Selection({ selection }) {
   }
 
   return (
-    <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-6 pointer-events-none">
+    <>
       {markup && (
         <div className={`bg-opacity-80 w-80 bg-indigo-100 rounded`}>
           <div className="flex relative flex-col py-4 px-5 pointer-events-auto">
@@ -28,6 +27,6 @@ export default function Selection({ selection }) {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

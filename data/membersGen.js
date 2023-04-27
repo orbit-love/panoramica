@@ -3,7 +3,7 @@ import levelsData from "data/levels";
 import * as d3 from "d3";
 import c from "components/2023/common";
 
-const members = function ({ number = 50 }) {
+const members = function ({ number }) {
   var loveScale = d3.scaleLinear().range([0, 2]).domain([0, 1]);
   var reachScale = d3.scaleLinear().range([0, 2]).domain([0, 1]);
 

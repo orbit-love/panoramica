@@ -5,12 +5,28 @@ import membersGen from "data/membersGen";
 var seed = c.cyrb128("apples");
 var rand = c.mulberry32(seed[0]);
 
+function fuzz(value, factor = 0.15) {
+  var r = rand() - 0.5;
+  var shift = r * value * factor;
+  return value + shift;
+}
+
+function initialT(body) {
+  return body.position || 0;
+}
+
+function translate(t, pathNode, pathLength) {
+  const point = pathNode.getPointAtLength(t * pathLength);
+  return `translate(${point.x}, ${point.y})`;
+}
+
 export default function Simulation({
   svg,
   orbits,
   selection,
   setSelection,
   number,
+  animate,
 }) {
   const strokeColor = c.backgroundColor;
   const bodies = [];
@@ -39,8 +55,10 @@ export default function Simulation({
     d3.select(this.parentNode).raise();
   }
 
+  // add attributes to the bodies needed for rendering
   const levels = membersGen({ number });
   levels.forEach((level) => {
+    var orbit = orbits[level.number - 1];
     var membersData = level.members;
     for (var i = 0; i < membersData.length; i++) {
       var member = membersData[i];
@@ -51,7 +69,9 @@ export default function Simulation({
       bodies.push({
         ...member,
         i,
-        orbit: orbits[level.number - 1],
+        orbit,
+        rx: fuzz(orbit.rx),
+        ry: fuzz(orbit.ry),
         level: level.number,
         position: fuzz(positionScale(i), 0.04),
         planetSize: planetSizes[member.orbit](member.reach),
@@ -61,6 +81,7 @@ export default function Simulation({
       });
     }
   });
+
   // Create a group for each body
   const bodyGroup = svg
     .selectAll("g.body-group")
@@ -106,26 +127,9 @@ export default function Simulation({
     .attr("dy", 5)
     .text((d) => d.name.split(" ")[0]);
 
-  function run() {
-    counter += 1;
-  }
-
-  const counter = 0;
-  setInterval(run, 1000);
-  run();
-
-  function fuzz(value, factor = 0.15) {
-    var r = rand() - 0.5;
-    var shift = r * value * factor;
-    return value + shift;
-  }
-
-  // Animate the bodies
-  bodyGroup.each(function (body, i) {
-    const self = this;
-    const orbit = body.orbit;
-    var rx = fuzz(orbit.rx);
-    var ry = fuzz(orbit.ry);
+  var getPathNode = function (body, orbit) {
+    var rx = body.rx;
+    var ry = body.ry;
     // Create an elliptical path using the SVG path A command
     const pathData = `M ${orbit.cx - rx},${orbit.cy}
         a ${rx} ${ry} 0 1 1 ${rx * 2},0,
@@ -136,34 +140,48 @@ export default function Simulation({
       "path"
     );
     pathNode.setAttribute("d", pathData);
+    return pathNode;
+  };
+
+  // Draw the first position of the bodies
+  bodyGroup.each(function (body, i) {
+    var self = this;
+    const pathNode = getPathNode(body, body.orbit);
     const pathLength = pathNode.getTotalLength();
 
-    function translate(t) {
-      const point = pathNode.getPointAtLength(t * pathLength);
-      return `translate(${point.x}, ${point.y})`;
-    }
+    d3.select(self).attr(
+      "transform",
+      translate(initialT(body), pathNode, pathLength)
+    );
+  });
 
-    function transition(selection) {
-      d3.select(selection)
-        .transition()
-        .duration(orbit.revolution)
-        .ease(d3.easeLinear)
-        .attrTween("transform", () => {
-          return (t) => {
-            let it = initialT(body);
-            let total = t + it;
-            if (total > 1) {
-              total = total - 1;
-            }
-            return translate(total);
-          };
-        })
-        .on("end", () => transition(selection));
+  // do animations
+  function transition(selection, body, orbit) {
+    const pathNode = getPathNode(body, body.orbit);
+    const pathLength = pathNode.getTotalLength();
+    d3.select(selection)
+      .transition()
+      .duration(orbit.revolution)
+      .ease(d3.easeLinear)
+      .attrTween("transform", () => {
+        return (t) => {
+          let it = initialT(body);
+          let total = t + it;
+          if (total > 1) {
+            total = total - 1;
+          }
+          return translate(total, pathNode, pathLength);
+        };
+      })
+      .on("end", () => transition(selection, body, orbit));
+  }
+
+  // animate the bodies
+  bodyGroup.each(function (body, i) {
+    var self = this;
+    const orbit = body.orbit;
+    if (animate) {
+      transition(self, body, orbit);
     }
-    function initialT(body) {
-      return body.position || 0;
-    }
-    d3.select(self).attr("transform", translate(initialT(body)));
-    transition(self);
   });
 }
