@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useRef } from "react";
 import moment from "moment";
 import * as d3 from "d3";
 
@@ -195,6 +195,13 @@ const common = {
       t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
+  },
+  usePrevious: function (value) {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value; //assign the value of ref to the argument
+    }, [value]); //this code will run when the value of 'value' changes
+    return ref.current; //in the end, return the current ref value.
   },
 };
 

@@ -4,12 +4,12 @@ export default function Controls({ onPlay, onPause, onChangeSize }) {
   return (
     <div className={`bg-opacity-80 w-80 bg-indigo-100 rounded`}>
       <div className="flex relative py-4 px-5 pointer-events-auto">
-        {/* <button className="btn" onClick={onPlay}>
+        <button className="btn" onClick={onPlay}>
           Play
         </button>
         <button className="btn" onClick={onPause}>
           Pause
-        </button> */}
+        </button>
         <div className="mx-auto" />
         <button className="btn" onClick={onChangeSize.bind(25)}>
           25
