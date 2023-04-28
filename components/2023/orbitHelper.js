@@ -72,8 +72,11 @@ const helper = {
   resetEverything: function ({ svgRef, width, height, setSelection }) {
     var helper = this;
     const svg = d3.select(svgRef.current);
+    helper.stopAnimation({ svgRef });
     // remove everything in there
     svg.selectAll("*").remove();
+    svg.on("click", null);
+
     // set the attributes
     svg.attr("width", width).attr("height", height);
     // when the svg is clicked, reset the selection
@@ -233,20 +236,6 @@ const helper = {
       .text("Mission")
       .attr("dy", 10);
   },
-  runSimulation: function ({
-    svgRef,
-    width,
-    height,
-    selection,
-    setSelection,
-    number,
-    animate,
-  }) {
-    const svg = d3.select(svgRef.current);
-    const orbits = this.orbitsFactory(width, height);
-    // Add the bodies
-    this.drawMembers({ svg, orbits, selection, setSelection, number, animate });
-  },
 
   fuzz: function (value, factor = 0.15) {
     var r = rand() - 0.5;
@@ -257,29 +246,6 @@ const helper = {
   translate: function (t, pathNode, pathLength) {
     const point = pathNode.getPointAtLength(t * pathLength);
     return `translate(${point.x}, ${point.y})`;
-  },
-
-  // do animations
-  transition: function (selection, body, orbit) {
-    var helper = this;
-
-    const pathNode = helper.getPathNode(body, body.orbit);
-    const pathLength = pathNode.getTotalLength();
-    d3.select(selection)
-      .transition()
-      .duration(orbit.revolution)
-      .ease(d3.easeLinear)
-      .attrTween("transform", () => {
-        return (t) => {
-          let it = body.position;
-          let total = t + it;
-          if (total > 1) {
-            total = total - 1;
-          }
-          return helper.translate(total, pathNode, pathLength);
-        };
-      })
-      .on("end", () => transition(selection, body, orbit));
   },
 
   getPathNode: function (body, orbit) {
@@ -299,14 +265,18 @@ const helper = {
   },
 
   drawMembers: function ({
-    svg,
-    orbits,
+    svgRef,
+    width,
+    height,
+    number,
     selection,
     setSelection,
-    number,
-    animate,
   }) {
     var helper = this;
+
+    const svg = d3.select(svgRef.current);
+    const orbits = this.orbitsFactory(width, height);
+
     const strokeColor = c.backgroundColor;
     const bodies = [];
 
@@ -417,15 +387,52 @@ const helper = {
         helper.translate(body.position, pathNode, pathLength)
       );
     });
+  },
+  // do animations
+  transition: function (selection, body, orbit) {
+    var helper = this;
 
+    const pathNode = helper.getPathNode(body, body.orbit);
+    const pathLength = pathNode.getTotalLength();
+    d3.select(selection)
+      .transition()
+      .duration(orbit.revolution)
+      .ease(d3.easeLinear)
+      .attrTween("transform", () => {
+        return (t) => {
+          var element = d3.select(selection);
+          let initialT = body.position;
+          // var lastValue = parseFloat(element.attr("T")) || 0;
+          let total = t + initialT;
+          if (total > 1) {
+            total = total - 1;
+          }
+          // element.attr("T", total);
+          return helper.translate(total, pathNode, pathLength);
+        };
+      })
+      .on("end", () => helper.transition(selection, body, orbit));
+  },
+
+  startAnimation: function ({ svgRef }) {
+    var helper = this;
+    // avoid memory leaks by stopping any existing animations
+    // helper.stopAnimation({ svgRef });
+
+    const svg = d3.select(svgRef.current);
+    const bodyGroup = svg.selectAll("g.body-group");
     // animate the bodies
     bodyGroup.each(function (body, i) {
       var self = this;
       const orbit = body.orbit;
-      if (animate) {
-        helper.transition(self, body, orbit);
-      }
+      helper.transition(self, body, orbit);
+      bodyGroup;
+      // svg.selectAll("g.body-group").transition().duration(orbit.revolution);
     });
+  },
+  stopAnimation: function ({ svgRef }) {
+    const svg = d3.select(svgRef.current);
+    svg.selectAll("g.body-group").transition().duration(0);
   },
 };
 

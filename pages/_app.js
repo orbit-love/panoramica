@@ -36,6 +36,8 @@ import {
   faTire,
   faBoxCheck,
   faStairs,
+  faPause,
+  faPlay,
 } from "@fortawesome/pro-solid-svg-icons";
 
 // add to library
@@ -58,7 +60,9 @@ library.add(
   faBuildingColumns,
   faTire,
   faBoxCheck,
-  faStairs
+  faStairs,
+  faPause,
+  faPlay
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";

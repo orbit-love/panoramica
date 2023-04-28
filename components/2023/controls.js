@@ -1,24 +1,29 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function Controls({ onPlay, onPause, onChangeSize }) {
+export default function Controls({ animate, number, setNumber, setAnimate }) {
   return (
     <div className={`bg-opacity-80 w-80 bg-indigo-100 rounded`}>
       <div className="flex relative py-4 px-5 pointer-events-auto">
-        <button className="btn" onClick={onPlay}>
-          Play
-        </button>
-        <button className="btn" onClick={onPause}>
-          Pause
-        </button>
+        {animate && (
+          <button className="btn" onClick={() => setAnimate(false)}>
+            <FontAwesomeIcon icon="pause" className="text-lg" />
+          </button>
+        )}
+        {!animate && (
+          <button className="btn" onClick={() => setAnimate(true)}>
+            <FontAwesomeIcon icon="play" className="text-lg" />
+          </button>
+        )}
         <div className="mx-auto" />
-        <button className="btn" onClick={onChangeSize.bind(25)}>
-          25
+        <button className="btn" onClick={() => setNumber(25)}>
+          S
         </button>
-        <button className="btn" onClick={onChangeSize.bind(50)}>
-          50
+        <button className="btn" onClick={() => setNumber(50)}>
+          M
         </button>
-        <button className="btn" onClick={onChangeSize.bind(100)}>
-          100
+        <button className="btn" onClick={() => setNumber(100)}>
+          L
         </button>
       </div>
     </div>

@@ -17,31 +17,20 @@ export default function Orbits({ width, height, number, setNumber }) {
     function () {
       h.resetEverything({ svgRef, width, height, setSelection });
       h.drawOrbits({ svgRef, width, height, selection, setSelection });
-      h.runSimulation({
+      h.drawMembers({
         svgRef,
         width,
         height,
         selection,
         setSelection,
         number,
-        animate,
       });
       h.drawSun({ svgRef, width, height, selection, setSelection });
     },
-    [svgRef, width, height, selection, setSelection, animate, number]
+    [svgRef, width, height, selection, setSelection, number]
   );
 
-  const onPlay = function () {
-    setAnimate(true);
-  };
-  const onPause = function () {
-    setAnimate(false);
-  };
-  const onChangeSize = function () {
-    setNumber(this);
-  };
-
-  // rebuild if width, height, number, or selection change
+  // rebuild if width, height, or number change
   useEffect(() => {
     const svg = d3.select(svgRef.current);
     if (
@@ -61,6 +50,15 @@ export default function Orbits({ width, height, number, setNumber }) {
     h.drawSun({ svgRef, width, height, selection, setSelection });
   }, [width, height, selection]);
 
+  // if the animation changes
+  useEffect(() => {
+    if (animate) {
+      h.startAnimation({ svgRef });
+    } else {
+      h.stopAnimation({ svgRef });
+    }
+  }, [animate, number, width, height, prevNumber, prevWidth, prevHeight]);
+
   return (
     <>
       <div>
@@ -73,9 +71,10 @@ export default function Orbits({ width, height, number, setNumber }) {
       <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
         <Selection selection={selection} />
         <Controls
-          onPlay={onPlay}
-          onPause={onPause}
-          onChangeSize={onChangeSize}
+          animate={animate}
+          setAnimate={setAnimate}
+          number={number}
+          setNumber={setNumber}
         />
       </div>
     </>
