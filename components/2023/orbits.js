@@ -70,7 +70,7 @@ export default function Orbits({ width, height, number, setNumber }) {
           style={{ width: "100%", height: "100%" }}
         ></svg>
       </div>
-      <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-6 pointer-events-none">
+      <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
         <Selection selection={selection} />
         <Controls
           onPlay={onPlay}

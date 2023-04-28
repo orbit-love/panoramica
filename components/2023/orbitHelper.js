@@ -1,10 +1,14 @@
-import React from "react";
 import * as d3 from "d3";
 import c from "components/2023/common";
 import levelsData from "data/levels";
-import Simulation from "components/2023/simulation";
+import membersGen from "data/membersGen";
+
+var seed = c.cyrb128("apples");
+var rand = c.mulberry32(seed[0]);
 
 const helper = {
+  seed,
+  rand,
   rxFactory: function (width) {
     return d3
       .scalePow()
@@ -27,7 +31,6 @@ const helper = {
   cyFactory: function (height) {
     return height / 2 - 90;
   },
-
   orbitsFactory: function (width, height) {
     // create a scale for the orbit x radius
     const rx = this.rxFactory(width);
@@ -67,7 +70,7 @@ const helper = {
     svg.selectAll(".show-me").attr("visibility", "hidden");
   },
   resetEverything: function ({ svgRef, width, height, setSelection }) {
-    var self = this;
+    var helper = this;
     const svg = d3.select(svgRef.current);
     // remove everything in there
     svg.selectAll("*").remove();
@@ -76,13 +79,13 @@ const helper = {
     // when the svg is clicked, reset the selection
     // todo don't rebind
     svg.on("click", function () {
-      self.clearSelection(svg);
+      helper.clearSelection(svg);
       setSelection(null);
     });
   },
 
   drawOrbits: function ({ svgRef, width, height, selection, setSelection }) {
-    var self = this;
+    var helper = this;
 
     const svg = d3.select(svgRef.current);
     const ry = this.ryFactory(height);
@@ -115,7 +118,7 @@ const helper = {
       .text((d) => d.name)
       .on("click", (e, d) => {
         e.stopPropagation();
-        self.clearSelection(svg);
+        helper.clearSelection(svg);
         setSelection(d);
       });
 
@@ -174,12 +177,13 @@ const helper = {
       .attr("cy", sunCy)
       .on("click", (e) => {
         e.stopPropagation();
-        self.clearSelection(svg);
+        helper.clearSelection(svg);
         setSelection({ name: "Mission" });
       });
   },
 
   drawSun: function ({ svgRef, width, height, selection, setSelection }) {
+    var helper = this;
     const svg = d3.select(svgRef.current);
     const ry = this.ryFactory(height);
     const cx = this.cxFactory(width);
@@ -206,7 +210,7 @@ const helper = {
       .attr("clip-path", "url(#clip-path-1)")
       .on("click", (e) => {
         e.stopPropagation();
-        clearSelection(svg);
+        helper.clearSelection(svg);
         setSelection({ name: "Mission" });
       });
 
@@ -241,7 +245,187 @@ const helper = {
     const svg = d3.select(svgRef.current);
     const orbits = this.orbitsFactory(width, height);
     // Add the bodies
-    Simulation({ svg, orbits, selection, setSelection, number, animate });
+    this.drawMembers({ svg, orbits, selection, setSelection, number, animate });
+  },
+
+  fuzz: function (value, factor = 0.15) {
+    var r = rand() - 0.5;
+    var shift = r * value * factor;
+    return value + shift;
+  },
+
+  translate: function (t, pathNode, pathLength) {
+    const point = pathNode.getPointAtLength(t * pathLength);
+    return `translate(${point.x}, ${point.y})`;
+  },
+
+  // do animations
+  transition: function (selection, body, orbit) {
+    var helper = this;
+
+    const pathNode = helper.getPathNode(body, body.orbit);
+    const pathLength = pathNode.getTotalLength();
+    d3.select(selection)
+      .transition()
+      .duration(orbit.revolution)
+      .ease(d3.easeLinear)
+      .attrTween("transform", () => {
+        return (t) => {
+          let it = body.position;
+          let total = t + it;
+          if (total > 1) {
+            total = total - 1;
+          }
+          return helper.translate(total, pathNode, pathLength);
+        };
+      })
+      .on("end", () => transition(selection, body, orbit));
+  },
+
+  getPathNode: function (body, orbit) {
+    var rx = body.rx;
+    var ry = body.ry;
+    // Create an elliptical path using the SVG path A command
+    const pathData = `M ${orbit.cx - rx},${orbit.cy}
+          a ${rx} ${ry} 0 1 1 ${rx * 2},0,
+          a ${rx} ${ry} 0 1 1 ${rx * -2},0`;
+
+    const pathNode = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    pathNode.setAttribute("d", pathData);
+    return pathNode;
+  },
+
+  drawMembers: function ({
+    svg,
+    orbits,
+    selection,
+    setSelection,
+    number,
+    animate,
+  }) {
+    var helper = this;
+    const strokeColor = c.backgroundColor;
+    const bodies = [];
+
+    const fontSize = d3.scaleLinear().range([11, 15]).domain([0, 2]);
+    const planetSizes = {
+      1: d3.scaleLinear().range([13, 25]).domain([0, 2]),
+      2: d3.scaleLinear().range([10, 20]).domain([0, 2]),
+      3: d3.scaleLinear().range([8, 16]).domain([0, 2]),
+      4: d3.scaleLinear().range([4, 9]).domain([0, 2]),
+    };
+
+    const planetColor = d3
+      .scaleLinear()
+      .domain([0, 1, 2])
+      // .range(["#1a237e", "#e1bee7", "#ec407a"]);
+      .range(["#312e81", "#c7d2fe", "#fff"]);
+
+    function onClick(e, d) {
+      e.stopPropagation();
+      setSelection(d);
+      svg.selectAll(".show-me").attr("visibility", "hidden");
+      d3.select(this.parentNode)
+        .selectAll(".show-me")
+        .attr("visibility", "visible");
+      d3.select(this.parentNode).raise();
+    }
+
+    // add attributes to the bodies needed for rendering
+    const levels = membersGen({ number });
+    levels.forEach((level) => {
+      var orbit = orbits[level.number - 1];
+      var membersData = level.members;
+      for (var i = 0; i < membersData.length; i++) {
+        var member = membersData[i];
+        var positionScale = d3
+          .scaleLinear()
+          .range([0, 1])
+          .domain([0, membersData.length]);
+        bodies.push({
+          ...member,
+          i,
+          orbit,
+          rx: helper.fuzz(orbit.rx),
+          ry: helper.fuzz(orbit.ry),
+          level: level.number,
+          position: helper.fuzz(positionScale(i), 0.04),
+          planetSize: planetSizes[member.orbit](member.reach),
+          planetColor: planetColor(member.love),
+          fontSize: fontSize(member.reach),
+          initials: c.initials(member.name),
+        });
+      }
+    });
+
+    // Create a group for each body
+    const bodyGroup = svg
+      .selectAll("g.body-group")
+      .data(bodies)
+      .enter()
+      .append("g")
+      .attr("class", "body-group");
+
+    // Draw a circle for each body
+    bodyGroup
+      .append("circle")
+      .attr("class", "planet clickable")
+      .attr("r", (d) => d.planetSize)
+      .attr("fill", (d) => d.planetColor)
+      .attr("stroke", strokeColor)
+      .attr("stroke-width", 3)
+      .on("click", onClick);
+
+    // Add the initials of people inside the body
+    bodyGroup
+      .append("text")
+      .attr("class", "clickable")
+      .attr("text-anchor", "middle")
+      .attr("font-size", (d) => d.planetSize * 0.6)
+      .attr("font-weight", 500)
+      .attr("visibility", (d) => (d.planetSize > 12 ? "visible" : "hidden"))
+      .attr("dy", (d) => d.planetSize / 4)
+      .text((d) => d.initials)
+      .on("click", onClick);
+
+    // Add the name of the body
+    bodyGroup
+      .append("text")
+      .attr("class", "show-me")
+      .attr("fill", c.selectedColor)
+      .attr("visibility", (d) =>
+        selection && selection.name === d.name ? "visible" : "hidden"
+      )
+      .attr("text-anchor", "left")
+      .attr("font-size", (d) => d.fontSize)
+      .attr("font-weight", 400)
+      .attr("dx", (d) => d.planetSize + 4)
+      .attr("dy", 5)
+      .text((d) => d.name.split(" ")[0]);
+
+    // Draw the first position of the bodies
+    bodyGroup.each(function (body, i) {
+      var self = this;
+      const pathNode = helper.getPathNode(body, body.orbit);
+      const pathLength = pathNode.getTotalLength();
+
+      d3.select(self).attr(
+        "transform",
+        helper.translate(body.position, pathNode, pathLength)
+      );
+    });
+
+    // animate the bodies
+    bodyGroup.each(function (body, i) {
+      var self = this;
+      const orbit = body.orbit;
+      if (animate) {
+        helper.transition(self, body, orbit);
+      }
+    });
   },
 };
 
