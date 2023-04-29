@@ -3,12 +3,7 @@ import c from "components/2023/common";
 import levelsData from "data/levels";
 import membersGen from "data/membersGen";
 
-var seed = c.cyrb128("apples");
-var rand = c.mulberry32(seed[0]);
-
 const helper = {
-  seed,
-  rand,
   rxFactory: function (width) {
     return d3
       .scalePow()
@@ -237,7 +232,7 @@ const helper = {
       .attr("dy", 10);
   },
 
-  fuzz: function (value, factor = 0.15) {
+  fuzz: function (rand, value, factor = 0.15) {
     var r = rand() - 0.5;
     var shift = r * value * factor;
     return value + shift;
@@ -274,6 +269,10 @@ const helper = {
   }) {
     var helper = this;
 
+    // reset the seed everytime we create members to avoid differences
+    var seed = c.cyrb128("apples");
+    var rand = c.mulberry32(seed[0]);
+
     const svg = d3.select(svgRef.current);
     const orbits = this.orbitsFactory(width, height);
 
@@ -305,7 +304,7 @@ const helper = {
     }
 
     // add attributes to the bodies needed for rendering
-    const levels = membersGen({ number });
+    const levels = membersGen({ number, seed, rand });
     levels.forEach((level) => {
       var orbit = orbits[level.number - 1];
       var membersData = level.members;
@@ -315,20 +314,20 @@ const helper = {
           .scaleLinear()
           .range([0, 1])
           .domain([0, membersData.length]);
-        bodies.push({
+        var body = {
           ...member,
           i,
           orbit,
-          rx: helper.fuzz(orbit.rx),
-          ry: helper.fuzz(orbit.ry),
+          rx: helper.fuzz(rand, orbit.rx),
+          ry: helper.fuzz(rand, orbit.ry),
           level: level.number,
-          position: helper.fuzz(positionScale(i), 0.04),
-          // position: 0.25,
+          position: helper.fuzz(rand, positionScale(i), 0.04),
           planetSize: planetSizes[member.orbit](member.reach),
           planetColor: planetColor(member.love),
           fontSize: fontSize(member.reach),
           initials: c.initials(member.name),
-        });
+        };
+        bodies.push(body);
       }
     });
 
