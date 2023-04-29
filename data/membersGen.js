@@ -6,9 +6,7 @@ const members = function ({ number, seed, rand }) {
   var loveScale = d3.scaleLinear().range([0, 2]).domain([0, 1]);
   var reachScale = d3.scaleLinear().range([0, 2]).domain([0, 1]);
 
-  // var seed = c.cyrb128("apples");
   faker.seed(seed);
-  // var rand = c.mulberry32(seed[0]);
 
   levelsData.forEach((level) => {
     var array = [];
