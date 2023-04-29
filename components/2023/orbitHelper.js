@@ -50,7 +50,7 @@ const helper = {
     const revolution = d3
       .scalePow()
       .exponent(2)
-      .range([100000, 600000])
+      .range([60000, 300000])
       .domain([1, 100]);
 
     // Define the orbits
@@ -323,6 +323,7 @@ const helper = {
           ry: helper.fuzz(orbit.ry),
           level: level.number,
           position: helper.fuzz(positionScale(i), 0.04),
+          // position: 0.25,
           planetSize: planetSizes[member.orbit](member.reach),
           planetColor: planetColor(member.love),
           fontSize: fontSize(member.reach),
@@ -382,57 +383,90 @@ const helper = {
       const pathNode = helper.getPathNode(body, body.orbit);
       const pathLength = pathNode.getTotalLength();
 
-      d3.select(self).attr(
-        "transform",
-        helper.translate(body.position, pathNode, pathLength)
-      );
+      d3.select(self)
+        .attr("lastTime", body.position)
+        .attr("currentTime", 0)
+        .attr(
+          "transform",
+          helper.translate(body.position, pathNode, pathLength)
+        );
     });
   },
   // do animations
   transition: function (selection, body, orbit) {
     var helper = this;
+    var element = d3.select(selection);
 
     const pathNode = helper.getPathNode(body, body.orbit);
     const pathLength = pathNode.getTotalLength();
+
+    var duration = orbit.revolution;
+    // console.log("starting at X for Y ms", element.attr("lastTime"), duration);
+
     d3.select(selection)
       .transition()
-      .duration(orbit.revolution)
+      .duration(duration)
       .ease(d3.easeLinear)
       .attrTween("transform", () => {
         return (t) => {
-          var element = d3.select(selection);
-          let initialT = body.position;
-          // var lastValue = parseFloat(element.attr("T")) || 0;
-          let total = t + initialT;
-          if (total > 1) {
-            total = total - 1;
+          var lastTime = parseFloat(element.attr("lastTime"));
+          var adjustedT = t + lastTime;
+          // save the currentTime for restarting the transition at the same place
+          if (adjustedT > 1) {
+            adjustedT -= 1;
           }
-          // element.attr("T", total);
-          return helper.translate(total, pathNode, pathLength);
+          element.attr("currentTime", adjustedT);
+          return helper.translate(adjustedT, pathNode, pathLength);
         };
       })
-      .on("end", () => helper.transition(selection, body, orbit));
+      .on("end", () => {
+        // console.log("ENDED!");
+        // once the cycle ends, reset the lastTime and restart the
+        // transition loop from the beginning
+        // d3.select(selection)
+        //   .attr("lastTime", body.position)
+        //   .attr("currentTime", 0);
+        helper.transition(selection, body, orbit);
+      });
   },
-
   startAnimation: function ({ svgRef }) {
     var helper = this;
-    // avoid memory leaks by stopping any existing animations
-    // helper.stopAnimation({ svgRef });
-
     const svg = d3.select(svgRef.current);
     const bodyGroup = svg.selectAll("g.body-group");
-    // animate the bodies
+
+    // set up the transition
     bodyGroup.each(function (body, i) {
       var self = this;
       const orbit = body.orbit;
-      helper.transition(self, body, orbit);
-      bodyGroup;
-      // svg.selectAll("g.body-group").transition().duration(orbit.revolution);
+      if (!d3.active(self)) {
+        helper.transition(self, body, orbit);
+      }
     });
   },
   stopAnimation: function ({ svgRef }) {
     const svg = d3.select(svgRef.current);
-    svg.selectAll("g.body-group").transition().duration(0);
+    const bodyGroup = svg.selectAll("g.body-group");
+
+    // alter the transition so it stops moving
+    bodyGroup.each(function (_body, _i) {
+      var self = this;
+      var element = d3.select(self);
+      // only do anything if there is an active transition
+      // otherwise it will start another transition
+      if (d3.active(self)) {
+        // stop the transition
+        element.transition();
+        // only override lastTime if currentTime exists,
+        // i.e. if the animation has already been run
+        // this is only needed beceause stopAnimation gets called on startup
+        if (parseFloat(element.attr("currentTime")) !== 0) {
+          setTimeout(function () {
+            element.attr("lastTime", element.attr("currentTime"));
+            // console.log("viz stopped at", element.attr("lastTime"));
+          }, 100);
+        }
+      }
+    });
   },
 };
 
