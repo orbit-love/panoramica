@@ -1,14 +1,5 @@
 import { React } from "react";
-import {
-  Link,
-  Button,
-  Element,
-  Events,
-  animateScroll as scroll,
-  scrollSpy,
-  scroller,
-} from "react-scroll";
-
+import { Link } from "react-scroll";
 import { items } from "./items";
 
 export default function Sidebar({ fix }) {

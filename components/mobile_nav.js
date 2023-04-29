@@ -1,6 +1,6 @@
 import { React } from "react";
 import { Navigation } from "react-minimal-side-navigation";
-import { items } from "./mobile_nav_items";
+import { items } from "./items";
 
 import { useRouter } from "next/router";
 

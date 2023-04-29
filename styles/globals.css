@@ -14,19 +14,6 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
-.prose p a,
-.prose li a {
-  @apply text-transparent bg-clip-text bg-gradient-to-br from-indigo-300 to-indigo-500;
-}
-.prose p a:hover,
-.prose li a:hover,
-a.active-link:hover {
-  @apply text-transparent bg-clip-text bg-gradient-to-br from-indigo-200 to-indigo-500;
-}
-
-body .carousel.carousel-slider .control-arrow {
-  @apply px-4;
-}
 
 .side-navigation-panel-select-option {
   @apply flex justify-between items-center py-1 w-full text-lg cursor-pointer;

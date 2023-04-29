@@ -25,16 +25,8 @@ export const items = [
     title: "Reach",
     itemId: "reach",
   },
-  // {
-  //   title: "Assignment",
-  //   itemId: "assignment",
-  // },
-  // {
-  //   title: "Love",
-  //   itemId: "love",
-  // },
-  // {
-  //   title: "Reach",
-  //   itemId: "reach",
-  // },
+  {
+    title: "Example",
+    itemId: "example",
+  },
 ];

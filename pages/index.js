@@ -1,4 +1,4 @@
-import Orbits from "components/2023/orbits";
+import Orbits from "components/orbits";
 import React, { useEffect, useState, useRef } from "react";
 import Head from "components/head";
 import Header from "components/header";
@@ -9,7 +9,7 @@ import Gravity from "content/gravity.mdx";
 import OrbitLevels from "content/orbit-levels.mdx";
 import Reach from "content/reach.mdx";
 import Love from "content/love.mdx";
-import Conclusion from "content/conclusion.mdx";
+import Example from "content/example.mdx";
 import Funnel from "content/funnel.mdx";
 import Stars from "components/stars";
 import { useRouter } from "next/router";
@@ -119,8 +119,8 @@ export default function Index() {
           <section id="reach" className="pb-12">
             <Reach />
           </section>
-          <section id="conclusion" className="pb-12">
-            <Conclusion />
+          <section id="example" className="pb-12">
+            <Example />
           </section>
           <section id="funnel" className="prose pb-12">
             <div className="px-6 py-8 bg-violet-50">
