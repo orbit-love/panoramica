@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function OrbitLevelIcon({ level, classes, children }) {
   return (
     <>
-      {children}
+      {/* {children} */}
       <FontAwesomeIcon icon={`circle-${level}`} className={classes} />
     </>
   );
