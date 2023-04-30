@@ -3,6 +3,8 @@ import Orbit1 from "components/icons/orbit_1";
 import Orbit2 from "components/icons/orbit_2";
 import Orbit3 from "components/icons/orbit_3";
 import Orbit4 from "components/icons/orbit_4";
+import Love from "components/icons/love";
+import Reach from "components/icons/reach";
 
 export default function Member({ selection }) {
   const classes = "text-indigo-700 text-xl";
@@ -19,9 +21,9 @@ export default function Member({ selection }) {
           {selection.name}
         </div>
       </div>
-      <div className="flex flex-col my-3 space-y-2">
-        <div className="text-sm font-semibold">Love: {selection.love}</div>
-        <div className="text-sm font-semibold">Reach: {selection.reach}</div>
+      <div className="flex items-center my-3 space-x-4 text-2xl">
+        <Love value={selection.love} classes="text-indigo-700"></Love>
+        <Reach value={selection.reach} classes="text-indigo-700"></Reach>
       </div>
       {selection.description && (
         <div className="my-3 text-sm leading-tight">

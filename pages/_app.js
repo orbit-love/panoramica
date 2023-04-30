@@ -45,6 +45,8 @@ import {
   faCircle3,
   faCircle4,
   faUserAstronaut,
+  faHeart,
+  faSignalStream,
 } from "@fortawesome/pro-solid-svg-icons";
 
 // add to library
@@ -74,7 +76,9 @@ library.add(
   faCircle2,
   faCircle3,
   faCircle4,
-  faUserAstronaut
+  faUserAstronaut,
+  faHeart,
+  faSignalStream
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
