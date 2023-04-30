@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Controls({ animate, number, setNumber, setAnimate }) {
   return (
-    <div className={`bg-opacity-80 w-80 bg-indigo-100 rounded`}>
+    <div className={`bg-opacity-90 w-80 text-indigo-700 bg-indigo-100 rounded`}>
       <div className="flex relative py-4 px-5 pointer-events-auto">
         {animate && (
           <button className="btn" onClick={() => setAnimate(false)}>

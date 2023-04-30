@@ -10,7 +10,10 @@ import Blockquote from "components/mdx/blockquote";
 import Code from "components/mdx/code";
 import Button from "components/button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRouter } from "next/router";
+import Orbit1 from "components/icons/orbit_1";
+import Orbit2 from "components/icons/orbit_2";
+import Orbit3 from "components/icons/orbit_3";
+import Orbit4 from "components/icons/orbit_4";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -37,6 +40,11 @@ import {
   faStairs,
   faPause,
   faPlay,
+  faCircle1,
+  faCircle2,
+  faCircle3,
+  faCircle4,
+  faUserAstronaut,
 } from "@fortawesome/pro-solid-svg-icons";
 
 // add to library
@@ -61,7 +69,12 @@ library.add(
   faBoxCheck,
   faStairs,
   faPause,
-  faPlay
+  faPlay,
+  faCircle1,
+  faCircle2,
+  faCircle3,
+  faCircle4,
+  faUserAstronaut
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -78,6 +91,10 @@ const components = {
   Graph,
   Pagination,
   Button,
+  Orbit1,
+  Orbit2,
+  Orbit3,
+  Orbit4,
 };
 
 function MyApp({ Component, pageProps }) {

@@ -21,7 +21,7 @@ export default function Selection({ selection }) {
   return (
     <>
       {markup && (
-        <div className={`bg-opacity-80 w-80 bg-indigo-100 rounded`}>
+        <div className={`bg-opacity-90 w-80 bg-indigo-100 rounded`}>
           <div className="flex relative flex-col py-4 px-5 pointer-events-auto">
             {markup}
           </div>
