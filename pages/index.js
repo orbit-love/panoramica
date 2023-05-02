@@ -25,7 +25,7 @@ function getInitialNumber(router) {
     }
   }
   if (!number) {
-    number = 5;
+    number = 3;
   }
   return number;
 }
