@@ -21,6 +21,7 @@ import {
   faYinYang,
   faHeartCircleCheck,
   faBuildingColumns,
+  faLightbulb,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faBars,
@@ -78,7 +79,8 @@ library.add(
   faCircle4,
   faUserAstronaut,
   faHeart,
-  faSignalStream
+  faSignalStream,
+  faLightbulb
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";

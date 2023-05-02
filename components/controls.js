@@ -1,9 +1,12 @@
 import React from "react";
+import c from "lib/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Controls({ animate, number, setNumber, setAnimate }) {
   return (
-    <div className={`bg-opacity-90 w-80 text-indigo-700 bg-indigo-100 rounded`}>
+    <div
+      className={`bg-opacity-90 w-80 text-[${c.whiteColor}] bg-[${c.panelColor}] rounded`}
+    >
       <div className="flex relative py-4 px-5 pointer-events-auto">
         {animate && (
           <button className="btn" onClick={() => setAnimate(false)}>

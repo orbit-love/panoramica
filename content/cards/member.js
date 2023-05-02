@@ -7,7 +7,7 @@ import Love from "components/icons/love";
 import Reach from "components/icons/reach";
 
 export default function Member({ selection }) {
-  const classes = "text-indigo-700 text-2xl";
+  const classes = "text-xl";
   return (
     <>
       <div className="flex items-baseline space-x-2">
@@ -17,13 +17,11 @@ export default function Member({ selection }) {
           {selection.level === 3 && <Orbit3 classes={classes} />}
           {selection.level === 4 && <Orbit4 classes={classes} />}
         </div>
-        <div className="text-2xl font-bold text-indigo-700">
-          {selection.name}
-        </div>
+        <div className="text-xl font-semibold">{selection.name}</div>
       </div>
-      <div className="flex items-center my-3 space-x-6 text-xl">
-        <Love value={selection.love} classes="text-red-600"></Love>
-        <Reach value={selection.reach} classes="text-orange-600"></Reach>
+      <div className="flex items-center my-3 space-x-6 text-lg">
+        <Love value={selection.love} classes=""></Love>
+        <Reach value={selection.reach} classes=""></Reach>
       </div>
       {selection.description && (
         <div className="my-3 text-sm leading-tight">

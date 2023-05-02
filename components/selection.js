@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
+import c from "lib/common";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Member from "content/cards/member";
 import OrbitLevel from "content/cards/orbit_level";
 import WelcomeCard from "content/cards/welcome.mdx";
 import MissionCard from "content/cards/mission.mdx";
 
-export default function Selection({ selection }) {
+export default function Selection({ selection, expanded, setExpanded }) {
   var markup = null;
   if (!selection) {
     markup = <WelcomeCard />;
@@ -18,15 +20,32 @@ export default function Selection({ selection }) {
     markup = null;
   }
 
-  return (
-    <>
-      {markup && (
-        <div className={`bg-opacity-90 w-80 bg-indigo-100 rounded`}>
-          <div className="flex relative flex-col py-4 px-5 pointer-events-auto">
-            {markup}
-          </div>
+  if (expanded) {
+    return (
+      <div
+        className={`bg-opacity-90 w-80 text-[${c.whiteColor}] bg-[${c.panelColor}] rounded`}
+      >
+        <div className="flex relative flex-col py-4 px-5 pointer-events-auto">
+          <button
+            onClick={() => setExpanded(false)}
+            className="absolute top-4 right-4"
+          >
+            <FontAwesomeIcon icon="xmark" className=""></FontAwesomeIcon>
+          </button>
+          {markup}
         </div>
-      )}
-    </>
-  );
+      </div>
+    );
+  } else {
+    return (
+      <div className="flex justify-end">
+        <button
+          onClick={() => setExpanded(true)}
+          className={`pointer-events-auto text-[${c.whiteColor}] bg-[${c.panelColor}] rounded py-4 px-5`}
+        >
+          <FontAwesomeIcon icon="lightbulb"></FontAwesomeIcon>
+        </button>
+      </div>
+    );
+  }
 }

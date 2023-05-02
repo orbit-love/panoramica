@@ -7,11 +7,20 @@ import Controls from "components/controls";
 
 export default function Orbits({ width, height, number, setNumber }) {
   const svgRef = useRef();
-  const [selection, setSelection] = useState(null);
+  const [expanded, setExpanded] = useState(false);
   const [animate, setAnimate] = useState(true);
   const prevNumber = c.usePrevious(number);
   const prevWidth = c.usePrevious(width);
   const prevHeight = c.usePrevious(height);
+  const [selection, _setSelection] = useState(null);
+
+  var setSelection = useCallback(
+    function (value) {
+      _setSelection(value);
+      setExpanded(true);
+    },
+    [_setSelection]
+  );
 
   const build = useCallback(
     function () {
@@ -69,7 +78,11 @@ export default function Orbits({ width, height, number, setNumber }) {
         ></svg>
       </div>
       <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
-        <Selection selection={selection} />
+        <Selection
+          selection={selection}
+          expanded={expanded}
+          setExpanded={setExpanded}
+        />
         <Controls
           animate={animate}
           setAnimate={setAnimate}

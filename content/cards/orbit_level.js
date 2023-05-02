@@ -5,7 +5,7 @@ import Orbit3 from "components/icons/orbit_3";
 import Orbit4 from "components/icons/orbit_4";
 
 export default function OrbitLevel({ selection }) {
-  const classes = "text-indigo-700 text-xl";
+  const classes = "text-xl";
   return (
     <>
       <div className="flex items-baseline space-x-2">
@@ -15,9 +15,7 @@ export default function OrbitLevel({ selection }) {
           {selection.number === 3 && <Orbit3 classes={classes} />}
           {selection.number === 4 && <Orbit4 classes={classes} />}
         </div>
-        <div className="text-xl font-bold text-indigo-700">
-          {selection.name}
-        </div>
+        <div className="text-xl font-bold">{selection.name}</div>
       </div>
       {selection.description && (
         <div className="my-3 text-sm font-light leading-tight">
