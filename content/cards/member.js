@@ -24,9 +24,7 @@ export default function Member({ selection }) {
         <Reach value={selection.reach} classes=""></Reach>
       </div>
       {selection.description && (
-        <div className="my-3 text-sm leading-tight">
-          {selection.description}
-        </div>
+        <div className="text-sm leading-tight">{selection.description}</div>
       )}
     </>
   );

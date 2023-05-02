@@ -19,13 +19,13 @@ export default function Controls({ animate, number, setNumber, setAnimate }) {
           </button>
         )}
         <div className="mx-auto" />
-        <button className="btn" onClick={() => setNumber(25)}>
+        <button className="btn" onClick={() => setNumber(2)}>
           S
         </button>
-        <button className="btn" onClick={() => setNumber(50)}>
+        <button className="btn" onClick={() => setNumber(5)}>
           M
         </button>
-        <button className="btn" onClick={() => setNumber(100)}>
+        <button className="btn" onClick={() => setNumber(10)}>
           L
         </button>
       </div>
