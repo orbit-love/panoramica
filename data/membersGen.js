@@ -30,8 +30,6 @@ const members = function ({ number, seed, rand, orbit }) {
   var loveScale2 = d3.scaleQuantize().range([1, 2, 3]).domain([0, 1]);
   var reachScale2 = d3.scaleQuantize().range([1, 2, 3]).domain([0, 1]);
 
-  faker.seed(seed);
-
   var array = [];
   var memberCount = Math.round(levelData.multiplier * number);
 
