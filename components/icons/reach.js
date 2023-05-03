@@ -28,7 +28,7 @@ export default function ReachIcon({ value, classes }) {
       key={2}
       icon="circle"
       className={"text-md"}
-      style={{ opacity: value > 1 ? 1 : 0.2 }}
+      style={{ opacity: value > 1 ? 1 : 0.1 }}
       title={value.toString()}
     />
   );
@@ -37,7 +37,7 @@ export default function ReachIcon({ value, classes }) {
       key={3}
       icon="circle"
       className={"text-2xl"}
-      style={{ opacity: value > 2 ? 1 : 0.2 }}
+      style={{ opacity: value > 2 ? 1 : 0.1 }}
       title={value.toString()}
     />
   );
