@@ -48,6 +48,7 @@ import {
   faUserAstronaut,
   faHeart,
   faSignalStream,
+  faCircle,
 } from "@fortawesome/pro-solid-svg-icons";
 
 // add to library
@@ -80,7 +81,8 @@ library.add(
   faUserAstronaut,
   faHeart,
   faSignalStream,
-  faLightbulb
+  faLightbulb,
+  faCircle
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
