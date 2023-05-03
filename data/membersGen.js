@@ -52,11 +52,11 @@ const members = function ({ number, rand, orbit }) {
     var description = null;
     if (love === 3 && reach === 1) {
       description =
-        "This member has high love and low reach. Focus on increasing their reach to boost gravity.";
+        "This member has high love and low reach. Connect them with more members of the community to increase their gravity.";
     }
     if (love === 1 && reach === 3) {
       description =
-        "This member has high reach and low love. Focus on increasing their love to boost their gravity.";
+        "This member has high reach and low love. Offer them deeper ways to contribute and take on more ownership.";
     }
     var member = {
       i,
