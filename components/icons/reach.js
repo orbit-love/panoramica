@@ -7,8 +7,18 @@ export default function ReachIcon({ value, classes }) {
     markup.push(
       <FontAwesomeIcon
         key={i}
-        icon="signal-stream"
+        icon="chart-network"
         className={classes}
+        title={value.toString()}
+      />
+    );
+  }
+  for (var i = 0; i < 3 - value; i++) {
+    markup.push(
+      <FontAwesomeIcon
+        key={i}
+        icon="chart-network"
+        className={classes + " opacity-20"}
         title={value.toString()}
       />
     );
