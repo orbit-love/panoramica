@@ -56,7 +56,7 @@ const members = function ({ number, rand, orbit }) {
     }
     if (love === 1 && reach === 3) {
       description =
-        "This member has high reach and low love relative to others in their orbit level. Offer them deeper ways to contribute and take on more ownership.";
+        "This member has high reach and low love relative to others in their orbit level. Offer deeper ways to contribute and take on ownership.";
     }
     var member = {
       i,
