@@ -44,7 +44,7 @@ const members = function ({ number, rand, orbit }) {
     .range([l1, l2, l3]);
 
   for (var i = 0; i < memberCount; i++) {
-    const name = faker.name.firstName() + " " + faker.name.lastName();
+    const name = faker.name.firstName() + " " + faker.name.jobDescriptor();
     const love = loveScale2(loveScale(rand()));
     const reach = reachScale2(reachScale(rand()));
     const ofInterest =
