@@ -2,26 +2,26 @@ const levels = [
   {
     number: 1,
     name: "Advocates",
-    distance: 31,
+    distance: 29,
     multiplier: 1,
     exponent: 1,
     r1: 10,
     r2: 14,
     r3: 20,
     description:
-      "Advocates help the community mobilize and grow, building social proof and spreading the word. They create content and give talks, leveraging the reach that they have. In product communities, this level includes product ambassadors and champions.",
+      "Advocates organize and grow the community, building on a base of knowledge and leadership. Advocates create content, give talks, meet with members, and generally leverage their network to help distribute information.",
   },
   {
     number: 2,
     name: "Contributors",
-    distance: 53,
+    distance: 51,
     exponent: 2,
     multiplier: 3,
     r1: 6,
     r2: 12,
     r3: 17,
     description:
-      "Contributors put some of their time toward helping the community or product reach its goals, not only for their own immediate benefit. In product communities, this level includes contributors of code, templates, documentation, translation, and users who give product feedback and participate in beta groups.",
+      "Contributors actively work to help the community reach its goals, and not only for their own personal benefit. They start to build a base of leadership and expertise, while taking on reach-expanding roles like training and mentorship.",
   },
   {
     number: 3,
@@ -33,7 +33,7 @@ const levels = [
     r3: 15,
     exponent: 5,
     description:
-      "Participants regularly engage in the community and build connections with other members. In product communities, this level includes the users of the product.",
+      "Participants regularly engage in the community and build connections with other members. They ask questions, attend events, and give feedback.",
   },
   {
     number: 4,
@@ -42,7 +42,7 @@ const levels = [
     exponent: 10,
     multiplier: 20,
     description:
-      "Explorers are newcomers and passive observers who are primarily interested in getting information and learning.",
+      "Explorers are newcomers and passive observers who are primarily interested in getting information and learning. The number of Explorers tends to be large, so it's important to identify the most promising members and start building a relationship. A member's reach outside of the community is a good signal to look at for deciding who to invest in.",
     r1: 4,
     r2: 7,
     r3: 13,
