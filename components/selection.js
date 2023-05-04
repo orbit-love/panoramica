@@ -23,7 +23,7 @@ export default function Selection({ selection, expanded, setExpanded }) {
   if (expanded) {
     // hard code hex codes for now so tailwind builds them
     return (
-      <div className={`bg-opacity-90 w-80 text-[#e0e7ff] bg-[#1D1640] rounded`}>
+      <div className={`bg-opacity-90 w-80 text-[#eef2ff] bg-[#1D1640] rounded`}>
         <div className="flex relative flex-col py-4 px-5 pointer-events-auto">
           <button
             onClick={() => setExpanded(false)}

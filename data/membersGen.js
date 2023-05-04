@@ -14,9 +14,9 @@ const members = function ({ number, rand, orbit }) {
     r1,
     r2,
     r3,
-    l1 = "#312e81",
-    l2 = "#6366f1",
-    l3 = "#c7d2fe",
+    l1 = c.indigo900,
+    l2 = c.indigo400,
+    l3 = c.indigo100,
     exponent = 1,
   } = levelData;
 
@@ -52,11 +52,11 @@ const members = function ({ number, rand, orbit }) {
     var description = null;
     if (love === 3 && reach === 1) {
       description =
-        "This member has high love and low reach. Connect them with more members of the community to increase their gravity.";
+        "This member has high love and low reach relative to others in their orbit level. Connect them with more members of the community to increase their gravity.";
     }
     if (love === 1 && reach === 3) {
       description =
-        "This member has high reach and low love. Offer them deeper ways to contribute and take on more ownership.";
+        "This member has high reach and low love relative to others in their orbit level. Offer them deeper ways to contribute and take on more ownership.";
     }
     var member = {
       i,

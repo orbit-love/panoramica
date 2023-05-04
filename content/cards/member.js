@@ -8,10 +8,24 @@ import Reach from "components/icons/reach";
 
 export default function Member({ selection }) {
   const classes = "text-2xl";
+  const messages = {
+    1: "Low love relative to others in their orbit level",
+    2: "Average love relative to others in their orbit level",
+    3: "High love relative to others in their orbit level",
+  };
+  var loveTitle = messages[selection.love];
+  var reachTitle = messages[selection.reach].replace("love", "reach");
+  const orbitLevels = {
+    1: "Orbit Level 1: Advocates",
+    2: "Orbit Level 2: Contributors",
+    3: "Orbit Level 3: Participants",
+    4: "Orbit Level 4: Explorers",
+  };
+  var orbitLevelTitle = orbitLevels[selection.level];
   return (
     <>
       <div className="flex items-baseline space-x-2">
-        <div>
+        <div className="cursor-help" title={orbitLevelTitle}>
           {selection.level === 1 && <Orbit1 classes={classes} />}
           {selection.level === 2 && <Orbit2 classes={classes} />}
           {selection.level === 3 && <Orbit3 classes={classes} />}
@@ -20,11 +34,17 @@ export default function Member({ selection }) {
         <div className="text-xl font-semibold">{selection.name}</div>
       </div>
       <div className="flex items-center my-4 space-x-6 text-lg">
-        <div className="flex items-center space-x-2">
+        <div
+          title={loveTitle}
+          className="flex items-center space-x-2 cursor-help"
+        >
           <span className="text-sm font-bold">Love</span>
           <Love value={selection.love} classes=""></Love>
         </div>
-        <div className="flex items-center space-x-2">
+        <div
+          title={reachTitle}
+          className="flex items-center space-x-2 cursor-help"
+        >
           <span className="text-sm font-bold">Reach</span>
           <Reach value={selection.reach} classes=""></Reach>
         </div>

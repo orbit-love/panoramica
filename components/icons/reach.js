@@ -1,25 +1,15 @@
 import React from "react";
+import c from "lib/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function ReachIcon({ value, classes }) {
   var markup = [];
-  // var size;
-  // switch (value) {
-  //   case 1:
-  //     size = "text-sm";
-  //     break;
-  //   case 2:
-  //     size = "text-md";
-  //     break;
-  //   case 3:
-  //     size = "#c7d2fe";
-  // }
+  var selectedColor = c.indigo400;
   markup.push(
     <FontAwesomeIcon
       key={1}
       icon="circle"
-      className={"text-xs"}
-      style={{ opacity: 1 }}
+      style={{ opacity: 1, color: selectedColor, fontSize: "8px" }}
       title={value.toString()}
     />
   );
@@ -27,8 +17,11 @@ export default function ReachIcon({ value, classes }) {
     <FontAwesomeIcon
       key={2}
       icon="circle"
-      className={"text-md"}
-      style={{ opacity: value > 1 ? 1 : 0.1 }}
+      style={{
+        opacity: value > 1 ? 1 : 0.6,
+        fontSize: "15px",
+        color: value > 1 ? selectedColor : c.indigo900,
+      }}
       title={value.toString()}
     />
   );
@@ -36,10 +29,13 @@ export default function ReachIcon({ value, classes }) {
     <FontAwesomeIcon
       key={3}
       icon="circle"
-      className={"text-2xl"}
-      style={{ opacity: value > 2 ? 1 : 0.1 }}
+      style={{
+        opacity: value > 2 ? 1 : 0.6,
+        fontSize: "23px",
+        color: value == 3 ? selectedColor : c.indigo900,
+      }}
       title={value.toString()}
     />
   );
-  return <div className="flex items-center space-x-1">{markup}</div>;
+  return <div className="flex items-center space-x-[2px]">{markup}</div>;
 }
