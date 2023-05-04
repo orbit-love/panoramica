@@ -1,15 +1,21 @@
 import EmptyLayout from "components/mdx/empty_layout";
 
-<div className="text-xl font-bold">Welcome!</div>
+<div className="text-xl font-bold">This is a community.</div>
 
-The Orbit Model is a framework for building strong, scalable communities.
-It produces recommendations for increasing the **gravity** of the community,
-the force that attracts and retains members.
+Members orbit at different levels according to their love and
+reach. **Love** is a measure of effort and leadership.
+**Reach** is a measure of network size and influence.
 
-Each member has an **orbit level** based on their pattern of activity.
-The member's **love** determines their brightness and their **reach** determines
-their size. Together, these attributes reveal a member's unique needs and opportunities.
+<div className="flex flex-col">
+Planet Brightness = Love
 
-_Explore the visualization to learn more._
+Planet Size = Reach
+
+</div>
+
+<span className="text-indigo-400">
+  Click on each member's name to see what the Orbit Model recommends in order to
+  increase the **gravity** of the community.
+</span>
 
 export default ({ children }) => <EmptyLayout>{children}</EmptyLayout>;

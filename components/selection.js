@@ -27,9 +27,9 @@ export default function Selection({ selection, expanded, setExpanded }) {
         <div className="flex relative flex-col py-4 px-5 pointer-events-auto">
           <button
             onClick={() => setExpanded(false)}
-            className="absolute top-4 right-4"
+            className="absolute top-4 right-8"
           >
-            <FontAwesomeIcon icon="xmark" className=""></FontAwesomeIcon>
+            <FontAwesomeIcon icon="chevron-down" className=""></FontAwesomeIcon>
           </button>
           {markup}
         </div>
