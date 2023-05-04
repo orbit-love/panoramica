@@ -10,7 +10,6 @@ export default function ReachIcon({ value, classes }) {
       key={1}
       icon="circle"
       style={{ opacity: 1, color: selectedColor, fontSize: "8px" }}
-      title={value.toString()}
     />
   );
   markup.push(
@@ -22,7 +21,6 @@ export default function ReachIcon({ value, classes }) {
         fontSize: "15px",
         color: value > 1 ? selectedColor : c.indigo900,
       }}
-      title={value.toString()}
     />
   );
   markup.push(
@@ -34,7 +32,6 @@ export default function ReachIcon({ value, classes }) {
         fontSize: "23px",
         color: value == 3 ? selectedColor : c.indigo900,
       }}
-      title={value.toString()}
     />
   );
   return <div className="flex items-center space-x-[2px]">{markup}</div>;
