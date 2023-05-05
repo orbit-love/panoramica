@@ -110,14 +110,14 @@ export default function Index() {
           <section id="gravity" className="pb-12">
             <Gravity />
           </section>
-          <section id="orbit-levels" className="pb-12">
-            <OrbitLevels />
-          </section>
           <section id="love" className="pb-12">
             <Love />
           </section>
           <section id="reach" className="pb-12">
             <Reach />
+          </section>
+          <section id="orbit-levels" className="pb-12">
+            <OrbitLevels />
           </section>
           <section id="example" className="pb-12">
             <Example />

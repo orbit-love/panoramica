@@ -14,16 +14,16 @@ export const items = [
     itemId: "gravity",
   },
   {
-    title: "Orbit Levels",
-    itemId: "orbit-levels",
-  },
-  {
     title: "Love",
     itemId: "love",
   },
   {
     title: "Reach",
     itemId: "reach",
+  },
+  {
+    title: "Orbit Levels",
+    itemId: "orbit-levels",
   },
   {
     title: "Example",
