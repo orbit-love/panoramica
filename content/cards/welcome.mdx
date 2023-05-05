@@ -1,4 +1,5 @@
 import EmptyLayout from "components/mdx/empty_layout";
+import c from "lib/common";
 
 <div className="text-xl font-bold">This is a community.</div>
 
@@ -11,13 +12,11 @@ Planet Brightness = Love
 
 Planet Size = Reach
 
-(relative to others at the same level)
-
 </div>
 
-<span className="text-indigo-400">
-  Click on each member's name to see what the Orbit Model recommends in order to
-  increase the **gravity** of the community.
+<span className={`text-[${c.selectedColor}]`}>
+  Click on the planets and labels to explore the community and discover the
+  Orbit Model.
 </span>
 
 export default ({ children }) => <EmptyLayout>{children}</EmptyLayout>;

@@ -77,24 +77,19 @@ export default function Orbits({ width, height, number, setNumber }) {
           style={{ width: "100%", height: "100%" }}
         ></svg>
       </div>
-      {/* <div className="flex absolute bottom-0 left-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
-        <Selection
-          selection={selection}
-          expanded={expanded}
-          setExpanded={setExpanded}
-        />
-      </div> */}
-      <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
-        <Selection
-          selection={selection}
-          expanded={expanded}
-          setExpanded={setExpanded}
-        />
+      <div className="flex absolute bottom-0 left-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
         <Controls
           animate={animate}
           setAnimate={setAnimate}
           number={number}
           setNumber={setNumber}
+        />
+      </div>
+      <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
+        <Selection
+          selection={selection}
+          expanded={expanded}
+          setExpanded={setExpanded}
         />
       </div>
     </>
