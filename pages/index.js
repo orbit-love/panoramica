@@ -4,7 +4,7 @@ import Head from "components/head";
 import Header from "components/header";
 import Footer from "components/footer";
 import Sidebar from "components/sidebar";
-import Intro from "content/intro.mdx";
+import Introduction from "content/introduction.mdx";
 import Gravity from "content/gravity.mdx";
 import OrbitLevels from "content/orbit-levels.mdx";
 import Reach from "content/reach.mdx";
@@ -105,7 +105,7 @@ export default function Index() {
             <h1 className="mb-6 text-4xl font-bold">
               Build strong, scalable communities
             </h1>
-            <Intro />
+            <Introduction />
           </section>
           <section id="gravity" className="pb-12">
             <Gravity />
