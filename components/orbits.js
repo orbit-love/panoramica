@@ -6,9 +6,14 @@ import Selection from "components/selection";
 import Controls from "components/controls";
 
 export default function Orbits({ width, height, number, setNumber }) {
+  // does the browser user prefer reduced motion?
+  const isReduced =
+    window.matchMedia(`(prefers-reduced-motion: reduce)`) === true ||
+    window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
+
   const svgRef = useRef();
   const [expanded, setExpanded] = useState(true);
-  const [animate, setAnimate] = useState(true);
+  const [animate, setAnimate] = useState(!isReduced);
   const prevNumber = c.usePrevious(number);
   const prevWidth = c.usePrevious(width);
   const prevHeight = c.usePrevious(height);
