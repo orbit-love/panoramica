@@ -122,13 +122,12 @@ export default function Index() {
           <section id="example" className="pb-12">
             <Example />
           </section>
-          <div className="prose my-8 border-b border-violet-100"></div>
-          <section id="funnel" className="prose pb-12">
+          {/* <div className="prose my-8 border-b border-violet-100"></div> */}
+          <section id="funnel" className="prose pb-12 my-8">
             <div className="px-6 py-8 bg-violet-50">
               <Funnel />
             </div>
           </section>
-          <div className="my-8"></div>
         </div>
       </div>
       <Footer />
