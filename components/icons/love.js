@@ -13,8 +13,8 @@ export default function LoveIcon({ value, classes }) {
       className={classes}
       style={{
         fontSize,
-        color: value === 1 ? c.indigo800 : c.indigo900,
-        opacity: value === 1 ? 1 : 0.6,
+        color: value === c.indigo100,
+        opacity: 1,
       }}
     />
   );
@@ -25,8 +25,8 @@ export default function LoveIcon({ value, classes }) {
       className={classes}
       style={{
         fontSize,
-        color: value === 2 ? c.indigo400 : c.indigo900,
-        opacity: value === 2 ? 1 : 0.6,
+        color: value > 1 ? c.indigo100 : c.indigo900,
+        opacity: value > 1 ? 1 : 0.6,
       }}
     />
   );
@@ -37,8 +37,8 @@ export default function LoveIcon({ value, classes }) {
       className={classes}
       style={{
         fontSize,
-        color: value === 3 ? c.indigo100 : c.indigo900,
-        opacity: value === 3 ? 1 : 0.6,
+        color: value > 2 ? c.indigo100 : c.indigo900,
+        opacity: value > 2 ? 1 : 0.6,
       }}
     />
   );
