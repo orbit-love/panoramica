@@ -22,7 +22,7 @@ export default function Header({ fix }) {
       >
         <div>
           <button
-            className="inline-flex justify-center p-3 mr-3 ml-auto w-10 text-white rounded outline-none pointer-events-auto hover:text-white hover:bg-indigo-900 md:hidden"
+            className="inline-flex justify-center p-3 mr-2 ml-auto w-10 text-white rounded outline-none pointer-events-auto hover:text-white hover:bg-indigo-900 md:hidden"
             onClick={handleClick}
           >
             {active ? (
