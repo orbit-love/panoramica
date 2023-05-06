@@ -62,7 +62,7 @@ export default function Orbits({ width, height, number, setNumber }) {
   useEffect(() => {
     h.drawOrbits({ svgRef, width, height, selection, setSelection });
     h.drawSun({ svgRef, width, height, selection, setSelection });
-  }, [width, height, selection]);
+  }, [width, height, selection, setSelection]);
 
   // if the animation changes
   useEffect(() => {

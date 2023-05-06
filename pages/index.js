@@ -12,7 +12,9 @@ import Love from "content/love.mdx";
 import Example from "content/example.mdx";
 import Funnel from "content/funnel.mdx";
 import Stars from "components/stars";
+import Image from "next/image";
 import { useRouter } from "next/router";
+import atomicHeart from "public/atomic-heart.svg";
 
 function getInitialNumber(router) {
   const queryKey = "n";
@@ -76,7 +78,7 @@ export default function Index() {
     };
   }, [setDimensions]);
 
-  const fixClass = fix ? "md:pl-56 mt-24" : "";
+  const fixClass = fix ? "md:pl-56 mt-12" : "";
 
   return (
     <>
@@ -86,7 +88,7 @@ export default function Index() {
       <div
         ref={containerRef}
         id="container"
-        className="relative"
+        className="hidden relative sm:block"
         style={{ height: "85vh", marginTop: "-100px" }}
       >
         {dimensions.width && dimensions.height && (
@@ -98,10 +100,14 @@ export default function Index() {
           />
         )}
       </div>
-      <div className="flex justify-center pt-10 bg-white">
+      <div className="pt-20 bg-[#1F154C] sm:hidden text-center">
+        <Image alt="Atomic heart" src={atomicHeart} />
+      </div>
+      <div className="flex justify-center bg-white sm:pt-10">
         <div className="flex relative">
           <Sidebar fix={fix} />
           <div className={`${fixClass} flex flex-col px-4 md:px-0`}>
+            {/* pb-12 is here instead of space-y-12 to avoid gaps in sidebar scroll highlighting */}
             <section className="anchor pb-12" id="introduction">
               <h1 className="mb-6 text-4xl font-bold">
                 Build strong, scalable communities
@@ -123,7 +129,6 @@ export default function Index() {
             <section id="example" className="pb-12">
               <Example />
             </section>
-            {/* <div className="prose my-8 border-b border-violet-100"></div> */}
             <section id="funnel" className="prose pb-12 my-8">
               <div className="px-6 py-8 bg-violet-50">
                 <Funnel />

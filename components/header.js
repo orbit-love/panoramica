@@ -13,16 +13,16 @@ export default function Header({ fix }) {
     setActive(!active);
   };
 
-  const fixClass = fix ? "fixed top-0 left-0 bg-[#1D1640] z-10" : "block";
+  const fixClass = fix ? "fixed top-0 left-0 bg-[#1D1640] z-50" : "relative";
 
   return (
     <div>
       <nav
-        className={`${fixClass} flex items-center py-4 px-8 w-full whitespace-nowrap`}
+        className={`${fixClass} flex z-30 px-2 py-4 w-full whitespace-nowrap pointer-events-none md:px-8`}
       >
         <div>
           <button
-            className="inline-flex justify-center p-3 mr-1 ml-auto w-10 text-white rounded outline-none hover:text-white hover:bg-slate-700 md:hidden"
+            className="inline-flex justify-center p-3 mr-3 ml-auto w-10 text-white rounded outline-none pointer-events-auto hover:text-white hover:bg-indigo-900 md:hidden"
             onClick={handleClick}
           >
             {active ? (
@@ -32,17 +32,20 @@ export default function Header({ fix }) {
             )}
           </button>
         </div>
-        <Link href="/" passHref>
-          <a>
-            <Image
-              src={headerLogo}
-              alt="Orbit Model logo"
-              width={190}
-              height={40}
-              className="cursor-pointer"
-            />
-          </a>
-        </Link>
+
+        <div className="pointer-events-auto">
+          <Link href="/" passHref>
+            <a>
+              <Image
+                src={headerLogo}
+                alt="Orbit Model logo"
+                width={190}
+                height={40}
+                className="cursor-pointer"
+              />
+            </a>
+          </Link>
+        </div>
 
         <div className="flex-1" />
 
@@ -62,7 +65,7 @@ export default function Header({ fix }) {
       </nav>
       <div className={`${active ? "" : "hidden"}`}>
         <CSSTransition in={active} timeout={400} classNames="mobile-nav">
-          <MobileNav />
+          <MobileNav setActive={setActive} />
         </CSSTransition>
       </div>
     </div>
