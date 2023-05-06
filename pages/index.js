@@ -76,7 +76,7 @@ export default function Index() {
     };
   }, [setDimensions]);
 
-  const fixClass = fix ? "md:pl-64 mt-24" : "";
+  const fixClass = fix ? "md:pl-56 mt-24" : "";
 
   return (
     <>
@@ -98,36 +98,38 @@ export default function Index() {
           />
         )}
       </div>
-      <div className="flex py-3 px-9 pt-10 pb-20 bg-white">
-        <Sidebar fix={fix} />
-        <div className={`${fixClass} flex flex-col`}>
-          <section className="anchor pb-12" id="introduction">
-            <h1 className="mb-6 text-4xl font-bold">
-              Build strong, scalable communities
-            </h1>
-            <Introduction />
-          </section>
-          <section id="gravity" className="pb-12">
-            <Gravity />
-          </section>
-          <section id="love" className="pb-12">
-            <Love />
-          </section>
-          <section id="reach" className="pb-12">
-            <Reach />
-          </section>
-          <section id="orbit-levels" className="pb-12">
-            <OrbitLevels />
-          </section>
-          <section id="example" className="pb-12">
-            <Example />
-          </section>
-          {/* <div className="prose my-8 border-b border-violet-100"></div> */}
-          <section id="funnel" className="prose pb-12 my-8">
-            <div className="px-6 py-8 bg-violet-50">
-              <Funnel />
-            </div>
-          </section>
+      <div className="flex justify-center pt-10 bg-white">
+        <div className="flex relative">
+          <Sidebar fix={fix} />
+          <div className={`${fixClass} flex flex-col px-4 space-y-12 md:px-0`}>
+            <section className="anchor" id="introduction">
+              <h1 className="mb-6 text-4xl font-bold">
+                Build strong, scalable communities
+              </h1>
+              <Introduction />
+            </section>
+            <section id="gravity">
+              <Gravity />
+            </section>
+            <section id="love">
+              <Love />
+            </section>
+            <section id="reach">
+              <Reach />
+            </section>
+            <section id="orbit-levels">
+              <OrbitLevels />
+            </section>
+            <section id="example">
+              <Example />
+            </section>
+            {/* <div className="prose my-8 border-b border-violet-100"></div> */}
+            <section id="funnel" className="prose pb-12 my-8">
+              <div className="px-6 py-8 bg-violet-50">
+                <Funnel />
+              </div>
+            </section>
+          </div>
         </div>
       </div>
       <Footer />

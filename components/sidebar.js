@@ -7,7 +7,7 @@ export default function Sidebar({ fix }) {
 
   return (
     <div className={`${fixClass} flex hidden flex-col md:block`}>
-      <div className="shrink-0 px-10 whitespace-nowrap rounded-sm rounded md:px-0 md:w-64">
+      <div className="shrink-0 whitespace-nowrap md:px-0 md:w-56">
         <div className="flex flex-col px-4 space-y-2 text-lg border-l-4 border-indigo-100">
           {items.map((item) => (
             <Link
