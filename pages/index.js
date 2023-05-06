@@ -101,26 +101,26 @@ export default function Index() {
       <div className="flex justify-center pt-10 bg-white">
         <div className="flex relative">
           <Sidebar fix={fix} />
-          <div className={`${fixClass} flex flex-col px-4 space-y-12 md:px-0`}>
-            <section className="anchor" id="introduction">
+          <div className={`${fixClass} flex flex-col px-4 md:px-0`}>
+            <section className="anchor pb-12" id="introduction">
               <h1 className="mb-6 text-4xl font-bold">
                 Build strong, scalable communities
               </h1>
               <Introduction />
             </section>
-            <section id="gravity">
+            <section id="gravity" className="pb-12">
               <Gravity />
             </section>
-            <section id="love">
+            <section id="love" className="pb-12">
               <Love />
             </section>
-            <section id="reach">
+            <section id="reach" className="pb-12">
               <Reach />
             </section>
-            <section id="orbit-levels">
+            <section id="orbit-levels" className="pb-12">
               <OrbitLevels />
             </section>
-            <section id="example">
+            <section id="example" className="pb-12">
               <Example />
             </section>
             {/* <div className="prose my-8 border-b border-violet-100"></div> */}

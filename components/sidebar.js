@@ -12,7 +12,7 @@ export default function Sidebar({ fix }) {
           {items.map((item) => (
             <Link
               key={item.itemId}
-              activeClass="!text-indigo-700"
+              activeClass="!text-indigo-700 font-bold"
               smooth
               spy
               hashSpy
