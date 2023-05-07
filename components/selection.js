@@ -3,13 +3,26 @@ import c from "lib/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Member from "content/cards/member";
 import OrbitLevel from "content/cards/orbit_level";
-import WelcomeCard from "content/cards/welcome.mdx";
+import WelcomeCard from "content/cards/welcome";
 import MissionCard from "content/cards/mission.mdx";
 
-export default function Selection({ selection, expanded, setExpanded }) {
+export default function Selection({
+  svgRef,
+  bodies,
+  selection,
+  setSelection,
+  expanded,
+  setExpanded,
+}) {
   var markup = null;
   if (!selection) {
-    markup = <WelcomeCard />;
+    markup = (
+      <WelcomeCard
+        svgRef={svgRef}
+        bodies={bodies}
+        setSelection={setSelection}
+      />
+    );
   } else if (selection.name === "Mission") {
     markup = <MissionCard />;
   } else if (selection.distance) {

@@ -19,16 +19,6 @@ export default function Controls({ animate, number, setNumber, setAnimate }) {
               <FontAwesomeIcon icon="play" className="text-lg" />
             </button>
           )}
-          {/* <div className="mx-auto" /> */}
-          {/* <button className="btn" onClick={() => setNumber(3)}>
-          S
-        </button>
-        <button className="btn" onClick={() => setNumber(4)}>
-          M
-        </button>
-        <button className="btn" onClick={() => setNumber(5)}>
-          L
-        </button> */}
         </div>
       </div>
     </div>

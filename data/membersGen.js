@@ -60,6 +60,7 @@ const members = function ({ number, rand, orbit }) {
     }
     var member = {
       i,
+      id: c.slugify(name),
       orbit,
       name,
       love,

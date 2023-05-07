@@ -18,6 +18,7 @@ export default function Orbits({ width, height, number, setNumber }) {
   const prevWidth = c.usePrevious(width);
   const prevHeight = c.usePrevious(height);
   const [selection, _setSelection] = useState(null);
+  const [bodies, setBodies] = useState([]);
 
   var setSelection = useCallback(
     function (value) {
@@ -38,10 +39,12 @@ export default function Orbits({ width, height, number, setNumber }) {
         selection,
         setSelection,
         number,
+        bodies,
+        setBodies,
       });
-      h.drawSun({ svgRef, width, height, selection, setSelection });
+      h.drawSun({ svgRef, width, height, selection, setSelection, setBodies });
     },
-    [svgRef, width, height, selection, setSelection, number]
+    [svgRef, width, height, selection, setSelection, number, bodies, setBodies]
   );
 
   // rebuild if width, height, or number change
@@ -92,7 +95,10 @@ export default function Orbits({ width, height, number, setNumber }) {
       </div>
       <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
         <Selection
+          svgRef={svgRef}
           selection={selection}
+          setSelection={setSelection}
+          bodies={bodies}
           expanded={expanded}
           setExpanded={setExpanded}
         />
