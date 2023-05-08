@@ -4,6 +4,7 @@ import h from "lib/orbitHelper";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Selection from "components/selection";
 import Controls from "components/controls";
+import Steps from "components/steps";
 
 export default function Orbits({ width, height, number, setNumber }) {
   // does the browser user prefer reduced motion?
@@ -17,21 +18,14 @@ export default function Orbits({ width, height, number, setNumber }) {
   const prevNumber = c.usePrevious(number);
   const prevWidth = c.usePrevious(width);
   const prevHeight = c.usePrevious(height);
-  const [selection, _setSelection] = useState(null);
+  const [selection, setSelection] = useState(null);
+  const [step, setStep] = useState(1);
   const [bodies, setBodies] = useState([]);
-
-  var setSelection = useCallback(
-    function (value) {
-      _setSelection(value);
-      setExpanded(true);
-    },
-    [_setSelection]
-  );
 
   const build = useCallback(
     function () {
       h.resetEverything({ svgRef, width, height, setSelection });
-      h.drawOrbits({ svgRef, width, height, selection, setSelection });
+      h.drawOrbits({ svgRef, width, height, selection, setSelection, setStep });
       h.drawMembers({
         svgRef,
         width,
@@ -42,9 +36,29 @@ export default function Orbits({ width, height, number, setNumber }) {
         bodies,
         setBodies,
       });
-      h.drawSun({ svgRef, width, height, selection, setSelection, setBodies });
+      h.drawSun({
+        svgRef,
+        width,
+        height,
+        selection,
+        setSelection,
+        setBodies,
+        step,
+        setStep,
+      });
     },
-    [svgRef, width, height, selection, setSelection, number, bodies, setBodies]
+    [
+      svgRef,
+      width,
+      height,
+      selection,
+      setSelection,
+      number,
+      bodies,
+      setBodies,
+      step,
+      setStep,
+    ]
   );
 
   // rebuild if width, height, or number change
@@ -63,9 +77,37 @@ export default function Orbits({ width, height, number, setNumber }) {
   // this is its own effect because it has to come after the simulation
   // so the sun in the back is on top of the planets
   useEffect(() => {
-    h.drawOrbits({ svgRef, width, height, selection, setSelection });
-    h.drawSun({ svgRef, width, height, selection, setSelection });
-  }, [width, height, selection, setSelection]);
+    h.drawOrbits({
+      svgRef,
+      width,
+      height,
+      selection,
+      setSelection,
+      step,
+      setStep,
+    });
+    h.drawMembers({
+      svgRef,
+      width,
+      height,
+      selection,
+      setSelection,
+      number,
+      bodies,
+      setBodies,
+    });
+    h.drawSun({
+      svgRef,
+      width,
+      height,
+      selection,
+      setSelection,
+      step,
+      setStep,
+    });
+
+    // todo - should drawMembers just be here now and we also change if the step changes?
+  }, [width, height, selection, setSelection, step, setStep]);
 
   // if the animation changes
   useEffect(() => {
@@ -94,13 +136,25 @@ export default function Orbits({ width, height, number, setNumber }) {
         />
       </div>
       <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
-        <Selection
+        {selection && (
+          <Selection
+            svgRef={svgRef}
+            selection={selection}
+            setSelection={setSelection}
+            bodies={bodies}
+            step={step}
+            setStep={setStep}
+          />
+        )}
+        <Steps
           svgRef={svgRef}
           selection={selection}
           setSelection={setSelection}
           bodies={bodies}
           expanded={expanded}
           setExpanded={setExpanded}
+          step={step}
+          setStep={setStep}
         />
       </div>
     </>

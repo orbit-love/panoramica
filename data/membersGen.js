@@ -5,7 +5,8 @@ import * as d3 from "d3";
 
 // generate members for a specific orbit level
 // number is how many members
-const members = function ({ number, rand, orbit }) {
+const members = function ({ number, rand, orbit, memberAttributes = {} }) {
+  var { love, reach, name, firstName, description } = memberAttributes;
   const levelData = levelsData[orbit.number - 1];
   const {
     rxFuzz = 0.1,
@@ -44,37 +45,41 @@ const members = function ({ number, rand, orbit }) {
     .range([l1, l2, l3]);
 
   for (var i = 0; i < memberCount; i++) {
-    const name = faker.name.firstName() + " " + faker.name.jobDescriptor();
-    const love = loveScale2(loveScale(rand()));
-    const reach = reachScale2(reachScale(rand()));
+    var thisFirstName = firstName || faker.name.firstName();
+    var thisName = name || thisFirstName;
+    var thisLove = love || loveScale2(loveScale(rand()));
+    var thisReach = reach || reachScale2(reachScale(rand()));
     const ofInterest =
       (love === 3 && reach === 1) || (love === 1 && reach === 3);
-    var description = null;
-    if (love === 3 && reach === 1) {
-      description =
-        "This member has high love and low reach relative to others in their orbit level. Connect them with more members of the community to increase their gravity.";
-    }
-    if (love === 1 && reach === 3) {
-      description =
-        "This member has high reach and low love relative to others in their orbit level. Offer deeper ways to contribute and take on ownership.";
+    var thisDescription = description;
+    if (description === null) {
+      if (love === 3 && reach === 1) {
+        thisDescription =
+          "This member has high love and low reach relative to others in their orbit level. Connect them with more members of the community to increase their gravity.";
+      }
+      if (love === 1 && reach === 3) {
+        thisDescription =
+          "This member has high reach and low love relative to others in their orbit level. Offer deeper ways to contribute and take on ownership.";
+      }
     }
     var member = {
       i,
-      id: c.slugify(name),
+      id: c.slugify(thisName),
       orbit,
-      name,
-      love,
-      reach,
+      name: thisName,
+      firstName: thisFirstName,
+      love: thisLove,
+      reach: thisReach,
       ofInterest,
-      description,
-      fontSize: 14,
+      description: thisDescription,
+      fontSize: 18,
       level: levelData.number,
       rx: c.fuzz(rand, orbit.rx, rxFuzz),
       ry: c.fuzz(rand, orbit.ry, ryFuzz),
       position: c.fuzz(rand, positionScale(i), positionFuzz),
-      planetSize: planetSizeScale(reach),
-      planetColor: planetColorScale(love),
-      initials: c.initials(name),
+      planetSize: planetSizeScale(thisReach),
+      planetColor: planetColorScale(thisLove),
+      initials: c.initials(thisName),
     };
     array.push(member);
   }

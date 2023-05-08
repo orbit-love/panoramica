@@ -50,7 +50,7 @@ export default function Member({ selection }) {
         </div>
       </div>
       {selection.description && (
-        <div className="text-sm leading-tight">{selection.description}</div>
+        <div className="leading-tight">{selection.description}</div>
       )}
     </>
   );
