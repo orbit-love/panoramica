@@ -74,35 +74,44 @@ export default function Steps({
   step,
   setStep,
 }) {
+  const key = 0;
   var steps = [
-    <WelcomeStep setSelection={setSelection} />,
-    <MissionStep setSelection={setSelection} />,
+    <WelcomeStep key={key} setSelection={setSelection} />,
+    <MissionStep key={(key += 1)} setSelection={setSelection} />,
     <OrbitStep
       name="Advocates"
+      key={(key += 1)}
       icon={<Orbit1Icon />}
       component={<Orbit1Text />}
       setSelection={setSelection}
     />,
     <OrbitStep
       name="Contributors"
+      key={(key += 1)}
       icon={<Orbit2Icon />}
       component={<Orbit2Text />}
       setSelection={setSelection}
     />,
     <OrbitStep
       name="Participants"
+      key={(key += 1)}
       icon={<Orbit3Icon />}
       component={<Orbit3Text />}
       setSelection={setSelection}
     />,
     <OrbitStep
       name="Explorers"
+      key={(key += 1)}
       icon={<Orbit4Icon />}
       component={<Orbit4Text />}
       setSelection={setSelection}
     />,
-    <MemberO4Step bodies={bodies} setSelection={setSelection} />,
-    <FinalStep setSelection={setSelection} />,
+    <MemberO4Step
+      key={(key += 1)}
+      bodies={bodies}
+      setSelection={setSelection}
+    />,
+    <FinalStep key={(key += 1)} setSelection={setSelection} />,
   ];
 
   const totalSteps = steps.length;
