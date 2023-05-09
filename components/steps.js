@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
-import c from "lib/common";
+import * as d3 from "d3";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import c from "lib/common";
+import helper from "lib/orbitHelper";
 import Buttons from "components/steps/buttons";
 
 import WelcomeText from "content/steps/welcome.mdx";
@@ -17,15 +20,22 @@ import Orbit2Icon from "components/icons/orbit_2";
 import Orbit3Icon from "components/icons/orbit_3";
 import Orbit4Icon from "components/icons/orbit_4";
 
-const MemberO4Step = function ({ bodies, setSelection }) {
+const WelcomeStep = function ({ setSelection }) {
   useEffect(() => {
-    setSelection(bodies[0]);
-  }, []);
+    setSelection(null);
+  }, [setSelection]);
 
-  return <MemberO4Text />;
+  return <WelcomeText />;
 };
 
-// const classes = "text-2xl";
+const MissionStep = function ({ setSelection }) {
+  useEffect(() => {
+    setSelection({ name: "Mission" });
+  }, [setSelection]);
+
+  return <MissionText />;
+};
+
 const OrbitStep = function ({ name, icon, component, setSelection }) {
   useEffect(() => {
     setSelection({ name });
@@ -42,24 +52,22 @@ const OrbitStep = function ({ name, icon, component, setSelection }) {
   );
 };
 
-const MissionStep = function ({ setSelection }) {
+const MemberO4Step = function ({ bodies, setSelection }) {
   useEffect(() => {
-    setSelection({ name: "Mission" });
-  }, [setSelection]);
+    const member = bodies[0];
+    setSelection(member);
+    helper.highlightSelection(`g.body-group#${member.id}`);
+  }, []);
 
-  return <MissionText />;
+  return <MemberO4Text />;
 };
 
-const WelcomeStep = function ({ setSelection }) {
+const FinalStep = function ({ svgRef, setSelection }) {
   useEffect(() => {
+    const svg = d3.select(svgRef.current);
+    helper.clearSelection(svg);
     setSelection(null);
-  }, [setSelection]);
-
-  return <WelcomeText />;
-};
-
-const FinalStep = function ({ setSelection }) {
-  useEffect(() => {}, [setSelection]);
+  }, []);
 
   return <FinalText />;
 };
@@ -111,7 +119,7 @@ export default function Steps({
       bodies={bodies}
       setSelection={setSelection}
     />,
-    <FinalStep key={(key += 1)} setSelection={setSelection} />,
+    <FinalStep key={(key += 1)} svgRef={svgRef} setSelection={setSelection} />,
   ];
 
   const totalSteps = steps.length;
