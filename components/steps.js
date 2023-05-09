@@ -52,8 +52,10 @@ const OrbitStep = function ({ name, icon, component, setSelection }) {
   );
 };
 
-const MemberO4Step = function ({ bodies, setSelection }) {
+const MemberO4Step = function ({ svgRef, bodies, setSelection }) {
   useEffect(() => {
+    const svg = d3.select(svgRef.current);
+    helper.clearSelection(svg);
     const member = bodies[0];
     setSelection(member);
     helper.highlightSelection(`g.body-group#${member.id}`);
@@ -118,6 +120,7 @@ export default function Steps({
       key={(key += 1)}
       bodies={bodies}
       setSelection={setSelection}
+      svgRef={svgRef}
     />,
     <FinalStep key={(key += 1)} svgRef={svgRef} setSelection={setSelection} />,
   ];

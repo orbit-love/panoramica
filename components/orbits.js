@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import c from "lib/common";
-import h from "lib/orbitHelper";
+import helper from "lib/orbitHelper";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Selection from "components/selection";
 import Controls from "components/controls";
@@ -24,9 +24,16 @@ export default function Orbits({ width, height, number, setNumber }) {
 
   const build = useCallback(
     function () {
-      h.resetEverything({ svgRef, width, height, setSelection });
-      h.drawOrbits({ svgRef, width, height, selection, setSelection, setStep });
-      h.drawMembers({
+      helper.resetEverything({ svgRef, width, height, setSelection });
+      helper.drawOrbits({
+        svgRef,
+        width,
+        height,
+        selection,
+        setSelection,
+        setStep,
+      });
+      helper.drawMembers({
         svgRef,
         width,
         height,
@@ -36,7 +43,7 @@ export default function Orbits({ width, height, number, setNumber }) {
         bodies,
         setBodies,
       });
-      h.drawSun({
+      helper.drawSun({
         svgRef,
         width,
         height,
@@ -77,7 +84,7 @@ export default function Orbits({ width, height, number, setNumber }) {
   // this is its own effect because it has to come after the simulation
   // so the sun in the back is on top of the planets
   useEffect(() => {
-    h.drawOrbits({
+    helper.drawOrbits({
       svgRef,
       width,
       height,
@@ -86,7 +93,7 @@ export default function Orbits({ width, height, number, setNumber }) {
       step,
       setStep,
     });
-    h.drawMembers({
+    helper.drawMembers({
       svgRef,
       width,
       height,
@@ -96,7 +103,7 @@ export default function Orbits({ width, height, number, setNumber }) {
       bodies,
       setBodies,
     });
-    h.drawSun({
+    helper.drawSun({
       svgRef,
       width,
       height,
@@ -112,9 +119,9 @@ export default function Orbits({ width, height, number, setNumber }) {
   // if the animation changes
   useEffect(() => {
     if (animate) {
-      h.startAnimation({ svgRef });
+      helper.startAnimation({ svgRef });
     } else {
-      h.stopAnimation({ svgRef });
+      helper.stopAnimation({ svgRef });
     }
   }, [animate, number, width, height, prevNumber, prevWidth, prevHeight]);
 
