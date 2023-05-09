@@ -21,13 +21,16 @@ export default function Orbits({ width, height, number, setNumber }) {
   const [selection, setSelection] = useState(null);
   const [step, setStep] = useState(1);
   const [bodies, setBodies] = useState([]);
+  const [levels, setLevels] = useState([]);
 
   // rebuild if width, height, or number change
   useEffect(() => {
     if (bodies.length === 0) {
       // set the bodies, triggering a render and another round of hooks
       console.log("Generating bodies and preparing canvas...");
-      setBodies(helper.generateBodies({ width, height, number }));
+      const newLevels = helper.generateLevels({ width, height });
+      setLevels(newLevels);
+      setBodies(helper.generateBodies({ levels: newLevels, number }));
       helper.resetEverything({ svgRef, width, height, setSelection });
     } else if (
       number !== prevNumber ||
@@ -38,7 +41,9 @@ export default function Orbits({ width, height, number, setNumber }) {
       // clear the canvas and re-prepare the data
       console.log("Change detected, clearing canvas and rebuilding bodies");
       helper.resetEverything({ svgRef, width, height, setSelection });
-      setBodies(helper.generateBodies({ width, height, number }));
+      const newLevels = helper.generateLevels({ width, height });
+      setLevels(newLevels);
+      setBodies(helper.generateBodies({ levels: newLevels, number }));
     }
     // the next hook will pick up here to draw the objects
   }, [width, height, number, prevNumber, prevWidth, prevHeight, bodies]);
@@ -52,17 +57,14 @@ export default function Orbits({ width, height, number, setNumber }) {
     // these are drawn in order of back to front
     helper.drawOrbits({
       svgRef,
-      width,
-      height,
       selection,
       setSelection,
       step,
       setStep,
+      levels,
     });
     helper.drawMembers({
       svgRef,
-      width,
-      height,
       selection,
       setSelection,
       number,
@@ -77,8 +79,19 @@ export default function Orbits({ width, height, number, setNumber }) {
       setSelection,
       step,
       setStep,
+      levels,
     });
-  }, [width, height, selection, setSelection, step, setStep, number, bodies]);
+  }, [
+    width,
+    height,
+    selection,
+    setSelection,
+    step,
+    setStep,
+    number,
+    bodies,
+    levels,
+  ]);
 
   // if the animation changes
   useEffect(() => {
@@ -122,10 +135,12 @@ export default function Orbits({ width, height, number, setNumber }) {
           selection={selection}
           setSelection={setSelection}
           bodies={bodies}
+          setBodies={setBodies}
           expanded={expanded}
           setExpanded={setExpanded}
           step={step}
           setStep={setStep}
+          levels={levels}
         />
       </div>
     </>

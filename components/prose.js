@@ -32,7 +32,7 @@ export default function Prose({ children }) {
     "prose-h2:text-3xl",
     "prose-h3:text-2xl",
     "prose-h4:text-xl",
-    "prose-li:my-2",
+    "prose-li:my-1",
   ];
   return <div className={proseClasses.join(" ")}>{children}</div>;
 }

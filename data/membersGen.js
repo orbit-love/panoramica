@@ -6,7 +6,7 @@ import * as d3 from "d3";
 // generate members for a specific orbit level
 // number is how many members
 const members = function ({ number, rand, orbit, memberAttributes = {} }) {
-  var { love, reach, name, firstName, description } = memberAttributes;
+  var { love, reach, name, firstName } = memberAttributes;
   const levelData = levelsData[orbit.number - 1];
   const {
     rxFuzz = 0.1,

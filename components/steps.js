@@ -6,7 +6,9 @@ import Buttons from "components/steps/buttons";
 
 import WelcomeText from "content/steps/welcome.mdx";
 import MissionText from "content/steps/mission.mdx";
+import MemberO3Text from "content/steps/member-o3.mdx";
 import MemberO4Text from "content/steps/member-o4.mdx";
+
 import Orbit1Text from "content/steps/orbit1.mdx";
 import Orbit2Text from "content/steps/orbit2.mdx";
 import Orbit3Text from "content/steps/orbit3.mdx";
@@ -50,6 +52,16 @@ const OrbitStep = function ({ name, icon, component, setSelection }) {
   );
 };
 
+const MemberO3Step = function ({ levels, bodies, setBodies, setSelection }) {
+  useEffect(() => {
+    const member = bodies[0];
+    setSelection(member);
+    setBodies(bodies);
+  }, [levels, bodies, setBodies, setSelection]);
+
+  return <MemberO3Text />;
+};
+
 const MemberO4Step = function ({ bodies, setSelection }) {
   useEffect(() => {
     const member = bodies[0];
@@ -70,12 +82,13 @@ const FinalStep = function ({ setSelection }) {
 export default function Steps({
   svgRef,
   bodies,
-  selection,
+  setBodies,
   setSelection,
   expanded,
   setExpanded,
   step,
   setStep,
+  levels,
 }) {
   const key = 0;
   var steps = [
@@ -112,6 +125,14 @@ export default function Steps({
     <MemberO4Step
       key={(key += 1)}
       bodies={bodies}
+      setSelection={setSelection}
+      svgRef={svgRef}
+    />,
+    <MemberO3Step
+      key={(key += 1)}
+      levels={levels}
+      bodies={bodies}
+      setBodies={setBodies}
       setSelection={setSelection}
       svgRef={svgRef}
     />,
