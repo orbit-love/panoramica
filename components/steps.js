@@ -20,7 +20,7 @@ import Orbit4Icon from "components/icons/orbit_4";
 const MemberO4Step = function ({ bodies, setSelection }) {
   useEffect(() => {
     setSelection(bodies[0]);
-  }, [bodies, setSelection]);
+  }, []);
 
   return <MemberO4Text />;
 };
