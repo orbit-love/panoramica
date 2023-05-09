@@ -52,22 +52,17 @@ const OrbitStep = function ({ name, icon, component, setSelection }) {
   );
 };
 
-const MemberO4Step = function ({ svgRef, bodies, setSelection }) {
+const MemberO4Step = function ({ bodies, setSelection }) {
   useEffect(() => {
-    const svg = d3.select(svgRef.current);
-    helper.clearSelection(svg);
     const member = bodies[0];
     setSelection(member);
-    helper.highlightSelection(`g.body-group#${member.id}`);
   }, []);
 
   return <MemberO4Text />;
 };
 
-const FinalStep = function ({ svgRef, setSelection }) {
+const FinalStep = function ({ setSelection }) {
   useEffect(() => {
-    const svg = d3.select(svgRef.current);
-    helper.clearSelection(svg);
     setSelection(null);
   }, []);
 

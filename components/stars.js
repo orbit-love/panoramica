@@ -5,7 +5,7 @@ import gsap from "gsap";
 export default function Starscape({
   densityRatio = 0.4,
   sizeLimit = 5,
-  defaultAlpha = 0.1,
+  defaultAlpha = 0.2,
   scaleLimit = 2,
   proximityRatio = 0.1,
 }) {

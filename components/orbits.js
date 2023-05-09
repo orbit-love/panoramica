@@ -22,68 +22,37 @@ export default function Orbits({ width, height, number, setNumber }) {
   const [step, setStep] = useState(1);
   const [bodies, setBodies] = useState([]);
 
-  const build = useCallback(
-    function () {
-      helper.resetEverything({ svgRef, width, height, setSelection });
-      helper.drawOrbits({
-        svgRef,
-        width,
-        height,
-        selection,
-        setSelection,
-        setStep,
-      });
-      helper.drawMembers({
-        svgRef,
-        width,
-        height,
-        selection,
-        setSelection,
-        number,
-        bodies,
-        setBodies,
-      });
-      helper.drawSun({
-        svgRef,
-        width,
-        height,
-        selection,
-        setSelection,
-        setBodies,
-        step,
-        setStep,
-      });
-    },
-    [
-      svgRef,
-      width,
-      height,
-      selection,
-      setSelection,
-      number,
-      bodies,
-      setBodies,
-      step,
-      setStep,
-    ]
-  );
-
   // rebuild if width, height, or number change
   useEffect(() => {
     const svg = d3.select(svgRef.current);
-    if (
-      svg.selectAll("*").size() === 0 ||
-      number !== prevNumber ||
-      width !== prevWidth ||
-      height != prevHeight
-    ) {
-      build();
+    if (bodies.length === 0) {
+      console.log("Generating bodies...");
+      // set the bodies, triggering a render and another round of hooks
+      setBodies(helper.generateBodies({ width, height, number }));
+    } else {
+      // if the canvas is empty or major parameters have changed
+      // clear the canvas and re-prepare the data
+      if (
+        svg.selectAll("*").size() === 0 ||
+        number !== prevNumber ||
+        width !== prevWidth ||
+        height !== prevHeight
+      ) {
+        console.log("Change detected, clearing canvas and rebuilding bodies");
+        helper.resetEverything({ svgRef, width, height, setSelection });
+        setBodies(helper.generateBodies({ width, height, number }));
+      }
+      // the next hook will pick up here to draw the objects
     }
-  }, [width, height, build, number, prevNumber, prevWidth, prevHeight]);
+  }, [width, height, number, prevNumber, prevWidth, prevHeight, bodies]);
 
-  // this is its own effect because it has to come after the simulation
-  // so the sun in the back is on top of the planets
+  // when selection or steps change, run this; data should be recomputed first
   useEffect(() => {
+    if (bodies.length === 0) {
+      return;
+    }
+    console.log(`Drawing ${bodies.length} bodies...`);
+    // these are drawn in order of back to front
     helper.drawOrbits({
       svgRef,
       width,
@@ -112,9 +81,7 @@ export default function Orbits({ width, height, number, setNumber }) {
       step,
       setStep,
     });
-
-    // todo - should drawMembers just be here now and we also change if the step changes?
-  }, [width, height, selection, setSelection, step, setStep]);
+  }, [width, height, selection, setSelection, step, setStep, number, bodies]);
 
   // if the animation changes
   useEffect(() => {
