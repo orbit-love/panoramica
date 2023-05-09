@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function LoveIcon({ value, classes }) {
   var markup = [];
   var icon = "heart";
-  var fontSize = "21px";
+  var fontSize = "24px";
   markup.push(
     <FontAwesomeIcon
       key={1}

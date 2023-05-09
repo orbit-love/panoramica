@@ -31,21 +31,21 @@ export default function Member({ selection }) {
           {selection.level === 3 && <Orbit3 classes={classes} />}
           {selection.level === 4 && <Orbit4 classes={classes} />}
         </div>
-        <div className="text-xl font-semibold">{selection.name}</div>
+        <div className="text-2xl font-semibold">{selection.name}</div>
       </div>
       <div className="flex items-center my-4 space-x-6 text-lg">
         <div
           title={loveTitle}
           className="flex items-center space-x-2 cursor-help"
         >
-          <span className="text-sm font-bold">Love</span>
+          <span className="font-bold">Love</span>
           <Love value={selection.love} classes=""></Love>
         </div>
         <div
           title={reachTitle}
           className="flex items-center space-x-2 cursor-help"
         >
-          <span className="text-sm font-bold">Reach</span>
+          <span className="font-bold">Reach</span>
           <Reach value={selection.reach} classes=""></Reach>
         </div>
       </div>

@@ -2,14 +2,14 @@ import React from "react";
 import c from "lib/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function ReachIcon({ value, classes }) {
+export default function ReachIcon({ value }) {
   var markup = [];
   var selectedColor = c.indigo400;
   markup.push(
     <FontAwesomeIcon
       key={1}
       icon="circle"
-      style={{ opacity: 1, color: selectedColor, fontSize: "8px" }}
+      style={{ opacity: 1, color: selectedColor, fontSize: "12px" }}
     />
   );
   markup.push(
@@ -18,7 +18,7 @@ export default function ReachIcon({ value, classes }) {
       icon="circle"
       style={{
         opacity: value > 1 ? 1 : 0.6,
-        fontSize: "15px",
+        fontSize: "18px",
         color: value > 1 ? selectedColor : c.indigo900,
       }}
     />
@@ -29,7 +29,7 @@ export default function ReachIcon({ value, classes }) {
       icon="circle"
       style={{
         opacity: value > 2 ? 1 : 0.6,
-        fontSize: "23px",
+        fontSize: "25px",
         color: value == 3 ? selectedColor : c.indigo900,
       }}
     />

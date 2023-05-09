@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
-import * as d3 from "d3";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
-import helper from "lib/orbitHelper";
 import Buttons from "components/steps/buttons";
 
 import WelcomeText from "content/steps/welcome.mdx";
@@ -56,7 +54,7 @@ const MemberO4Step = function ({ bodies, setSelection }) {
   useEffect(() => {
     const member = bodies[0];
     setSelection(member);
-  }, []);
+  }, [bodies, setSelection]);
 
   return <MemberO4Text />;
 };
@@ -64,7 +62,7 @@ const MemberO4Step = function ({ bodies, setSelection }) {
 const FinalStep = function ({ setSelection }) {
   useEffect(() => {
     setSelection(null);
-  }, []);
+  }, [setSelection]);
 
   return <FinalText />;
 };
