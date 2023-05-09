@@ -50,18 +50,8 @@ const members = function ({ number, rand, orbit, memberAttributes = {} }) {
     var thisLove = love || loveScale2(loveScale(rand()));
     var thisReach = reach || reachScale2(reachScale(rand()));
     const ofInterest =
-      (love === 3 && reach === 1) || (love === 1 && reach === 3);
-    var thisDescription = description;
-    if (description === null) {
-      if (love === 3 && reach === 1) {
-        thisDescription =
-          "This member has high love and low reach relative to others in their orbit level. Connect them with more members of the community to increase their gravity.";
-      }
-      if (love === 1 && reach === 3) {
-        thisDescription =
-          "This member has high reach and low love relative to others in their orbit level. Offer deeper ways to contribute and take on ownership.";
-      }
-    }
+      (thisLove === 3 && thisReach === 1) ||
+      (thisLove === 1 && thisReach === 3);
     var member = {
       i,
       id: c.slugify(thisName),
@@ -71,7 +61,6 @@ const members = function ({ number, rand, orbit, memberAttributes = {} }) {
       love: thisLove,
       reach: thisReach,
       ofInterest,
-      description: thisDescription,
       fontSize: 18,
       level: levelData.number,
       rx: c.fuzz(rand, orbit.rx, rxFuzz),

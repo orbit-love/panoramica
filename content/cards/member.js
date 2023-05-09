@@ -22,6 +22,14 @@ export default function Member({ selection }) {
     4: "Orbit Level 4: Explorers",
   };
   var orbitLevelTitle = orbitLevels[selection.level];
+
+  var summary;
+  if (selection.love === 3 && selection.reach === 1) {
+    summary = `${selection.name} has high love and low reach relative to others in their orbit level. Help ${selection.name} meet other members and grow their network.`;
+  }
+  if (selection.love === 1 && selection.reach === 3) {
+    summary = `${selection.name} has high reach and low love relative to others in their orbit level. Help ${selection.name} find deeper and more frequent ways to contribute.`;
+  }
   return (
     <>
       <div className="flex items-baseline space-x-2">
@@ -49,9 +57,7 @@ export default function Member({ selection }) {
           <Reach value={selection.reach} classes=""></Reach>
         </div>
       </div>
-      {selection.description && (
-        <div className="leading-tight">{selection.description}</div>
-      )}
+      {summary}
     </>
   );
 }

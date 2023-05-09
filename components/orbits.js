@@ -24,26 +24,23 @@ export default function Orbits({ width, height, number, setNumber }) {
 
   // rebuild if width, height, or number change
   useEffect(() => {
-    const svg = d3.select(svgRef.current);
     if (bodies.length === 0) {
-      console.log("Generating bodies...");
       // set the bodies, triggering a render and another round of hooks
+      console.log("Generating bodies and preparing canvas...");
       setBodies(helper.generateBodies({ width, height, number }));
-    } else {
-      // if the canvas is empty or major parameters have changed
+      helper.resetEverything({ svgRef, width, height, setSelection });
+    } else if (
+      number !== prevNumber ||
+      width !== prevWidth ||
+      height !== prevHeight
+    ) {
+      // if major parameters have changed
       // clear the canvas and re-prepare the data
-      if (
-        svg.selectAll("*").size() === 0 ||
-        number !== prevNumber ||
-        width !== prevWidth ||
-        height !== prevHeight
-      ) {
-        console.log("Change detected, clearing canvas and rebuilding bodies");
-        helper.resetEverything({ svgRef, width, height, setSelection });
-        setBodies(helper.generateBodies({ width, height, number }));
-      }
-      // the next hook will pick up here to draw the objects
+      console.log("Change detected, clearing canvas and rebuilding bodies");
+      helper.resetEverything({ svgRef, width, height, setSelection });
+      setBodies(helper.generateBodies({ width, height, number }));
     }
+    // the next hook will pick up here to draw the objects
   }, [width, height, number, prevNumber, prevWidth, prevHeight, bodies]);
 
   // when selection or steps change, run this; data should be recomputed first
