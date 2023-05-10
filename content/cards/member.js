@@ -57,6 +57,7 @@ export default function Member({ selection }) {
           <Reach value={selection.reach} classes=""></Reach>
         </div>
       </div>
+      {/* {!summary && <div className="py-8" />} */}
       {summary && <div className="leading-tight">{summary}</div>}
     </>
   );

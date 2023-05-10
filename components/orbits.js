@@ -121,24 +121,14 @@ export default function Orbits({ width, height, number, setNumber }) {
         ></svg>
       </div>
       <div className="flex absolute bottom-0 left-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
-        <Controls
-          animate={animate}
-          setAnimate={setAnimate}
-          number={number}
-          setNumber={setNumber}
-        />
-      </div>
-      <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
-        {selection && (
-          <Selection
-            svgRef={svgRef}
-            selection={selection}
-            setSelection={setSelection}
-            members={members}
-            step={step}
-            setStep={setStep}
+        <div className="flex">
+          <Controls
+            animate={animate}
+            setAnimate={setAnimate}
+            number={number}
+            setNumber={setNumber}
           />
-        )}
+        </div>
         {members && (
           <Steps
             svgRef={svgRef}
@@ -148,6 +138,18 @@ export default function Orbits({ width, height, number, setNumber }) {
             setMembers={setMembers}
             expanded={expanded}
             setExpanded={setExpanded}
+            step={step}
+            setStep={setStep}
+          />
+        )}
+      </div>
+      <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
+        {selection && (
+          <Selection
+            svgRef={svgRef}
+            selection={selection}
+            setSelection={setSelection}
+            members={members}
             step={step}
             setStep={setStep}
           />

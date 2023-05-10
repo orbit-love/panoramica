@@ -231,13 +231,12 @@ export default function Steps({
     );
   } else {
     return (
-      <div className="flex justify-end">
-        <button
-          onClick={() => setExpanded(true)}
-          className={`pointer-events-auto text-[${c.whiteColor}] bg-[${c.panelColor}] rounded py-4 px-5`}
-        >
-          <FontAwesomeIcon icon="lightbulb"></FontAwesomeIcon>
-        </button>
+      <div className={`bg-opacity-90 text-[#eef2ff] bg-[#1D1640] rounded`}>
+        <div className="flex relative py-4 px-5 pointer-events-auto">
+          <button onClick={() => setExpanded(true)} className="btn">
+            <FontAwesomeIcon icon="lightbulb"></FontAwesomeIcon>
+          </button>
+        </div>
       </div>
     );
   }
