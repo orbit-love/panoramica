@@ -34,10 +34,10 @@ export default function Member({ selection }) {
     <>
       <div className="flex items-baseline space-x-2">
         <div className="cursor-help" title={orbitLevelTitle}>
-          {selection.level === 1 && <Orbit1 classes={classes} />}
-          {selection.level === 2 && <Orbit2 classes={classes} />}
-          {selection.level === 3 && <Orbit3 classes={classes} />}
-          {selection.level === 4 && <Orbit4 classes={classes} />}
+          {selection.level.number === 1 && <Orbit1 classes={classes} />}
+          {selection.level.number === 2 && <Orbit2 classes={classes} />}
+          {selection.level.number === 3 && <Orbit3 classes={classes} />}
+          {selection.level.number === 4 && <Orbit4 classes={classes} />}
         </div>
         <div className="text-2xl font-semibold">{selection.name}</div>
       </div>

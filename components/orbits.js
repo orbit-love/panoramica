@@ -19,18 +19,20 @@ export default function Orbits({ width, height, number, setNumber }) {
   const prevWidth = c.usePrevious(width);
   const prevHeight = c.usePrevious(height);
   const [selection, setSelection] = useState(null);
-  const [step, setStep] = useState(1);
-  const [bodies, setBodies] = useState([]);
+  const [step, setStep] = useState(7);
+  const [members, setMembers] = useState(null);
   const [levels, setLevels] = useState([]);
 
   // rebuild if width, height, or number change
   useEffect(() => {
-    if (bodies.length === 0) {
-      // set the bodies, triggering a render and another round of hooks
-      console.log("Generating bodies and preparing canvas...");
+    if (!members) {
+      // set the members, triggering a render and another round of hooks
+      console.log("Generating members and preparing canvas...");
       const newLevels = helper.generateLevels({ width, height });
       setLevels(newLevels);
-      setBodies(helper.generateBodies({ levels: newLevels, number }));
+      setMembers(
+        helper.generateMembers({ levels: newLevels, advocateCount: number })
+      );
       helper.resetEverything({ svgRef, width, height, setSelection });
     } else if (
       number !== prevNumber ||
@@ -39,23 +41,25 @@ export default function Orbits({ width, height, number, setNumber }) {
     ) {
       // if major parameters have changed
       // clear the canvas and re-prepare the data
-      console.log("Change detected, clearing canvas and rebuilding bodies");
+      console.log("Change detected, clearing canvas and rebuilding members");
       helper.resetEverything({ svgRef, width, height, setSelection });
       const newLevels = helper.generateLevels({ width, height });
       setLevels(newLevels);
-      setBodies(helper.generateBodies({ levels: newLevels, number }));
+      setMembers(
+        helper.generateMembers({ levels: newLevels, advocateCount: number })
+      );
     }
     // the next hook will pick up here to draw the objects
-  }, [width, height, number, prevNumber, prevWidth, prevHeight, bodies]);
+  }, [width, height, number, prevNumber, prevWidth, prevHeight, members]);
 
   // when selection or steps change, run this; data should be recomputed first
   useEffect(() => {
-    if (bodies.length === 0) {
+    if (!members) {
       return;
     }
-    console.log(`Drawing ${bodies.length} bodies...`);
+    console.log(`Drawing ${members.length()} members...`);
     // these are drawn in order of back to front
-    helper.drawOrbits({
+    helper.drawLevels({
       svgRef,
       selection,
       setSelection,
@@ -68,8 +72,8 @@ export default function Orbits({ width, height, number, setNumber }) {
       selection,
       setSelection,
       number,
-      bodies,
-      setBodies,
+      members,
+      setMembers,
     });
     helper.drawSun({
       svgRef,
@@ -89,7 +93,7 @@ export default function Orbits({ width, height, number, setNumber }) {
     step,
     setStep,
     number,
-    bodies,
+    members,
     levels,
   ]);
 
@@ -125,23 +129,25 @@ export default function Orbits({ width, height, number, setNumber }) {
             svgRef={svgRef}
             selection={selection}
             setSelection={setSelection}
-            bodies={bodies}
+            members={members}
             step={step}
             setStep={setStep}
           />
         )}
-        <Steps
-          svgRef={svgRef}
-          selection={selection}
-          setSelection={setSelection}
-          bodies={bodies}
-          setBodies={setBodies}
-          expanded={expanded}
-          setExpanded={setExpanded}
-          step={step}
-          setStep={setStep}
-          levels={levels}
-        />
+        {members && (
+          <Steps
+            svgRef={svgRef}
+            selection={selection}
+            setSelection={setSelection}
+            members={members}
+            setMembers={setMembers}
+            expanded={expanded}
+            setExpanded={setExpanded}
+            step={step}
+            setStep={setStep}
+            levels={levels}
+          />
+        )}
       </div>
     </>
   );

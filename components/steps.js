@@ -52,21 +52,23 @@ const OrbitStep = function ({ name, icon, component, setSelection }) {
   );
 };
 
-const MemberO3Step = function ({ levels, bodies, setBodies, setSelection }) {
+const MemberO3Step = function ({ levels, members, setMembers, setSelection }) {
   useEffect(() => {
-    const member = bodies[0];
+    // reset selection in case we lost it
+    const member = members.find("jeri");
     setSelection(member);
-    setBodies(bodies);
-  }, [levels, bodies, setBodies, setSelection]);
+
+    members.changeLevel({ id: "jeri", levelNumber: 3 });
+  }, [levels, members, setMembers, setSelection]);
 
   return <MemberO3Text />;
 };
 
-const MemberO4Step = function ({ bodies, setSelection }) {
+const MemberO4Step = function ({ members, setSelection }) {
   useEffect(() => {
-    const member = bodies[0];
+    const member = members.find("jeri");
     setSelection(member);
-  }, [bodies, setSelection]);
+  }, [members, setSelection]);
 
   return <MemberO4Text />;
 };
@@ -81,8 +83,8 @@ const FinalStep = function ({ setSelection }) {
 
 export default function Steps({
   svgRef,
-  bodies,
-  setBodies,
+  members,
+  setMembers,
   setSelection,
   expanded,
   setExpanded,
@@ -124,15 +126,15 @@ export default function Steps({
     />,
     <MemberO4Step
       key={(key += 1)}
-      bodies={bodies}
+      members={members}
       setSelection={setSelection}
       svgRef={svgRef}
     />,
     <MemberO3Step
       key={(key += 1)}
       levels={levels}
-      bodies={bodies}
-      setBodies={setBodies}
+      members={members}
+      setMembers={setMembers}
       setSelection={setSelection}
       svgRef={svgRef}
     />,
