@@ -58,6 +58,7 @@ export default function Orbits({ width, height, number, setNumber }) {
       return;
     }
     console.log(`Drawing ${members.length()} members...`);
+    console.log("Drawing with...", selection);
     // these are drawn in order of back to front
     helper.drawLevels({
       svgRef,

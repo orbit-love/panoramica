@@ -3,6 +3,7 @@ import Member from "content/cards/member";
 
 export default function Selection({ selection }) {
   // hard code hex codes for now so tailwind builds them
+  console.log("Selection rendering...", selection);
   if (selection && selection.level) {
     return (
       <div className={`bg-opacity-90 w-96 text-[#eef2ff] bg-[#1D1640] rounded`}>

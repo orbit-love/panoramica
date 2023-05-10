@@ -1,6 +1,12 @@
 import React from "react";
 
-export default function Buttons({ step, setStep, totalSteps }) {
+export default function Buttons({
+  step,
+  setStep,
+  totalSteps,
+  onPrevious,
+  onNext,
+}) {
   const classes =
     "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 rounded-md";
   return (
@@ -9,6 +15,7 @@ export default function Buttons({ step, setStep, totalSteps }) {
         <button
           className={classes}
           onClick={() => {
+            onPrevious && onPrevious();
             setStep(step - 1);
           }}
         >
@@ -19,6 +26,7 @@ export default function Buttons({ step, setStep, totalSteps }) {
         <button
           className={classes}
           onClick={() => {
+            onNext && onNext();
             setStep(step + 1);
           }}
         >

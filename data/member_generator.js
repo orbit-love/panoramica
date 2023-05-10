@@ -76,16 +76,15 @@ class MemberGenerator {
     return members;
   }
 
-  produceMember({ position = 0, memberAttributes = {} }) {
-    var { love, reach, name } = memberAttributes;
-
+  produceMember({ name, love, reach, position = 0 }) {
     var thisName = name || faker.name.firstName();
+    const id = `${c.slugify(thisName)}`;
+
     var thisLove = love || this.loveScale2(this.loveScale(this.rand()));
     var thisReach = reach || this.reachScale2(this.reachScale(this.rand()));
     const ofInterest =
       (thisLove === 3 && thisReach === 1) ||
       (thisLove === 1 && thisReach === 3);
-    const id = `${c.slugify(thisName)}`;
     var member = {
       id,
       ofInterest,

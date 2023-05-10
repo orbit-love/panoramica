@@ -23,9 +23,9 @@ class MemberCollection {
     this.list.push(...generator.produceMembers({ number }));
   }
 
-  addMember({ level, memberAttributes }) {
+  addMember({ level, ...memberAttributes }) {
     const generator = this.generators[level.number];
-    this.list.push(generator.produceMember({ memberAttributes }));
+    this.list.push(generator.produceMember({ ...memberAttributes }));
   }
 
   find(id) {
@@ -44,7 +44,7 @@ class MemberCollection {
     const newMember = generator.produceMember({
       love,
       reach,
-      position: oldMember.position,
+      position: 0,
     });
     const { rx, ry, planetSize, planetColor, position } = newMember;
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
@@ -54,21 +54,23 @@ const OrbitStep = function ({ name, icon, component, setSelection }) {
 
 const MemberO3Step = function ({ levels, members, setMembers, setSelection }) {
   useEffect(() => {
-    // reset selection in case we lost it
+    console.log("O3 hook");
+    members.changeLevel({ id: "jeri", levelNumber: 3, love: 1, reach: 1 });
     const member = members.find("jeri");
     setSelection(member);
-
-    members.changeLevel({ id: "jeri", levelNumber: 3 });
+    setMembers(members);
   }, [levels, members, setMembers, setSelection]);
 
   return <MemberO3Text />;
 };
 
-const MemberO4Step = function ({ members, setSelection }) {
+const MemberO4Step = function ({ members, setMembers, setSelection }) {
   useEffect(() => {
     const member = members.find("jeri");
+    members.changeLevel({ id: "jeri", levelNumber: 4, love: 2, reach: 2 });
     setSelection(member);
-  }, [members, setSelection]);
+    setMembers(members);
+  }, [members, setMembers, setSelection]);
 
   return <MemberO4Text />;
 };
@@ -127,6 +129,7 @@ export default function Steps({
     <MemberO4Step
       key={(key += 1)}
       members={members}
+      setMembers={setMembers}
       setSelection={setSelection}
       svgRef={svgRef}
     />,
