@@ -1,4 +1,5 @@
-import MemberGenerator from "data/member_generator";
+import * as d3 from "d3";
+import MemberGenerator from "data/memberGenerator";
 
 class MemberCollection {
   constructor({ levels, rand }) {
@@ -57,6 +58,10 @@ class MemberCollection {
     oldMember.planetSize = planetSize;
     oldMember.planetColor = planetColor;
     oldMember.position = position;
+
+    // indicate to drawMembers that the animation and attributes
+    // of this member need to be changed on the next render
+    oldMember.reset = true;
   }
 
   length() {

@@ -1,7 +1,6 @@
-import * as d3 from "d3";
 import c from "lib/common";
 import helper from "lib/orbitHelper";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Selection from "components/selection";
 import Controls from "components/controls";
 import Steps from "components/steps";
@@ -12,6 +11,9 @@ export default function Orbits({ width, height, number, setNumber }) {
     window.matchMedia(`(prefers-reduced-motion: reduce)`) === true ||
     window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
 
+  // change to make developing easier
+  const firstStep = 1;
+
   const svgRef = useRef();
   const [expanded, setExpanded] = useState(true);
   const [animate, setAnimate] = useState(!isReduced);
@@ -19,7 +21,7 @@ export default function Orbits({ width, height, number, setNumber }) {
   const prevWidth = c.usePrevious(width);
   const prevHeight = c.usePrevious(height);
   const [selection, setSelection] = useState(null);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(firstStep);
   const [members, setMembers] = useState(null);
   const [levels, setLevels] = useState([]);
 
@@ -75,6 +77,7 @@ export default function Orbits({ width, height, number, setNumber }) {
       number,
       members,
       setMembers,
+      animate,
     });
     helper.drawSun({
       svgRef,
@@ -96,6 +99,7 @@ export default function Orbits({ width, height, number, setNumber }) {
     number,
     members,
     levels,
+    animate,
   ]);
 
   // if the animation changes
