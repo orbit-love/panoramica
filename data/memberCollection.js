@@ -1,4 +1,3 @@
-import * as d3 from "d3";
 import MemberGenerator from "data/memberGenerator";
 
 class MemberCollection {
@@ -40,14 +39,16 @@ class MemberCollection {
   // level is the new level
   changeLevel({ id, levelNumber, love = 1, reach = 1 }) {
     const oldMember = this.find(id);
+    const { rxSeed, rySeed, position } = oldMember;
     const level = this.levels[levelNumber];
     const generator = this.generators[levelNumber];
     const newMember = generator.produceMember({
       love,
       reach,
-      position: 0,
+      rxSeed,
+      rySeed,
     });
-    const { rx, ry, planetSize, planetColor, position } = newMember;
+    const { rx, ry, planetSize, planetColor } = newMember;
 
     // update the attributes of the old member
     oldMember.level = level;

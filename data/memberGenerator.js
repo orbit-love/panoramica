@@ -66,7 +66,7 @@ class MemberGenerator {
     var members = [];
     for (var i = 0; i < number; i++) {
       const position = c.fuzz(
-        this.rand,
+        this.rand(),
         positionScale(i),
         this.levelDefaults.positionFuzz
       );
@@ -76,7 +76,7 @@ class MemberGenerator {
     return members;
   }
 
-  produceMember({ name, love, reach, position = 0 }) {
+  produceMember({ name, love, reach, rxSeed, rySeed, position = 0 }) {
     var thisName = name || faker.name.firstName();
     const id = `${c.slugify(thisName)}`;
 
@@ -85,16 +85,20 @@ class MemberGenerator {
     const ofInterest =
       (thisLove === 3 && thisReach === 1) ||
       (thisLove === 1 && thisReach === 3);
+    var thisRxSeed = rxSeed || this.rand();
+    var thisRySeed = rySeed || this.rand();
     var member = {
       id,
       ofInterest,
       position,
+      rxSeed: thisRxSeed,
+      rySeed: thisRySeed,
       name: thisName,
       love: thisLove,
       reach: thisReach,
       level: this.level,
-      rx: c.fuzz(this.rand, this.level.rx, this.levelDefaults.rxFuzz),
-      ry: c.fuzz(this.rand, this.level.ry, this.levelDefaults.ryFuzz),
+      rx: c.fuzz(thisRxSeed, this.level.rx, this.levelDefaults.rxFuzz),
+      ry: c.fuzz(thisRySeed, this.level.ry, this.levelDefaults.ryFuzz),
       planetSize: this.planetSizeScale(thisReach),
       planetColor: this.planetColorScale(thisLove),
     };
