@@ -231,7 +231,9 @@ export default function Steps({
     );
   } else {
     return (
-      <div className={`bg-opacity-90 text-[#eef2ff] bg-[#1D1640] rounded`}>
+      <div
+        className={`mr-auto bg-opacity-90 text-[#eef2ff] bg-[#1D1640] rounded`}
+      >
         <div className="flex relative py-4 px-5 pointer-events-auto">
           <button onClick={() => setExpanded(true)} className="btn">
             <FontAwesomeIcon icon="lightbulb"></FontAwesomeIcon>

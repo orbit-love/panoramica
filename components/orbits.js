@@ -17,6 +17,7 @@ export default function Orbits({ width, height, number, setNumber }) {
   const svgRef = useRef();
   const [expanded, setExpanded] = useState(true);
   const [animate, setAnimate] = useState(!isReduced);
+  const [cycle, setCycle] = useState(true);
   const prevNumber = c.usePrevious(number);
   const prevWidth = c.usePrevious(width);
   const prevHeight = c.usePrevious(height);
@@ -24,6 +25,27 @@ export default function Orbits({ width, height, number, setNumber }) {
   const [step, setStep] = useState(firstStep);
   const [members, setMembers] = useState(null);
   const [levels, setLevels] = useState([]);
+
+  useEffect(() => {
+    const cycleInterval = setInterval(() => {
+      if (cycle) {
+        if (members.length() > 0) {
+          const items = members.list;
+          const member = items[Math.floor(Math.random() * items.length)];
+          // members.changeLevel({
+          //   id: member.id,
+          //   levelNumber: Math.max(member.level.number - 1, 1),
+          //   love: member.love,
+          //   reach: member.reach,
+          // });
+          setSelection(member);
+        }
+      }
+    }, 3000);
+    return () => {
+      clearInterval(cycleInterval);
+    };
+  }, [cycle, setCycle, members, setSelection]);
 
   // rebuild if width, height, or number change
   useEffect(() => {
@@ -125,8 +147,8 @@ export default function Orbits({ width, height, number, setNumber }) {
           <Controls
             animate={animate}
             setAnimate={setAnimate}
-            number={number}
-            setNumber={setNumber}
+            cycle={cycle}
+            setCycle={setCycle}
           />
         </div>
         {members && (

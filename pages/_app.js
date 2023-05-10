@@ -20,6 +20,8 @@ import {
   faBuildingColumns,
   faLightbulb,
   faChevronDown,
+  faArrowsSpin,
+  faShuffle,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faBars,
@@ -81,7 +83,9 @@ library.add(
   faSignalStream,
   faLightbulb,
   faCircle,
-  faChevronDown
+  faArrowsSpin,
+  faChevronDown,
+  faShuffle
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
