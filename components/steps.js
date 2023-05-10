@@ -6,6 +6,9 @@ import Buttons from "components/steps/buttons";
 
 import WelcomeText from "content/steps/welcome.mdx";
 import MissionText from "content/steps/mission.mdx";
+
+import MemberO1Text from "content/steps/member-o1.mdx";
+import MemberO2Text from "content/steps/member-o2.mdx";
 import MemberO3Text from "content/steps/member-o3.mdx";
 import MemberO4Text from "content/steps/member-o4.mdx";
 
@@ -52,27 +55,76 @@ const OrbitStep = function ({ name, icon, component, setSelection }) {
   );
 };
 
-const MemberO3Step = function ({ levels, members, setMembers, setSelection }) {
-  useEffect(() => {
-    console.log("O3 hook");
-    members.changeLevel({ id: "jeri", levelNumber: 3, love: 1, reach: 1 });
-    const member = members.find("jeri");
-    setSelection(member);
-    setMembers(members);
-  }, [levels, members, setMembers, setSelection]);
-
-  return <MemberO3Text />;
+const updateMember = function ({
+  members,
+  setMembers,
+  setSelection,
+  ...changes
+}) {
+  const { levelNumber, love, reach } = changes;
+  const member = members.find("jeri");
+  members.changeLevel({ id: "jeri", levelNumber, love, reach });
+  setSelection(member);
+  setMembers(members);
 };
 
 const MemberO4Step = function ({ members, setMembers, setSelection }) {
   useEffect(() => {
-    const member = members.find("jeri");
-    members.changeLevel({ id: "jeri", levelNumber: 4, love: 2, reach: 2 });
-    setSelection(member);
-    setMembers(members);
+    updateMember({
+      levelNumber: 4,
+      love: 2,
+      reach: 2,
+      members,
+      setMembers,
+      setSelection,
+    });
+  }, [members, setMembers, setSelection]);
+  return <MemberO4Text />;
+};
+
+const MemberO3Step = function ({ members, setMembers, setSelection }) {
+  useEffect(() => {
+    updateMember({
+      levelNumber: 3,
+      love: 1,
+      reach: 1,
+      members,
+      setMembers,
+      setSelection,
+    });
   }, [members, setMembers, setSelection]);
 
-  return <MemberO4Text />;
+  return <MemberO3Text />;
+};
+
+const MemberO2Step = function ({ members, setMembers, setSelection }) {
+  useEffect(() => {
+    updateMember({
+      levelNumber: 2,
+      love: 1,
+      reach: 1,
+      members,
+      setMembers,
+      setSelection,
+    });
+  }, [members, setMembers, setSelection]);
+
+  return <MemberO2Text />;
+};
+
+const MemberO1Step = function ({ members, setMembers, setSelection }) {
+  useEffect(() => {
+    updateMember({
+      levelNumber: 1,
+      love: 1,
+      reach: 1,
+      members,
+      setMembers,
+      setSelection,
+    });
+  }, [members, setMembers, setSelection]);
+
+  return <MemberO1Text />;
 };
 
 const FinalStep = function ({ setSelection }) {
@@ -92,7 +144,6 @@ export default function Steps({
   setExpanded,
   step,
   setStep,
-  levels,
 }) {
   const key = 0;
   var steps = [
@@ -135,7 +186,20 @@ export default function Steps({
     />,
     <MemberO3Step
       key={(key += 1)}
-      levels={levels}
+      members={members}
+      setMembers={setMembers}
+      setSelection={setSelection}
+      svgRef={svgRef}
+    />,
+    <MemberO2Step
+      key={(key += 1)}
+      members={members}
+      setMembers={setMembers}
+      setSelection={setSelection}
+      svgRef={svgRef}
+    />,
+    <MemberO1Step
+      key={(key += 1)}
       members={members}
       setMembers={setMembers}
       setSelection={setSelection}

@@ -19,7 +19,7 @@ export default function Orbits({ width, height, number, setNumber }) {
   const prevWidth = c.usePrevious(width);
   const prevHeight = c.usePrevious(height);
   const [selection, setSelection] = useState(null);
-  const [step, setStep] = useState(7);
+  const [step, setStep] = useState(1);
   const [members, setMembers] = useState(null);
   const [levels, setLevels] = useState([]);
 
@@ -146,7 +146,6 @@ export default function Orbits({ width, height, number, setNumber }) {
             setExpanded={setExpanded}
             step={step}
             setStep={setStep}
-            levels={levels}
           />
         )}
       </div>
