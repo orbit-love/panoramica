@@ -89,7 +89,7 @@ export default function Index() {
         ref={containerRef}
         id="container"
         className="hidden relative sm:block"
-        style={{ height: "85vh", marginTop: "-100px" }}
+        style={{ height: "100vh", marginTop: "-100px" }}
       >
         {dimensions.width && dimensions.height && (
           <Orbits
