@@ -13,12 +13,12 @@ export default function Header({ fix }) {
     setActive(!active);
   };
 
-  const fixClass = fix ? "fixed top-0 left-0 bg-[#1D1640] z-50" : "relative";
+  const fixClass = fix ? "fixed top-0 left-0 bg-[#1D1640] z-50" : "absolute";
 
   return (
-    <div>
+    <>
       <nav
-        className={`${fixClass} flex z-30 px-2 py-4 w-full whitespace-nowrap pointer-events-none md:px-8`}
+        className={`${fixClass} flex z-30 items-center px-2 py-4 w-full whitespace-nowrap pointer-events-none md:px-8`}
       >
         <div>
           <button
@@ -68,6 +68,6 @@ export default function Header({ fix }) {
           <MobileNav setActive={setActive} />
         </CSSTransition>
       </div>
-    </div>
+    </>
   );
 }

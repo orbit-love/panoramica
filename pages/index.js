@@ -1,9 +1,13 @@
-import Orbits from "components/orbits";
 import React, { useEffect, useState, useRef } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+
 import Head from "components/head";
 import Header from "components/header";
 import Footer from "components/footer";
 import Sidebar from "components/sidebar";
+import Stars from "components/stars";
+import Orbits from "components/orbits";
 import Introduction from "content/introduction.mdx";
 import Gravity from "content/gravity.mdx";
 import OrbitLevels from "content/orbit-levels.mdx";
@@ -11,9 +15,7 @@ import Reach from "content/reach.mdx";
 import Love from "content/love.mdx";
 import Example from "content/example.mdx";
 import Funnel from "content/funnel.mdx";
-import Stars from "components/stars";
-import Image from "next/image";
-import { useRouter } from "next/router";
+
 import atomicHeart from "public/atomic-heart.svg";
 
 function getInitialNumber(router) {
@@ -44,7 +46,7 @@ export default function Index() {
   const [number, setNumber] = useState(getInitialNumber(router));
 
   useEffect(() => {
-    const handleScroll = (event) => {
+    const handleScroll = () => {
       const containerHeight = containerRef.current.offsetHeight - 78;
       const newFix = window.scrollY >= containerHeight;
       setFix(newFix);
@@ -89,7 +91,7 @@ export default function Index() {
         ref={containerRef}
         id="container"
         className="hidden relative sm:block"
-        style={{ height: "100vh", marginTop: "-100px" }}
+        style={{ height: "100vh", marginTop: "000px" }}
       >
         {dimensions.width && dimensions.height && (
           <Orbits
@@ -108,7 +110,11 @@ export default function Index() {
           <Sidebar fix={fix} />
           <div className={`${fixClass} flex flex-col px-4 md:px-0`}>
             {/* pb-12 is here instead of space-y-12 to avoid gaps in sidebar scroll highlighting */}
-            <section className="anchor pb-12" id="introduction">
+            <section
+              className="anchor pb-12"
+              id="introduction"
+              name="introduction"
+            >
               <h1 className="mb-6 text-4xl font-bold">
                 Build strong, scalable communities
               </h1>

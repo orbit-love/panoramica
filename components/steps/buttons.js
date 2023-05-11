@@ -1,4 +1,5 @@
 import React from "react";
+import Scroll from "react-scroll";
 
 export default function Buttons({
   step,
@@ -9,9 +10,10 @@ export default function Buttons({
 }) {
   const classes =
     "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 rounded-md";
+  const finalStep = step === totalSteps;
   return (
-    <div className="flex space-x-6">
-      {step > 1 && (
+    <div className="flex pt-4 space-x-32">
+      {!finalStep && step > 1 && (
         <button
           className={classes}
           onClick={() => {
@@ -22,7 +24,7 @@ export default function Buttons({
           Back
         </button>
       )}
-      {step !== totalSteps && (
+      {!finalStep && (
         <button
           className={classes}
           onClick={() => {
@@ -33,7 +35,7 @@ export default function Buttons({
           {step === 1 ? "Start Exploring" : "Next"}
         </button>
       )}
-      {step === totalSteps && (
+      {finalStep && (
         <button
           className={classes}
           onClick={() => {
@@ -41,6 +43,17 @@ export default function Buttons({
           }}
         >
           Start Over
+        </button>
+      )}
+      {finalStep && (
+        <button
+          className={classes + " bg-pink-500"}
+          onClick={() => {
+            const scroll = Scroll.animateScroll;
+            scroll.scrollTo(window.innerHeight - 100);
+          }}
+        >
+          Proceed
         </button>
       )}
     </div>
