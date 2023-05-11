@@ -102,6 +102,7 @@ export default function Orbits({ width, height, number }) {
       members,
       setMembers,
       animate,
+      setCycle,
     });
     helper.drawSun({
       svgRef,

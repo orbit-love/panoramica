@@ -23,14 +23,15 @@ import Orbit3Icon from "components/icons/orbit_3";
 import Orbit4Icon from "components/icons/orbit_4";
 
 const updateMember = function ({
+  memberId,
   members,
   setMembers,
   setSelection,
   ...changes
 }) {
   const { levelNumber, love, reach } = changes;
-  const member = members.find("jeri");
-  members.changeLevel({ id: "jeri", levelNumber, love, reach });
+  const member = members.find(memberId);
+  members.changeLevel({ id: memberId, levelNumber, love, reach });
   setSelection(member);
   setMembers(members);
 };
@@ -70,6 +71,7 @@ const OrbitStep = function ({ name, icon, component, setSelection, setCycle }) {
 };
 
 const MemberStep = function ({
+  memberId,
   changes,
   component,
   members,
@@ -79,14 +81,16 @@ const MemberStep = function ({
 }) {
   useEffect(() => {
     setCycle(false);
-    setCycle(false);
     updateMember({
       ...changes,
+      memberId,
       members,
       setMembers,
       setSelection,
     });
-  }, [changes, setSelection, setCycle, members, setMembers]);
+    // don't trigger this on subsequent re-renders or the selection
+    // will always stay jeri
+  }, []);
 
   return component;
 };
@@ -111,6 +115,7 @@ export default function Steps({
   setStep,
   setCycle,
 }) {
+  const memberId = "jeri";
   const key = 0;
   const props = {
     setCycle,
@@ -153,6 +158,7 @@ export default function Steps({
     />,
     <MemberStep
       key={(key += 1)}
+      memberId={memberId}
       changes={{
         levelNumber: 4,
         love: 2,
@@ -163,6 +169,7 @@ export default function Steps({
     />,
     <MemberStep
       key={(key += 1)}
+      memberId={memberId}
       changes={{
         levelNumber: 3,
         love: 1,
@@ -173,6 +180,7 @@ export default function Steps({
     />,
     <MemberStep
       key={(key += 1)}
+      memberId={memberId}
       changes={{
         levelNumber: 2,
         love: 1,
@@ -183,6 +191,7 @@ export default function Steps({
     />,
     <MemberStep
       key={(key += 1)}
+      memberId={memberId}
       changes={{
         levelNumber: 1,
         love: 1,
