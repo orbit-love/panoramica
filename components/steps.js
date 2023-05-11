@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import c from "lib/common";
 import Buttons from "components/steps/buttons";
 
 import WelcomeText from "content/steps/welcome.mdx";
@@ -23,38 +22,6 @@ import Orbit2Icon from "components/icons/orbit_2";
 import Orbit3Icon from "components/icons/orbit_3";
 import Orbit4Icon from "components/icons/orbit_4";
 
-const WelcomeStep = function ({ setSelection }) {
-  useEffect(() => {
-    setSelection(null);
-  }, [setSelection]);
-
-  return <WelcomeText />;
-};
-
-const MissionStep = function ({ setSelection }) {
-  useEffect(() => {
-    setSelection({ name: "Mission" });
-  }, [setSelection]);
-
-  return <MissionText />;
-};
-
-const OrbitStep = function ({ name, icon, component, setSelection }) {
-  useEffect(() => {
-    setSelection({ name });
-  }, [name, setSelection]);
-
-  return (
-    <>
-      <div className="flex items-baseline space-x-2">
-        <div className="text-2xl">{icon}</div>
-        <div className="text-2xl font-bold">{name}</div>
-      </div>
-      <div className="">{component}</div>
-    </>
-  );
-};
-
 const updateMember = function ({
   members,
   setMembers,
@@ -68,69 +35,67 @@ const updateMember = function ({
   setMembers(members);
 };
 
-const MemberO4Step = function ({ members, setMembers, setSelection }) {
-  useEffect(() => {
-    updateMember({
-      levelNumber: 4,
-      love: 2,
-      reach: 2,
-      members,
-      setMembers,
-      setSelection,
-    });
-  }, [members, setMembers, setSelection]);
-  return <MemberO4Text />;
-};
-
-const MemberO3Step = function ({ members, setMembers, setSelection }) {
-  useEffect(() => {
-    updateMember({
-      levelNumber: 3,
-      love: 1,
-      reach: 1,
-      members,
-      setMembers,
-      setSelection,
-    });
-  }, [members, setMembers, setSelection]);
-
-  return <MemberO3Text />;
-};
-
-const MemberO2Step = function ({ members, setMembers, setSelection }) {
-  useEffect(() => {
-    updateMember({
-      levelNumber: 2,
-      love: 1,
-      reach: 1,
-      members,
-      setMembers,
-      setSelection,
-    });
-  }, [members, setMembers, setSelection]);
-
-  return <MemberO2Text />;
-};
-
-const MemberO1Step = function ({ members, setMembers, setSelection }) {
-  useEffect(() => {
-    updateMember({
-      levelNumber: 1,
-      love: 1,
-      reach: 1,
-      members,
-      setMembers,
-      setSelection,
-    });
-  }, [members, setMembers, setSelection]);
-
-  return <MemberO1Text />;
-};
-
-const FinalStep = function ({ setSelection }) {
+const WelcomeStep = function ({ setSelection, setCycle }) {
   useEffect(() => {
     setSelection(null);
-  }, [setSelection]);
+  }, [setSelection, setCycle]);
+
+  return <WelcomeText />;
+};
+
+const MissionStep = function ({ setSelection, setCycle }) {
+  useEffect(() => {
+    setCycle(false);
+    setSelection({ name: "Mission" });
+  }, [setSelection, setCycle]);
+
+  return <MissionText />;
+};
+
+const OrbitStep = function ({ name, icon, component, setSelection, setCycle }) {
+  useEffect(() => {
+    setCycle(false);
+    setSelection({ name });
+  }, [name, setSelection, setCycle]);
+
+  return (
+    <>
+      <div className="flex items-baseline space-x-2">
+        <div className="text-2xl">{icon}</div>
+        <div className="text-2xl font-bold">{name}</div>
+      </div>
+      <div className="">{component}</div>
+    </>
+  );
+};
+
+const MemberStep = function ({
+  changes,
+  component,
+  members,
+  setMembers,
+  setSelection,
+  setCycle,
+}) {
+  useEffect(() => {
+    setCycle(false);
+    setCycle(false);
+    updateMember({
+      ...changes,
+      members,
+      setMembers,
+      setSelection,
+    });
+  }, [changes, setSelection, setCycle, members, setMembers]);
+
+  return component;
+};
+
+const FinalStep = function ({ setSelection, setCycle }) {
+  useEffect(() => {
+    setCycle(false);
+    setSelection(null);
+  }, [setSelection, setCycle]);
 
   return <FinalText />;
 };
@@ -144,68 +109,89 @@ export default function Steps({
   setExpanded,
   step,
   setStep,
+  setCycle,
 }) {
   const key = 0;
+  const props = {
+    setCycle,
+    setSelection,
+    setCycle,
+    svgRef,
+    members,
+    setMembers,
+  };
   var steps = [
-    <WelcomeStep key={key} setSelection={setSelection} />,
-    <MissionStep key={(key += 1)} setSelection={setSelection} />,
+    <WelcomeStep key={key} {...props} />,
+    <MissionStep key={(key += 1)} {...props} />,
     <OrbitStep
       name="Advocates"
       key={(key += 1)}
       icon={<Orbit1Icon />}
       component={<Orbit1Text />}
-      setSelection={setSelection}
+      {...props}
     />,
     <OrbitStep
       name="Contributors"
       key={(key += 1)}
       icon={<Orbit2Icon />}
       component={<Orbit2Text />}
-      setSelection={setSelection}
+      {...props}
     />,
     <OrbitStep
       name="Participants"
       key={(key += 1)}
       icon={<Orbit3Icon />}
       component={<Orbit3Text />}
-      setSelection={setSelection}
+      {...props}
     />,
     <OrbitStep
       name="Explorers"
       key={(key += 1)}
       icon={<Orbit4Icon />}
       component={<Orbit4Text />}
-      setSelection={setSelection}
+      {...props}
     />,
-    <MemberO4Step
+    <MemberStep
       key={(key += 1)}
-      members={members}
-      setMembers={setMembers}
-      setSelection={setSelection}
-      svgRef={svgRef}
+      changes={{
+        levelNumber: 4,
+        love: 2,
+        reach: 2,
+      }}
+      component={<MemberO4Text />}
+      {...props}
     />,
-    <MemberO3Step
+    <MemberStep
       key={(key += 1)}
-      members={members}
-      setMembers={setMembers}
-      setSelection={setSelection}
-      svgRef={svgRef}
+      changes={{
+        levelNumber: 3,
+        love: 1,
+        reach: 1,
+      }}
+      component={<MemberO3Text />}
+      {...props}
     />,
-    <MemberO2Step
+    <MemberStep
       key={(key += 1)}
-      members={members}
-      setMembers={setMembers}
-      setSelection={setSelection}
-      svgRef={svgRef}
+      changes={{
+        levelNumber: 2,
+        love: 1,
+        reach: 1,
+      }}
+      component={<MemberO2Text />}
+      {...props}
     />,
-    <MemberO1Step
+    <MemberStep
       key={(key += 1)}
-      members={members}
-      setMembers={setMembers}
-      setSelection={setSelection}
-      svgRef={svgRef}
+      changes={{
+        levelNumber: 1,
+        love: 1,
+        reach: 1,
+      }}
+      component={<MemberO1Text />}
+      {...props}
     />,
-    <FinalStep key={(key += 1)} svgRef={svgRef} setSelection={setSelection} />,
+    <FinalStep key={(key += 1)} {...props} />,
   ];
 
   const totalSteps = steps.length;
@@ -224,7 +210,12 @@ export default function Steps({
           </button>
           <div className="flex flex-col space-y-6">
             {stepComponent}
-            <Buttons step={step} setStep={setStep} totalSteps={totalSteps} />
+            <Buttons
+              step={step}
+              setStep={setStep}
+              totalSteps={totalSteps}
+              setCycle={setCycle}
+            />
           </div>
         </div>
       </div>

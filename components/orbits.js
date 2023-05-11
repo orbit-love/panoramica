@@ -5,7 +5,7 @@ import Selection from "components/selection";
 import Controls from "components/controls";
 import Steps from "components/steps";
 
-export default function Orbits({ width, height, number, setNumber }) {
+export default function Orbits({ width, height, number }) {
   // does the browser user prefer reduced motion?
   const isReduced =
     window.matchMedia(`(prefers-reduced-motion: reduce)`) === true ||
@@ -27,21 +27,23 @@ export default function Orbits({ width, height, number, setNumber }) {
   const [levels, setLevels] = useState([]);
 
   useEffect(() => {
-    const cycleInterval = setInterval(() => {
-      if (cycle) {
-        if (members.length() > 0) {
-          const items = members.list;
-          const member = items[Math.floor(Math.random() * items.length)];
-          // members.changeLevel({
-          //   id: member.id,
-          //   levelNumber: Math.max(member.level.number - 1, 1),
-          //   love: member.love,
-          //   reach: member.reach,
-          // });
-          setSelection(member);
-        }
+    const selectRandomMember = () => {
+      if (cycle && members?.length() > 0) {
+        const items = members.list;
+        const member = items[Math.floor(Math.random() * items.length)];
+        // members.changeLevel({
+        //   id: member.id,
+        //   levelNumber: Math.max(member.level.number - 1, 1),
+        //   love: member.love,
+        //   reach: member.reach,
+        // });
+        setSelection(member);
       }
-    }, 3000);
+    };
+    const cycleInterval = setInterval(selectRandomMember, 3000);
+    // wait a little bit (but not 3 seconds) so the user can see the cycling
+    // is happening on page load or when they manually enable cycling
+    setTimeout(selectRandomMember, 750);
     return () => {
       clearInterval(cycleInterval);
     };
@@ -162,6 +164,7 @@ export default function Orbits({ width, height, number, setNumber }) {
             setExpanded={setExpanded}
             step={step}
             setStep={setStep}
+            setCycle={setCycle}
           />
         )}
       </div>
