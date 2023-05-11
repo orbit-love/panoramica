@@ -143,7 +143,7 @@ export default function Orbits({
     }
   }, [animate, number, width, height, prevNumber, prevWidth, prevHeight]);
 
-  const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-80`;
+  const classes = `flex space-x-3 rounded-lg text-[#5034C2] text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-80`;
   return (
     <>
       <div>
