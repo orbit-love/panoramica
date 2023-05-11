@@ -143,7 +143,7 @@ export default function Orbits({
     }
   }, [animate, number, width, height, prevNumber, prevWidth, prevHeight]);
 
-  const classes = `flex space-x-3 rounded-lg text-[#5034C2] text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-80`;
+  const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-80`;
   return (
     <>
       <div>
@@ -153,6 +153,7 @@ export default function Orbits({
           style={{ width: "100%", height: "100%" }}
         ></svg>
       </div>
+      <div className="hidden bg-[#0F0A25] text-[#eef2ff]" />
       <div
         className={`flex absolute bottom-0 left-0 z-10 flex-col px-4 py-5 space-y-4`}
       >
