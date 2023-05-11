@@ -84,7 +84,6 @@ export default function Orbits({ width, height, number }) {
       return;
     }
     console.log(`Drawing ${members.length()} members...`);
-    console.log("Drawing with...", selection);
     // these are drawn in order of back to front
     helper.drawLevels({
       svgRef,
@@ -136,6 +135,7 @@ export default function Orbits({ width, height, number }) {
     }
   }, [animate, number, width, height, prevNumber, prevWidth, prevHeight]);
 
+  const flexClass = expanded ? "flex-col" : "";
   return (
     <>
       <div>
@@ -145,15 +145,9 @@ export default function Orbits({ width, height, number }) {
           style={{ width: "100%", height: "100%" }}
         ></svg>
       </div>
-      <div className="flex absolute bottom-0 left-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
-        <div className="flex">
-          <Controls
-            animate={animate}
-            setAnimate={setAnimate}
-            cycle={cycle}
-            setCycle={setCycle}
-          />
-        </div>
+      <div
+        className={`${flexClass} flex absolute bottom-0 left-0 z-10 justify-start items-start px-4 py-5 pointer-events-none`}
+      >
         {members && (
           <Steps
             svgRef={svgRef}
@@ -168,6 +162,12 @@ export default function Orbits({ width, height, number }) {
             setCycle={setCycle}
           />
         )}
+        <Controls
+          animate={animate}
+          setAnimate={setAnimate}
+          cycle={cycle}
+          setCycle={setCycle}
+        />
       </div>
       <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
         {selection && (

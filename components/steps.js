@@ -209,7 +209,9 @@ export default function Steps({
   if (expanded) {
     // hard code hex codes for now so tailwind builds them
     return (
-      <div className={`bg-opacity-90 w-96 text-[#eef2ff] bg-[#1D1640] rounded`}>
+      <div
+        className={`bg-opacity-90 w-96 text-[#eef2ff] bg-[#1D1640] rounded mb-4`}
+      >
         <div className="flex relative flex-col py-4 px-5 pointer-events-auto">
           <button
             onClick={() => setExpanded(false)}
@@ -231,12 +233,10 @@ export default function Steps({
     );
   } else {
     return (
-      <div
-        className={`mr-auto bg-opacity-90 text-[#eef2ff] bg-[#1D1640] rounded`}
-      >
+      <div className={`mr-2 bg-opacity-90 text-[#eef2ff] bg-[#1D1640] rounded`}>
         <div className="flex relative py-4 px-5 pointer-events-auto">
           <button onClick={() => setExpanded(true)} className="btn">
-            <FontAwesomeIcon icon="lightbulb"></FontAwesomeIcon>
+            <FontAwesomeIcon icon="chevron-up"></FontAwesomeIcon>
           </button>
         </div>
       </div>
