@@ -5,7 +5,13 @@ import Selection from "components/selection";
 import Controls from "components/controls";
 import Steps from "components/steps";
 
-export default function Orbits({ width, height, number }) {
+export default function Orbits({
+  width,
+  height,
+  number,
+  fullscreen,
+  setFullscreen,
+}) {
   // does the browser user prefer reduced motion?
   const isReduced =
     window.matchMedia(`(prefers-reduced-motion: reduce)`) === true ||
@@ -167,6 +173,8 @@ export default function Orbits({ width, height, number }) {
           setAnimate={setAnimate}
           cycle={cycle}
           setCycle={setCycle}
+          fullscreen={fullscreen}
+          setFullscreen={setFullscreen}
         />
       </div>
       <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">

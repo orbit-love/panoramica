@@ -7,13 +7,14 @@ import headerLogo from "public/header_logo.svg";
 import Link from "next/link";
 import MobileNav from "./mobile_nav";
 
-export default function Header({ fix }) {
+export default function Header({ fix, fullscreen }) {
   const [active, setActive] = useState(false);
   const handleClick = () => {
     setActive(!active);
   };
 
   const fixClass = fix ? "fixed top-0 left-0 bg-[#1D1640] z-50" : "absolute";
+  console.log(fullscreen);
 
   return (
     <>
@@ -49,19 +50,21 @@ export default function Header({ fix }) {
 
         <div className="flex-1" />
 
-        <div className="hidden md:block">
-          <div className="flex justify-end items-center">
-            <iframe
-              src="https://ghbtns.com/github-btn.html?user=orbit-love&repo=orbit-model&type=star&count=true"
-              frameBorder="0"
-              scrolling="0"
-              width="100"
-              height="20"
-              title="GitHub"
-              className="ml-3 mt-4 opacity-90 sm:mt-0 sm:ml-0"
-            ></iframe>
+        {!fullscreen && (
+          <div className="hidden md:block">
+            <div className="flex justify-end items-center">
+              <iframe
+                src="https://ghbtns.com/github-btn.html?user=orbit-love&repo=orbit-model&type=star&count=true"
+                frameBorder="0"
+                scrolling="0"
+                width="100"
+                height="20"
+                title="GitHub"
+                className="ml-3 mt-4 opacity-90 sm:mt-0 sm:ml-0"
+              ></iframe>
+            </div>
           </div>
-        </div>
+        )}
       </nav>
       <div className={`${active ? "" : "hidden"}`}>
         <CSSTransition in={active} timeout={400} classNames="mobile-nav">

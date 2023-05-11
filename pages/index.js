@@ -43,7 +43,17 @@ export default function Index() {
   const [fix, setFix] = useState(false);
 
   const router = useRouter();
-  const [number, setNumber] = useState(getInitialNumber(router));
+  const [number] = useState(getInitialNumber(router));
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    function onFullscreenChange() {
+      setFullscreen(Boolean(document.fullscreenElement));
+    }
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+  }, [setFullscreen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,7 +95,7 @@ export default function Index() {
   return (
     <>
       <Head />
-      <Header fix={fix} />
+      <Header fix={fix} fullscreen={fullscreen} />
       <Stars />
       <div
         ref={containerRef}
@@ -98,7 +108,8 @@ export default function Index() {
             width={dimensions.width}
             height={dimensions.height}
             number={number}
-            setNumber={setNumber}
+            fullscreen={fullscreen}
+            setFullscreen={setFullscreen}
           />
         )}
       </div>

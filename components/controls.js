@@ -2,21 +2,17 @@ import React, { useState, useEffect } from "react";
 import c from "lib/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function Controls({ animate, setAnimate, cycle, setCycle }) {
+export default function Controls({
+  animate,
+  setAnimate,
+  cycle,
+  setCycle,
+  fullscreen,
+  setFullscreen,
+}) {
   const animateIcon = "solar-system";
   const cycleIcon = "shuffle";
   const fullscreenIcon = "expand";
-
-  const [fullscreen, setFullscreen] = useState(false);
-
-  useEffect(() => {
-    function onFullscreenChange() {
-      setFullscreen(Boolean(document.fullscreenElement));
-    }
-    document.addEventListener("fullscreenchange", onFullscreenChange);
-    return () =>
-      document.removeEventListener("fullscreenchange", onFullscreenChange);
-  }, []);
 
   return (
     <div className="flex justify-end">
@@ -71,7 +67,10 @@ export default function Controls({ animate, setAnimate, cycle, setCycle }) {
           {fullscreen && (
             <button
               className="btn"
-              onClick={() => document.exitFullscreen()}
+              onClick={() => {
+                setFullscreen(false);
+                document.exitFullscreen();
+              }}
               title="Fullscreen"
             >
               <FontAwesomeIcon icon={fullscreenIcon} className="text-lg" />
@@ -80,7 +79,11 @@ export default function Controls({ animate, setAnimate, cycle, setCycle }) {
           {!fullscreen && (
             <button
               className="btn"
-              onClick={() => document.body.requestFullscreen()}
+              onClick={() => {
+                document.body
+                  .requestFullscreen()
+                  .then(() => setFullscreen(true));
+              }}
               title="Fullscreen disabled"
             >
               <FontAwesomeIcon
