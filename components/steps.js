@@ -109,8 +109,6 @@ export default function Steps({
   members,
   setMembers,
   setSelection,
-  expanded,
-  setExpanded,
   step,
   setStep,
   setCycle,
@@ -206,40 +204,16 @@ export default function Steps({
   const totalSteps = steps.length;
   const stepComponent = steps[step - 1];
 
-  if (expanded) {
-    // hard code hex codes for now so tailwind builds them
-    return (
-      <div
-        className={`bg-opacity-90 w-96 text-[#eef2ff] bg-[#1D1640] rounded mb-4`}
-      >
-        <div className="flex relative flex-col py-4 px-5 pointer-events-auto">
-          <button
-            onClick={() => setExpanded(false)}
-            className="absolute top-4 right-8"
-          >
-            <FontAwesomeIcon icon="chevron-down" className=""></FontAwesomeIcon>
-          </button>
-          <div className="flex flex-col space-y-6">
-            {stepComponent}
-            <Buttons
-              step={step}
-              setStep={setStep}
-              totalSteps={totalSteps}
-              setCycle={setCycle}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  } else {
-    return (
-      <div className={`mr-2 bg-opacity-90 text-[#eef2ff] bg-[#1D1640] rounded`}>
-        <div className="flex relative py-4 px-5 pointer-events-auto">
-          <button onClick={() => setExpanded(true)} className="btn">
-            <FontAwesomeIcon icon="chevron-up"></FontAwesomeIcon>
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // hard code hex codes for now so tailwind builds them
+  return (
+    <div className="flex flex-col py-4 px-5 space-y-6 pointer-events-auto">
+      {stepComponent}
+      <Buttons
+        step={step}
+        setStep={setStep}
+        totalSteps={totalSteps}
+        setCycle={setCycle}
+      />
+    </div>
+  );
 }

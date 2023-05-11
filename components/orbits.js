@@ -1,9 +1,11 @@
+import React, { useEffect, useRef, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import c from "lib/common";
 import helper from "lib/orbitHelper";
-import React, { useEffect, useRef, useState } from "react";
-import Selection from "components/selection";
 import Controls from "components/controls";
 import Steps from "components/steps";
+import Member from "content/cards/member";
 
 export default function Orbits({
   width,
@@ -141,7 +143,7 @@ export default function Orbits({
     }
   }, [animate, number, width, height, prevNumber, prevWidth, prevHeight]);
 
-  const flexClass = expanded ? "flex-col" : "";
+  const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-80`;
   return (
     <>
       <div>
@@ -152,43 +154,64 @@ export default function Orbits({
         ></svg>
       </div>
       <div
-        className={`${flexClass} flex absolute bottom-0 left-0 z-10 justify-start items-start px-4 py-5 pointer-events-none`}
+        className={`flex absolute bottom-0 left-0 z-10 flex-col px-4 py-5 space-y-4`}
       >
-        {members && (
-          <Steps
-            svgRef={svgRef}
-            selection={selection}
-            setSelection={setSelection}
-            members={members}
-            setMembers={setMembers}
-            expanded={expanded}
-            setExpanded={setExpanded}
-            step={step}
-            setStep={setStep}
-            setCycle={setCycle}
-          />
+        {expanded && members && (
+          <div className={`${classes} w-96`}>
+            <Steps
+              svgRef={svgRef}
+              selection={selection}
+              setSelection={setSelection}
+              members={members}
+              setMembers={setMembers}
+              step={step}
+              setStep={setStep}
+              setCycle={setCycle}
+            />
+          </div>
         )}
-        <Controls
-          animate={animate}
-          setAnimate={setAnimate}
-          cycle={cycle}
-          setCycle={setCycle}
-          fullscreen={fullscreen}
-          setFullscreen={setFullscreen}
-        />
+        <div className="flex">
+          <div className={`${classes} py-4 px-5 pointer-events-auto`}>
+            {expanded && (
+              <button onClick={() => setExpanded(false)} className="btn">
+                <FontAwesomeIcon
+                  icon="chevron-down"
+                  className="text-lg"
+                ></FontAwesomeIcon>
+              </button>
+            )}
+            {!expanded && (
+              <button onClick={() => setExpanded(true)} className="btn">
+                <FontAwesomeIcon
+                  icon="solar-system"
+                  className="text-lg"
+                ></FontAwesomeIcon>
+              </button>
+            )}
+            <div className="border border-indigo-900" />
+            <Controls
+              animate={animate}
+              setAnimate={setAnimate}
+              cycle={cycle}
+              setCycle={setCycle}
+              fullscreen={fullscreen}
+              setFullscreen={setFullscreen}
+            />
+          </div>
+          <div className="mx-auto" />
+        </div>
       </div>
-      <div className="flex absolute right-0 bottom-0 z-10 flex-col justify-start px-4 py-5 space-y-3 pointer-events-none">
-        {selection && (
-          <Selection
-            svgRef={svgRef}
-            selection={selection}
-            setSelection={setSelection}
-            members={members}
-            step={step}
-            setStep={setStep}
-          />
-        )}
-      </div>
+      {selection && selection.level && (
+        <div
+          className={`absolute right-0 bottom-0 z-10 px-4 py-5 w-96 pointer-events-none`}
+        >
+          <div
+            className={`${classes} flex relative flex-col px-7 py-8 pointer-events-auto`}
+          >
+            <Member selection={selection} />
+          </div>
+        </div>
+      )}
     </>
   );
 }

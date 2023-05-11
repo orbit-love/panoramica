@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
+import c from "lib/common";
 import Head from "components/head";
 import Header from "components/header";
 import Footer from "components/footer";
 import Sidebar from "components/sidebar";
-import Stars from "components/stars";
 import Orbits from "components/orbits";
 import Introduction from "content/introduction.mdx";
 import Gravity from "content/gravity.mdx";
@@ -96,12 +96,15 @@ export default function Index() {
     <>
       <Head />
       <Header fix={fix} fullscreen={fullscreen} />
-      <Stars />
       <div
         ref={containerRef}
         id="container"
         className="hidden relative sm:block"
-        style={{ height: "100vh", marginTop: "000px" }}
+        style={{
+          height: "100vh",
+          marginTop: "0",
+          backgroundColor: c.backgroundColor,
+        }}
       >
         {dimensions.width && dimensions.height && (
           <Orbits

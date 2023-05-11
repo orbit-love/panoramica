@@ -14,7 +14,6 @@ export default function Header({ fix, fullscreen }) {
   };
 
   const fixClass = fix ? "fixed top-0 left-0 bg-[#1D1640] z-50" : "absolute";
-  console.log(fullscreen);
 
   return (
     <>
