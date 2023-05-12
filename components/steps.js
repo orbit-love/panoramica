@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Buttons from "components/steps/buttons";
 
 import WelcomeText from "content/steps/welcome.mdx";
 import MissionText from "content/steps/mission.mdx";
+import GravityText from "content/steps/gravity.mdx";
 
 import MemberO1Text from "content/steps/member-o1.mdx";
 import MemberO2Text from "content/steps/member-o2.mdx";
@@ -51,6 +51,15 @@ const MissionStep = function ({ setSelection, setCycle }) {
   }, [setSelection, setCycle]);
 
   return <MissionText />;
+};
+
+const GravityStep = function ({ setSelection, setCycle }) {
+  useEffect(() => {
+    setCycle(false);
+    setSelection({ name: "Mission" });
+  }, [setSelection, setCycle]);
+
+  return <GravityText />;
 };
 
 const OrbitStep = function ({ name, icon, component, setSelection, setCycle }) {
@@ -125,6 +134,7 @@ export default function Steps({
   };
   var steps = [
     <WelcomeStep key={key} {...props} />,
+    <GravityStep key={(key += 1)} {...props} />,
     <MissionStep key={(key += 1)} {...props} />,
     <OrbitStep
       name="Advocates"

@@ -32,7 +32,7 @@ export default function Buttons({
             setStep(step + 1);
           }}
         >
-          {step === 1 ? "Start Exploring" : "Next"}
+          Next
         </button>
       )}
       {finalStep && (
