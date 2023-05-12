@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-
 import c from "lib/common";
 import Head from "components/head";
 import Header from "components/header";
 import Footer from "components/footer";
 import Sidebar from "components/sidebar";
-import Orbits from "components/orbits";
+import Vizualization from "components/visualization";
 import Introduction from "content/introduction.mdx";
 import Gravity from "content/gravity.mdx";
 import OrbitLevels from "content/orbit-levels.mdx";
@@ -15,35 +14,18 @@ import Reach from "content/reach.mdx";
 import Love from "content/love.mdx";
 import Example from "content/example.mdx";
 import Funnel from "content/funnel.mdx";
-
 import atomicHeart from "public/atomic-heart.svg";
 
-function getInitialNumber(router) {
-  const queryKey = "n";
-  var number =
-    router.query[queryKey] ||
-    router.asPath.match(new RegExp(`[&?]${queryKey}=(.*)(&|$)`));
-  if (typeof number === "object") {
-    if (number !== null) {
-      number = parseInt(number[1]);
-    }
-  }
-  if (!number) {
-    number = 4;
-  }
-  return number;
-}
-
 export default function Index() {
+  const router = useRouter();
   const containerRef = useRef();
+
   const [dimensions, setDimensions] = useState({
     height: null,
     width: null,
   });
+  const [number] = useState(c.getInitialNumber(router));
   const [fix, setFix] = useState(false);
-
-  const router = useRouter();
-  const [number] = useState(getInitialNumber(router));
   const [fullscreen, setFullscreen] = useState(false);
 
   useEffect(() => {
@@ -107,7 +89,7 @@ export default function Index() {
         }}
       >
         {dimensions.width && dimensions.height && (
-          <Orbits
+          <Vizualization
             width={dimensions.width}
             height={dimensions.height}
             number={number}
