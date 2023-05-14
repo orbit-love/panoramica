@@ -3,18 +3,23 @@ import React, { useEffect } from "react";
 import Buttons from "components/steps/buttons";
 
 import WelcomeText from "content/steps/welcome.mdx";
-import MissionText from "content/steps/mission.mdx";
 import GravityText from "content/steps/gravity.mdx";
 
-import MemberO1Text from "content/steps/member-o1.mdx";
-import MemberO2Text from "content/steps/member-o2.mdx";
-import MemberO3Text from "content/steps/member-o3.mdx";
-import MemberO4Text from "content/steps/member-o4.mdx";
-
+import MissionText from "content/steps/mission.mdx";
+import OrbitLevelsText from "content/steps/orbit_levels.mdx";
 import Orbit1Text from "content/steps/orbit1.mdx";
 import Orbit2Text from "content/steps/orbit2.mdx";
 import Orbit3Text from "content/steps/orbit3.mdx";
 import Orbit4Text from "content/steps/orbit4.mdx";
+
+import MemberO11Text from "content/steps/member-o1-1.mdx";
+import MemberO12Text from "content/steps/member-o1-2.mdx";
+import MemberO21Text from "content/steps/member-o2-1.mdx";
+import MemberO22Text from "content/steps/member-o2-2.mdx";
+import MemberO3Text from "content/steps/member-o3.mdx";
+import MemberO4Text from "content/steps/member-o4.mdx";
+
+import JourneyText from "content/steps/journey.mdx";
 import FinalText from "content/steps/final.mdx";
 
 import Orbit1Icon from "components/icons/orbit_1";
@@ -56,10 +61,19 @@ const MissionStep = function ({ setSelection, setCycle }) {
 const GravityStep = function ({ setSelection, setCycle }) {
   useEffect(() => {
     setCycle(false);
-    setSelection({ name: "Gravity" });
+    setSelection(null);
   }, [setSelection, setCycle]);
 
   return <GravityText />;
+};
+
+const OrbitLevelsStep = function ({ setSelection, setCycle }) {
+  useEffect(() => {
+    setCycle(false);
+    setSelection(null);
+  }, [setSelection, setCycle]);
+
+  return <OrbitLevelsText />;
 };
 
 const OrbitStep = function ({ name, icon, component, setSelection, setCycle }) {
@@ -104,6 +118,15 @@ const MemberStep = function ({
   return component;
 };
 
+const JourneyStep = function ({ setSelection, setCycle }) {
+  useEffect(() => {
+    setCycle(false);
+    setSelection(null);
+  }, [setSelection, setCycle]);
+
+  return <JourneyText />;
+};
+
 const FinalStep = function ({ setSelection, setCycle }) {
   useEffect(() => {
     setCycle(false);
@@ -137,6 +160,7 @@ export default function Steps({
     <WelcomeStep key={key} {...props} />,
     <GravityStep key={(key += 1)} {...props} />,
     <MissionStep key={(key += 1)} {...props} />,
+    <OrbitLevelsStep key={(key += 1)} {...props} />,
     <OrbitStep
       name="Advocates"
       key={(key += 1)}
@@ -170,8 +194,8 @@ export default function Steps({
       memberId={memberId}
       changes={{
         levelNumber: 4,
-        love: 2,
-        reach: 2,
+        love: 1,
+        reach: 1,
       }}
       component={<MemberO4Text />}
       {...props}
@@ -181,8 +205,8 @@ export default function Steps({
       memberId={memberId}
       changes={{
         levelNumber: 3,
-        love: 1,
-        reach: 1,
+        love: 2,
+        reach: 2,
       }}
       component={<MemberO3Text />}
       {...props}
@@ -191,11 +215,33 @@ export default function Steps({
       key={(key += 1)}
       memberId={memberId}
       changes={{
-        levelNumber: 2,
-        love: 1,
-        reach: 1,
+        levelNumber: 3,
+        love: 2,
+        reach: 2,
       }}
-      component={<MemberO2Text />}
+      component={<MemberO21Text />}
+      {...props}
+    />,
+    <MemberStep
+      key={(key += 1)}
+      memberId={memberId}
+      changes={{
+        levelNumber: 2,
+        love: 2,
+        reach: 2,
+      }}
+      component={<MemberO22Text />}
+      {...props}
+    />,
+    <MemberStep
+      key={(key += 1)}
+      memberId={memberId}
+      changes={{
+        levelNumber: 2,
+        love: 2,
+        reach: 2,
+      }}
+      component={<MemberO11Text />}
       {...props}
     />,
     <MemberStep
@@ -203,12 +249,13 @@ export default function Steps({
       memberId={memberId}
       changes={{
         levelNumber: 1,
-        love: 1,
-        reach: 1,
+        love: 3,
+        reach: 3,
       }}
-      component={<MemberO1Text />}
+      component={<MemberO12Text />}
       {...props}
     />,
+    <JourneyStep key={(key += 1)} {...props} />,
     <FinalStep key={(key += 1)} {...props} />,
   ];
 

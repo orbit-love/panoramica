@@ -21,11 +21,11 @@ export default function Header({ fix, fullscreen }) {
   return (
     <>
       <nav
-        className={`${fixClass} flex z-30 items-center px-2 py-4 w-full whitespace-nowrap pointer-events-none md:px-8`}
+        className={`${fixClass} flex z-30 items-center px-2 py-4 w-full whitespace-nowrap pointer-events-none md:px-4`}
       >
         <div>
           <button
-            className="inline-flex justify-center p-3 mr-2 ml-auto w-10 text-white rounded outline-none pointer-events-auto hover:text-white hover:bg-indigo-900 md:hidden"
+            className="-mt-2 inline-flex justify-center p-3 mr-2 w-10 text-white rounded outline-none pointer-events-auto hover:text-white hover:bg-indigo-900 md:hidden"
             onClick={handleClick}
           >
             {active ? (
@@ -68,7 +68,7 @@ export default function Header({ fix, fullscreen }) {
           </div>
         )}
       </nav>
-      <div className={`${active ? "" : "hidden"}`}>
+      <div className={`${active ? "":"hidden"}`}>
         <CSSTransition in={active} timeout={400} classNames="mobile-nav">
           <MobileNav setActive={setActive} />
         </CSSTransition>
