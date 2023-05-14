@@ -12,7 +12,7 @@ export default function Buttons({
     "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none";
   const finalStep = step === totalSteps;
   return (
-    <div className="flex pt-2 space-x-32">
+    <div className="flex pt-2 space-x-4">
       {!finalStep && step > 1 && (
         <button
           className={classes}
