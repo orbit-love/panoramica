@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import c from "lib/common";
-import helper from "lib/orbitHelper";
+import helper from "lib/visualization/helper";
 import Widgets from "components/widgets";
 
 export default function Orbits({
@@ -31,6 +31,7 @@ export default function Orbits({
   const [step, setStep] = useState(firstStep);
   const [members, setMembers] = useState(null);
   const [levels, setLevels] = useState([]);
+  const [expanded, setExpanded] = useState(true);
 
   useEffect(() => {
     const selectRandomMember = () => {
@@ -86,6 +87,8 @@ export default function Orbits({
       step,
       setStep,
       levels,
+      expanded,
+      setExpanded,
     };
 
     // these are drawn in order of back to front
@@ -110,6 +113,8 @@ export default function Orbits({
     step,
     animate,
     levels,
+    expanded,
+    setExpanded,
   ]);
 
   return (
@@ -136,6 +141,8 @@ export default function Orbits({
         setAnimate={setAnimate}
         cycle={cycle}
         setCycle={setCycle}
+        expanded={expanded}
+        setExpanded={setExpanded}
       />
     </>
   );

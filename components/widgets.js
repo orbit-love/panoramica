@@ -20,9 +20,9 @@ export default function Widgets({
   setAnimate,
   cycle,
   setCycle,
+  expanded,
+  setExpanded,
 }) {
-  const [expanded, setExpanded] = useState(true);
-
   const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-80`;
   return (
     <>
