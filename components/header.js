@@ -2,10 +2,11 @@ import { React, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CSSTransition } from "react-transition-group";
 import Image from "next/image";
-import headerLogo from "public/header_logo.svg";
-
 import Link from "next/link";
+
+import c from "lib/common";
 import MobileNav from "./mobile_nav";
+import headerLogo from "public/header_logo.svg";
 
 export default function Header({ fix, fullscreen }) {
   const [active, setActive] = useState(false);
@@ -13,7 +14,9 @@ export default function Header({ fix, fullscreen }) {
     setActive(!active);
   };
 
-  const fixClass = fix ? "fixed top-0 left-0 bg-[#1D1640] z-50" : "absolute";
+  const fixClass = fix
+    ? `fixed top-0 left-0 bg-[${c.purpleBgColor}] z-50`
+    : "absolute";
 
   return (
     <>
