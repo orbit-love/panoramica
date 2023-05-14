@@ -10,6 +10,7 @@ export default function Orbits({
   number,
   fullscreen,
   setFullscreen,
+  scrollToIntroduction
 }) {
   // does the browser user prefer reduced motion?
   const isReduced =
@@ -143,6 +144,7 @@ export default function Orbits({
         setCycle={setCycle}
         expanded={expanded}
         setExpanded={setExpanded}
+            scrollToIntroduction={scrollToIntroduction}
       />
     </>
   );

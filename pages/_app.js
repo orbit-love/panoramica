@@ -22,6 +22,7 @@ import {
   faChevronDown,
   faChevronUp,
   faArrowsSpin,
+  faArrowDown,
   faShuffle,
   faExpand,
 } from "@fortawesome/free-solid-svg-icons";
@@ -89,7 +90,8 @@ library.add(
   faChevronDown,
   faChevronUp,
   faShuffle,
-  faExpand
+  faExpand,
+  faArrowDown
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";

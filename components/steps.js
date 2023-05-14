@@ -56,7 +56,7 @@ const MissionStep = function ({ setSelection, setCycle }) {
 const GravityStep = function ({ setSelection, setCycle }) {
   useEffect(() => {
     setCycle(false);
-    setSelection({ name: "Mission" });
+    setSelection({ name: "Gravity" });
   }, [setSelection, setCycle]);
 
   return <GravityText />;
@@ -121,6 +121,7 @@ export default function Steps({
   step,
   setStep,
   setCycle,
+  scrollToIntroduction,
 }) {
   const memberId = "jeri";
   const key = 0;
@@ -223,6 +224,7 @@ export default function Steps({
         setStep={setStep}
         totalSteps={totalSteps}
         setCycle={setCycle}
+        scrollToIntroduction={scrollToIntroduction}
       />
     </div>
   );

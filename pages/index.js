@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import Scroll from "react-scroll";
+
 import c from "lib/common";
 import Head from "components/head";
 import Header from "components/header";
@@ -27,6 +29,11 @@ export default function Index() {
   const [number] = useState(c.getInitialNumber(router));
   const [fix, setFix] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+
+  const scrollToIntroduction = () => {
+    const scroll = Scroll.animateScroll;
+    scroll.scrollTo(window.innerHeight - 100);
+  };
 
   useEffect(() => {
     function onFullscreenChange() {
@@ -95,6 +102,7 @@ export default function Index() {
             number={number}
             fullscreen={fullscreen}
             setFullscreen={setFullscreen}
+            scrollToIntroduction={scrollToIntroduction}
           />
         )}
       </div>

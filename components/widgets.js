@@ -22,6 +22,7 @@ export default function Widgets({
   setCycle,
   expanded,
   setExpanded,
+  scrollToIntroduction,
 }) {
   const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-80`;
   return (
@@ -40,6 +41,7 @@ export default function Widgets({
               step={step}
               setStep={setStep}
               setCycle={setCycle}
+              scrollToIntroduction={scrollToIntroduction}
             />
           </div>
         )}
@@ -85,7 +87,15 @@ export default function Widgets({
           </div>
         </div>
       )}
-      <div className="mx-auto" />
+      {!fullscreen && (
+        <button
+          className="absolute bottom-4 text-indigo-400 hover:text-indigo-200"
+          style={{ marginLeft: "50%", marginRight: "50%" }}
+          onClick={scrollToIntroduction}
+        >
+          <FontAwesomeIcon icon="arrow-down" className="text-2xl" />
+        </button>
+      )}
     </>
   );
 }
