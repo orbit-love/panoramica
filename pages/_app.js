@@ -25,6 +25,7 @@ import {
   faArrowDown,
   faShuffle,
   faExpand,
+  faSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faBars,
@@ -91,7 +92,8 @@ library.add(
   faChevronUp,
   faShuffle,
   faExpand,
-  faArrowDown
+  faArrowDown,
+  faSquare
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";

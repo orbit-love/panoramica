@@ -3,8 +3,7 @@ import Orbit1 from "components/icons/orbit_1";
 import Orbit2 from "components/icons/orbit_2";
 import Orbit3 from "components/icons/orbit_3";
 import Orbit4 from "components/icons/orbit_4";
-import Love from "components/icons/love";
-import Reach from "components/icons/reach";
+import Meter from "components/meter";
 import Prose from "components/visualization/prose";
 
 export default function Member({ selection }) {
@@ -42,20 +41,24 @@ export default function Member({ selection }) {
         </div>
         <div className="text-2xl font-semibold">{selection.name}</div>
       </div>
-      <div className="flex items-center my-4 space-x-6 text-lg">
-        <div
-          title={loveTitle}
-          className="flex items-center space-x-2 cursor-help"
-        >
-          <span className="font-bold">Love</span>
-          <Love value={selection.love} classes=""></Love>
+      <div className="flex flex-col my-4 space-y-2">
+        <div title={loveTitle} className="flex items-center cursor-help">
+          <span className="w-16 font-bold text-indigo-400">Love</span>
+          <Meter
+            icon="square"
+            number={selection.level.number}
+            value={selection.love}
+            classes=""
+          ></Meter>
         </div>
-        <div
-          title={reachTitle}
-          className="flex items-center space-x-2 cursor-help"
-        >
-          <span className="font-bold">Reach</span>
-          <Reach value={selection.reach} classes=""></Reach>
+        <div title={reachTitle} className="flex items-center cursor-help">
+          <span className="w-16 font-bold text-indigo-400">Reach</span>
+          <Meter
+            icon="square"
+            number={selection.level.number}
+            value={selection.reach}
+            classes=""
+          ></Meter>
         </div>
       </div>
       {!summary && <div className="py-1" />}
