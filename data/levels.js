@@ -2,6 +2,7 @@ const levels = [
   {
     number: 1,
     name: "Advocates",
+    nameSingular: "an Advocate",
     distance: 29,
     multiplier: 1,
     exponent: 1,
@@ -12,6 +13,7 @@ const levels = [
   {
     number: 2,
     name: "Contributors",
+    nameSingular: "a Contributor",
     distance: 51,
     exponent: 2,
     multiplier: 4,
@@ -22,6 +24,7 @@ const levels = [
   {
     number: 3,
     name: "Participants",
+    nameSingular: "a Participant",
     distance: 76,
     exponent: 3,
     multiplier: 8,
@@ -32,6 +35,7 @@ const levels = [
   {
     number: 4,
     name: "Explorers",
+    nameSingular: "an Explorer",
     distance: 100,
     exponent: 5,
     multiplier: 16,

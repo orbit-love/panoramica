@@ -8,13 +8,6 @@ import Prose from "components/visualization/prose";
 
 export default function Member({ selection }) {
   const classes = "text-2xl";
-  const messages = {
-    1: "Low love relative to others in their orbit level",
-    2: "Average love relative to others in their orbit level",
-    3: "High love relative to others in their orbit level",
-  };
-  var loveTitle = messages[selection.love];
-  var reachTitle = messages[selection.reach].replace("love", "reach");
   const orbitLevels = {
     1: "Orbit Level 1: Advocates",
     2: "Orbit Level 2: Contributors",
@@ -23,13 +16,6 @@ export default function Member({ selection }) {
   };
   var orbitLevelTitle = orbitLevels[selection.level];
 
-  var summary;
-  if (selection.love === 3 && selection.reach === 1) {
-    summary = `${selection.name} has high love and low reach relative to others in their orbit level. Help ${selection.name} meet other members and grow their network.`;
-  }
-  if (selection.love === 1 && selection.reach === 3) {
-    summary = `${selection.name} has high reach and low love relative to others in their orbit level. Help ${selection.name} find deeper and more frequent ways to contribute.`;
-  }
   return (
     <Prose>
       <div className="flex items-baseline space-x-2">
@@ -42,7 +28,7 @@ export default function Member({ selection }) {
         <div className="text-2xl font-semibold">{selection.name}</div>
       </div>
       <div className="flex flex-col my-4 space-y-2">
-        <div title={loveTitle} className="flex items-center cursor-help">
+        <div className="flex items-center">
           <span className="w-16 font-bold text-indigo-400">Love</span>
           <Meter
             icon="square"
@@ -51,7 +37,7 @@ export default function Member({ selection }) {
             classes=""
           ></Meter>
         </div>
-        <div title={reachTitle} className="flex items-center cursor-help">
+        <div className="flex items-center">
           <span className="w-16 font-bold text-indigo-400">Reach</span>
           <Meter
             icon="square"
@@ -61,8 +47,10 @@ export default function Member({ selection }) {
           ></Meter>
         </div>
       </div>
-      {!summary && <div className="py-1" />}
-      {summary && <div className="leading-tight">{summary}</div>}
+      {!selection.summary && <div className="py-1" />}
+      {selection.summary && (
+        <div className="leading-tight">{selection.summary}</div>
+      )}
     </Prose>
   );
 }

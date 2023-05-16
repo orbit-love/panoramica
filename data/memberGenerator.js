@@ -87,10 +87,26 @@ class MemberGenerator {
       (thisLove === 1 && thisReach === 3);
     var thisRxSeed = rxSeed || this.rand();
     var thisRySeed = rySeed || this.rand();
+
+    var summary;
+    if (thisLove === 3 && (thisReach === 1 || thisReach === 2)) {
+      summary = `has high love and low/medium reach relative to others in their orbit level. Help ${thisName} meet other members and grow their network.`;
+    }
+    if (thisReach === 3 && (thisLove === 1 || thisLove === 2)) {
+      summary = `has high reach and low/medium love relative to others in their orbit level. Help ${thisName} find deeper and more frequent ways to contribute.`;
+    }
+    if (thisReach !== 3 && thisLove !== 3) {
+      summary = `has balanced love and reach relative to others in their orbit level. Continue to offer deeper ways to contribute and connect with other members.`;
+    }
+    if (thisReach === 3 && thisLove === 3) {
+      summary = `has high reach and high love relative to others in their orbit level. Think about what ${thisName} might need to reach the next level.`;
+    }
+    summary = `${thisName} is ${this.level.nameSingular} and ${summary}`;
     var member = {
       id,
       ofInterest,
       position,
+      summary,
       rxSeed: thisRxSeed,
       rySeed: thisRySeed,
       name: thisName,
