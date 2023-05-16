@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useReducer } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
@@ -24,6 +24,8 @@ export default function Widgets({
   setExpanded,
   scrollToIntroduction,
 }) {
+  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+
   const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-80`;
   return (
     <>
@@ -42,6 +44,7 @@ export default function Widgets({
               setStep={setStep}
               setCycle={setCycle}
               scrollToIntroduction={scrollToIntroduction}
+              forceUpdate={forceUpdate}
             />
           </div>
         )}

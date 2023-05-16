@@ -99,6 +99,7 @@ const MemberStep = function ({
   setMembers,
   setSelection,
   setCycle,
+  forceUpdate,
 }) {
   useEffect(() => {
     setCycle(false);
@@ -109,6 +110,9 @@ const MemberStep = function ({
       setMembers,
       setSelection,
     });
+    // it's annoying we need to force an update but the selection doesn't
+    // update otherwise; i'm sure there's a better way
+    forceUpdate();
     // don't trigger this on subsequent re-renders or the selection
     // will always stay jeri
   }, []);
@@ -143,6 +147,7 @@ export default function Steps({
   setStep,
   setCycle,
   scrollToIntroduction,
+  forceUpdate,
 }) {
   const memberId = "jeri";
   const key = 0;
@@ -153,6 +158,7 @@ export default function Steps({
     svgRef,
     members,
     setMembers,
+    forceUpdate,
   };
   var steps = [
     <WelcomeStep key={key} {...props} />,
@@ -260,7 +266,6 @@ export default function Steps({
   const totalSteps = steps.length;
   const stepComponent = steps[step - 1];
 
-  // hard code hex codes for now so tailwind builds them
   return (
     <div className="flex flex-col py-4 px-5 space-y-6 pointer-events-auto">
       <Prose>{stepComponent}</Prose>

@@ -4,13 +4,13 @@ import c from "lib/common";
 import helper from "lib/visualization/helper";
 import Widgets from "components/widgets";
 
-export default function Orbits({
+export default function Visualization({
   width,
   height,
   number,
   fullscreen,
   setFullscreen,
-  scrollToIntroduction
+  scrollToIntroduction,
 }) {
   // does the browser user prefer reduced motion?
   const isReduced =
@@ -144,7 +144,7 @@ export default function Orbits({
         setCycle={setCycle}
         expanded={expanded}
         setExpanded={setExpanded}
-            scrollToIntroduction={scrollToIntroduction}
+        scrollToIntroduction={scrollToIntroduction}
       />
     </>
   );
