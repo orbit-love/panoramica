@@ -5,6 +5,7 @@ import Orbit3 from "components/icons/orbit_3";
 import Orbit4 from "components/icons/orbit_4";
 import Love from "components/icons/love";
 import Reach from "components/icons/reach";
+import Prose from "components/visualization/prose";
 
 export default function Member({ selection }) {
   const classes = "text-2xl";
@@ -31,7 +32,7 @@ export default function Member({ selection }) {
     summary = `${selection.name} has high reach and low love relative to others in their orbit level. Help ${selection.name} find deeper and more frequent ways to contribute.`;
   }
   return (
-    <>
+    <Prose>
       <div className="flex items-baseline space-x-2">
         <div className="cursor-help" title={orbitLevelTitle}>
           {selection.level.number === 1 && <Orbit1 classes={classes} />}
@@ -57,8 +58,8 @@ export default function Member({ selection }) {
           <Reach value={selection.reach} classes=""></Reach>
         </div>
       </div>
-      {/* {!summary && <div className="py-8" />} */}
+      {!summary && <div className="py-1" />}
       {summary && <div className="leading-tight">{summary}</div>}
-    </>
+    </Prose>
   );
 }

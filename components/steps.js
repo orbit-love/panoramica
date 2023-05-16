@@ -1,24 +1,22 @@
 import React, { useEffect } from "react";
 
 import Buttons from "components/steps/buttons";
+import Prose from "components/visualization/prose";
 
 import WelcomeText from "content/steps/welcome.mdx";
 import GravityText from "content/steps/gravity.mdx";
-
 import MissionText from "content/steps/mission.mdx";
 import OrbitLevelsText from "content/steps/orbit_levels.mdx";
 import Orbit1Text from "content/steps/orbit1.mdx";
 import Orbit2Text from "content/steps/orbit2.mdx";
 import Orbit3Text from "content/steps/orbit3.mdx";
 import Orbit4Text from "content/steps/orbit4.mdx";
-
 import MemberO11Text from "content/steps/member-o1-1.mdx";
 import MemberO12Text from "content/steps/member-o1-2.mdx";
 import MemberO21Text from "content/steps/member-o2-1.mdx";
 import MemberO22Text from "content/steps/member-o2-2.mdx";
 import MemberO3Text from "content/steps/member-o3.mdx";
 import MemberO4Text from "content/steps/member-o4.mdx";
-
 import JourneyText from "content/steps/journey.mdx";
 import FinalText from "content/steps/final.mdx";
 
@@ -265,7 +263,7 @@ export default function Steps({
   // hard code hex codes for now so tailwind builds them
   return (
     <div className="flex flex-col py-4 px-5 space-y-6 pointer-events-auto">
-      {stepComponent}
+      <Prose>{stepComponent}</Prose>
       <Buttons
         step={step}
         setStep={setStep}

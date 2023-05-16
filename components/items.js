@@ -26,7 +26,7 @@ export const items = [
     itemId: "orbit-levels",
   },
   {
-    title: "Example",
-    itemId: "example",
+    title: "Resources",
+    itemId: "resources",
   },
 ];

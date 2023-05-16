@@ -9,12 +9,13 @@ import Header from "components/header";
 import Footer from "components/footer";
 import Sidebar from "components/sidebar";
 import Vizualization from "components/visualization";
+import ProseSection from "components/prose-section";
 import Introduction from "content/introduction.mdx";
 import Gravity from "content/gravity.mdx";
 import OrbitLevels from "content/orbit-levels.mdx";
 import Reach from "content/reach.mdx";
 import Love from "content/love.mdx";
-import Example from "content/example.mdx";
+import Resources from "content/resources.mdx";
 import Funnel from "content/funnel.mdx";
 import atomicHeart from "public/atomic-heart.svg";
 
@@ -79,7 +80,7 @@ export default function Index() {
     };
   }, [setDimensions]);
 
-  const fixClass = fix ? "md:pl-56 mt-12" : "";
+  const fixClass = fix ? "md:pl-56" : "";
 
   return (
     <>
@@ -110,40 +111,39 @@ export default function Index() {
         <Image alt="Atomic heart" src={atomicHeart} />
       </div>
       <div className="flex justify-center bg-white sm:pt-10">
-        <div className="flex relative">
+        <div className="flex relative pt-4">
           <Sidebar fix={fix} />
           <div className={`${fixClass} flex flex-col px-4 md:px-0`}>
             {/* pb-12 is here instead of space-y-12 to avoid gaps in sidebar scroll highlighting */}
-            <section
-              className="anchor pb-12"
+            <ProseSection
+              className="anchor"
               id="introduction"
               name="introduction"
             >
-              <h1 className="mb-6 text-4xl font-bold">
+              <h1 className="pt-0 mt-0 mb-8 text-4xl font-bold">
                 Build strong, scalable communities
               </h1>
               <Introduction />
-            </section>
-            <section id="gravity" className="pb-12">
+            </ProseSection>
+            <ProseSection id="gravity">
               <Gravity />
-            </section>
-            <section id="love" className="pb-12">
+            </ProseSection>
+            <ProseSection id="love">
               <Love />
-            </section>
-            <section id="reach" className="pb-12">
+            </ProseSection>
+            <ProseSection id="reach">
               <Reach />
-            </section>
-            <section id="orbit-levels" className="pb-12">
+            </ProseSection>
+            <ProseSection id="orbit-levels">
               <OrbitLevels />
-            </section>
-            <section id="example" className="pb-12">
-              <Example />
-            </section>
-            <section id="funnel" className="prose pb-12 my-8">
-              <div className="px-6 py-8 bg-violet-50">
-                <Funnel />
-              </div>
-            </section>
+            </ProseSection>
+            <ProseSection id="resources">
+              <Resources />
+            </ProseSection>
+            <ProseSection id="funnel" classes="px-6 py-8 bg-violet-50">
+              <Funnel />
+            </ProseSection>
+            <div className="my-8" />
           </div>
         </div>
       </div>

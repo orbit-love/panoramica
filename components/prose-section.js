@@ -1,6 +1,9 @@
 import React from "react";
 
-export default function Prose({ children }) {
+// adds some classes to dial in a section of prose text in a page body
+// adds pb-12 to the bottom instead of margin so the scrollspy is
+// never between sections and loses focus
+export default function ProseSection({ id, name, children, classes = [] }) {
   // const proseClasses = [
   //   "prose",
   //   "prose-lg",
@@ -33,6 +36,15 @@ export default function Prose({ children }) {
     "prose-h3:text-2xl",
     "prose-h4:text-xl",
     "prose-li:my-1",
+    "pb-12",
   ];
-  return <div className={proseClasses.join(" ")}>{children}</div>;
+  return (
+    <section
+      id={id}
+      name={name}
+      className={proseClasses.join(" ") + " " + classes}
+    >
+      {children}
+    </section>
+  );
 }

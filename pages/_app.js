@@ -1,6 +1,6 @@
 import "styles/globals.css";
 import { MDXProvider } from "@mdx-js/react";
-import Layout from "components/mdx/layout";
+import Layout from "components/layouts/mdx/default";
 import Placeholder from "components/mdx/placeholder";
 import Graph from "components/mdx/graph";
 import Callout from "components/mdx/callout";
