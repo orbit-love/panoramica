@@ -24,7 +24,7 @@ export default function Meter({
   var activeLevel = 4 - number; // explorers = 0, etc.
   var fullSquares = activeLevel * 3 + value;
   for (var i = 1; i <= 12; i++) {
-    var styleProps = i >= fullSquares ? emptyProps : fullProps;
+    var styleProps = i > fullSquares ? emptyProps : fullProps;
     var squareLevel = Math.floor((i - 1) / 3); // what ol are we in? {0..3}
     var inActiveLevel = squareLevel === activeLevel;
     var opacity = 1; // inActiveLevel ? 1 : 0.8;
