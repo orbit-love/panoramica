@@ -1,7 +1,13 @@
 import React, { useEffect } from "react";
+import * as d3 from "d3";
+import c from "lib/common";
 
 import Buttons from "components/steps/buttons";
 import Prose from "components/visualization/prose";
+import Orbit1Icon from "components/icons/orbit_1";
+import Orbit2Icon from "components/icons/orbit_2";
+import Orbit3Icon from "components/icons/orbit_3";
+import Orbit4Icon from "components/icons/orbit_4";
 
 import WelcomeText from "content/steps/welcome.mdx";
 import GravityText from "content/steps/gravity.mdx";
@@ -19,11 +25,6 @@ import MemberO3Text from "content/steps/member-o3.mdx";
 import MemberO4Text from "content/steps/member-o4.mdx";
 import JourneyText from "content/steps/journey.mdx";
 import FinalText from "content/steps/final.mdx";
-
-import Orbit1Icon from "components/icons/orbit_1";
-import Orbit2Icon from "components/icons/orbit_2";
-import Orbit3Icon from "components/icons/orbit_3";
-import Orbit4Icon from "components/icons/orbit_4";
 
 const updateMember = function ({
   memberId,
@@ -65,11 +66,25 @@ const GravityStep = function ({ setSelection, setCycle }) {
   return <GravityText />;
 };
 
-const OrbitLevelsStep = function ({ setSelection, setCycle }) {
+const OrbitLevelsStep = function ({ svgRef, setSelection, setCycle }) {
   useEffect(() => {
     setCycle(false);
     setSelection(null);
-  }, [setSelection, setCycle]);
+    // highlight the orbit levels; this needs to be done async
+    // because the highlights will be removed on the next render
+    // a better way is possible
+    const timeout = setTimeout(() => {
+      d3.select(svgRef.current)
+        .selectAll("ellipse")
+        .attr("stroke", c.selectedColor);
+      d3.select(svgRef.current)
+        .selectAll("text.level-label")
+        .attr("fill", c.selectedColor);
+    }, 100);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [svgRef, setSelection, setCycle]);
 
   return <OrbitLevelsText />;
 };
