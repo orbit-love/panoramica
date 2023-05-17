@@ -10,11 +10,11 @@ class MemberGenerator {
     const {
       rxFuzz = 0.1,
       ryFuzz = 0.1,
-      positionFuzz = 0.05,
+      positionFuzz = 0.02,
       r1,
       r2,
       r3,
-      l1 = c.indigo900,
+      l1 = c.indigo800,
       l2 = c.indigo400,
       l3 = c.indigo100,
       exponent = 1,
