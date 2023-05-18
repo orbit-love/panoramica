@@ -10,7 +10,6 @@ import {
 
 export default function Graph({ data, width, height }) {
   const ref = React.useRef(null);
-  console.log(data);
 
   useEffect(() => {
     const container = ref.current;
@@ -58,7 +57,7 @@ export default function Graph({ data, width, height }) {
     return () => {
       newGraph.destroy();
     };
-  });
+  }, [data, width, height]);
 
-  return <div ref={ref} className=""></div>;
+  return <div ref={ref}></div>;
 }

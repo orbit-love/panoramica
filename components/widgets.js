@@ -23,6 +23,8 @@ export default function Widgets({
   expanded,
   setExpanded,
   scrollToIntroduction,
+  showNetwork,
+  setShowNetwork,
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
@@ -74,6 +76,8 @@ export default function Widgets({
               setCycle={setCycle}
               fullscreen={fullscreen}
               setFullscreen={setFullscreen}
+              showNetwork={showNetwork}
+              setShowNetwork={setShowNetwork}
             />
           </div>
           <div className="mx-auto" />

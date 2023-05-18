@@ -8,10 +8,13 @@ export default function Controls({
   setCycle,
   fullscreen,
   setFullscreen,
+  showNetwork,
+  setShowNetwork,
 }) {
   const animateIcon = "play";
   const cycleIcon = "shuffle";
   const fullscreenIcon = "expand";
+  const networkIcon = "chart-network";
 
   return (
     <>
@@ -50,6 +53,35 @@ export default function Controls({
         >
           <FontAwesomeIcon
             icon={cycleIcon}
+            className="text-lg text-indigo-900"
+          />
+        </button>
+      )}
+      {showNetwork && (
+        <button
+          className="btn"
+          onClick={() => {
+            setCycle(true);
+            setAnimate(true);
+            setShowNetwork(false);
+          }}
+          title="Network view enabled"
+        >
+          <FontAwesomeIcon icon={networkIcon} className="text-lg" />
+        </button>
+      )}
+      {!showNetwork && (
+        <button
+          className="btn"
+          onClick={() => {
+            setCycle(false);
+            setAnimate(false);
+            setShowNetwork(true);
+          }}
+          title="Network view disabled"
+        >
+          <FontAwesomeIcon
+            icon={networkIcon}
             className="text-lg text-indigo-900"
           />
         </button>

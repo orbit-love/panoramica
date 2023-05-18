@@ -34,6 +34,9 @@ export default function Visualization({
   const [members, setMembers] = useState(null);
   const [levels, setLevels] = useState([]);
   const [expanded, setExpanded] = useState(true);
+  const [showNetwork, setShowNetwork] = useState(false);
+
+  const prevShowNetwork = c.usePrevious(showNetwork);
 
   useEffect(() => {
     const selectRandomMember = () => {
@@ -59,7 +62,8 @@ export default function Visualization({
       !members ||
       number !== prevNumber ||
       width !== prevWidth ||
-      height !== prevHeight
+      height !== prevHeight ||
+      showNetwork !== prevShowNetwork
     ) {
       // if major parameters have changed
       // clear the canvas and re-prepare the data
@@ -117,20 +121,29 @@ export default function Visualization({
     levels,
     expanded,
     setExpanded,
+    showNetwork,
+    prevShowNetwork,
   ]);
 
   return (
     <>
-      <div>
-        <svg
-          className="unselectable"
-          ref={svgRef}
-          style={{ width: "100%", height: "100%" }}
-        ></svg>
-      </div>
-      {/* {members && (
-        <MemberGraph members={members} width={width} height={height} />
-      )} */}
+      {!showNetwork && (
+        <div>
+          <svg
+            className="unselectable"
+            ref={svgRef}
+            style={{ width: "100%", height: "100%" }}
+          ></svg>
+        </div>
+      )}
+      {showNetwork && members && (
+        <MemberGraph
+          members={members}
+          selection={selection}
+          width={width}
+          height={height}
+        />
+      )}
       <div className="hidden bg-[#0F0A25] text-[#eef2ff] text-[#1D1640]" />
       <Widgets
         svgRef={svgRef}
@@ -149,6 +162,8 @@ export default function Visualization({
         expanded={expanded}
         setExpanded={setExpanded}
         scrollToIntroduction={scrollToIntroduction}
+        showNetwork={showNetwork}
+        setShowNetwork={setShowNetwork}
       />
     </>
   );

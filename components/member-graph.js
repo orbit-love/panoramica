@@ -1,12 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
-import Head from "components/head";
 import c from "lib/common";
-import helper from "lib/visualization/helper";
 import Graph from "components/mdx/graph";
 
-export default function MemberGraph({ width, height, members }) {
-  var data;
-
+const getData = (members) => {
   var nodes = members.list.map((member) => {
     return {
       id: member.id,
@@ -36,11 +32,15 @@ export default function MemberGraph({ width, height, members }) {
     return memberEdges;
   });
 
-  data = { nodes, edges };
+  return { nodes, edges };
+};
 
-  return (
-    <>
-      <Graph data={data} width={width} height={height} />
-    </>
-  );
+export default function MemberGraph({ width, height, members }) {
+  const [data, setData] = useState(getData(members));
+
+  useEffect(() => {
+    setData(getData(members));
+  }, [members]);
+
+  return <Graph data={data} width={width} height={height} />;
 }
