@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import c from "lib/common";
+import MemberGraph from "components/member-graph";
 import helper from "lib/visualization/helper";
 import Widgets from "components/widgets";
 
@@ -127,6 +128,9 @@ export default function Visualization({
           style={{ width: "100%", height: "100%" }}
         ></svg>
       </div>
+      {/* {members && (
+        <MemberGraph members={members} width={width} height={height} />
+      )} */}
       <div className="hidden bg-[#0F0A25] text-[#eef2ff] text-[#1D1640]" />
       <Widgets
         svgRef={svgRef}

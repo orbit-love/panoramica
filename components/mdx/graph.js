@@ -8,8 +8,9 @@ import {
   comboStateStyles,
 } from "lib/graph/config";
 
-export default function Graph({ data, height = 400 }) {
+export default function Graph({ data, width, height }) {
   const ref = React.useRef(null);
+  console.log(data);
 
   useEffect(() => {
     const container = ref.current;
@@ -23,7 +24,7 @@ export default function Graph({ data, height = 400 }) {
     const graphProperties = {
       // fitView: true,
       // fitViewPadding: 10,
-      fitCenter: true,
+      // fitCenter: true,
       defaultNode: defaultNode,
       nodeStateStyles: nodeStateStyles,
       defaultEdge: defaultEdge,
@@ -32,16 +33,21 @@ export default function Graph({ data, height = 400 }) {
       comboStateStyles,
       modes: {
         default: [
-          { type: "drag-combo" },
           { type: "drag-node" },
           { type: "click-select" },
+          {
+            type: "activate-relations",
+            trigger: "click",
+            activeState: "selected",
+            inactiveState: "",
+          },
         ],
       },
     };
     const newGraph = new G6.Graph({
       container,
       height,
-      width: container.scrollWidth,
+      width,
       layout: layout,
       ...graphProperties,
     });
@@ -54,11 +60,5 @@ export default function Graph({ data, height = 400 }) {
     };
   });
 
-  return (
-    <div className="py-3">
-      <div className="h-[400px] border border-slate-800">
-        <div ref={ref} className=""></div>
-      </div>
-    </div>
-  );
+  return <div ref={ref} className=""></div>;
 }
