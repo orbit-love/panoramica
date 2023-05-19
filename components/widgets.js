@@ -96,6 +96,7 @@ export default function Widgets({
               members={members}
               setSelection={setSelection}
               setShowNetwork={setShowNetwork}
+              setExpanded={setExpanded}
             />
           </div>
         </div>

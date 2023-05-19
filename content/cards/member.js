@@ -11,6 +11,7 @@ export default function Member({
   members,
   setSelection,
   setShowNetwork,
+  setExpanded,
 }) {
   const classes = "text-2xl";
   const orbitLevels = {
@@ -57,7 +58,10 @@ export default function Member({
         <div className="flex flex-col items-start space-y-1">
           <button
             className="text-pink-300 hover:text-pink-100"
-            onClick={() => setShowNetwork(true)}
+            onClick={() => {
+              setExpanded(false);
+              setShowNetwork(true);
+            }}
           >
             Connections ({connections.length}):
           </button>
