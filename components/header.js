@@ -15,7 +15,7 @@ export default function Header({ fix, fullscreen }) {
   };
 
   const fixClass = fix
-    ? `fixed top-0 left-0 bg-[${c.purpleBgColor}] z-50`
+    ? `fixed top-0 left-0 bg-[${c.purpleBgColor}] bg-[#1D1640] z-50`
     : "absolute";
 
   return (
@@ -68,7 +68,7 @@ export default function Header({ fix, fullscreen }) {
           </div>
         )}
       </nav>
-      <div className={`${active ? "" : "hidden"}`}>
+      <div className={`${active ? "":"hidden"}`}>
         <CSSTransition in={active} timeout={400} classNames="mobile-nav">
           <MobileNav setActive={setActive} />
         </CSSTransition>
