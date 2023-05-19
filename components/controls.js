@@ -10,6 +10,7 @@ export default function Controls({
   setFullscreen,
   showNetwork,
   setShowNetwork,
+  setExpanded,
 }) {
   const animateIcon = "play";
   const cycleIcon = "shuffle";
@@ -61,8 +62,8 @@ export default function Controls({
         <button
           className="btn"
           onClick={() => {
-            setCycle(true);
-            setAnimate(true);
+            // setCycle(true);
+            // setAnimate(true);
             setShowNetwork(false);
           }}
           title="Network view enabled"
@@ -76,6 +77,7 @@ export default function Controls({
           onClick={() => {
             setCycle(false);
             setAnimate(false);
+            setExpanded(false);
             setShowNetwork(true);
           }}
           title="Network view disabled"

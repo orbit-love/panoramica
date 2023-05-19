@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import c from "lib/common";
-import MemberGraph from "components/member-graph";
+import MemberGraph from "components/memberGraph";
 import helper from "lib/visualization/helper";
 import Widgets from "components/widgets";
 
@@ -140,6 +140,7 @@ export default function Visualization({
         <MemberGraph
           members={members}
           selection={selection}
+          setSelection={setSelection}
           width={width}
           height={height}
         />

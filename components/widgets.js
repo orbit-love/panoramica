@@ -78,6 +78,7 @@ export default function Widgets({
               setFullscreen={setFullscreen}
               showNetwork={showNetwork}
               setShowNetwork={setShowNetwork}
+              setExpanded={setExpanded}
             />
           </div>
           <div className="mx-auto" />
@@ -90,7 +91,12 @@ export default function Widgets({
           <div
             className={`${classes} flex relative flex-col px-7 py-8 pointer-events-auto`}
           >
-            <Member selection={selection} />
+            <Member
+              member={selection}
+              members={members}
+              setSelection={setSelection}
+              setShowNetwork={setShowNetwork}
+            />
           </div>
         </div>
       )}

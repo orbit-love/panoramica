@@ -77,16 +77,16 @@ class MemberGenerator {
   }
 
   produceMember({ name, love, reach, rxSeed, rySeed, position = 0 }) {
-    var thisName = name || faker.name.firstName();
+    const thisName = name || faker.name.firstName();
     const id = `${c.slugify(thisName)}`;
 
-    var thisLove = love || this.loveScale2(this.loveScale(this.rand()));
-    var thisReach = reach || this.reachScale2(this.reachScale(this.rand()));
+    const thisLove = love || this.loveScale2(this.loveScale(this.rand()));
+    const thisReach = reach || this.reachScale2(this.reachScale(this.rand()));
     const ofInterest =
       (thisLove === 3 && thisReach === 1) ||
       (thisLove === 1 && thisReach === 3);
-    var thisRxSeed = rxSeed || this.rand();
-    var thisRySeed = rySeed || this.rand();
+    const thisRxSeed = rxSeed || this.rand();
+    const thisRySeed = rySeed || this.rand();
 
     var summary;
     if (thisLove === 3 && (thisReach === 1 || thisReach === 2)) {
@@ -102,6 +102,7 @@ class MemberGenerator {
       summary = `has high reach and high love relative to others in their orbit level. Think about what ${thisName} might need to reach the next level.`;
     }
     summary = `${thisName} is ${this.level.nameSingular} and ${summary}`;
+
     var member = {
       id,
       ofInterest,

@@ -6,7 +6,12 @@ import Orbit4 from "components/icons/orbit_4";
 import Meter from "components/meter";
 import Prose from "components/visualization/prose";
 
-export default function Member({ selection }) {
+export default function Member({
+  member,
+  members,
+  setSelection,
+  setShowNetwork,
+}) {
   const classes = "text-2xl";
   const orbitLevels = {
     1: "Orbit Level 1: Advocates",
@@ -14,26 +19,27 @@ export default function Member({ selection }) {
     3: "Orbit Level 3: Participants",
     4: "Orbit Level 4: Explorers",
   };
-  var orbitLevelTitle = orbitLevels[selection.level];
+  var orbitLevelTitle = orbitLevels[member.level];
+  const connections = members.getConnections({ member });
 
   return (
     <Prose>
       <div className="flex items-baseline space-x-2">
         <div className="cursor-help" title={orbitLevelTitle}>
-          {selection.level.number === 1 && <Orbit1 classes={classes} />}
-          {selection.level.number === 2 && <Orbit2 classes={classes} />}
-          {selection.level.number === 3 && <Orbit3 classes={classes} />}
-          {selection.level.number === 4 && <Orbit4 classes={classes} />}
+          {member.level.number === 1 && <Orbit1 classes={classes} />}
+          {member.level.number === 2 && <Orbit2 classes={classes} />}
+          {member.level.number === 3 && <Orbit3 classes={classes} />}
+          {member.level.number === 4 && <Orbit4 classes={classes} />}
         </div>
-        <div className="text-2xl font-semibold">{selection.name}</div>
+        <div className="text-2xl font-semibold">{member.name}</div>
       </div>
       <div className="flex flex-col my-4 space-y-2">
         <div className="flex items-center">
           <span className="w-16 font-bold text-indigo-400">Love</span>
           <Meter
             icon="square"
-            number={selection.level.number}
-            value={selection.love}
+            number={member.level.number}
+            value={member.love}
             classes=""
           ></Meter>
         </div>
@@ -41,16 +47,38 @@ export default function Member({ selection }) {
           <span className="w-16 font-bold text-indigo-400">Reach</span>
           <Meter
             icon="square"
-            number={selection.level.number}
-            value={selection.reach}
+            number={member.level.number}
+            value={member.reach}
             classes=""
           ></Meter>
         </div>
       </div>
-      {!selection.summary && <div className="py-1" />}
-      {selection.summary && (
-        <div className="leading-tight">{selection.summary}</div>
+      {connections.length > 0 && (
+        <div className="flex flex-col items-start space-y-1">
+          <button
+            className="text-pink-300 hover:text-pink-100"
+            onClick={() => setShowNetwork(true)}
+          >
+            Connections ({connections.length}):
+          </button>
+          <div className="flex space-x-2">
+            {connections.map((connection) => (
+              <button
+                className="text-pink-300 hover:text-pink-100"
+                key={connection.id}
+                onClick={() => setSelection(connection)}
+              >
+                {connection.name}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
+      {connections.length === 0 && (
+        <div className="text-pink-300">No Connections</div>
+      )}
+      {!member.summary && <div className="py-1" />}
+      {member.summary && <div className="leading-tight">{member.summary}</div>}
     </Prose>
   );
 }

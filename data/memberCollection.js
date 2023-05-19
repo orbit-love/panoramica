@@ -1,4 +1,5 @@
 import MemberGenerator from "data/memberGenerator";
+import ConnectionGenerator from "data/connectionGenerator";
 
 class MemberCollection {
   constructor({ levels, rand }) {
@@ -8,6 +9,8 @@ class MemberCollection {
 
     // internal array to get the members
     this.list = [];
+    // internal set for the connections between members
+    this.connections = new Set();
 
     Object.keys(this.levels).forEach((number) => {
       const level = levels[number];
@@ -67,6 +70,29 @@ class MemberCollection {
 
   length() {
     return this.list.length;
+  }
+
+  generateConnections({ number }) {
+    const connectionGenerator = new ConnectionGenerator({
+      members: this.list,
+      rand: this.rand,
+    });
+    this.connections = connectionGenerator.produceConnections({ number });
+  }
+
+  // return the connections for a single member
+  getConnections({ member }) {
+    const connectedMembers = [];
+    this.connections.forEach((idPair) => {
+      const [id1, id2] = idPair.split("-");
+      if (id1 === member.id) {
+        connectedMembers.push(this.find(id2));
+      }
+      if (id2 === member.id) {
+        connectedMembers.push(this.find(id1));
+      }
+    });
+    return connectedMembers;
   }
 }
 

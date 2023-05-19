@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Head from "components/head";
 import c from "lib/common";
 import helper from "lib/visualization/helper";
-import MemberGraph from "components/member-graph";
+import MemberGraph from "components/memberGraph";
 
 export default function Network() {
   const containerRef = useRef();
