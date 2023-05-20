@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import c from "lib/common";
 import { colors } from "lib/graph/styles";
-import Graph from "components/mdx/graph";
+import Graph from "components/graph";
 
 const getData = ({ members, selection }) => {
   var nodes = members.list.map((member) => {

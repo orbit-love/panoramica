@@ -28,13 +28,13 @@ export default function Visualization({
 
   const svgRef = useRef();
   const [animate, setAnimate] = useState(!isReduced);
-  const [cycle, setCycle] = useState(true);
+  const [cycle, setCycle] = useState(false);
   const [selection, setSelection] = useState(null);
   const [step, setStep] = useState(firstStep);
   const [members, setMembers] = useState(null);
   const [levels, setLevels] = useState([]);
   const [expanded, setExpanded] = useState(true);
-  const [showNetwork, setShowNetwork] = useState(false);
+  const [showNetwork, setShowNetwork] = useState(true);
 
   const prevShowNetwork = c.usePrevious(showNetwork);
 
@@ -143,6 +143,8 @@ export default function Visualization({
           setSelection={setSelection}
           width={width}
           height={height}
+          prevWidth={prevWidth}
+          prevHeight={prevHeight}
         />
       )}
       <div className="hidden bg-[#0F0A25] text-[#eef2ff] text-[#1D1640]" />

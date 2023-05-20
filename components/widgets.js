@@ -2,6 +2,7 @@ import React, { useReducer } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
+import MissionControls from "components/controls/mission";
 import Controls from "components/controls";
 import Member from "content/cards/member";
 import Steps from "components/steps";
@@ -34,7 +35,7 @@ export default function Widgets({
       <div
         className={`flex absolute bottom-0 left-0 z-10 flex-col px-4 py-5 space-y-4`}
       >
-        {expanded && members && (
+        {!showNetwork && expanded && members && (
           <div className={`${classes} w-96`}>
             <Steps
               svgRef={svgRef}
@@ -52,27 +53,8 @@ export default function Widgets({
         )}
         <div className="flex">
           <div className={`${classes} py-4 px-5 pointer-events-auto`}>
-            {expanded && (
-              <button onClick={() => setExpanded(false)} className="btn">
-                <FontAwesomeIcon
-                  icon="chevron-down"
-                  className="text-lg"
-                ></FontAwesomeIcon>
-              </button>
-            )}
-            {!expanded && (
-              <button onClick={() => setExpanded(true)} className="btn">
-                <FontAwesomeIcon
-                  icon="solar-system"
-                  className="text-lg"
-                ></FontAwesomeIcon>
-              </button>
-            )}
-            <div className="border border-indigo-900" />
             <Controls
-              animate={animate}
               setAnimate={setAnimate}
-              cycle={cycle}
               setCycle={setCycle}
               fullscreen={fullscreen}
               setFullscreen={setFullscreen}
@@ -80,6 +62,19 @@ export default function Widgets({
               setShowNetwork={setShowNetwork}
               setExpanded={setExpanded}
             />
+            {!showNetwork && (
+              <>
+                <div className="border border-indigo-900" />
+                <MissionControls
+                  animate={animate}
+                  setAnimate={setAnimate}
+                  cycle={cycle}
+                  setCycle={setCycle}
+                  expanded={expanded}
+                  setExpanded={setExpanded}
+                />
+              </>
+            )}
           </div>
           <div className="mx-auto" />
         </div>

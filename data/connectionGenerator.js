@@ -31,7 +31,7 @@ class ConnectionGenerator {
         // set for either direction
         const setId = [member1.id, member2.id].sort().join("-");
         connections.add(setId);
-        console.log(`Connection ${member1.id} <> ${member2.id}`);
+        // console.log(`Connection ${member1.id} <> ${member2.id}`);
       }
     }
     console.log("Made " + connections.size + " connections");

@@ -2,9 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Controls({
-  animate,
   setAnimate,
-  cycle,
   setCycle,
   fullscreen,
   setFullscreen,
@@ -12,52 +10,12 @@ export default function Controls({
   setShowNetwork,
   setExpanded,
 }) {
-  const animateIcon = "play";
-  const cycleIcon = "shuffle";
   const fullscreenIcon = "expand";
   const networkIcon = "chart-network";
+  const missionIcon = "solar-system";
 
   return (
     <>
-      {animate && (
-        <button
-          className="btn"
-          onClick={() => setAnimate(false)}
-          title="Rotation enabled"
-        >
-          <FontAwesomeIcon icon="pause" className="text-lg" />
-        </button>
-      )}
-      {!animate && (
-        <button
-          className="btn"
-          onClick={() => setAnimate(true)}
-          title="Rotation disabled"
-        >
-          <FontAwesomeIcon icon={animateIcon} className="text-lg" />
-        </button>
-      )}
-      {cycle && (
-        <button
-          className="btn"
-          onClick={() => setCycle(false)}
-          title="Cycling through members enabled"
-        >
-          <FontAwesomeIcon icon={cycleIcon} className="text-lg" />
-        </button>
-      )}
-      {!cycle && (
-        <button
-          className="btn"
-          onClick={() => setCycle(true)}
-          title="Cycling through members disabled"
-        >
-          <FontAwesomeIcon
-            icon={cycleIcon}
-            className="text-lg text-indigo-900"
-          />
-        </button>
-      )}
       {showNetwork && (
         <button
           className="btn"
@@ -66,9 +24,12 @@ export default function Controls({
             // setAnimate(true);
             setShowNetwork(false);
           }}
-          title="Network view enabled"
+          title="Toggle to solar system view"
         >
-          <FontAwesomeIcon icon={networkIcon} className="text-lg" />
+          <FontAwesomeIcon
+            icon={missionIcon}
+            className="text-lg text-indigo-500"
+          />
         </button>
       )}
       {!showNetwork && (
@@ -80,11 +41,11 @@ export default function Controls({
             setExpanded(false);
             setShowNetwork(true);
           }}
-          title="Network view disabled"
+          title="Toggle to network view"
         >
           <FontAwesomeIcon
             icon={networkIcon}
-            className="text-lg text-indigo-900"
+            className="text-lg text-indigo-500"
           />
         </button>
       )}
