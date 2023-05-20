@@ -1,5 +1,5 @@
 import G6 from "@antv/g6";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   nodeStateStyles,
   defaultNode,
