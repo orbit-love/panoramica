@@ -9,6 +9,7 @@ import Prose from "components/visualization/prose";
 export default function Member({
   member,
   members,
+  showNetwork,
   setSelection,
   setShowNetwork,
   setExpanded,
@@ -22,6 +23,8 @@ export default function Member({
   };
   var orbitLevelTitle = orbitLevels[member.level];
   const connections = members.getConnections({ member });
+  const buttonClasses =
+    "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none";
 
   return (
     <Prose>
@@ -41,7 +44,6 @@ export default function Member({
             icon="square"
             number={member.level.number}
             value={member.love}
-            classes=""
           ></Meter>
         </div>
         <div className="flex items-center">
@@ -50,23 +52,12 @@ export default function Member({
             icon="square"
             number={member.level.number}
             value={member.reach}
-            classes=""
           ></Meter>
         </div>
       </div>
-      {connections.length > 0 && (
-        <div className="flex flex-col items-start space-y-1">
-          <button
-            className="text-pink-300 hover:text-pink-100"
-            onClick={() => {
-              setExpanded(false);
-              setShowNetwork(true);
-            }}
-          >
-            Connections ({connections.length}):
-          </button>
-          <div className="flex space-x-2">
-            {connections.map((connection) => (
+      {showNetwork && (
+        <>
+          {/* {connections.map((connection) => (
               <button
                 className="text-pink-300 hover:text-pink-100"
                 key={connection.id}
@@ -74,15 +65,39 @@ export default function Member({
               >
                 {connection.name}
               </button>
-            ))}
-          </div>
-        </div>
+            ))} */}
+          <button
+            className={buttonClasses}
+            onClick={() => {
+              setExpanded(false);
+              setShowNetwork(false);
+            }}
+          >
+            View Orbit Level
+          </button>
+          {!member.summary && <div className="py-1" />}
+          {member.summary && (
+            <div className="leading-tight">{member.summary}</div>
+          )}
+        </>
       )}
-      {connections.length === 0 && (
-        <div className="text-pink-300">No Connections</div>
+      {!showNetwork && (
+        <>
+          <button
+            className={buttonClasses}
+            onClick={() => {
+              setExpanded(false);
+              setShowNetwork(true);
+            }}
+          >
+            View Connections: {connections.length}
+          </button>
+          {!member.summary && <div className="py-1" />}
+          {member.summary && (
+            <div className="leading-tight">{member.summary}</div>
+          )}
+        </>
       )}
-      {!member.summary && <div className="py-1" />}
-      {member.summary && <div className="leading-tight">{member.summary}</div>}
     </Prose>
   );
 }

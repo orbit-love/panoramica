@@ -23,7 +23,7 @@ export default function Graph({
       const container = ref.current;
       // https://antv-g6.gitee.io/en/docs/api/graphLayout/force#layoutcfgclustering
       const layout = {
-        type: "force",
+        type: "concentric",
         nodeSpacing: 35,
         linkDistance: 30,
         preventOverlap: true,
@@ -32,17 +32,18 @@ export default function Graph({
         // fitView: true,
         // fitViewPadding: 10,
         // fitCenter: true,
+        animate: false,
         defaultNode: defaultNode,
         nodeStateStyles: nodeStateStyles,
         defaultEdge: defaultEdge,
-        groupByTypes: false,
+        // groupByTypes: false,
         modes: {
           default: [
             { type: "drag-canvas" },
             { type: "zoom-canvas", sensitivity: 0.5, minZoom: 0.5, maxZoom: 3 },
             // {
             //   type: "activate-relations",
-            //   trigger: "mouseenter",
+            //   trigger: "cli",
             //   activeState: "selected",
             //   inactiveState: "",
             // },
@@ -56,7 +57,7 @@ export default function Graph({
         layout: layout,
         ...graphProperties,
       });
-      newGraph.on("node:click", (event) => {
+      newGraph.on("node:mouseenter", (event) => {
         onNodeClick(event);
       });
       setGraph(newGraph);

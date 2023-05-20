@@ -34,7 +34,7 @@ export default function Visualization({
   const [members, setMembers] = useState(null);
   const [levels, setLevels] = useState([]);
   const [expanded, setExpanded] = useState(true);
-  const [showNetwork, setShowNetwork] = useState(false);
+  const [showNetwork, setShowNetwork] = useState(true);
 
   const prevShowNetwork = c.usePrevious(showNetwork);
 

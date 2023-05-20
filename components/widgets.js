@@ -89,6 +89,7 @@ export default function Widgets({
             <Member
               member={selection}
               members={members}
+              showNetwork={showNetwork}
               setSelection={setSelection}
               setShowNetwork={setShowNetwork}
               setExpanded={setExpanded}
