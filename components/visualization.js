@@ -34,7 +34,8 @@ export default function Visualization({
   const [members, setMembers] = useState(null);
   const [levels, setLevels] = useState([]);
   const [expanded, setExpanded] = useState(true);
-  const [showNetwork, setShowNetwork] = useState(true);
+  const [showNetwork, setShowNetwork] = useState(false);
+  const [graph, setGraph] = useState(null);
 
   const prevShowNetwork = c.usePrevious(showNetwork);
 
@@ -145,6 +146,8 @@ export default function Visualization({
           height={height}
           prevWidth={prevWidth}
           prevHeight={prevHeight}
+          graph={graph}
+          setGraph={setGraph}
         />
       )}
       <div className="hidden bg-[#0F0A25] text-[#eef2ff] text-[#1D1640]" />
@@ -167,6 +170,7 @@ export default function Visualization({
         scrollToIntroduction={scrollToIntroduction}
         showNetwork={showNetwork}
         setShowNetwork={setShowNetwork}
+        graph={graph}
       />
     </>
   );

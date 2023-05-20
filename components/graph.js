@@ -1,17 +1,23 @@
 import G6 from "@antv/g6";
 import React, { useEffect, useState } from "react";
-import { nodeStateStyles, defaultNode, defaultEdge } from "lib/graph/config";
+import {
+  nodeStateStyles,
+  defaultNode,
+  defaultEdge,
+  edgeStateStyles,
+} from "lib/graph/config";
 
 export default function Graph({
+  graph,
+  setGraph,
   data,
   width,
   height,
   prevWidth,
   prevHeight,
-  onNodeClick,
+  eventHandlers,
 }) {
   const ref = React.useRef(null);
-  const [graph, setGraph] = useState(null);
 
   useEffect(() => {
     if (
@@ -24,29 +30,25 @@ export default function Graph({
       // https://antv-g6.gitee.io/en/docs/api/graphLayout/force#layoutcfgclustering
       const layout = {
         type: "concentric",
-        nodeSpacing: 35,
-        linkDistance: 30,
+        // nodeSpacing: 15,
+        // linkDistance: 10,
         preventOverlap: true,
       };
       const graphProperties = {
-        // fitView: true,
-        // fitViewPadding: 10,
-        // fitCenter: true,
-        animate: false,
-        defaultNode: defaultNode,
-        nodeStateStyles: nodeStateStyles,
-        defaultEdge: defaultEdge,
-        // groupByTypes: false,
+        defaultNode,
+        nodeStateStyles,
+        defaultEdge,
+        edgeStateStyles,
         modes: {
           default: [
             { type: "drag-canvas" },
             { type: "zoom-canvas", sensitivity: 0.5, minZoom: 0.5, maxZoom: 3 },
-            // {
-            //   type: "activate-relations",
-            //   trigger: "cli",
-            //   activeState: "selected",
-            //   inactiveState: "",
-            // },
+            {
+              type: "activate-relations",
+              trigger: "click",
+              activeState: "selected",
+              inactiveState: "",
+            },
           ],
         },
       };
@@ -57,9 +59,12 @@ export default function Graph({
         layout: layout,
         ...graphProperties,
       });
-      newGraph.on("node:mouseenter", (event) => {
-        onNodeClick(event);
-      });
+      // bind all of the eventHandlers passed in
+      for (const [key, value] of Object.entries(eventHandlers)) {
+        newGraph.on(key, value);
+      }
+      newGraph.data(data);
+      newGraph.render();
       setGraph(newGraph);
     }
 
@@ -79,11 +84,12 @@ export default function Graph({
     // listing graph here causes problems
   }, [width, height, prevWidth, prevHeight]);
 
-  useEffect(() => {
-    if (graph && !graph.destroyed) {
-      // otherwise, update the data
-      graph.changeData(data);
-    }
-  }, [data, graph]);
+  // if you want the graph to update, do it manually
+  // useEffect(() => {
+  //   if (graph && !graph.destroyed) {
+  //     // otherwise, update the data
+  //     graph.changeData(data);
+  //   }
+  // }, [data, graph]);
   return <div className="unselectable" ref={ref}></div>;
 }

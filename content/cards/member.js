@@ -6,6 +6,17 @@ import Orbit4 from "components/icons/orbit_4";
 import Meter from "components/meter";
 import Prose from "components/visualization/prose";
 
+const OrbitLevelIcon = ({ member, classes }) => {
+  return (
+    <>
+      {member.level.number === 1 && <Orbit1 classes={classes} />}
+      {member.level.number === 2 && <Orbit2 classes={classes} />}
+      {member.level.number === 3 && <Orbit3 classes={classes} />}
+      {member.level.number === 4 && <Orbit4 classes={classes} />}
+    </>
+  );
+};
+
 export default function Member({
   member,
   members,
@@ -13,8 +24,8 @@ export default function Member({
   setSelection,
   setShowNetwork,
   setExpanded,
+  graph,
 }) {
-  const classes = "text-2xl";
   const orbitLevels = {
     1: "Orbit Level 1: Advocates",
     2: "Orbit Level 2: Contributors",
@@ -23,21 +34,39 @@ export default function Member({
   };
   var orbitLevelTitle = orbitLevels[member.level];
   const connections = members.getConnections({ member });
+  // show connections to highest orbit levels first
+  connections.sort((a, b) => a.level.number - b.level.number);
   const buttonClasses =
     "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none";
+
+  const onConnectionClick = (connection) => {
+    // clear selections
+    const nodes = graph.getNodes();
+    const edges = graph.getEdges();
+    nodes.forEach((node) => graph.clearItemStates(node, "selected"));
+    edges.forEach((edge) => graph.clearItemStates(edge, "selected"));
+
+    // add selected state to node and edges
+    const node = graph.findById(connection.id);
+    graph.setItemState(node, "selected", true);
+    graph.focusItem(node, true);
+    node
+      .getEdges()
+      .forEach((edge) => graph.setItemState(edge, "selected", true));
+
+    // set the selection for the member panel
+    setSelection(connection);
+  };
 
   return (
     <Prose>
       <div className="flex items-baseline space-x-2">
         <div className="cursor-help" title={orbitLevelTitle}>
-          {member.level.number === 1 && <Orbit1 classes={classes} />}
-          {member.level.number === 2 && <Orbit2 classes={classes} />}
-          {member.level.number === 3 && <Orbit3 classes={classes} />}
-          {member.level.number === 4 && <Orbit4 classes={classes} />}
+          <OrbitLevelIcon member={member} classes="text-2xl" />
         </div>
         <div className="text-2xl font-semibold">{member.name}</div>
       </div>
-      <div className="flex flex-col my-4 space-y-2">
+      <div className="flex flex-col my-4 space-y-1">
         <div className="flex items-center">
           <span className="w-16 font-bold text-indigo-400">Love</span>
           <Meter
@@ -57,15 +86,6 @@ export default function Member({
       </div>
       {showNetwork && (
         <>
-          {/* {connections.map((connection) => (
-              <button
-                className="text-pink-300 hover:text-pink-100"
-                key={connection.id}
-                onClick={() => setSelection(connection)}
-              >
-                {connection.name}
-              </button>
-            ))} */}
           <button
             className={buttonClasses}
             onClick={() => {
@@ -75,10 +95,24 @@ export default function Member({
           >
             View Orbit Level
           </button>
-          {!member.summary && <div className="py-1" />}
-          {member.summary && (
-            <div className="leading-tight">{member.summary}</div>
-          )}
+          <div>
+            <div className="mb-2 font-bold text-indigo-400">Connections</div>
+            <div className="flex flex-wrap">
+              {connections.map((connection) => (
+                <button
+                  className="py-1 w-1/2 text-indigo-100 hover:text-yellow-100"
+                  key={connection.id}
+                  onClick={() => onConnectionClick(connection)}
+                >
+                  <div className="flex items-center space-x-1">
+                    <OrbitLevelIcon member={connection} classes="" />
+                    <span>{connection.name}</span>
+                  </div>
+                </button>
+              ))}
+              {connections.length === 0 && <span>None</span>}
+            </div>
+          </div>
         </>
       )}
       {!showNetwork && (
@@ -94,7 +128,10 @@ export default function Member({
           </button>
           {!member.summary && <div className="py-1" />}
           {member.summary && (
-            <div className="leading-tight">{member.summary}</div>
+            <div className="leading-tight">
+              <span className="font-bold text-indigo-400">Action </span>
+              {member.summary}
+            </div>
           )}
         </>
       )}

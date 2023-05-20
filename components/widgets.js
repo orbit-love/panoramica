@@ -26,6 +26,7 @@ export default function Widgets({
   scrollToIntroduction,
   showNetwork,
   setShowNetwork,
+  graph,
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
@@ -93,6 +94,7 @@ export default function Widgets({
               setSelection={setSelection}
               setShowNetwork={setShowNetwork}
               setExpanded={setExpanded}
+              graph={graph}
             />
           </div>
         </div>
