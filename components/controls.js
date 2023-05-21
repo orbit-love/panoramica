@@ -20,8 +20,6 @@ export default function Controls({
         <button
           className="btn"
           onClick={() => {
-            // setCycle(true);
-            // setAnimate(true);
             setShowNetwork(false);
           }}
           title="Toggle to solar system view"
@@ -36,9 +34,6 @@ export default function Controls({
         <button
           className="btn"
           onClick={() => {
-            setCycle(false);
-            setAnimate(false);
-            setExpanded(false);
             setShowNetwork(true);
           }}
           title="Toggle to network view"
