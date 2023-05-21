@@ -58,6 +58,9 @@ export default function MemberGraph({
 
   const eventHandlers = {
     "node:click": ({ item }) => setSelection(item.getModel().member),
+    "node:dblclick": ({ newGraph, item }) => {
+      newGraph.focusItem(item, true);
+    },
     "canvas:click": () => setSelection(null),
   };
 

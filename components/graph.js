@@ -86,7 +86,7 @@ export default function Graph({
       });
       // bind all of the eventHandlers passed in
       for (const [key, value] of Object.entries(eventHandlers)) {
-        newGraph.on(key, value);
+        newGraph.on(key, ({ item }) => value({ newGraph, item }));
       }
 
       // set the data and do the initial render
