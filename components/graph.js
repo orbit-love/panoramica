@@ -64,21 +64,19 @@ export default function Graph({
       for (const [key, value] of Object.entries(eventHandlers)) {
         newGraph.on(key, value);
       }
-      newGraph.data(data);
 
+      // set the data and do the initial render
+      newGraph.data(data);
       newGraph.render();
 
-      // zoom in a bit
-      // setTimeout(() => {
-      // if (selection) {
-      //   const node = newGraph.findById(selection.id);
-      //   const { x, y, centerX, centerY } = node.getBBox();
-      //   console.log("yo", x, y, node.getBBox());
-      //   // newGraph.translate(x - centerX, y - centerY);
-      //   // newGraph.zoomTo(1.25, { x, y });
-      // } else {
-      // newGraph.zoomTo(0.9);
-      // }, 1);
+      // after the render
+      newGraph.once("afterrender", () => {
+        if (selection) {
+          const node = newGraph.findById(selection.id);
+          console.log("afterrender", node);
+          newGraph.focusItem(node, false);
+        }
+      });
 
       setGraph(newGraph);
     }
