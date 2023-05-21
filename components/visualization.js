@@ -41,7 +41,7 @@ export default function Visualization({
 
   useEffect(() => {
     const selectRandomMember = () => {
-      if (cycle && members?.length() > 0) {
+      if (cycle && !showNetwork && members?.length() > 0) {
         const items = members.list;
         const member = items[Math.floor(Math.random() * items.length)];
         setSelection(member);
@@ -55,7 +55,7 @@ export default function Visualization({
       clearInterval(cycleInterval);
       clearTimeout(timeout);
     };
-  }, [cycle, setCycle, members, setSelection]);
+  }, [cycle, setCycle, members, showNetwork, setSelection]);
 
   // rebuild if width, height, or number change
   useEffect(() => {
