@@ -47,7 +47,7 @@ export default function Graph({
           fitCenter: false,
           alphaMin: 0.05,
           type: "force",
-          nodeSize: 50,
+          nodeSize: 75,
           nodeSpacing: 50,
           linkDistance: 15,
           preventOverlap: true,
