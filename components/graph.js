@@ -69,11 +69,11 @@ export default function Graph({
       newGraph.data(data);
       newGraph.render();
 
-      // after the render
+      // after the render, click a node if there's a selection and focus on it
       newGraph.once("afterrender", () => {
         if (selection) {
           const node = newGraph.findById(selection.id);
-          console.log("afterrender", node);
+          newGraph.emit("node:click", { item: node });
           newGraph.focusItem(node, false);
         }
       });

@@ -65,16 +65,6 @@ export default function MemberGraph({
     setData(getData({ members }));
   }, [members]);
 
-  useEffect(() => {
-    if (graph && selection) {
-      const node = graph.findById(selection.id);
-      if (!node.hasState("selected")) {
-        graph.emit("node:click", { item: node });
-        // graph.focusItem(node, false);
-      }
-    }
-  }, [graph, selection]);
-
   return (
     <Graph
       graph={graph}
