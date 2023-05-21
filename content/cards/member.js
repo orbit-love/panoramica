@@ -1,4 +1,6 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import Orbit1 from "components/icons/orbit_1";
 import Orbit2 from "components/icons/orbit_2";
 import Orbit3 from "components/icons/orbit_3";
@@ -93,7 +95,8 @@ export default function Member({
               setShowNetwork(false);
             }}
           >
-            View Orbit Level
+            <FontAwesomeIcon icon="solar-system" className="px-1" />
+            <span>View Orbit Level</span>
           </button>
           <div>
             <div className="mb-2 font-bold text-indigo-400">Connections</div>
@@ -124,7 +127,8 @@ export default function Member({
               setShowNetwork(true);
             }}
           >
-            View Connections: {connections.length}
+            <FontAwesomeIcon icon="chart-network" className="px-1" />
+            <span>View Connections: {connections.length}</span>
           </button>
           {!member.summary && <div className="py-1" />}
           {member.summary && (
