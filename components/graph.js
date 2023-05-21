@@ -16,6 +16,7 @@ export default function Graph({
   prevWidth,
   prevHeight,
   eventHandlers,
+  selection,
 }) {
   const ref = React.useRef(null);
 
@@ -64,7 +65,22 @@ export default function Graph({
         newGraph.on(key, value);
       }
       newGraph.data(data);
+
       newGraph.render();
+
+      // zoom in a bit
+      setTimeout(() => {
+        // if (selection) {
+        //   const node = newGraph.findById(selection.id);
+        //   const { x, y, centerX, centerY } = node.getBBox();
+        //   console.log("yo", x, y, node.getBBox());
+        //   // newGraph.translate(x - centerX, y - centerY);
+        //   // newGraph.zoomTo(1.25, { x, y });
+        // } else {
+        // }
+        newGraph.zoomTo(0.9);
+      }, 1);
+
       setGraph(newGraph);
     }
 
@@ -84,12 +100,5 @@ export default function Graph({
     // listing graph here causes problems
   }, [width, height, prevWidth, prevHeight]);
 
-  // if you want the graph to update, do it manually
-  // useEffect(() => {
-  //   if (graph && !graph.destroyed) {
-  //     // otherwise, update the data
-  //     graph.changeData(data);
-  //   }
-  // }, [data, graph]);
   return <div className="unselectable" ref={ref}></div>;
 }

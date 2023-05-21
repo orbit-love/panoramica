@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import c from "lib/common";
 import Graph from "components/graph";
 
-const getData = ({ members, selection }) => {
+const getData = ({ members }) => {
   var nodes = members.list.map((member) => {
     // const selected = member.id === selection?.id;
     const { id } = member;
@@ -59,14 +59,21 @@ export default function MemberGraph({
   const eventHandlers = {
     "node:click": ({ item }) => setSelection(item.getModel().member),
     "canvas:click": () => setSelection(null),
-    nodeselectchange: ({ target }) => {
-      console.log(target.getModel());
-    },
   };
 
   useEffect(() => {
-    setData(getData({ members, selection }));
-  }, [members, selection]);
+    setData(getData({ members }));
+  }, [members]);
+
+  useEffect(() => {
+    if (graph && selection) {
+      const node = graph.findById(selection.id);
+      if (!node.hasState("selected")) {
+        graph.emit("node:click", { item: node });
+        // graph.focusItem(node, false);
+      }
+    }
+  }, [graph, selection]);
 
   return (
     <Graph
@@ -75,6 +82,7 @@ export default function MemberGraph({
       data={data}
       width={width}
       height={height}
+      selection={selection}
       eventHandlers={eventHandlers}
     />
   );

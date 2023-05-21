@@ -42,22 +42,11 @@ export default function Member({
     "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none";
 
   const onConnectionClick = (connection) => {
-    // clear selections
-    const nodes = graph.getNodes();
-    const edges = graph.getEdges();
-    nodes.forEach((node) => graph.clearItemStates(node, "selected"));
-    edges.forEach((edge) => graph.clearItemStates(edge, "selected"));
-
-    // add selected state to node and edges
-    const node = graph.findById(connection.id);
-    graph.setItemState(node, "selected", true);
-    graph.focusItem(node, true);
-    node
-      .getEdges()
-      .forEach((edge) => graph.setItemState(edge, "selected", true));
-
-    // set the selection for the member panel
     setSelection(connection);
+
+    const node = graph.findById(connection.id);
+    graph.emit("node:click", { item: node });
+    graph.focusItem(node, true);
   };
 
   return (

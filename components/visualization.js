@@ -63,8 +63,7 @@ export default function Visualization({
       !members ||
       number !== prevNumber ||
       width !== prevWidth ||
-      height !== prevHeight ||
-      showNetwork !== prevShowNetwork
+      height !== prevHeight
     ) {
       // if major parameters have changed
       // clear the canvas and re-prepare the data
@@ -76,6 +75,16 @@ export default function Visualization({
         helper.generateMembers({ levels: newLevels, advocateCount: number })
       );
       return;
+    }
+
+    // no need to do other prep
+    if (showNetwork) {
+      return;
+    }
+
+    // if the network switch happened, the svg needs to be prepared again
+    if (showNetwork !== prevShowNetwork) {
+      helper.resetEverything({ svgRef, width, height, setSelection });
     }
 
     console.log(`Drawing ${members.length()} members...`);
