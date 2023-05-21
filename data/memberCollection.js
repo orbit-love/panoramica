@@ -39,6 +39,19 @@ class MemberCollection {
     return this.list.select((member) => member.level.number === levelNumber);
   }
 
+  // take the OL to the power of exponent for the number of copies
+  getUnpackedMembers({ exponent = 2 }) {
+    const unpackedMembers = [];
+    this.list.forEach((member) => {
+      // create 1, 8, 27, 64
+      var copies = (5 - member.level.number) * exponent;
+      for (var i = 0; i < copies; i++) {
+        unpackedMembers.push(member);
+      }
+    });
+    return unpackedMembers;
+  }
+
   // level is the new level
   changeLevel({ id, levelNumber, love = 1, reach = 1 }) {
     const oldMember = this.find(id);
@@ -74,7 +87,7 @@ class MemberCollection {
 
   generateConnections({ number }) {
     const connectionGenerator = new ConnectionGenerator({
-      members: this.list,
+      members: this,
       rand: this.rand,
     });
     this.connections = connectionGenerator.produceConnections({ number });

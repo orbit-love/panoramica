@@ -8,22 +8,15 @@ class ConnectionGenerator {
 
     // multiple the members into a new array based on OL
     // move logic somewhere later
-    this.unpackedMembers = [];
-    this.members.forEach((member) => {
-      var copies = (5 - member.level.number) * 4;
-      for (var i = 0; i < copies; i++) {
-        this.unpackedMembers.push(member);
-      }
-    });
+    this.unpackedMembers = members.getUnpackedMembers({ exponent: 4 });
   }
 
   produceConnections({ number }) {
     var connections = new Set();
-    var min = 0,
-      max = this.unpackedMembers.length;
+    var max = this.unpackedMembers.length;
     for (var i = 0; i < number; i++) {
-      var member1Index = Math.floor(this.rand() * (max - min + 1) + min);
-      var member2Index = Math.floor(this.rand() * (max - min + 1) + min);
+      var member1Index = Math.floor(this.rand() * max);
+      var member2Index = Math.floor(this.rand() * max);
       var member1 = this.unpackedMembers[member1Index];
       var member2 = this.unpackedMembers[member2Index];
       if (member1 !== member2) {

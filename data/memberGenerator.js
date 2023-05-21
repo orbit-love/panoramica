@@ -82,6 +82,8 @@ class MemberGenerator {
 
     const thisLove = love || this.loveScale2(this.loveScale(this.rand()));
     const thisReach = reach || this.reachScale2(this.reachScale(this.rand()));
+    const gravity = thisLove * thisReach;
+
     const ofInterest =
       (thisLove === 3 && thisReach === 1) ||
       (thisLove === 1 && thisReach === 3);
@@ -113,6 +115,7 @@ class MemberGenerator {
       name: thisName,
       love: thisLove,
       reach: thisReach,
+      gravity,
       level: this.level,
       rx: c.fuzz(thisRxSeed, this.level.rx, this.levelDefaults.rxFuzz),
       ry: c.fuzz(thisRySeed, this.level.ry, this.levelDefaults.ryFuzz),
