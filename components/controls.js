@@ -53,8 +53,7 @@ export default function Controls({
         <button
           className="btn"
           onClick={() => {
-            setFullscreen(false);
-            document.exitFullscreen();
+            document.exitFullscreen().then(() => setFullscreen(false));
           }}
           title="Fullscreen"
         >

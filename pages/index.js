@@ -32,6 +32,9 @@ export default function Index() {
   const [fullscreen, setFullscreen] = useState(false);
 
   const scrollToIntroduction = () => {
+    if (fullscreen) {
+      document.exitFullscreen().then(() => setFullscreen(false));
+    }
     const scroll = Scroll.animateScroll;
     scroll.scrollTo(window.innerHeight - 100);
   };
