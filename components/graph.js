@@ -27,14 +27,33 @@ export default function Graph({
       width !== prevWidth ||
       height !== prevHeight
     ) {
-      const container = ref.current;
       // https://antv-g6.gitee.io/en/docs/api/graphLayout/force#layoutcfgclustering
-      const layout = {
-        type: "concentric",
-        // nodeSpacing: 15,
-        // linkDistance: 10,
-        preventOverlap: true,
-      };
+      var layout;
+      if (selection && false) {
+        // leave this out for the moment, it could be good for an interstitial widget
+        // for 1-3 degrees of neighbors
+        layout = {
+          type: "radial",
+          focusNode: selection.id,
+          nodeSize: 200,
+          linkDistance: 50,
+          nodeSpacing: 50,
+          preventOverlap: true,
+          strictRadial: true,
+          unitRadius: 150,
+        };
+      } else {
+        layout = {
+          fitCenter: false,
+          alphaMin: 0.05,
+          type: "force",
+          nodeSize: 50,
+          nodeSpacing: 50,
+          linkDistance: 15,
+          preventOverlap: true,
+        };
+      }
+      const container = ref.current;
       const graphProperties = {
         defaultNode,
         nodeStateStyles,
@@ -62,7 +81,7 @@ export default function Graph({
         container,
         height,
         width,
-        layout: layout,
+        layout,
         ...graphProperties,
       });
       // bind all of the eventHandlers passed in
@@ -73,14 +92,14 @@ export default function Graph({
       // set the data and do the initial render
       newGraph.data(data);
       newGraph.render();
+      newGraph.zoomTo(0.75);
 
       // after the render, click a node if there's a selection and focus on it
       newGraph.once("afterrender", () => {
-        newGraph.zoomTo(0.75);
         if (selection) {
           const node = newGraph.findById(selection.id);
           newGraph.emit("node:click", { item: node });
-          newGraph.focusItem(node, false);
+          newGraph.focusItem(node, true);
         }
       });
 
