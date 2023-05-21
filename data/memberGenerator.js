@@ -8,9 +8,9 @@ class MemberGenerator {
     this.level = level;
 
     const {
-      rxFuzz = 0.1,
-      ryFuzz = 0.1,
-      positionFuzz = 0.02,
+      rxFuzz = 0.0,
+      ryFuzz = 0.0,
+      positionFuzz = 0.0,
       r1,
       r2,
       r3,

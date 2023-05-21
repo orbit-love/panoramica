@@ -85,7 +85,7 @@ export default function Member({
             }}
           >
             <FontAwesomeIcon icon="solar-system" className="px-1" />
-            <span>View Orbit Level</span>
+            <span>View Orbit Levels</span>
           </button>
           <div>
             <div className="mb-2 font-bold text-indigo-400">Connections</div>

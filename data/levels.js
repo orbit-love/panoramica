@@ -42,9 +42,9 @@ const levels = [
     r1: 6,
     r2: 6,
     r3: 6,
-    rxFuzz: 0.05,
-    ryFuzz: 0.05,
-    positionFuzz: 0.01,
+    rxFuzz: 0.0,
+    ryFuzz: 0.0,
+    positionFuzz: 0.0,
   },
 ];
 

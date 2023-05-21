@@ -43,7 +43,12 @@ export default function Graph({
         modes: {
           default: [
             { type: "drag-canvas" },
-            { type: "zoom-canvas", sensitivity: 0.5, minZoom: 0.5, maxZoom: 3 },
+            {
+              type: "zoom-canvas",
+              sensitivity: 0.8,
+              minZoom: 0.25,
+              maxZoom: 2,
+            },
             {
               type: "activate-relations",
               trigger: "click",
@@ -71,6 +76,7 @@ export default function Graph({
 
       // after the render, click a node if there's a selection and focus on it
       newGraph.once("afterrender", () => {
+        newGraph.zoomTo(0.75);
         if (selection) {
           const node = newGraph.findById(selection.id);
           newGraph.emit("node:click", { item: node });
