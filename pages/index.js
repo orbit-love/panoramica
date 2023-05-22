@@ -35,7 +35,7 @@ export default function Index() {
       document.exitFullscreen().then(() => setFullscreen(false));
     }
     const scroll = Scroll.animateScroll;
-    scroll.scrollTo(window.innerHeight - 100);
+    scroll.scrollTo(window.innerHeight - 42);
   };
 
   useEffect(() => {
@@ -142,7 +142,14 @@ export default function Index() {
             <ProseSection id="resources">
               <Resources />
             </ProseSection>
-            <div className="my-72" />
+            <div className="flex justify-center py-64">
+              <button
+                onClick={scrollToIntroduction}
+                className="py-3 px-6 font-semibold text-white bg-indigo-700 rounded-md select-none hover:bg-indigo-600"
+              >
+                Back to top
+              </button>
+            </div>
           </div>
         </div>
       </div>
