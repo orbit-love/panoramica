@@ -2,7 +2,6 @@ import React, { useReducer } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
-import MissionControls from "components/controls/mission";
 import Controls from "components/controls";
 import Member from "content/cards/member";
 import Steps from "components/steps";
@@ -54,26 +53,16 @@ export default function Widgets({
         )}
         <div className="flex">
           <div className={`${classes} py-4 px-5 pointer-events-auto`}>
-            {
-              <>
-                {/* <div className="border border-indigo-900" /> */}
-                <MissionControls
-                  animate={animate}
-                  setAnimate={setAnimate}
-                  cycle={cycle}
-                  setCycle={setCycle}
-                  expanded={expanded}
-                  setExpanded={setExpanded}
-                />
-              </>
-            }
             <Controls
+              animate={animate}
               setAnimate={setAnimate}
+              cycle={cycle}
               setCycle={setCycle}
               fullscreen={fullscreen}
               setFullscreen={setFullscreen}
               showNetwork={showNetwork}
               setShowNetwork={setShowNetwork}
+              expanded={expanded}
               setExpanded={setExpanded}
             />
           </div>

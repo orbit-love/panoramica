@@ -81,8 +81,9 @@ export default function MemberGraph({
       const node = graph.findById(selection.id);
       if (node && !node.hasState("selected")) {
         graph.emit("node:click", { item: node });
-        graph.focusItem(node, true);
       }
+      // always focus, just don't emit the click again
+      graph.focusItem(node, true);
     }
   }, [graph, selection]);
 

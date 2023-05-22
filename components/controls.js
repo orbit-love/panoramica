@@ -2,45 +2,75 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Controls({
+  animate,
+  setAnimate,
+  cycle,
+  setCycle,
   fullscreen,
   setFullscreen,
-  showNetwork,
-  setShowNetwork,
+  expanded,
+  setExpanded,
 }) {
   const fullscreenIcon = "expand";
-  const networkIcon = "chart-network";
-  const missionIcon = "solar-system";
+  const cycleIcon = "shuffle";
 
   return (
     <>
-      {/* {showNetwork && (
+      {expanded && (
+        <button onClick={() => setExpanded(false)} className="btn">
+          <FontAwesomeIcon
+            icon="chevron-down"
+            className="text-lg"
+          ></FontAwesomeIcon>
+        </button>
+      )}
+      {!expanded && (
+        <button onClick={() => setExpanded(true)} className="btn">
+          <FontAwesomeIcon
+            icon="lightbulb"
+            className="text-lg text-indigo-500"
+          ></FontAwesomeIcon>
+        </button>
+      )}
+      {animate && (
         <button
           className="btn"
-          onClick={() => {
-            setShowNetwork(false);
-          }}
-          title="Toggle to solar system view"
+          onClick={() => setAnimate(false)}
+          title="Rotation enabled"
+        >
+          <FontAwesomeIcon icon="pause" className="text-lg" />
+        </button>
+      )}
+      {!animate && (
+        <button
+          className="btn"
+          onClick={() => setAnimate(true)}
+          title="Rotation disabled"
+        >
+          <FontAwesomeIcon icon="play" className="text-lg text-indigo-900" />
+        </button>
+      )}
+      {cycle && (
+        <button
+          className="btn"
+          onClick={() => setCycle(false)}
+          title="Cycling through members enabled"
+        >
+          <FontAwesomeIcon icon={cycleIcon} className="text-lg" />
+        </button>
+      )}
+      {!cycle && (
+        <button
+          className="btn"
+          onClick={() => setCycle(true)}
+          title="Cycling through members disabled"
         >
           <FontAwesomeIcon
-            icon={missionIcon}
-            className="text-lg text-indigo-500"
+            icon={cycleIcon}
+            className="text-lg text-indigo-900"
           />
         </button>
       )}
-      {!showNetwork && (
-        <button
-          className="btn"
-          onClick={() => {
-            setShowNetwork(true);
-          }}
-          title="Toggle to network view"
-        >
-          <FontAwesomeIcon
-            icon={networkIcon}
-            className="text-lg text-indigo-500"
-          />
-        </button>
-      )} */}
       {fullscreen && (
         <button
           className="btn"

@@ -282,15 +282,17 @@ export default function Steps({
   const stepComponent = steps[step - 1];
 
   return (
-    <div className="flex flex-col py-4 px-5 space-y-6 pointer-events-auto">
-      <Prose>{stepComponent}</Prose>
-      <Buttons
-        step={step}
-        setStep={setStep}
-        totalSteps={totalSteps}
-        setCycle={setCycle}
-        scrollToIntroduction={scrollToIntroduction}
-      />
-    </div>
+    <>
+      <div className="flex flex-col py-4 px-5 space-y-6 pointer-events-auto">
+        <Prose>{stepComponent}</Prose>
+        <Buttons
+          step={step}
+          setStep={setStep}
+          totalSteps={totalSteps}
+          setCycle={setCycle}
+          scrollToIntroduction={scrollToIntroduction}
+        />
+      </div>
+    </>
   );
 }
