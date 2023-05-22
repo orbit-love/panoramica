@@ -62,6 +62,7 @@ export default function Graph({
         modes: {
           default: [
             { type: "drag-canvas" },
+            { type: "drag-node" },
             {
               type: "zoom-canvas",
               sensitivity: 0.8,
