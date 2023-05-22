@@ -5,6 +5,24 @@ import MemberGraph from "components/memberGraph";
 import helper from "lib/visualization/helper";
 import Widgets from "components/widgets";
 
+const getNextMember = ({ selection, members }) => {
+  const items = members.list;
+  var member;
+  if (selection) {
+    var selectionIndex = items.findIndex(
+      (element) => element.id === selection.id
+    );
+    if (selectionIndex > -1 && selectionIndex !== items.length - 1) {
+      member = items[selectionIndex + 1];
+    }
+  }
+  // start at the beginning of the members array
+  if (!member) {
+    member = items[0];
+  }
+  return member;
+};
+
 export default function Visualization({
   width,
   height,
@@ -39,18 +57,25 @@ export default function Visualization({
 
   const prevShowNetwork = c.usePrevious(showNetwork);
 
+  // store the selection in a ref so we can access it in useEffect
+  // that effect can't have selection as a dependency so we do it this way
+  const selectionStateRef = useRef();
+  selectionStateRef.current = selection;
+
   useEffect(() => {
-    const selectRandomMember = () => {
+    const eachCycle = () => {
       if (cycle && !showNetwork && members?.length() > 0) {
-        const items = members.list;
-        const member = items[Math.floor(Math.random() * items.length)];
+        var member = getNextMember({
+          selection: selectionStateRef.current,
+          members,
+        });
         setSelection(member);
       }
     };
-    const cycleInterval = setInterval(selectRandomMember, 3000);
+    const cycleInterval = setInterval(eachCycle, 2000);
     // wait a little bit (but not 3 seconds) so the user can see the cycling
     // is happening on page load or when they manually enable cycling
-    const timeout = setTimeout(selectRandomMember, 750);
+    const timeout = setTimeout(eachCycle, 500);
     return () => {
       clearInterval(cycleInterval);
       clearTimeout(timeout);

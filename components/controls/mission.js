@@ -9,7 +9,6 @@ export default function MissionControls({
   expanded,
   setExpanded,
 }) {
-  const animateIcon = "play";
   const cycleIcon = "shuffle";
 
   return (
@@ -36,7 +35,7 @@ export default function MissionControls({
           onClick={() => setAnimate(false)}
           title="Rotation enabled"
         >
-          <FontAwesomeIcon icon="play" className="text-lg" />
+          <FontAwesomeIcon icon="pause" className="text-lg" />
         </button>
       )}
       {!animate && (
@@ -45,10 +44,7 @@ export default function MissionControls({
           onClick={() => setAnimate(true)}
           title="Rotation disabled"
         >
-          <FontAwesomeIcon
-            icon={animateIcon}
-            className="text-lg text-indigo-900"
-          />
+          <FontAwesomeIcon icon="play" className="text-lg text-indigo-900" />
         </button>
       )}
       {cycle && (

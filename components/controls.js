@@ -2,13 +2,10 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Controls({
-  setAnimate,
-  setCycle,
   fullscreen,
   setFullscreen,
   showNetwork,
   setShowNetwork,
-  setExpanded,
 }) {
   const fullscreenIcon = "expand";
   const networkIcon = "chart-network";
