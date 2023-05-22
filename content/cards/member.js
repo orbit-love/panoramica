@@ -26,6 +26,7 @@ export default function Member({
   setSelection,
   setShowNetwork,
   setExpanded,
+  setCycle,
   graph,
 }) {
   const orbitLevels = {
@@ -41,13 +42,13 @@ export default function Member({
   const buttonClasses =
     "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none";
 
-  const onConnectionClick = (connection) => {
-    setSelection(connection);
+  // const onConnectionClick = (connection) => {
+  //   setSelection(connection);
 
-    const node = graph.findById(connection.id);
-    graph.emit("node:click", { item: node });
-    graph.focusItem(node, true);
-  };
+  //   const node = graph.findById(connection.id);
+  //   graph.emit("node:click", { item: node });
+  //   graph.focusItem(node, true);
+  // };
 
   return (
     <Prose>
@@ -84,10 +85,10 @@ export default function Member({
               setShowNetwork(false);
             }}
           >
-            <FontAwesomeIcon icon="solar-system" className="px-1" />
-            <span>View Orbit Levels</span>
+            <FontAwesomeIcon icon="xmark" className="px-1" />
+            <span>Close Connections</span>
           </button>
-          <div>
+          {/* <div>
             <div className="mb-2 font-bold text-indigo-400">Connections</div>
             <div className="flex flex-wrap">
               {connections.map((connection) => (
@@ -104,7 +105,7 @@ export default function Member({
               ))}
               {connections.length === 0 && <span>None</span>}
             </div>
-          </div>
+          </div> */}
         </>
       )}
       {!showNetwork && (
@@ -112,21 +113,22 @@ export default function Member({
           <button
             className={buttonClasses}
             onClick={() => {
-              setExpanded(false);
+              // don't continue to cycle if network view was opened
+              setCycle(false);
               setShowNetwork(true);
             }}
           >
             <FontAwesomeIcon icon="chart-network" className="px-1" />
-            <span>View Connections: {connections.length}</span>
+            <span> View Connections: {connections.length}</span>
           </button>
-          {!member.summary && <div className="py-1" />}
-          {member.summary && (
-            <div className="leading-tight">
-              <span className="font-bold text-indigo-400">Action </span>
-              {member.summary}
-            </div>
-          )}
         </>
+      )}
+      {!member.summary && <div className="py-1" />}
+      {member.summary && (
+        <div className="leading-tight">
+          <span className="font-bold text-indigo-400">Action </span>
+          {member.summary}
+        </div>
       )}
     </Prose>
   );

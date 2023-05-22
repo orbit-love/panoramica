@@ -36,7 +36,7 @@ export default function Widgets({
       <div
         className={`flex absolute bottom-0 left-0 z-10 flex-col px-4 py-5 space-y-4`}
       >
-        {!showNetwork && expanded && members && (
+        {expanded && members && (
           <div className={`${classes} w-96`}>
             <Steps
               svgRef={svgRef}
@@ -54,18 +54,9 @@ export default function Widgets({
         )}
         <div className="flex">
           <div className={`${classes} py-4 px-5 pointer-events-auto`}>
-            <Controls
-              setAnimate={setAnimate}
-              setCycle={setCycle}
-              fullscreen={fullscreen}
-              setFullscreen={setFullscreen}
-              showNetwork={showNetwork}
-              setShowNetwork={setShowNetwork}
-              setExpanded={setExpanded}
-            />
-            {!showNetwork && (
+            {
               <>
-                <div className="border border-indigo-900" />
+                {/* <div className="border border-indigo-900" /> */}
                 <MissionControls
                   animate={animate}
                   setAnimate={setAnimate}
@@ -75,7 +66,16 @@ export default function Widgets({
                   setExpanded={setExpanded}
                 />
               </>
-            )}
+            }
+            <Controls
+              setAnimate={setAnimate}
+              setCycle={setCycle}
+              fullscreen={fullscreen}
+              setFullscreen={setFullscreen}
+              showNetwork={showNetwork}
+              setShowNetwork={setShowNetwork}
+              setExpanded={setExpanded}
+            />
           </div>
           <div className="mx-auto" />
         </div>
@@ -94,6 +94,7 @@ export default function Widgets({
               setSelection={setSelection}
               setShowNetwork={setShowNetwork}
               setExpanded={setExpanded}
+              setCycle={setCycle}
               graph={graph}
             />
           </div>

@@ -48,8 +48,8 @@ export default function Graph({
           alphaMin: 0.05,
           type: "force",
           nodeSize: 75,
-          nodeSpacing: 50,
-          linkDistance: 15,
+          nodeSpacing: 20,
+          linkDistance: 10,
           preventOverlap: true,
         };
       }
@@ -93,7 +93,7 @@ export default function Graph({
       // set the data and do the initial render
       newGraph.data(data);
       newGraph.render();
-      newGraph.zoomTo(0.75);
+      newGraph.zoomTo(0.9);
 
       // after the render, click a node if there's a selection and focus on it
       newGraph.once("afterrender", () => {
@@ -113,11 +113,12 @@ export default function Graph({
         // from the dom is required, but it can cause an error
         // if the dom isn't there anymore, hence the catch
         try {
-          while (container.firstChild) {
-            container.removeChild(container.firstChild);
-          }
           graph.destroy();
         } catch (e) {}
+      }
+      // always try to get rid of the doms
+      while (container.firstChild) {
+        container.removeChild(container.firstChild);
       }
     };
     // listing graph here causes problems

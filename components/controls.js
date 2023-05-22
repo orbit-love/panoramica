@@ -13,7 +13,7 @@ export default function Controls({
 
   return (
     <>
-      {showNetwork && (
+      {/* {showNetwork && (
         <button
           className="btn"
           onClick={() => {
@@ -40,7 +40,7 @@ export default function Controls({
             className="text-lg text-indigo-500"
           />
         </button>
-      )}
+      )} */}
       {fullscreen && (
         <button
           className="btn"

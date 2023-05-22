@@ -45,26 +45,45 @@ export default function Visualization({
   const selectionStateRef = useRef();
   selectionStateRef.current = selection;
 
+  const setSelectionAndFocusItem = (member, graph, showNetwork) => {
+    setSelection(member);
+    // if (graph) {
+    //   const node = graph.findById(member.id);
+    //   graph.emit("node:click", { item: node });
+    //   graph.focusItem(node, true);
+    // }
+  };
+
   useHotkeys(
     "right",
-    () => setSelection(helper.getNextMember({ selection, members })),
-    [selection, members]
+    () =>
+      setSelectionAndFocusItem(
+        helper.getNextMember({ selection, members }),
+        graph,
+        showNetwork
+      ),
+    [selection, members, graph, showNetwork]
   );
 
   useHotkeys(
     "left",
-    () => setSelection(helper.getPreviousMember({ selection, members })),
-    [selection, members]
+    () =>
+      setSelectionAndFocusItem(
+        helper.getPreviousMember({ selection, members }),
+        graph,
+        showNetwork
+      ),
+    [selection, members, graph, showNetwork]
   );
 
   useEffect(() => {
     const eachCycle = () => {
-      if (cycle && !showNetwork && members?.length() > 0) {
+      if (cycle && members?.length() > 0) {
         var member = helper.getNextMember({
           selection: selectionStateRef.current,
           members,
         });
-        setSelection(member);
+        setSelectionAndFocusItem(member, graph, showNetwork);
       }
     };
     const cycleInterval = setInterval(eachCycle, 2000);
@@ -75,7 +94,7 @@ export default function Visualization({
       clearInterval(cycleInterval);
       clearTimeout(timeout);
     };
-  }, [cycle, setCycle, members, showNetwork, setSelection]);
+  }, [cycle, setCycle, members, graph, showNetwork, setSelection]);
 
   // rebuild if width, height, or number change
   useEffect(() => {
@@ -95,16 +114,6 @@ export default function Visualization({
         helper.generateMembers({ levels: newLevels, advocateCount: number })
       );
       return;
-    }
-
-    // no need to do other prep
-    if (showNetwork) {
-      return;
-    }
-
-    // if the network switch happened, the svg needs to be prepared again
-    if (showNetwork !== prevShowNetwork) {
-      helper.resetEverything({ svgRef, width, height, setSelection, setCycle });
     }
 
     console.log(`Drawing ${members.length()} members...`);
@@ -156,27 +165,27 @@ export default function Visualization({
   ]);
 
   return (
-    <>
-      {!showNetwork && (
-        <div>
-          <svg
-            className="unselectable"
-            ref={svgRef}
-            style={{ width: "100%", height: "100%" }}
-          ></svg>
-        </div>
-      )}
-      {showNetwork && members && (
+    <div className="relative" style={{ width, height }}>
+      <div>
+        <svg
+          className="unselectable"
+          ref={svgRef}
+          style={{ width, height }}
+        ></svg>
+      </div>
+      {members && (
         <MemberGraph
           members={members}
           selection={selection}
           setSelection={setSelection}
           width={width}
-          height={height}
           prevWidth={prevWidth}
+          height={height}
           prevHeight={prevHeight}
           graph={graph}
           setGraph={setGraph}
+          showNetwork={showNetwork}
+          setShowNetwork={setShowNetwork}
         />
       )}
       <div className="hidden bg-[#0F0A25] text-[#eef2ff] text-[#1D1640]" />
@@ -201,6 +210,6 @@ export default function Visualization({
         setShowNetwork={setShowNetwork}
         graph={graph}
       />
-    </>
+    </div>
   );
 }
