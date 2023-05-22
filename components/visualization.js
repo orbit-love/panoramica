@@ -1,27 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import c from "lib/common";
 import MemberGraph from "components/memberGraph";
 import helper from "lib/visualization/helper";
 import Widgets from "components/widgets";
-
-const getNextMember = ({ selection, members }) => {
-  const items = members.list;
-  var member;
-  if (selection) {
-    var selectionIndex = items.findIndex(
-      (element) => element.id === selection.id
-    );
-    if (selectionIndex > -1 && selectionIndex !== items.length - 1) {
-      member = items[selectionIndex + 1];
-    }
-  }
-  // start at the beginning of the members array
-  if (!member) {
-    member = items[0];
-  }
-  return member;
-};
 
 export default function Visualization({
   width,
@@ -62,10 +45,22 @@ export default function Visualization({
   const selectionStateRef = useRef();
   selectionStateRef.current = selection;
 
+  useHotkeys(
+    "right",
+    () => setSelection(helper.getNextMember({ selection, members })),
+    [selection, members]
+  );
+
+  useHotkeys(
+    "left",
+    () => setSelection(helper.getPreviousMember({ selection, members })),
+    [selection, members]
+  );
+
   useEffect(() => {
     const eachCycle = () => {
       if (cycle && !showNetwork && members?.length() > 0) {
-        var member = getNextMember({
+        var member = helper.getNextMember({
           selection: selectionStateRef.current,
           members,
         });
