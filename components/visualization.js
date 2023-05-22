@@ -68,7 +68,7 @@ export default function Visualization({
       // if major parameters have changed
       // clear the canvas and re-prepare the data
       console.log("Clearing canvas and rebuilding members");
-      helper.resetEverything({ svgRef, width, height, setSelection });
+      helper.resetEverything({ svgRef, width, height, setSelection, setCycle });
       const newLevels = helper.generateLevels({ width, height });
       setLevels(newLevels);
       setMembers(
@@ -84,7 +84,7 @@ export default function Visualization({
 
     // if the network switch happened, the svg needs to be prepared again
     if (showNetwork !== prevShowNetwork) {
-      helper.resetEverything({ svgRef, width, height, setSelection });
+      helper.resetEverything({ svgRef, width, height, setSelection, setCycle });
     }
 
     console.log(`Drawing ${members.length()} members...`);
