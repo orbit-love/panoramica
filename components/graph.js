@@ -45,7 +45,6 @@ export default function Graph({
       } else {
         layout = {
           fitCenter: false,
-          alphaMin: 0.05,
           type: "force",
           nodeSize: 75,
           nodeSpacing: 20,

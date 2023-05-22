@@ -2,6 +2,11 @@ import React, { useEffect } from "react";
 import Prose from "components/visualization/prose";
 
 export default function Info({ members }) {
+  const mostConnectedMember = members.list.sort(
+    (a, b) =>
+      members.getConnections({ member: a }) -
+      members.getConnections({ member: b })
+  )[0];
   return (
     <>
       <div className="flex flex-col py-4 px-5 space-y-6 pointer-events-auto">
@@ -15,8 +20,8 @@ export default function Info({ members }) {
         <Prose>
           <h3>Presentation Mode</h3>
           <p>
-            Combine the fullscreen, animation, and shuffle toggles to create an
-            immersive, interactive experience.
+            Combine the fullscreen, animation, and shuffle toggles for an
+            immersive experience.
           </p>
         </Prose>
         <Prose>
@@ -39,10 +44,18 @@ export default function Info({ members }) {
               </td>
             </tr>
           ))}
-          {/* <tr>
-            <td className="font-semibold">Connections</td>
+          <tr className="h-4" />
+          <tr>
+            <td className="font-semibold">Total Connections</td>
             <td>{members.connections?.size}</td>
-          </tr> */}
+          </tr>
+          <tr>
+            <td>Most Connected</td>
+            <td>
+              {mostConnectedMember.name} (
+              {members.getConnections({ member: mostConnectedMember }).length})
+            </td>
+          </tr>
         </div>
       </div>
     </>
