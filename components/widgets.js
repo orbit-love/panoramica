@@ -1,10 +1,11 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
 import Controls from "components/controls";
 import Member from "content/cards/member";
 import Steps from "components/steps";
+import Info from "components/info";
 
 export default function Widgets({
   svgRef,
@@ -28,6 +29,7 @@ export default function Widgets({
   graph,
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+  const [showInfo, setShowInfo] = useState(false);
 
   const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-80`;
   return (
@@ -51,6 +53,11 @@ export default function Widgets({
             />
           </div>
         )}
+        {showInfo && members && (
+          <div className={`${classes} w-96`}>
+            <Info members={members} />
+          </div>
+        )}
         <div className="flex">
           <div className={`${classes} py-4 px-5 pointer-events-auto`}>
             <Controls
@@ -64,6 +71,8 @@ export default function Widgets({
               setShowNetwork={setShowNetwork}
               expanded={expanded}
               setExpanded={setExpanded}
+              showInfo={showInfo}
+              setShowInfo={setShowInfo}
             />
           </div>
           <div className="mx-auto" />

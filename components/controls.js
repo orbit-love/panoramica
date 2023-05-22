@@ -10,16 +10,19 @@ export default function Controls({
   setFullscreen,
   expanded,
   setExpanded,
+  showInfo,
+  setShowInfo,
 }) {
   const fullscreenIcon = "expand";
   const cycleIcon = "shuffle";
+  const infoIcon = "question";
 
   return (
     <>
       {expanded && (
         <button onClick={() => setExpanded(false)} className="btn">
           <FontAwesomeIcon
-            icon="chevron-down"
+            icon="lightbulb"
             className="text-lg"
           ></FontAwesomeIcon>
         </button>
@@ -28,6 +31,22 @@ export default function Controls({
         <button onClick={() => setExpanded(true)} className="btn">
           <FontAwesomeIcon
             icon="lightbulb"
+            className="text-lg text-indigo-500"
+          ></FontAwesomeIcon>
+        </button>
+      )}
+      {showInfo && (
+        <button onClick={() => setShowInfo(false)} className="btn">
+          <FontAwesomeIcon
+            icon={infoIcon}
+            className="text-lg"
+          ></FontAwesomeIcon>
+        </button>
+      )}
+      {!showInfo && (
+        <button onClick={() => setShowInfo(true)} className="btn">
+          <FontAwesomeIcon
+            icon={infoIcon}
             className="text-lg text-indigo-500"
           ></FontAwesomeIcon>
         </button>

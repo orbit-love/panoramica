@@ -53,6 +53,7 @@ import {
   faHeart,
   faSignalStream,
   faCircle,
+  faQuestion,
 } from "@fortawesome/pro-solid-svg-icons";
 
 // add to library
@@ -93,7 +94,8 @@ library.add(
   faShuffle,
   faExpand,
   faArrowDown,
-  faSquare
+  faSquare,
+  faQuestion
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
