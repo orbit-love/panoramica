@@ -16,7 +16,6 @@ import OrbitLevels from "content/orbit-levels.mdx";
 import Reach from "content/reach.mdx";
 import Love from "content/love.mdx";
 import Resources from "content/resources.mdx";
-import Funnel from "content/funnel.mdx";
 import atomicHeart from "public/atomic-heart.svg";
 
 export default function Index() {
@@ -143,10 +142,7 @@ export default function Index() {
             <ProseSection id="resources">
               <Resources />
             </ProseSection>
-            <ProseSection id="funnel" classes="px-6 py-8 bg-violet-50">
-              <Funnel />
-            </ProseSection>
-            <div className="my-8" />
+            <div className="my-72" />
           </div>
         </div>
       </div>
