@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
 import Graph from "components/graph";
+import Member from "components/cards/network/member";
 
 const getData = ({ members }) => {
   var nodes = members.list.map((member) => {
@@ -62,33 +63,55 @@ export default function MemberGraph({
 }) {
   const [data, setData] = useState(getData({ members, selection }));
 
+  const graphRef = useRef();
+  graphRef.current = graph;
+
+  const selectionRef = useRef();
+  selectionRef.current = selection;
+
+  const highlightSelection = ({ selection, graph }) => {
+    if (graph && !graph.destroyed && selection) {
+      const node = graph.findById(selection.id);
+      // if already selected, don't reclick
+      if (node && !node.hasState("selected")) {
+        graph.emit("node:click", { item: node });
+      }
+    }
+  };
+
   const eventHandlers = {
     "node:click": ({ item }) => setSelection(item.getModel().member),
-    "node:dblclick": ({ newGraph, item }) => {
-      newGraph.focusItem(item, true);
+    "node:dblclick": ({ item }) => {
+      graphRef.current.focusItem(item, true);
     },
     "canvas:click": () => setSelection(null),
+    afterrender: ({}) => {
+      var currentGraph = graphRef.current;
+      var currentSelection = selectionRef.current;
+      highlightSelection({ graph: currentGraph, selection: currentSelection });
+    },
   };
 
   useEffect(() => {
     setData(getData({ members }));
   }, [members]);
 
+  // whenever the selection changes, click it if not already clicked
+  // e.g. when it happens from the orbit levels
   useEffect(() => {
-    // this causes the same old problems, if we had prevShowNetwork
-    // we could possibly do it, the arrow keys do it and then this does
-    if (selection && graph) {
-      const node = graph.findById(selection.id);
-      if (node && !node.hasState("selected")) {
-        graph.emit("node:click", { item: node });
-      }
-      // always focus, just don't emit the click again
-      graph.focusItem(node, true);
-    }
+    highlightSelection({ graph, selection });
   }, [graph, selection]);
 
-  const graphWidth = width * 0.8;
-  const graphHeight = height * 0.8;
+  // when the network view opens, animate to find the selected node
+  useEffect(() => {
+    if (showNetwork && selectionRef.current) {
+      const node = graphRef.current.findById(selectionRef.current.id);
+      graphRef.current.focusItem(node, true);
+    }
+  }, [showNetwork]);
+
+  const graphWidth = width * 0.85;
+  const graphHeight = height * 0.85;
 
   // the graphWidth + 5 prevents the canvas from overflowing the modal
   return (
@@ -119,11 +142,19 @@ export default function MemberGraph({
           data={data}
           width={graphWidth}
           height={graphHeight}
-          // prevWidth={prevWidth}
-          // prevHeight={prevHeight}
           selection={selection}
           eventHandlers={eventHandlers}
         />
+        {selection && (
+          <div className="absolute bottom-4 right-6 bg-[#1D1640] px-4 py-3 rounded-md border border-indigo-600">
+            <Member
+              member={selection}
+              members={members}
+              setSelection={setSelection}
+              graph={graph}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

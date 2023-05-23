@@ -1,5 +1,5 @@
 import G6 from "@antv/g6";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   nodeStateStyles,
   defaultNode,
@@ -16,9 +16,12 @@ export default function Graph({
   prevWidth,
   prevHeight,
   eventHandlers,
-  selection,
 }) {
   const ref = React.useRef(null);
+
+  // get a reference to the current graph for use in cleanup
+  const graphRef = useRef();
+  graphRef.current = graph;
 
   useEffect(() => {
     if (
@@ -29,7 +32,7 @@ export default function Graph({
     ) {
       // https://antv-g6.gitee.io/en/docs/api/graphLayout/force#layoutcfgclustering
       var layout;
-      if (selection && false) {
+      if (false) {
         // leave this out for the moment, it could be good for an interstitial widget
         // for 1-3 degrees of neighbors
         layout = {
@@ -46,6 +49,7 @@ export default function Graph({
         layout = {
           fitCenter: false,
           type: "force",
+          alphaMin: 0.025,
           nodeSize: 75,
           nodeSpacing: 20,
           linkDistance: 10,
@@ -86,7 +90,7 @@ export default function Graph({
       });
       // bind all of the eventHandlers passed in
       for (const [key, value] of Object.entries(eventHandlers)) {
-        newGraph.on(key, ({ item }) => value({ newGraph, item }));
+        newGraph.on(key, value);
       }
 
       // set the data and do the initial render
@@ -94,26 +98,20 @@ export default function Graph({
       newGraph.render();
       newGraph.zoomTo(0.9);
 
-      // after the render, click a node if there's a selection and focus on it
-      newGraph.once("afterrender", () => {
-        if (selection) {
-          const node = newGraph.findById(selection.id);
-          newGraph.emit("node:click", { item: node });
-          newGraph.focusItem(node, true);
-        }
-      });
-
       setGraph(newGraph);
     }
 
     return () => {
-      if (graph) {
+      var currentGraph = graphRef.current;
+      if (currentGraph) {
         // for some reason, manually removing the graph canvas
         // from the dom is required, but it can cause an error
         // if the dom isn't there anymore, hence the catch
         try {
-          graph.destroy();
-        } catch (e) {}
+          currentGraph.destroy();
+        } catch (e) {
+          console.log("graph.js - Couldn't destroy graph");
+        }
       }
       // always try to get rid of the doms
       while (container.firstChild) {

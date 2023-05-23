@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
 import Controls from "components/controls";
-import Member from "content/cards/member";
+import Member from "components/cards/member";
 import Steps from "components/steps";
 import Info from "components/info";
 
@@ -88,12 +88,7 @@ export default function Widgets({
             <Member
               member={selection}
               members={members}
-              showNetwork={showNetwork}
-              setSelection={setSelection}
               setShowNetwork={setShowNetwork}
-              setExpanded={setExpanded}
-              setCycle={setCycle}
-              graph={graph}
             />
           </div>
         </div>

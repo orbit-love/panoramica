@@ -47,11 +47,10 @@ export default function Visualization({
 
   const setSelectionAndFocusItem = (member, graph, showNetwork) => {
     setSelection(member);
-    // if (graph) {
-    //   const node = graph.findById(member.id);
-    //   graph.emit("node:click", { item: node });
-    //   graph.focusItem(node, true);
-    // }
+    if (showNetwork) {
+      const node = graph.findById(member.id);
+      graph.focusItem(node, true);
+    }
   };
 
   useHotkeys(
@@ -76,6 +75,14 @@ export default function Visualization({
     [selection, members, graph, showNetwork]
   );
 
+  useHotkeys("a", () => setAnimate(!animate), [animate, setAnimate]);
+  useHotkeys("c", () => setCycle(!cycle), [cycle, setCycle]);
+  useHotkeys("n", () => setShowNetwork(!showNetwork), [
+    showNetwork,
+    setShowNetwork,
+  ]);
+  useHotkeys("escape", () => setShowNetwork(false), [setShowNetwork]);
+
   useEffect(() => {
     const eachCycle = () => {
       if (cycle && members?.length() > 0) {
@@ -87,7 +94,7 @@ export default function Visualization({
       }
     };
     const cycleInterval = setInterval(eachCycle, 2000);
-    // wait a little bit (but not 3 seconds) so the user can see the cycling
+    // wait a little bit (but not 2 seconds) so the user can see the cycling
     // is happening on page load or when they manually enable cycling
     const timeout = setTimeout(eachCycle, 500);
     return () => {

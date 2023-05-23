@@ -28,7 +28,13 @@ export default function Controls({
         </button>
       )}
       {!expanded && (
-        <button onClick={() => setExpanded(true)} className="btn">
+        <button
+          onClick={() => {
+            setShowInfo(false);
+            setExpanded(true);
+          }}
+          className="btn"
+        >
           <FontAwesomeIcon
             icon="lightbulb"
             className="text-lg text-indigo-500"
@@ -44,7 +50,13 @@ export default function Controls({
         </button>
       )}
       {!showInfo && (
-        <button onClick={() => setShowInfo(true)} className="btn">
+        <button
+          onClick={() => {
+            setExpanded(false);
+            setShowInfo(true);
+          }}
+          className="btn"
+        >
           <FontAwesomeIcon
             icon={infoIcon}
             className="text-lg text-indigo-500"

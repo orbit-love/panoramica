@@ -19,16 +19,7 @@ const OrbitLevelIcon = ({ member, classes }) => {
   );
 };
 
-export default function Member({
-  member,
-  members,
-  showNetwork,
-  setSelection,
-  setShowNetwork,
-  setExpanded,
-  setCycle,
-  graph,
-}) {
+export default function Member({ member, members, setShowNetwork }) {
   const orbitLevels = {
     1: "Orbit Level 1: Advocates",
     2: "Orbit Level 2: Contributors",
@@ -37,18 +28,8 @@ export default function Member({
   };
   var orbitLevelTitle = orbitLevels[member.level];
   const connections = members.getConnections({ member });
-  // show connections to highest orbit levels first
-  connections.sort((a, b) => a.level.number - b.level.number);
   const buttonClasses =
-    "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none";
-
-  // const onConnectionClick = (connection) => {
-  //   setSelection(connection);
-
-  //   const node = graph.findById(connection.id);
-  //   graph.emit("node:click", { item: node });
-  //   graph.focusItem(node, true);
-  // };
+    "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md user-select-none";
 
   return (
     <Prose>
@@ -76,53 +57,15 @@ export default function Member({
           ></Meter>
         </div>
       </div>
-      {showNetwork && (
-        <>
-          <button
-            className={buttonClasses}
-            onClick={() => {
-              setExpanded(false);
-              setShowNetwork(false);
-            }}
-          >
-            <FontAwesomeIcon icon="xmark" className="px-1" />
-            <span>Close Connections</span>
-          </button>
-          {/* <div>
-            <div className="mb-2 font-bold text-indigo-400">Connections</div>
-            <div className="flex flex-wrap">
-              {connections.map((connection) => (
-                <button
-                  className="py-1 w-1/2 text-indigo-100 hover:text-yellow-100"
-                  key={connection.id}
-                  onClick={() => onConnectionClick(connection)}
-                >
-                  <div className="flex items-center space-x-1">
-                    <OrbitLevelIcon member={connection} classes="" />
-                    <span>{connection.name}</span>
-                  </div>
-                </button>
-              ))}
-              {connections.length === 0 && <span>None</span>}
-            </div>
-          </div> */}
-        </>
-      )}
-      {!showNetwork && (
-        <>
-          <button
-            className={buttonClasses}
-            onClick={() => {
-              // don't continue to cycle if network view was opened
-              setCycle(false);
-              setShowNetwork(true);
-            }}
-          >
-            <FontAwesomeIcon icon="chart-network" className="px-1" />
-            <span> View Connections: {connections.length}</span>
-          </button>
-        </>
-      )}
+      <button
+        className={buttonClasses}
+        onClick={() => {
+          setShowNetwork(true);
+        }}
+      >
+        <FontAwesomeIcon icon="chart-network" className="px-1" />
+        <span> View Connections: {connections.length}</span>
+      </button>
       {!member.summary && <div className="py-1" />}
       {member.summary && (
         <div className="leading-tight">

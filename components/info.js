@@ -14,17 +14,14 @@ export default function Info({ members }) {
           <h3>Keyboard Shortcuts</h3>
           <p>
             Use the left and right arrow keys to cycle through members of the
-            community.
+            community. Use a to toggle animation, c to toggle cycling members,
+            and n to toggle the network view.
           </p>
-        </Prose>
-        <Prose>
           <h3>Presentation Mode</h3>
           <p>
             Combine the fullscreen, animation, and shuffle toggles for an
             immersive experience.
           </p>
-        </Prose>
-        <Prose>
           <h3>Community Stats</h3>
         </Prose>
         <div className="table">
