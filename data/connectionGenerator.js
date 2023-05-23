@@ -11,15 +11,17 @@ class ConnectionGenerator {
     this.unpackedMembers = members.getUnpackedMembers({ exponent: 4 });
   }
 
+  // with a small number of advocates / contributors, every relationship
+  // gets created and then we move on to the outer levels
   produceConnections({ number }) {
     var connections = new Set();
     var max = this.unpackedMembers.length;
-    for (var i = 0; i < number; i++) {
+    while (connections.size < number) {
       var member1Index = Math.floor(this.rand() * max);
       var member2Index = Math.floor(this.rand() * max);
       var member1 = this.unpackedMembers[member1Index];
       var member2 = this.unpackedMembers[member2Index];
-      if (member1 !== member2) {
+      if (member1.id !== member2.id) {
         // sort the ids in a way that will avoid two entries in the
         // set for either direction
         const setId = [member1.id, member2.id].sort().join("-");

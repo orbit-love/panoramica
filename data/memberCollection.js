@@ -44,7 +44,7 @@ class MemberCollection {
     const unpackedMembers = [];
     this.list.forEach((member) => {
       // create 1, 8, 27, 64
-      var copies = (5 - member.level.number) * exponent;
+      var copies = (5 - member.level.number + 1) ** exponent;
       for (var i = 0; i < copies; i++) {
         unpackedMembers.push(member);
       }

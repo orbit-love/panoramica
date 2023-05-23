@@ -32,8 +32,6 @@ export default function Member({ member, members, graph, setSelection }) {
   connections.sort((a, b) => a.level.number - b.level.number);
 
   const setSelectionAndFocusItem = (connection) => {
-    // TODO this is broken, we need to click on the node for activate relations to happen
-    // curious if we can remove this once memberGraph is fixed
     setSelection(connection);
     const node = graph.findById(connection.id);
     graph.focusItem(node, true);
@@ -53,6 +51,10 @@ export default function Member({ member, members, graph, setSelection }) {
             <div className="flex items-center space-x-1 font-bold text-indigo-400">
               <FontAwesomeIcon icon="chart-network" />
               <span>{connections.length}</span>
+            </div>
+            <div className="flex items-center space-x-1 font-bold text-indigo-400">
+              <FontAwesomeIcon icon="signal-stream" />
+              <span>{member.reach}/3</span>
             </div>
           </div>
           <div>
