@@ -29,7 +29,7 @@ export default function Member({ member, members, setShowNetwork }) {
   var orbitLevelTitle = orbitLevels[member.level];
   const connections = members.getConnections({ member });
   const buttonClasses =
-    "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md user-select-none";
+    "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none";
 
   return (
     <Prose>

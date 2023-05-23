@@ -31,31 +31,15 @@ export default function Graph({
       height !== prevHeight
     ) {
       // https://antv-g6.gitee.io/en/docs/api/graphLayout/force#layoutcfgclustering
-      var layout;
-      if (false) {
-        // leave this out for the moment, it could be good for an interstitial widget
-        // for 1-3 degrees of neighbors
-        layout = {
-          type: "radial",
-          focusNode: selection.id,
-          nodeSize: 200,
-          linkDistance: 50,
-          nodeSpacing: 50,
-          preventOverlap: true,
-          strictRadial: true,
-          unitRadius: 150,
-        };
-      } else {
-        layout = {
-          fitCenter: false,
-          type: "force",
-          alphaMin: 0.025,
-          nodeSize: 75,
-          nodeSpacing: 20,
-          linkDistance: 10,
-          preventOverlap: true,
-        };
-      }
+      var layout = {
+        fitCenter: false,
+        type: "force",
+        // alphaMin: 0.025,
+        nodeSize: 75,
+        nodeSpacing: 20,
+        linkDistance: 10,
+        preventOverlap: true,
+      };
       const container = ref.current;
       const graphProperties = {
         defaultNode,
@@ -75,9 +59,12 @@ export default function Graph({
             {
               type: "activate-relations",
               trigger: "click",
-              activeState: "selected",
-              inactiveState: "",
+              activeState: "active",
+              inactiveState: "inactive",
             },
+            // this must go after activate-relations so the selected
+            // node ends up with the selected state
+            { type: "click-select" },
           ],
         },
       };
@@ -121,5 +108,5 @@ export default function Graph({
     // listing graph here causes problems
   }, [width, height, prevWidth, prevHeight]);
 
-  return <div className="unselectable" ref={ref}></div>;
+  return <div className="select-none" ref={ref}></div>;
 }

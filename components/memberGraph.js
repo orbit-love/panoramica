@@ -1,52 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import c from "lib/common";
+import helper from "lib/memberGraph/helper";
 import Graph from "components/graph";
 import Member from "components/cards/network/member";
-
-const getData = ({ members }) => {
-  var nodes = members.list.map((member) => {
-    // const selected = member.id === selection?.id;
-    const { id } = member;
-    const size = 17 + (5 - member.level.number) * 20;
-    const label =
-      size > 40 ? member.name : member.name.slice(0, 2).toUpperCase();
-    var color;
-    switch (member.level.number) {
-      case 1:
-        color = c.indigo600;
-        break;
-      case 2:
-        color = c.indigo700;
-        break;
-      case 3:
-        color = c.indigo800;
-        break;
-      case 4:
-        color = c.indigo900;
-        break;
-    }
-    return {
-      id,
-      label,
-      member,
-      size,
-      style: {
-        fill: color,
-      },
-    };
-  });
-  var edges = [];
-  members.connections.forEach((idPair) => {
-    const [source, target] = idPair.split("-");
-    edges.push({
-      source,
-      target,
-    });
-  });
-  return { nodes, edges };
-};
 
 export default function MemberGraph({
   width,
@@ -61,7 +18,7 @@ export default function MemberGraph({
   showNetwork,
   setShowNetwork,
 }) {
-  const [data, setData] = useState(getData({ members, selection }));
+  const [data, setData] = useState(helper.getData({ members, selection }));
 
   const graphRef = useRef();
   graphRef.current = graph;
@@ -73,6 +30,7 @@ export default function MemberGraph({
     if (graph && !graph.destroyed && selection) {
       const node = graph.findById(selection.id);
       // if already selected, don't reclick
+      console.log(node.getModel().id, node.getStates());
       if (node && !node.hasState("selected")) {
         graph.emit("node:click", { item: node });
       }
@@ -93,7 +51,7 @@ export default function MemberGraph({
   };
 
   useEffect(() => {
-    setData(getData({ members }));
+    setData(helper.getData({ members }));
   }, [members]);
 
   // whenever the selection changes, click it if not already clicked
@@ -146,7 +104,7 @@ export default function MemberGraph({
           eventHandlers={eventHandlers}
         />
         {selection && (
-          <div className="absolute bottom-4 right-6 bg-[#1D1640] px-4 py-3 rounded-md border border-indigo-600">
+          <div className="absolute right-4 bottom-4">
             <Member
               member={selection}
               members={members}

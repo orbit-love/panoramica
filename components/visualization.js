@@ -175,7 +175,7 @@ export default function Visualization({
     <div className="relative" style={{ width, height }}>
       <div>
         <svg
-          className="unselectable"
+          className="select-none"
           ref={svgRef}
           style={{ width, height }}
         ></svg>

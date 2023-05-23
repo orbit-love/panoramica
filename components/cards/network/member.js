@@ -31,41 +31,45 @@ export default function Member({ member, members, graph, setSelection }) {
   // show connections to highest orbit levels first
   connections.sort((a, b) => a.level.number - b.level.number);
 
-  const setSelectionAndFocusItem = (member) => {
-    setSelection(member);
-    const node = graph.findById(member.id);
+  const setSelectionAndFocusItem = (connection) => {
+    // TODO this is broken, we need to click on the node for activate relations to happen
+    // curious if we can remove this once memberGraph is fixed
+    setSelection(connection);
+    const node = graph.findById(connection.id);
     graph.focusItem(node, true);
   };
 
   return (
     <Prose>
-      <div className="flex space-x-8">
-        <div className="flex flex-col space-y-2">
-          <div className="flex items-baseline space-x-2">
-            <div className="cursor-help" title={orbitLevelTitle}>
-              <OrbitLevelIcon member={member} classes="text-xl" />
+      <div className="bg-[#1D1640] px-4 py-3 rounded-md border border-indigo-600">
+        <div className="flex space-x-8">
+          <div className="flex flex-col space-y-2">
+            <div className="flex items-baseline space-x-2">
+              <div className="cursor-help" title={orbitLevelTitle}>
+                <OrbitLevelIcon member={member} classes="text-xl" />
+              </div>
+              <div className="text-xl font-semibold">{member.name}</div>
             </div>
-            <div className="text-xl font-semibold">{member.name}</div>
+            <div className="flex items-center space-x-1 font-bold text-indigo-400">
+              <FontAwesomeIcon icon="chart-network" />
+              <span>{connections.length}</span>
+            </div>
           </div>
-          <div className="flex items-center space-x-1 font-bold text-indigo-400">
-            <FontAwesomeIcon icon="chart-network" />
-            <span>{connections.length}</span>
-          </div>
-        </div>
-        <div>
-          <div className="flex flex-col">
-            {connections.map((connection) => (
-              <button
-                className="py-1 w-36 text-indigo-100 hover:text-yellow-100"
-                key={connection.id}
-                onClick={() => setSelectionAndFocusItem(connection)}
-              >
-                <div className="flex items-center space-x-1">
-                  <OrbitLevelIcon member={connection} classes="" />
-                  <span>{connection.name}</span>
-                </div>
-              </button>
-            ))}
+          <div>
+            <div className="flex flex-col space-y-1">
+              {connections.map((connection) => (
+                <button
+                  className="w-36 text-indigo-100 hover:text-yellow-100"
+                  key={connection.id}
+                  onClick={() => setSelectionAndFocusItem(connection)}
+                >
+                  <div className="flex items-center space-x-1">
+                    <OrbitLevelIcon member={connection} classes="" />
+                    <span>{connection.name}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
