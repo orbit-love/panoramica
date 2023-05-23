@@ -80,7 +80,7 @@ export default function Graph({
       // set the data and do the initial render
       newGraph.data(data);
       newGraph.render();
-      newGraph.zoomTo(0.9);
+      newGraph.zoomTo(0.75);
 
       setGraph(newGraph);
     }
