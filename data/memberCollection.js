@@ -98,11 +98,16 @@ class MemberCollection {
 
   // generate the positions along the arc for each members now that we
   // know how many members we have at each level
+  // we also need to reorder the underlying list
   assignPositions() {
+    const newList = [];
     Object.values(this.levels).forEach((level) => {
       var levelMembers = this.list.filter(
         (member) => member.level.number === level.number
       );
+      // sort the members and add to new list
+      levelMembers.sort((a, b) => a.love * a.reach - b.love * b.reach);
+      newList.push(...levelMembers);
       // now calculate the positions
       const positionScale = d3
         .scaleLinear()
@@ -117,6 +122,7 @@ class MemberCollection {
         member.position = position;
       });
     });
+    this.list = newList;
   }
 
   // return the connections for a single member

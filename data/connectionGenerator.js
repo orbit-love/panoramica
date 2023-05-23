@@ -32,22 +32,6 @@ class ConnectionGenerator {
     console.log("Made " + connections.size + " connections");
     return connections;
   }
-
-  // randomly find other members to be connected to member
-  // produceConnections({ member, memberList, connectionCount }) {
-  //   const targets = [];
-  //   var min = 0,
-  //     max = memberList.length;
-  //   // multiply the reach by the orbit level
-  //   for (var i = 0; i < connectionCount; i++) {
-  //     // get a random number
-  //     var otherMember = memberList[otherMemberIndex];
-  //     if (otherMember && member.id !== otherMember.id) {
-  //       targets.push(otherMember.id);
-  //     }
-  //   }
-  //   return targets;
-  // }
 }
 
 export default ConnectionGenerator;
