@@ -30,7 +30,6 @@ export default function MemberGraph({
     if (graph && !graph.destroyed && selection) {
       const node = graph.findById(selection.id);
       // if already selected, don't reclick
-      console.log(node.getModel().id, node.getStates());
       if (node && !node.hasState("selected")) {
         graph.emit("node:click", { item: node });
       }

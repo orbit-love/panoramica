@@ -35,15 +35,12 @@ export default function Graph({
         fitCenter: false,
         type: "force",
         // alphaMin: 0.025,
-        nodeSize: 75,
-        nodeSpacing: 20,
-        linkDistance: 10,
+        // don't set nodeSize so the custom ones take precedence
+        nodeSpacing: 25,
         preventOverlap: true,
       };
       const container = ref.current;
       const graphProperties = {
-        defaultNode,
-        nodeStateStyles,
         defaultEdge,
         edgeStateStyles,
         modes: {
