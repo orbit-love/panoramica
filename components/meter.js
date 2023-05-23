@@ -26,13 +26,11 @@ export default function Meter({
   for (var i = 1; i <= 12; i++) {
     var styleProps = i > fullSquares ? emptyProps : fullProps;
     var squareLevel = Math.floor((i - 1) / 3); // what ol are we in? {0..3}
-    var inActiveLevel = squareLevel === activeLevel;
+    // var inActiveLevel = squareLevel === activeLevel;
     var opacity = 1; // inActiveLevel ? 1 : 0.8;
     var squareNumberInLevel = (i - 1) % 3;
-    if (inActiveLevel && squareNumberInLevel === 0) {
-      markup.push(
-        <span key={`top-divider-at-${i}`} className="w-[2px]"></span>
-      );
+    if (squareNumberInLevel === 0) {
+      markup.push(<span key={`top-divider-at-${i}`}></span>);
     }
     markup.push(
       <FontAwesomeIcon
@@ -42,8 +40,8 @@ export default function Meter({
         style={{ ...styleProps, opacity }}
       />
     );
-    if (inActiveLevel && squareNumberInLevel === 2) {
-      markup.push(<span key={`divider-at-${i}`} className="w-[2px]"></span>);
+    if (squareNumberInLevel === 2) {
+      markup.push(<span key={`divider-at-${i}`}></span>);
     }
   }
 

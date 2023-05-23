@@ -41,7 +41,7 @@ export default function Member({ member, members, setShowNetwork }) {
       </div>
       <div className="flex flex-col my-4 space-y-1">
         <div className="flex items-center">
-          <span className="w-16 font-bold text-indigo-400">Love</span>
+          <span className="w-16 font-semibold text-indigo-400">Love</span>
           <Meter
             icon="square"
             number={member.level.number}
@@ -49,7 +49,7 @@ export default function Member({ member, members, setShowNetwork }) {
           ></Meter>
         </div>
         <div className="flex items-center">
-          <span className="w-16 font-bold text-indigo-400">Reach</span>
+          <span className="w-16 font-semibold text-indigo-400">Reach</span>
           <Meter
             icon="square"
             number={member.level.number}
