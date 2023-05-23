@@ -58,21 +58,11 @@ class MemberGenerator {
   }
 
   produceMembers({ number }) {
-    const positionScale = d3
-      .scaleLinear(number)
-      .range([0, 1])
-      .domain([0, number]);
-
     var members = [];
     for (var i = 0; i < number; i++) {
-      const position = c.fuzz(
-        this.rand(),
-        positionScale(i),
-        this.levelDefaults.positionFuzz
-      );
-      const member = this.produceMember({ position });
-      members.push(member);
+      members.push(this.produceMember({}));
     }
+
     return members;
   }
 

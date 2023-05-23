@@ -102,7 +102,7 @@ export default function MemberGraph({
           selection={selection}
           eventHandlers={eventHandlers}
         />
-        {selection && (
+        {selection && selection.level && (
           <div className="absolute right-4 bottom-4">
             <Member
               member={selection}

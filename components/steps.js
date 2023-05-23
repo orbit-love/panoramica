@@ -225,7 +225,7 @@ export default function Steps({
       changes={{
         levelNumber: 3,
         love: 1,
-        reach: 2,
+        reach: 1,
       }}
       component={<MemberO3Text />}
       {...props}
@@ -235,8 +235,8 @@ export default function Steps({
       memberId={memberId}
       changes={{
         levelNumber: 3,
-        love: 1,
-        reach: 2,
+        love: 2,
+        reach: 3,
       }}
       component={<MemberO21Text />}
       {...props}
@@ -257,8 +257,8 @@ export default function Steps({
       memberId={memberId}
       changes={{
         levelNumber: 2,
-        love: 1,
-        reach: 1,
+        love: 2,
+        reach: 2,
       }}
       component={<MemberO11Text />}
       {...props}
@@ -268,8 +268,8 @@ export default function Steps({
       memberId={memberId}
       changes={{
         levelNumber: 1,
-        love: 1,
-        reach: 1,
+        love: 2,
+        reach: 2,
       }}
       component={<MemberO12Text />}
       {...props}

@@ -26,7 +26,6 @@ export default function Widgets({
   scrollToIntroduction,
   showNetwork,
   setShowNetwork,
-  graph,
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
   const [showInfo, setShowInfo] = useState(false);

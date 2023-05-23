@@ -4,8 +4,8 @@ import Prose from "components/visualization/prose";
 export default function Info({ members }) {
   const mostConnectedMember = members.list.sort(
     (a, b) =>
-      members.getConnections({ member: a }) -
-      members.getConnections({ member: b })
+      members.getConnections({ member: b }).length -
+      members.getConnections({ member: a }).length
   )[0];
   return (
     <>
@@ -24,36 +24,39 @@ export default function Info({ members }) {
           </p>
           <h3>Community Stats</h3>
         </Prose>
-        <div className="table">
-          <tr>
-            <td className="font-semibold">Members</td>
-            <td>{members.list.length}</td>
-          </tr>
-          {[1, 2, 3, 4].map((number) => (
-            <tr key={number}>
-              <td>Orbit {number}</td>
+        <table className="table">
+          <tbody>
+            <tr>
+              <td className="font-semibold">Members</td>
+              <td>{members.list.length}</td>
+            </tr>
+            {[1, 2, 3, 4].map((number) => (
+              <tr key={number}>
+                <td>Orbit {number}</td>
+                <td>
+                  {
+                    members.list.filter(
+                      (member) => member.level.number === number
+                    ).length
+                  }
+                </td>
+              </tr>
+            ))}
+            <tr className="h-4" />
+            <tr>
+              <td className="font-semibold">Total Connections</td>
+              <td>{members.connections?.size}</td>
+            </tr>
+            <tr>
+              <td>Most Connected</td>
               <td>
-                {
-                  members.list.filter(
-                    (member) => member.level.number === number
-                  ).length
-                }
+                {mostConnectedMember.name} (
+                {members.getConnections({ member: mostConnectedMember }).length}
+                )
               </td>
             </tr>
-          ))}
-          <tr className="h-4" />
-          <tr>
-            <td className="font-semibold">Total Connections</td>
-            <td>{members.connections?.size}</td>
-          </tr>
-          <tr>
-            <td>Most Connected</td>
-            <td>
-              {mostConnectedMember.name} (
-              {members.getConnections({ member: mostConnectedMember }).length})
-            </td>
-          </tr>
-        </div>
+          </tbody>
+        </table>
       </div>
     </>
   );

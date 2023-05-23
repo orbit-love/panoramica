@@ -44,7 +44,6 @@ const levels = [
     r3: 6,
     rxFuzz: 0.0,
     ryFuzz: 0.0,
-    positionFuzz: 0.0,
   },
 ];
 

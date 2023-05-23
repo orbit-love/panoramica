@@ -1,3 +1,6 @@
+import * as d3 from "d3";
+
+import c from "lib/common";
 import MemberGenerator from "data/memberGenerator";
 import ConnectionGenerator from "data/connectionGenerator";
 
@@ -91,6 +94,29 @@ class MemberCollection {
       rand: this.rand,
     });
     this.connections = connectionGenerator.produceConnections({ number });
+  }
+
+  // generate the positions along the arc for each members now that we
+  // know how many members we have at each level
+  assignPositions() {
+    Object.values(this.levels).forEach((level) => {
+      var levelMembers = this.list.filter(
+        (member) => member.level.number === level.number
+      );
+      // now calculate the positions
+      const positionScale = d3
+        .scaleLinear()
+        .range([0, 1])
+        .domain([0, levelMembers.length]);
+      levelMembers.forEach((member, index) => {
+        const position = c.fuzz(
+          this.rand(),
+          positionScale(index),
+          level.positionFuzz
+        );
+        member.position = position;
+      });
+    });
   }
 
   // return the connections for a single member
