@@ -283,7 +283,7 @@ export default function Steps({
 
   return (
     <>
-      <div className="flex flex-col py-4 px-5 space-y-6 pointer-events-auto">
+      <div className="flex flex-col py-4 px-5 space-y-4 pointer-events-auto">
         <Prose>{stepComponent}</Prose>
         <Buttons
           step={step}
