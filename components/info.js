@@ -25,6 +25,10 @@ export default function Info({ members }) {
               <td>Animation on/off</td>
             </tr>
             <tr>
+              <td>r</td>
+              <td>Change animation speed</td>
+            </tr>
+            <tr>
               <td>c</td>
               <td>Cycle members</td>
             </tr>
