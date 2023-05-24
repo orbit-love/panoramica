@@ -37,6 +37,7 @@ export default function Visualization({
   const [expanded, setExpanded] = useState(true);
   const [showNetwork, setShowNetwork] = useState(false);
   const [graph, setGraph] = useState(null);
+  const [showInfo, setShowInfo] = useState(false);
 
   const prevShowNetwork = c.usePrevious(showNetwork);
 
@@ -82,6 +83,33 @@ export default function Visualization({
     setShowNetwork,
   ]);
   useHotkeys("escape", () => setShowNetwork(false), [setShowNetwork]);
+  useHotkeys(
+    "i",
+    () => {
+      setShowInfo(!showInfo);
+      !showInfo && setExpanded(false);
+    },
+    [showInfo, setShowInfo]
+  );
+  useHotkeys(
+    "f",
+    () => {
+      if (fullscreen) {
+        if (document.fullscreenElement) {
+          document.exitFullscreen().then(() => {
+            setFullscreen(false);
+          });
+        }
+      } else {
+        if (!document.fullscreenElement) {
+          document.body.requestFullscreen().then(() => {
+            if (document.fullscreenElement) setFullscreen(true);
+          });
+        }
+      }
+    },
+    [fullscreen, setFullscreen]
+  );
 
   useEffect(() => {
     const eachCycle = () => {
@@ -215,6 +243,8 @@ export default function Visualization({
         scrollToIntroduction={scrollToIntroduction}
         showNetwork={showNetwork}
         setShowNetwork={setShowNetwork}
+        showInfo={showInfo}
+        setShowInfo={setShowInfo}
         graph={graph}
       />
     </div>
