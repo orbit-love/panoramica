@@ -58,26 +58,13 @@ class MemberCollection {
   // level is the new level
   changeLevel({ id, levelNumber, love = 1, reach = 1 }) {
     const oldMember = this.find(id);
-    const { rxSeed, rySeed, position } = oldMember;
     const level = this.levels[levelNumber];
-    const generator = this.generators[levelNumber];
-    const newMember = generator.produceMember({
-      love,
-      reach,
-      rxSeed,
-      rySeed,
-    });
-    const { rx, ry, planetSize, planetColor } = newMember;
 
     // update the attributes of the old member
     oldMember.level = level;
-    oldMember.love = newMember.love;
-    oldMember.reach = newMember.reach;
-    oldMember.rx = rx;
-    oldMember.ry = ry;
-    oldMember.planetSize = planetSize;
-    oldMember.planetColor = planetColor;
-    oldMember.position = position;
+    oldMember.love = love;
+    // todo remove this to be based on connections
+    oldMember.reach = reach;
 
     // indicate to drawMembers that the animation and attributes
     // of this member need to be changed on the next render
@@ -123,6 +110,65 @@ class MemberCollection {
       });
     });
     this.list = newList;
+  }
+
+  assignVisualProperties() {
+    Object.values(this.levels).forEach((level) => {
+      const {
+        r1,
+        r2,
+        r3,
+        l1 = c.indigo800,
+        l2 = c.indigo400,
+        l3 = c.indigo200,
+      } = level;
+
+      const planetSizeScale = d3
+        .scaleLinear()
+        .range([r1, r2, r3])
+        .domain([1, 2, 3]);
+      const planetColorScale = d3
+        .scaleLinear()
+        .domain([1, 2, 3])
+        .range([l1, l2, l3]);
+
+      var levelMembers = this.list.filter(
+        (member) => member.level.number === level.number
+      );
+      levelMembers.forEach(function (member) {
+        const gravity = love * reach;
+        const { name, love, reach } = member;
+
+        const rxSeed = member.rxSeed || this.rand();
+        const rySeed = member.rySeed || this.rand();
+
+        var summary;
+        if (love === 3 && (reach === 1 || reach === 2)) {
+          summary = `has high love and low/medium reach relative to others in their orbit level. Help ${name} meet other members and grow their network.`;
+        }
+        if (reach === 3 && (love === 1 || love === 2)) {
+          summary = `has high reach and low/medium love relative to others in their orbit level. Help ${name} find deeper and more frequent ways to contribute.`;
+        }
+        if (reach !== 3 && love !== 3) {
+          summary = `has balanced love and reach relative to others in their orbit level. Continue to offer deeper ways to contribute and connect with other members.`;
+        }
+        if (reach === 3 && love === 3) {
+          summary = `has high reach and high love relative to others in their orbit level. Think about what ${name} might need to reach the next level.`;
+        }
+        summary = `${name} is ${level.nameSingular} and ${summary}`;
+
+        Object.assign(member, {
+          summary,
+          gravity,
+          rxSeed,
+          rySeed,
+          rx: c.fuzz(rxSeed, level.rx, 0.0),
+          ry: c.fuzz(rySeed, level.ry, 0.0),
+          planetSize: planetSizeScale(reach),
+          planetColor: planetColorScale(love),
+        });
+      });
+    });
   }
 
   // return the connections for a single member
