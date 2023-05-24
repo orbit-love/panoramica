@@ -36,7 +36,7 @@ export default function Graph({
         type: "force",
         // alphaMin: 0.025,
         // don't set nodeSize so the custom ones take precedence
-        nodeSpacing: 25,
+        nodeSpacing: 35,
         preventOverlap: true,
       };
       const container = ref.current;
