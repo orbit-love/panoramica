@@ -25,6 +25,8 @@ export default function MemberGraph({
   const selectionRef = useRef();
   selectionRef.current = selection;
 
+  // clicks on a node to make sure it has the selection in the network view
+  // if the node is already selected, it does not click
   const highlightSelection = ({ selection, graph }) => {
     if (graph && !graph.destroyed && selection) {
       const node = graph.findById(selection.id);
@@ -78,12 +80,19 @@ export default function MemberGraph({
   }, [graph, selection]);
 
   // when the network view opens, animate to find the selected node
+  // if no node is selected, choose the first member and click/focus on them
   useEffect(() => {
-    if (showNetwork && selectionRef.current) {
-      const node = graphRef.current.findById(selectionRef.current.id);
+    if (showNetwork) {
+      var node;
+      if (selectionRef.current) {
+        node = graphRef.current.findById(selectionRef.current.id);
+      } else {
+        node = graphRef.current.findById(members.list[0].id);
+        graphRef.current.emit("node:click", { item: node });
+      }
       graphRef.current.focusItem(node, true);
     }
-  }, [showNetwork]);
+  }, [showNetwork, members]);
 
   const graphWidth = width * 0.85;
   const graphHeight = height * 0.85;
