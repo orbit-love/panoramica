@@ -5,8 +5,6 @@ import Orbit1 from "components/icons/orbit_1";
 import Orbit2 from "components/icons/orbit_2";
 import Orbit3 from "components/icons/orbit_3";
 import Orbit4 from "components/icons/orbit_4";
-import Meter from "components/meter";
-import Prose from "components/visualization/prose";
 
 const OrbitLevelIcon = ({ member, classes }) => {
   return (
@@ -20,13 +18,6 @@ const OrbitLevelIcon = ({ member, classes }) => {
 };
 
 export default function Member({ member, members, graph, setSelection }) {
-  const orbitLevels = {
-    1: "Orbit Level 1: Advocates",
-    2: "Orbit Level 2: Contributors",
-    3: "Orbit Level 3: Participants",
-    4: "Orbit Level 4: Explorers",
-  };
-  var orbitLevelTitle = orbitLevels[member.level];
   const connections = members.getConnections({ member });
   // show connections to highest orbit levels first
   connections.sort((a, b) => a.level.number - b.level.number);
@@ -38,11 +29,11 @@ export default function Member({ member, members, graph, setSelection }) {
   };
 
   return (
-    <div className="bg-[#1D1640] text-indigo-100 px-6 py-3 rounded-md border border-indigo-600">
+    <div className="bg-[#1D1640] text-indigo-100 px-6 py-4 rounded-md border border-indigo-600">
       <div className="flex flex-col space-y-2">
         <div className="flex space-x-8">
           <div className="flex items-baseline space-x-2">
-            <div className="cursor-help" title={orbitLevelTitle}>
+            <div>
               <OrbitLevelIcon member={member} classes="text-xl" />
             </div>
             <div className="text-xl font-semibold">{member.name}</div>
@@ -68,7 +59,7 @@ export default function Member({ member, members, graph, setSelection }) {
               onClick={() => setSelectionAndFocusItem(connection)}
             >
               <div className="flex items-center space-x-1">
-                <OrbitLevelIcon member={connection} classes="" />
+                <OrbitLevelIcon member={connection} />
                 <span>{connection.name}</span>
               </div>
             </button>

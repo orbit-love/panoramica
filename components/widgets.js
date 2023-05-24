@@ -83,7 +83,7 @@ export default function Widgets({
           className={`absolute right-0 bottom-0 z-10 px-4 py-5 w-96 pointer-events-none`}
         >
           <div
-            className={`${classes} flex relative flex-col px-7 py-8 pointer-events-auto`}
+            className={`${classes} flex relative flex-col px-6 py-6 pointer-events-auto`}
           >
             <Member
               member={selection}

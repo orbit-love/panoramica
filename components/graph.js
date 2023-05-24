@@ -1,11 +1,6 @@
 import G6 from "@antv/g6";
 import React, { useEffect, useRef } from "react";
-import {
-  nodeStateStyles,
-  defaultNode,
-  defaultEdge,
-  edgeStateStyles,
-} from "lib/graph/config";
+import { defaultEdge, edgeStateStyles } from "lib/graph/config";
 
 export default function Graph({
   graph,
