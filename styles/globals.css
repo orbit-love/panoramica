@@ -38,11 +38,6 @@ body {
   @apply text-indigo-700;
 }
 
-.header-background {
-  background: linear-gradient(90.12deg, #1e1449 0%, rgba(30, 20, 73, 0.15) 100%),
-    #0f0a25;
-}
-
 svg .clickable {
   cursor: pointer;
 }
@@ -68,35 +63,6 @@ svg .clickable {
   transform: translateX(0);
   transition: display 400ms, transform 400ms;
 }
-
-/* for om 2023 */
-#__next {
-  @apply h-full;
-}
-
-.member-label {
-  font-weight: 100;
-  cursor: pointer;
-}
-.member-circle {
-  cursor: pointer;
-}
-
-.axis text {
-  font: 13px sans-serif;
-}
-
-.axis line,
-.axis circle {
-  fill: none;
-  stroke: #459;
-  stroke-dasharray: 4;
-}
-
-/* .axis:last-of-type circle { */
-/* stroke: white; */
-/* stroke-dasharray: none; */
-/* } */
 
 .btn {
   @apply py-1 px-2 text-sm font-semibold rounded;

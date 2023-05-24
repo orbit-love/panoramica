@@ -21,7 +21,7 @@ export default function Header({ fix, fullscreen }) {
   return (
     <>
       <nav
-        className={`${fixClass} flex z-30 items-center px-2 py-3 w-full whitespace-nowrap pointer-events-none md:pl-4`}
+        className={`${fixClass} flex z-30 items-center px-2 py-3 w-full whitespace-nowrap pointer-events-none md:px-5`}
       >
         <div>
           <button

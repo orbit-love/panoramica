@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import c from "lib/common";
 
 import helper from "lib/memberGraph/helper";
 import Graph from "components/graph";
@@ -8,8 +9,6 @@ import Member from "components/cards/network/member";
 export default function MemberGraph({
   width,
   height,
-  prevWidth,
-  prevHeight,
   members,
   selection,
   setSelection,
@@ -73,9 +72,9 @@ export default function MemberGraph({
   // the graphWidth + 5 prevents the canvas from overflowing the modal
   return (
     <div
-      className={`absolute top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-[#0F0A25] bg-opacity-70 ${
-        !showNetwork && "hidden"
-      }`}
+      className={`absolute top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-[${
+        c.backgroundColor
+      }] bg-opacity-70 ${!showNetwork && "hidden"}`}
       onClick={(event) => {
         if (event.target === event.currentTarget) setShowNetwork(false);
       }}
