@@ -106,7 +106,7 @@ class MemberCollection {
         (member) => member.level.number === level.number
       );
       // sort the members and add to new list
-      levelMembers.sort((a, b) => a.love * a.reach - b.love * b.reach);
+      levelMembers.sort((b, a) => a.love * a.reach - b.love * b.reach);
       newList.push(...levelMembers);
       // now calculate the positions
       const positionScale = d3
