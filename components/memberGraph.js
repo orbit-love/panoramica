@@ -41,6 +41,25 @@ export default function MemberGraph({
       graphRef.current.focusItem(item, true);
     },
     "canvas:click": () => setSelection(null),
+    afteritemstatechange: ({ item, state, enabled }) => {
+      if (item.getType() === "node") {
+        const member = item.getModel();
+        console.log(member.level);
+        if (member.level && member.level.number > 2) {
+          if (state === "active" || state === "selected") {
+            var currentGraph = graphRef.current;
+            if (enabled) {
+              currentGraph.updateItem(item, {
+                ...member,
+                label: member.slicedName.toUpperCase(),
+              });
+            } else {
+              currentGraph.updateItem(item, { ...member, label: "" });
+            }
+          }
+        }
+      }
+    },
     afterrender: ({}) => {
       var currentGraph = graphRef.current;
       var currentSelection = selectionRef.current;
