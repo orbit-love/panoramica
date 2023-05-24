@@ -46,7 +46,6 @@ export default function MemberGraph({
     afteritemstatechange: ({ item, state, enabled }) => {
       if (item.getType() === "node") {
         const member = item.getModel();
-        console.log(member.level);
         if (member.level && member.level.number > 2) {
           if (state === "active" || state === "selected") {
             var currentGraph = graphRef.current;

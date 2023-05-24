@@ -38,43 +38,43 @@ export default function Member({ member, members, graph, setSelection }) {
   };
 
   return (
-    <Prose>
-      <div className="bg-[#1D1640] px-4 py-3 rounded-md border border-indigo-600">
+    <div className="bg-[#1D1640] text-indigo-100 px-6 py-3 rounded-md border border-indigo-600">
+      <div className="flex flex-col space-y-2">
         <div className="flex space-x-8">
-          <div className="flex flex-col space-y-2">
-            <div className="flex items-baseline space-x-2">
-              <div className="cursor-help" title={orbitLevelTitle}>
-                <OrbitLevelIcon member={member} classes="text-xl" />
-              </div>
-              <div className="text-xl font-semibold">{member.name}</div>
+          <div className="flex items-baseline space-x-2">
+            <div className="cursor-help" title={orbitLevelTitle}>
+              <OrbitLevelIcon member={member} classes="text-xl" />
             </div>
-            <div className="flex items-center space-x-1 font-bold text-indigo-400">
-              <FontAwesomeIcon icon="chart-network" />
-              <span>{connections.length}</span>
-            </div>
-            <div className="flex items-center space-x-1 font-bold text-indigo-400">
-              <FontAwesomeIcon icon="signal-stream" />
-              <span>{member.reach}/3</span>
-            </div>
+            <div className="text-xl font-semibold">{member.name}</div>
           </div>
-          <div>
-            <div className="flex flex-col space-y-1">
-              {connections.map((connection) => (
-                <button
-                  className="w-36 text-indigo-100 hover:text-yellow-100"
-                  key={connection.id}
-                  onClick={() => setSelectionAndFocusItem(connection)}
-                >
-                  <div className="flex items-center space-x-1">
-                    <OrbitLevelIcon member={connection} classes="" />
-                    <span>{connection.name}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
+          <div className="flex items-center space-x-1 font-bold text-indigo-400">
+            <FontAwesomeIcon icon="heart" />
+            <span>{member.love}/3</span>
+          </div>
+          <div className="flex items-center space-x-1 font-bold text-indigo-400">
+            <FontAwesomeIcon icon="signal-stream" />
+            <span>{member.reach}/3</span>
+          </div>
+          <div className="flex items-center space-x-1 font-bold text-indigo-400">
+            <FontAwesomeIcon icon="chart-network" />
+            <span>{connections.length}</span>
           </div>
         </div>
+        <div className="flex flex-wrap text-sm max-w-[400px]">
+          {connections.map((connection) => (
+            <button
+              className="p-[2px] w-32 text-indigo-100 hover:text-yellow-100"
+              key={connection.id}
+              onClick={() => setSelectionAndFocusItem(connection)}
+            >
+              <div className="flex items-center space-x-1">
+                <OrbitLevelIcon member={connection} classes="" />
+                <span>{connection.name}</span>
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
-    </Prose>
+    </div>
   );
 }
