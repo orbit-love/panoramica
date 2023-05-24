@@ -12,7 +12,8 @@ const levels = [
     r1: 12,
     r2: 11,
     r3: 10,
-    ringColor: c.indigo800,
+    ringColor: c.indigo700,
+    ringOpacity: 0.8,
   },
   {
     number: 2,
@@ -24,7 +25,8 @@ const levels = [
     r1: 11,
     r2: 10,
     r3: 9,
-    ringColor: c.indigo800,
+    ringColor: c.indigo700,
+    ringOpacity: 0.75,
   },
   {
     number: 3,
@@ -36,7 +38,8 @@ const levels = [
     r1: 10,
     r2: 9,
     r3: 8,
-    ringColor: c.indigo900,
+    ringColor: c.indigo800,
+    ringOpacity: 0.5,
   },
   {
     number: 4,
@@ -51,6 +54,7 @@ const levels = [
     rxFuzz: 0.0,
     ryFuzz: 0.0,
     ringColor: c.indigo900,
+    ringOpacity: 0.5,
   },
 ];
 
