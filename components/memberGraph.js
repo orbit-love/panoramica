@@ -93,8 +93,8 @@ export default function MemberGraph({
     }
   }, [showNetwork, members]);
 
-  const graphWidth = width * 0.85;
-  const graphHeight = height * 0.85;
+  const graphWidth = width * 0.9;
+  const graphHeight = height * 0.9;
 
   // the graphWidth + 5 prevents the canvas from overflowing the modal
   return (

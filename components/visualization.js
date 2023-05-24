@@ -22,6 +22,10 @@ export default function Visualization({
   // change to make developing easier
   const firstStep = 1;
 
+  // the default RPM of the orbits
+  const defaultRevolution = 130000;
+  const minRevolution = 10000;
+
   // previous values for detecting changes
   const prevNumber = c.usePrevious(number);
   const prevWidth = c.usePrevious(width);
@@ -38,6 +42,7 @@ export default function Visualization({
   const [showNetwork, setShowNetwork] = useState(false);
   const [graph, setGraph] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
+  const [revolution, setRevolution] = useState(defaultRevolution);
 
   const prevShowNetwork = c.usePrevious(showNetwork);
 
@@ -77,6 +82,19 @@ export default function Visualization({
   );
 
   useHotkeys("a", () => setAnimate(!animate), [animate, setAnimate]);
+  useHotkeys(
+    "r",
+    () => {
+      var newRevolution = revolution - 40000;
+      if (newRevolution < minRevolution) newRevolution = defaultRevolution;
+      helper.stopAnimation({ svgRef });
+      setTimeout(() => {
+        // wait for the transitions to stop and position to be saved
+        setRevolution(newRevolution);
+      }, 250);
+    },
+    [revolution, setRevolution, svgRef]
+  );
   useHotkeys("c", () => setCycle(!cycle), [cycle, setCycle]);
   useHotkeys("n", () => setShowNetwork(!showNetwork), [
     showNetwork,
@@ -177,7 +195,7 @@ export default function Visualization({
     helper.drawSun(props);
 
     if (animate) {
-      helper.startAnimation({ svgRef });
+      helper.startAnimation({ svgRef, revolution });
     } else {
       helper.stopAnimation({ svgRef });
     }
@@ -197,6 +215,7 @@ export default function Visualization({
     setExpanded,
     showNetwork,
     prevShowNetwork,
+    revolution,
   ]);
 
   return (
