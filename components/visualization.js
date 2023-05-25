@@ -83,17 +83,14 @@ export default function Visualization({
 
   useHotkeys("a", () => setAnimate(!animate), [animate, setAnimate]);
   useHotkeys(
-    "r",
+    "s",
     () => {
       var newRevolution = revolution - 40000;
       if (newRevolution < minRevolution) newRevolution = defaultRevolution;
-      helper.stopAnimation({ svgRef });
-      setTimeout(() => {
-        // wait for the transitions to stop and position to be saved
-        setRevolution(newRevolution);
-      }, 250);
+      helper.changeTransitionSpeed({ members, revolution: newRevolution });
+      setRevolution(newRevolution);
     },
-    [revolution, setRevolution, svgRef]
+    [revolution, setRevolution, svgRef, members]
   );
   useHotkeys("c", () => setCycle(!cycle), [cycle, setCycle]);
   useHotkeys("n", () => setShowNetwork(!showNetwork), [
