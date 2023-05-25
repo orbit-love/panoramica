@@ -70,6 +70,29 @@ export default function Controls({
           ></FontAwesomeIcon>
         </button>
       )}
+      <div className="relative">
+        <button
+          className="btn"
+          onClick={() => setSortOpen(!sortOpen)}
+          title="Sort"
+        >
+          <FontAwesomeIcon
+            icon={sortIcon}
+            className={`text-lg ${sortOpen ? "text-white" : "text-indigo-500"}`}
+          />
+        </button>
+        {sortOpen && (
+          <Sorter
+            sort={sort}
+            setSort={setSort}
+            setSortOpen={setSortOpen}
+            classes={classes}
+          />
+        )}
+      </div>
+      <div className="flex px-2">
+        <div className="w-[1px] bg-indigo-900" />
+      </div>
       {animate && (
         <button
           className="btn"
@@ -134,28 +157,6 @@ export default function Controls({
           />
         </button>
       )}
-      <div className="relative">
-        <button
-          className="btn"
-          onClick={() => setSortOpen(!sortOpen)}
-          title="Sort"
-        >
-          <FontAwesomeIcon
-            icon={sortIcon}
-            className={`text-lg ${
-              sortOpen ? "text-indigo-700" : "text-indigo-900"
-            }`}
-          />
-        </button>
-        {sortOpen && (
-          <Sorter
-            sort={sort}
-            setSort={setSort}
-            setSortOpen={setSortOpen}
-            classes={classes}
-          />
-        )}
-      </div>
     </>
   );
 }

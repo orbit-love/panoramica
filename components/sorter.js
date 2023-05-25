@@ -6,7 +6,7 @@ export default function Sorter({ sort, setSort, setSortOpen, classes }) {
     "hover:bg-indigo-600 px-2 py-1 rounded-md whitespace-nowrap";
   return (
     <div
-      className={`${classes} bg-opacity-100 left-[-90px] bottom-[55px] absolute px-4 py-4 text-sm border-2`}
+      className={`${classes} bg-opacity-100 left-[-101px] bottom-[55px] border-1 absolute px-4 py-4 text-sm`}
     >
       <div className="flex flex-col space-y-5">
         <div className="flex font-bold">
