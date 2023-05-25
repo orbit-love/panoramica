@@ -1,5 +1,6 @@
 import c from "lib/common";
 
+// factor is the relative distance between levels
 const factor = 22;
 const levels = [
   {
@@ -8,10 +9,10 @@ const levels = [
     nameSingular: "an Advocate",
     distance: 100 - factor * 3,
     multiplier: 1,
-    exponent: 1,
-    r1: 15,
-    r2: 14,
-    r3: 14,
+    exponent: 2,
+    r1: 13,
+    r2: 13,
+    r3: 13,
     ringColor: c.indigo700,
     ringOpacity: 0.8,
   },
@@ -33,7 +34,7 @@ const levels = [
     name: "Participants",
     nameSingular: "a Participant",
     distance: 100 - factor,
-    exponent: 3,
+    exponent: 2,
     multiplier: 6,
     r1: 9,
     r2: 9,
@@ -46,7 +47,7 @@ const levels = [
     name: "Explorers",
     nameSingular: "an Explorer",
     distance: 100,
-    exponent: 5,
+    exponent: 2,
     multiplier: 9,
     r1: 7,
     r2: 7,

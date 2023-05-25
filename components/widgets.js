@@ -95,7 +95,7 @@ export default function Widgets({
       )}
       {!fullscreen && (
         <button
-          className="absolute right-0 left-0 bottom-4 mx-auto w-12 text-center text-indigo-400 hover:text-indigo-200"
+          className="absolute right-0 left-0 bottom-4 mx-auto w-12 text-center text-indigo-700 hover:text-indigo-200"
           onClick={scrollToIntroduction}
         >
           <FontAwesomeIcon icon="arrow-down" className="text-2xl" />

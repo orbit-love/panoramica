@@ -4,6 +4,21 @@ import c from "lib/common";
 import MemberGenerator from "data/memberGenerator";
 import ConnectionGenerator from "data/connectionGenerator";
 
+// for each OL, determines how many connections lead to what reach value
+// factor is the number of connections per advocate
+const factor = 20;
+const reachScales = {
+  1: d3.scaleQuantize().range([1, 2, 3]).domain([0, factor]),
+  2: d3
+    .scaleQuantize()
+    .range([1, 2, 3])
+    .domain([0, factor / 1.5]),
+  3: d3
+    .scaleQuantize()
+    .range([1, 2, 3])
+    .domain([0, factor / 2]),
+  4: d3.scaleQuantize().range([1, 2, 3]).domain([0, 3]),
+};
 class MemberCollection {
   constructor({ levels, rand }) {
     this.levels = levels;
@@ -83,19 +98,26 @@ class MemberCollection {
     this.connections = connectionGenerator.produceConnections({ number });
   }
 
-  // generate the positions along the arc for each members now that we
-  // know how many members we have at each level
-  // we also need to reorder the underlying list
-  assignPositions() {
+  // update visual properties based on the latest data
+  // for the member
+  prepareToRender() {
     const newList = [];
     Object.values(this.levels).forEach((level) => {
       var levelMembers = this.list.filter(
         (member) => member.level.number === level.number
       );
+      // update properties before sorting and calculating positions
+      levelMembers.forEach((member) => {
+        // assign reach based on connections
+        this.assignReach({ member, level });
+        // assign visual properties once reach is up to date
+        this.assignVisualProperties({ member, level });
+      });
       // sort the members and add to new list
       levelMembers.sort((b, a) => a.love * a.reach - b.love * b.reach);
       newList.push(...levelMembers);
-      // now calculate the positions
+
+      // now calculate and set the positions
       const positionScale = d3
         .scaleLinear()
         .range([0, 1])
@@ -112,62 +134,60 @@ class MemberCollection {
     this.list = newList;
   }
 
-  assignVisualProperties() {
-    Object.values(this.levels).forEach((level) => {
-      const {
-        r1,
-        r2,
-        r3,
-        l1 = c.indigo800,
-        l2 = c.indigo400,
-        l3 = c.indigo200,
-      } = level;
+  assignReach({ member, level }) {
+    const connections = this.getConnections({ member });
+    member.reach = reachScales[level.number](connections.length);
+  }
 
-      const planetSizeScale = d3
-        .scaleLinear()
-        .range([r1, r2, r3])
-        .domain([1, 2, 3]);
-      const planetColorScale = d3
-        .scaleLinear()
-        .domain([1, 2, 3])
-        .range([l1, l2, l3]);
+  assignVisualProperties({ member, level }) {
+    const {
+      r1,
+      r2,
+      r3,
+      l1 = c.indigo800,
+      l2 = c.indigo400,
+      l3 = c.indigo200,
+    } = level;
 
-      var levelMembers = this.list.filter(
-        (member) => member.level.number === level.number
-      );
-      levelMembers.forEach(function (member) {
-        const gravity = love * reach;
-        const { name, love, reach } = member;
+    const planetSizeScale = d3
+      .scaleLinear()
+      .range([r1, r2, r3])
+      .domain([1, 2, 3]);
+    const planetColorScale = d3
+      .scaleLinear()
+      .domain([1, 2, 3])
+      .range([l1, l2, l3]);
 
-        const rxSeed = member.rxSeed || this.rand();
-        const rySeed = member.rySeed || this.rand();
+    const gravity = love * reach;
+    const { name, love, reach } = member;
 
-        var summary;
-        if (love === 3 && (reach === 1 || reach === 2)) {
-          summary = `has high love and low/medium reach relative to others in their orbit level. Help ${name} meet other members and grow their network.`;
-        }
-        if (reach === 3 && (love === 1 || love === 2)) {
-          summary = `has high reach and low/medium love relative to others in their orbit level. Help ${name} find deeper and more frequent ways to contribute.`;
-        }
-        if (reach !== 3 && love !== 3) {
-          summary = `has balanced love and reach relative to others in their orbit level. Continue to offer deeper ways to contribute and connect with other members.`;
-        }
-        if (reach === 3 && love === 3) {
-          summary = `has high reach and high love relative to others in their orbit level. Think about what ${name} might need to reach the next level.`;
-        }
-        summary = `${name} is ${level.nameSingular} and ${summary}`;
+    const rxSeed = member.rxSeed || this.rand();
+    const rySeed = member.rySeed || this.rand();
 
-        Object.assign(member, {
-          summary,
-          gravity,
-          rxSeed,
-          rySeed,
-          rx: c.fuzz(rxSeed, level.rx, 0.0),
-          ry: c.fuzz(rySeed, level.ry, 0.0),
-          planetSize: planetSizeScale(reach),
-          planetColor: planetColorScale(love),
-        });
-      });
+    var summary;
+    if (love === 3 && (reach === 1 || reach === 2)) {
+      summary = `has high love and low/medium reach relative to others in their orbit level. Help ${name} meet other members and grow their network.`;
+    }
+    if (reach === 3 && (love === 1 || love === 2)) {
+      summary = `has high reach and low/medium love relative to others in their orbit level. Help ${name} find deeper and more frequent ways to contribute.`;
+    }
+    if (reach !== 3 && love !== 3) {
+      summary = `has balanced love and reach relative to others in their orbit level. Continue to offer deeper ways to contribute and connect with other members.`;
+    }
+    if (reach === 3 && love === 3) {
+      summary = `has high reach and high love relative to others in their orbit level. Think about what ${name} might need to reach the next level.`;
+    }
+    summary = `${name} is ${level.nameSingular} and ${summary}`;
+
+    Object.assign(member, {
+      summary,
+      gravity,
+      rxSeed,
+      rySeed,
+      rx: c.fuzz(rxSeed, level.rx, 0.0),
+      ry: c.fuzz(rySeed, level.ry, 0.0),
+      planetSize: planetSizeScale(reach),
+      planetColor: planetColorScale(love),
     });
   }
 
