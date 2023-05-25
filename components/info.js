@@ -1,6 +1,7 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function Info({ members }) {
+export default function Info({ members, setShowInfo }) {
   const mostConnectedMember = members.list.sort(
     (a, b) =>
       members.getConnections({ member: b }).length -
@@ -8,7 +9,7 @@ export default function Info({ members }) {
   )[0];
   return (
     <>
-      <div className="flex flex-col py-4 px-5 space-y-4 pointer-events-auto">
+      <div className="flex relative flex-col py-4 px-5 space-y-4 pointer-events-auto">
         <div>
           <h3 className="text-lg font-bold">Keyboard Shortcuts</h3>
           <table className="table border-separate [border-spacing:0] text-sm">
@@ -98,6 +99,12 @@ export default function Info({ members }) {
             </tbody>
           </table>
         </div>
+        <button
+          className="absolute top-0 right-6 text-lg"
+          onClick={() => setShowInfo(false)}
+        >
+          <FontAwesomeIcon icon="xmark" />
+        </button>
       </div>
     </>
   );

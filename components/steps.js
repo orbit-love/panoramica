@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as d3 from "d3";
 import c from "lib/common";
 
@@ -161,6 +162,7 @@ export default function Steps({
   step,
   setStep,
   setCycle,
+  setExpanded,
   scrollToIntroduction,
   forceUpdate,
 }) {
@@ -283,8 +285,14 @@ export default function Steps({
 
   return (
     <>
-      <div className="flex flex-col py-4 px-5 space-y-4 pointer-events-auto">
+      <div className="flex relative flex-col py-4 px-5 space-y-4 pointer-events-auto">
         <Prose>{stepComponent}</Prose>
+        <button
+          className="absolute top-0 right-6 text-lg"
+          onClick={() => setExpanded(false)}
+        >
+          <FontAwesomeIcon icon="xmark" />
+        </button>
         <Buttons
           step={step}
           setStep={setStep}

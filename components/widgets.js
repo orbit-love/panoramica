@@ -47,6 +47,7 @@ export default function Widgets({
               setSelection={setSelection}
               members={members}
               setMembers={setMembers}
+              setExpanded={setExpanded}
               step={step}
               setStep={setStep}
               setCycle={setCycle}
@@ -57,7 +58,7 @@ export default function Widgets({
         )}
         {showInfo && members && (
           <div className={`${classes} w-96`}>
-            <Info members={members} />
+            <Info members={members} setShowInfo={setShowInfo} />
           </div>
         )}
         <div className="flex">
