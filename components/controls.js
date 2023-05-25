@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Sorter from "components/sorter";
 
 export default function Controls({
   animate,
@@ -12,10 +13,16 @@ export default function Controls({
   setExpanded,
   showInfo,
   setShowInfo,
+  sort,
+  setSort,
+  classes,
 }) {
   const fullscreenIcon = "expand";
   const cycleIcon = "shuffle";
   const infoIcon = "question";
+  const sortIcon = "sort";
+
+  const [sortOpen, setSortOpen] = useState(false);
 
   return (
     <>
@@ -127,6 +134,28 @@ export default function Controls({
           />
         </button>
       )}
+      <div className="relative">
+        <button
+          className="btn"
+          onClick={() => setSortOpen(!sortOpen)}
+          title="Sort"
+        >
+          <FontAwesomeIcon
+            icon={sortIcon}
+            className={`text-lg ${
+              sortOpen ? "text-indigo-700" : "text-indigo-900"
+            }`}
+          />
+        </button>
+        {sortOpen && (
+          <Sorter
+            sort={sort}
+            setSort={setSort}
+            setSortOpen={setSortOpen}
+            classes={classes}
+          />
+        )}
+      </div>
     </>
   );
 }

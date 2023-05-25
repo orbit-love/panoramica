@@ -100,7 +100,7 @@ class MemberCollection {
 
   // update visual properties based on the latest data
   // for the member
-  prepareToRender() {
+  prepareToRender({ sort }) {
     const newList = [];
     Object.values(this.levels).forEach((level) => {
       var levelMembers = this.list.filter(
@@ -114,7 +114,22 @@ class MemberCollection {
         this.assignVisualProperties({ member, level });
       });
       // sort the members and add to new list
-      levelMembers.sort((b, a) => a.love * a.reach - b.love * b.reach);
+      switch (sort) {
+        case "love":
+          levelMembers.sort((b, a) => a.love - b.love);
+          break;
+        case "reach":
+          levelMembers.sort((b, a) => a.reach - b.reach);
+          break;
+        case "delta":
+          levelMembers.sort(
+            (b, a) => Math.abs(a.reach - a.love) - Math.abs(b.reach - b.love)
+          );
+          break;
+        case "gravity":
+          levelMembers.sort((b, a) => a.love * a.reach - b.love * b.reach);
+          break;
+      }
       newList.push(...levelMembers);
     });
     this.list = newList;

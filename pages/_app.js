@@ -26,6 +26,7 @@ import {
   faShuffle,
   faExpand,
   faSquare,
+  faSort,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faBars,
@@ -95,7 +96,8 @@ library.add(
   faExpand,
   faArrowDown,
   faSquare,
-  faQuestion
+  faQuestion,
+  faSort
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";

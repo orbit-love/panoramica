@@ -28,6 +28,8 @@ export default function Widgets({
   setShowNetwork,
   showInfo,
   setShowInfo,
+  sort,
+  setSort,
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
@@ -73,6 +75,9 @@ export default function Widgets({
               setExpanded={setExpanded}
               showInfo={showInfo}
               setShowInfo={setShowInfo}
+              sort={sort}
+              setSort={setSort}
+              classes={classes}
             />
           </div>
           <div className="mx-auto" />

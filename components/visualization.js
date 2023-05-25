@@ -43,8 +43,10 @@ export default function Visualization({
   const [graph, setGraph] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [revolution, setRevolution] = useState(defaultRevolution);
+  const [sort, setSort] = useState("gravity");
 
   const prevShowNetwork = c.usePrevious(showNetwork);
+  const prevSort = c.usePrevious(sort);
 
   // store the selection in a ref so we can access it in useEffect
   // that effect can't have selection as a dependency so we do it this way
@@ -184,6 +186,8 @@ export default function Visualization({
       levels,
       expanded,
       setExpanded,
+      sort,
+      prevSort,
     };
 
     // these are drawn in order of back to front
@@ -213,6 +217,8 @@ export default function Visualization({
     showNetwork,
     prevShowNetwork,
     revolution,
+    sort,
+    prevSort,
   ]);
 
   return (
@@ -262,6 +268,8 @@ export default function Visualization({
         showInfo={showInfo}
         setShowInfo={setShowInfo}
         graph={graph}
+        sort={sort}
+        setSort={setSort}
       />
     </div>
   );
