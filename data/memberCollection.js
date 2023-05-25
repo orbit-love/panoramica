@@ -116,20 +116,6 @@ class MemberCollection {
       // sort the members and add to new list
       levelMembers.sort((b, a) => a.love * a.reach - b.love * b.reach);
       newList.push(...levelMembers);
-
-      // now calculate and set the positions
-      const positionScale = d3
-        .scaleLinear()
-        .range([0, 1])
-        .domain([0, levelMembers.length]);
-      levelMembers.forEach((member, index) => {
-        const position = c.fuzz(
-          this.rand(),
-          positionScale(index),
-          level.positionFuzz
-        );
-        member.position = position;
-      });
     });
     this.list = newList;
   }

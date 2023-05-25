@@ -31,7 +31,7 @@ export default function Widgets({
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
-  const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-80`;
+  const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90`;
   return (
     <>
       <div
