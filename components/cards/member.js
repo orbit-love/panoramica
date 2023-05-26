@@ -6,7 +6,6 @@ import Orbit2 from "components/icons/orbit_2";
 import Orbit3 from "components/icons/orbit_3";
 import Orbit4 from "components/icons/orbit_4";
 import Meter from "components/meter";
-import Prose from "components/visualization/prose";
 
 const OrbitLevelIcon = ({ member, classes }) => {
   return (
