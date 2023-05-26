@@ -1,49 +1,33 @@
 import React from "react";
 import c from "lib/common";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import * as d3 from "d3";
 
 // number is the orbit level number
-export default function Meter({
-  icon = "square",
-  fontSize = "14px",
-  number,
-  value,
-  classes,
-}) {
+export default function Meter({ number, value }) {
   var markup = [];
 
-  var fullProps = {
-    fontSize,
-    color: c.indigo100,
-  };
-  var emptyProps = {
-    fontSize,
-    color: c.indigo900,
-  };
+  const colorScale = d3
+    .scaleLinear()
+    .domain([0, 11])
+    .range([c.indigo800, c.indigo100]);
 
   var activeLevel = 4 - number; // explorers = 0, etc.
   var fullSquares = activeLevel * 3 + value;
   for (var i = 1; i <= 12; i++) {
-    var styleProps = i > fullSquares ? emptyProps : fullProps;
-    var squareLevel = Math.floor((i - 1) / 3); // what ol are we in? {0..3}
-    // var inActiveLevel = squareLevel === activeLevel;
-    var opacity = 1; // inActiveLevel ? 1 : 0.8;
+    var emptySquare = i > fullSquares;
     var squareNumberInLevel = (i - 1) % 3;
     if (squareNumberInLevel === 0) {
-      markup.push(<span key={`top-divider-at-${i}`}></span>);
+      markup.push(<span className="w-1" key={`top-divider-at-${i}`}></span>);
     }
-    markup.push(
-      <FontAwesomeIcon
-        key={i}
-        icon={icon}
-        className={classes}
-        style={{ ...styleProps, opacity }}
-      />
-    );
+    const squareStyle = {
+      backgroundColor: emptySquare ? c.indigo900 : colorScale(i),
+      opacity: emptySquare ? 0.65 : 1,
+    };
+    markup.push(<div style={squareStyle} className={`w-[17px] h-3`} />);
     if (squareNumberInLevel === 2) {
       markup.push(<span key={`divider-at-${i}`}></span>);
     }
   }
 
-  return <div className="flex space-x-[2px]">{markup}</div>;
+  return <div className="flex">{markup}</div>;
 }
