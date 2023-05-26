@@ -24,6 +24,7 @@ export default function Visualization({
 
   // the default RPM of the orbits
   const defaultRevolution = 130000;
+  const revolutionStep = 40000;
   const minRevolution = 10000;
 
   // previous values for detecting changes
@@ -87,7 +88,7 @@ export default function Visualization({
   useHotkeys(
     "s",
     () => {
-      var newRevolution = revolution - 40000;
+      var newRevolution = revolution - revolutionStep;
       if (newRevolution < minRevolution) newRevolution = defaultRevolution;
       helper.changeTransitionSpeed({ members, revolution: newRevolution });
       setRevolution(newRevolution);
