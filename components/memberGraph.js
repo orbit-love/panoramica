@@ -74,10 +74,15 @@ export default function MemberGraph({
     highlightSelection({ graph, selection });
   }, [graph, selection]);
 
+  // set the data
+  useEffect(() => {
+    setData(helper.getData({ members }));
+  }, [members, setData]);
+
   // when the network view opens, animate to find the selected node
   // if no node is selected, choose the first member and click/focus on them
   useEffect(() => {
-    if (showNetwork) {
+    if (showNetwork && graphRef.current) {
       var node;
       if (selectionRef.current) {
         node = graphRef.current.findById(selectionRef.current.id);
