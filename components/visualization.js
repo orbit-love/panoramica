@@ -228,7 +228,10 @@ export default function Visualization({
         <svg
           className="select-none"
           ref={svgRef}
-          style={{ width, height }}
+          style={{
+            width,
+            height,
+          }}
         ></svg>
       </div>
       {members && (

@@ -14,7 +14,7 @@ const levels = [
     r2: 13,
     r3: 13,
     ringColor: c.indigo600,
-    ringOpacity: 0.8,
+    ringOpacity: 0.9,
   },
   {
     number: 2,
@@ -27,7 +27,7 @@ const levels = [
     r2: 11,
     r3: 11,
     ringColor: c.indigo700,
-    ringOpacity: 0.65,
+    ringOpacity: 0.7,
   },
   {
     number: 3,

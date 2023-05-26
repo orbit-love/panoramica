@@ -91,11 +91,10 @@ export default function Index() {
       <div
         ref={containerRef}
         id="container"
-        className="hidden relative sm:block"
+        className="hidden relative sm:block space-gradient"
         style={{
           height: "100vh",
           marginTop: "0",
-          backgroundColor: c.backgroundColor,
         }}
       >
         {dimensions.width && dimensions.height && (

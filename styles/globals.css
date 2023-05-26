@@ -38,6 +38,15 @@ body {
   @apply text-indigo-700;
 }
 
+.space-gradient {
+  background: rgb(21, 13, 51, 1);
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    rgb(30, 20, 71) 0%,
+    rgb(14, 7, 37) 100%
+  );
+}
+
 svg .clickable {
   cursor: pointer;
 }
