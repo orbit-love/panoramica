@@ -5,32 +5,39 @@ class ConnectionGenerator {
   constructor({ members, rand }) {
     this.rand = rand;
     this.members = members;
-
-    // multiple the members into a new array based on OL
-    // move logic somewhere later
-    this.unpackedMembers = members.getUnpackedMembers({ exponent: 4 });
   }
 
   // with a small number of advocates / contributors, every relationship
   // gets created and then we move on to the outer levels
   produceConnections({ number }) {
-    var connections = new Set();
-    var max = this.unpackedMembers.length;
+    const connections = new Set();
+    const unpackedMembers = this.members.getUnpackedMembers({ exponent: 4 });
     while (connections.size < number) {
-      var member1Index = Math.floor(this.rand() * max);
-      var member2Index = Math.floor(this.rand() * max);
-      var member1 = this.unpackedMembers[member1Index];
-      var member2 = this.unpackedMembers[member2Index];
+      var member1 = this.getRandomMember(unpackedMembers);
+      var member2 = this.getRandomMember(unpackedMembers);
       if (member1.id !== member2.id) {
         // sort the ids in a way that will avoid two entries in the
         // set for either direction
-        const setId = [member1.id, member2.id].sort().join("-");
+        const setId = this.setKey(member1, member2);
         connections.add(setId);
         // console.log(`Connection ${member1.id} <> ${member2.id}`);
       }
     }
     console.log("Made " + connections.size + " connections");
     return connections;
+  }
+
+  setKey(member1, member2) {
+    return [member1.id, member2.id].sort().join("-");
+  }
+
+  getRandomMember(unpackedMembers) {
+    if (!unpackedMembers) {
+      unpackedMembers = this.members.getUnpackedMembers({ exponent: 4 });
+    }
+    var max = unpackedMembers.length;
+    var index = Math.floor(this.rand() * max);
+    return unpackedMembers[index];
   }
 }
 

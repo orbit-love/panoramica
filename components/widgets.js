@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
@@ -30,9 +30,10 @@ export default function Widgets({
   setShowInfo,
   sort,
   setSort,
+  forceUpdate,
+  data,
+  setData,
 }) {
-  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
-
   const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90`;
   return (
     <>
@@ -53,6 +54,8 @@ export default function Widgets({
               setCycle={setCycle}
               scrollToIntroduction={scrollToIntroduction}
               forceUpdate={forceUpdate}
+              data={data}
+              setData={setData}
             />
           </div>
         )}
@@ -101,10 +104,10 @@ export default function Widgets({
       )}
       {!fullscreen && (
         <button
-          className="absolute right-0 left-0 bottom-4 mx-auto w-12 text-center text-indigo-700 hover:text-indigo-200"
+          className="absolute right-0 left-0 bottom-2 mx-auto w-12 text-center text-indigo-800 hover:text-indigo-600"
           onClick={scrollToIntroduction}
         >
-          <FontAwesomeIcon icon="arrow-down" className="text-2xl" />
+          <FontAwesomeIcon icon="arrow-down" className="text-xl" />
         </button>
       )}
     </>

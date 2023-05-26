@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as d3 from "d3";
 import c from "lib/common";
+import helper from "lib/memberGraph/helper";
 
 import Buttons from "components/steps/buttons";
 import Prose from "components/visualization/prose";
@@ -32,13 +33,59 @@ const updateMember = function ({
   members,
   setMembers,
   setSelection,
+  setData,
   ...changes
 }) {
-  const { levelNumber, love, reach } = changes;
+  const { levelNumber, love, connections } = changes;
   const member = members.find(memberId);
-  members.changeLevel({ id: memberId, levelNumber, love, reach });
+
+  // get how many connections the member currently has
+  // and compute how many more we need to add
+  const currentConnections = members.getConnectionSetKeys(member);
+  const numberNewConnections = connections - currentConnections.length;
+
+  // if we need to reduce connections, just go through existing ones
+  // and remove them from the set
+  if (numberNewConnections < 0) {
+    for (var i = 0; i < Math.abs(numberNewConnections); i++) {
+      members.connections.delete(currentConnections[i]);
+    }
+  }
+
+  // if we need to add connections
+  if (numberNewConnections > 0) {
+    // get an array for finding new potential connections
+    const unpackedMembers = members.getUnpackedMembers({ exponent: 4 });
+    // track the new connections so we now how many
+    const newConnections = [];
+
+    while (newConnections.length < numberNewConnections) {
+      const potentialConnection =
+        members.connectionGenerator.getRandomMember(unpackedMembers);
+      const isSelf = potentialConnection.id === member.id;
+      const setKey = members.connectionGenerator.setKey(
+        member,
+        potentialConnection
+      );
+      const isConnected = members.connections.has(setKey);
+      if (!isSelf && !isConnected) {
+        newConnections.push(setKey);
+      }
+    }
+
+    // add the new connections to the global set array
+    newConnections.forEach((setKey) => members.connections.add(setKey));
+  }
+
+  if (levelNumber !== member.level.number) {
+    members.changeLevel({ id: memberId, levelNumber, love });
+  }
   setSelection(member);
   setMembers(members);
+  // calling set members and listening to the change in member
+  // graph didn't work, we have to call setData here for the graph
+  // to pick it up; not ideal but hopefully fixable
+  setData(helper.getData({ members }));
 };
 
 const WelcomeStep = function ({ setSelection, setCycle }) {
@@ -116,6 +163,7 @@ const MemberStep = function ({
   setSelection,
   setCycle,
   forceUpdate,
+  setData,
 }) {
   useEffect(() => {
     setCycle(false);
@@ -125,6 +173,7 @@ const MemberStep = function ({
       members,
       setMembers,
       setSelection,
+      setData,
     });
     // it's annoying we need to force an update but the selection doesn't
     // update otherwise; i'm sure there's a better way
@@ -165,6 +214,8 @@ export default function Steps({
   setExpanded,
   scrollToIntroduction,
   forceUpdate,
+  data,
+  setData,
 }) {
   const memberId = "jeri";
   const key = 0;
@@ -176,6 +227,8 @@ export default function Steps({
     members,
     setMembers,
     forceUpdate,
+    data,
+    setData,
   };
   var steps = [
     <WelcomeStep key={key} {...props} />,
@@ -216,7 +269,7 @@ export default function Steps({
       changes={{
         levelNumber: 4,
         love: 2,
-        reach: 1,
+        connections: 1,
       }}
       component={<MemberO4Text />}
       {...props}
@@ -227,7 +280,7 @@ export default function Steps({
       changes={{
         levelNumber: 3,
         love: 1,
-        reach: 1,
+        connections: 3,
       }}
       component={<MemberO3Text />}
       {...props}
@@ -238,7 +291,7 @@ export default function Steps({
       changes={{
         levelNumber: 3,
         love: 2,
-        reach: 3,
+        connections: 4,
       }}
       component={<MemberO21Text />}
       {...props}
@@ -249,7 +302,7 @@ export default function Steps({
       changes={{
         levelNumber: 2,
         love: 1,
-        reach: 1,
+        connections: 5,
       }}
       component={<MemberO22Text />}
       {...props}
@@ -260,7 +313,7 @@ export default function Steps({
       changes={{
         levelNumber: 2,
         love: 2,
-        reach: 2,
+        connections: 8,
       }}
       component={<MemberO11Text />}
       {...props}
@@ -271,7 +324,7 @@ export default function Steps({
       changes={{
         levelNumber: 1,
         love: 2,
-        reach: 2,
+        connections: 10,
       }}
       component={<MemberO12Text />}
       {...props}

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useReducer } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import c from "lib/common";
@@ -14,13 +14,15 @@ export default function Visualization({
   setFullscreen,
   scrollToIntroduction,
 }) {
+  const [_, forceUpdate] = useReducer((x) => x + 1, 0);
+
   // does the browser user prefer reduced motion?
   const isReduced =
     window.matchMedia(`(prefers-reduced-motion: reduce)`) === true ||
     window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
 
   // change to make developing easier
-  const firstStep = 1;
+  const firstStep = 9;
 
   // the default RPM of the orbits
   const defaultRevolution = 130000;
@@ -45,6 +47,7 @@ export default function Visualization({
   const [showInfo, setShowInfo] = useState(false);
   const [revolution, setRevolution] = useState(defaultRevolution);
   const [sort, setSort] = useState("gravity");
+  const [data, setData] = useState();
 
   const prevShowNetwork = c.usePrevious(showNetwork);
   const prevSort = c.usePrevious(sort);
@@ -247,6 +250,9 @@ export default function Visualization({
           setGraph={setGraph}
           showNetwork={showNetwork}
           setShowNetwork={setShowNetwork}
+          forceUpdate={forceUpdate}
+          data={data}
+          setData={setData}
         />
       )}
       <div className="hidden bg-[#0F0A25] bg-[#150D33] text-[#eef2ff] text-[#1D1640]" />
@@ -274,6 +280,9 @@ export default function Visualization({
         graph={graph}
         sort={sort}
         setSort={setSort}
+        forceUpdate={forceUpdate}
+        data={data}
+        setData={setData}
       />
     </div>
   );

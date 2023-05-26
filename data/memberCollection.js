@@ -30,12 +30,19 @@ class MemberCollection {
     // internal set for the connections between members
     this.connections = new Set();
 
+    // prepare the member generators
     Object.keys(this.levels).forEach((number) => {
       const level = levels[number];
       this.generators[number] = new MemberGenerator({
         level,
         rand,
       });
+    });
+
+    // prepare the connection generator
+    this.connectionGenerator = new ConnectionGenerator({
+      members: this,
+      rand: rand,
     });
   }
 
@@ -91,11 +98,7 @@ class MemberCollection {
   }
 
   generateConnections({ number }) {
-    const connectionGenerator = new ConnectionGenerator({
-      members: this,
-      rand: this.rand,
-    });
-    this.connections = connectionGenerator.produceConnections({ number });
+    this.connections = this.connectionGenerator.produceConnections({ number });
   }
 
   // update visual properties based on the latest data
@@ -190,6 +193,17 @@ class MemberCollection {
       planetSize: planetSizeScale(reach),
       planetColor: planetColorScale(love),
     });
+  }
+
+  getConnectionSetKeys(member) {
+    const setKeys = [];
+    this.connections.forEach((setKey) => {
+      const [id1, id2] = setKey.split("-");
+      if (id1 === member.id || id2 === member.id) {
+        setKeys.push(setKey);
+      }
+    });
+    return setKeys;
   }
 
   // return the connections for a single member

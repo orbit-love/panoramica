@@ -23,7 +23,7 @@ export default function Meter({ number, value }) {
       backgroundColor: emptySquare ? c.indigo900 : colorScale(i),
       opacity: emptySquare ? 0.65 : 1,
     };
-    markup.push(<div style={squareStyle} className={`w-[17px] h-3`} />);
+    markup.push(<div key={i} style={squareStyle} className={`w-[17px] h-3`} />);
     if (squareNumberInLevel === 2) {
       markup.push(<span key={`divider-at-${i}`}></span>);
     }

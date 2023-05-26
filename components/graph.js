@@ -97,8 +97,16 @@ export default function Graph({
         container.removeChild(container.firstChild);
       }
     };
-    // listing graph here causes problems
+    // listing graph and data here causes problems
   }, [width, height, prevWidth, prevHeight]);
+
+  useEffect(() => {
+    var currentGraph = graphRef.current;
+    if (currentGraph) {
+      currentGraph.changeData(data);
+      console.log("NEW DATA", data);
+    }
+  }, [data]);
 
   return <div className="select-none" ref={ref}></div>;
 }

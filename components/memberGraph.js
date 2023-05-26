@@ -16,9 +16,9 @@ export default function MemberGraph({
   setGraph,
   showNetwork,
   setShowNetwork,
+  data,
+  setData,
 }) {
-  const [data, setData] = useState(helper.getData({ members, selection }));
-
   const graphRef = useRef();
   graphRef.current = graph;
 
@@ -68,10 +68,6 @@ export default function MemberGraph({
     },
   };
 
-  useEffect(() => {
-    setData(helper.getData({ members }));
-  }, [members]);
-
   // whenever the selection changes, click it if not already clicked
   // e.g. when it happens from the orbit levels
   useEffect(() => {
@@ -93,7 +89,7 @@ export default function MemberGraph({
     }
   }, [showNetwork, members]);
 
-  const graphWidth = width * 0.9;
+  const graphWidth = width * 0.95;
   const graphHeight = height * 0.9;
 
   // the graphWidth + 5 prevents the canvas from overflowing the modal
@@ -119,15 +115,17 @@ export default function MemberGraph({
             className="text-3xl text-indigo-200 hover:text-white"
           />
         </button>
-        <Graph
-          graph={graph}
-          setGraph={setGraph}
-          data={data}
-          width={graphWidth}
-          height={graphHeight}
-          selection={selection}
-          eventHandlers={eventHandlers}
-        />
+        {data && (
+          <Graph
+            graph={graph}
+            setGraph={setGraph}
+            data={data}
+            width={graphWidth}
+            height={graphHeight}
+            selection={selection}
+            eventHandlers={eventHandlers}
+          />
+        )}
         {selection && selection.level && (
           <div className="absolute right-4 bottom-4">
             <Member
