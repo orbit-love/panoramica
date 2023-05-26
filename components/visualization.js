@@ -22,7 +22,7 @@ export default function Visualization({
     window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
 
   // change to make developing easier
-  const firstStep = 9;
+  const firstStep = 1;
 
   // the default RPM of the orbits
   const defaultRevolution = 130000;
