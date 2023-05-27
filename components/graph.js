@@ -31,7 +31,7 @@ export default function Graph({
         type: "force",
         // alphaMin: 0.025,
         // don't set nodeSize so the custom ones take precedence
-        nodeSpacing: 35,
+        nodeSpacing: 50,
         preventOverlap: true,
       };
       const container = ref.current;
@@ -75,14 +75,14 @@ export default function Graph({
       // set the data and do the initial render
       newGraph.data(data);
       newGraph.render();
-      newGraph.zoomTo(0.75);
+      newGraph.zoomTo(0.65);
 
       setGraph(newGraph);
     }
 
     return () => {
       var currentGraph = graphRef.current;
-      if (currentGraph) {
+      if (currentGraph && !currentGraph.destroyed) {
         // for some reason, manually removing the graph canvas
         // from the dom is required, but it can cause an error
         // if the dom isn't there anymore, hence the catch
@@ -102,9 +102,8 @@ export default function Graph({
 
   useEffect(() => {
     var currentGraph = graphRef.current;
-    if (currentGraph) {
+    if (currentGraph && !currentGraph.destroyed) {
       currentGraph.changeData(data);
-      console.log("NEW DATA", data);
     }
   }, [data]);
 

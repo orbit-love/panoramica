@@ -37,28 +37,44 @@ export default function MemberGraph({
     }
   };
 
+  const resetItem = ({ graph, item }) => {
+    graph.setItemState(item, "active", false);
+    graph.setItemState(item, "selected", false);
+    graph.setItemState(item, "inactive", true);
+  };
+
   const eventHandlers = {
     "node:click": ({ item }) => setSelection(item.getModel().member),
     "node:dblclick": ({ item }) => {
       graphRef.current.focusItem(item, true);
     },
-    "canvas:click": () => setSelection(null),
+    "canvas:click": () => {
+      // activate relations doesn't set all the states correctly on
+      // canvas click, so we reset all states manually
+      var currentGraph = graphRef.current;
+      currentGraph
+        .getNodes()
+        .forEach((item) => resetItem({ graph: currentGraph, item }));
+      currentGraph
+        .getEdges()
+        .forEach((item) => resetItem({ graph: currentGraph, item }));
+      setSelection(null);
+    },
     afteritemstatechange: ({ item, state, enabled }) => {
-      if (item.getType() === "node") {
-        const member = item.getModel();
-        if (member.level && member.level.number > 2) {
-          if (state === "active" || state === "selected") {
-            var currentGraph = graphRef.current;
-            if (enabled) {
-              currentGraph.updateItem(item, {
-                ...member,
-                label: member.slicedName.toUpperCase(),
-              });
-            } else {
-              currentGraph.updateItem(item, { ...member, label: "" });
-            }
-          }
-        }
+      // todo - not all connections get highlighted on activate
+      // relations - not sure why but could be state priority
+      var currentGraph = graphRef.current;
+      const member = item.getModel();
+      if ((state === "active" || state === "selected") && enabled) {
+        currentGraph.updateItem(item, {
+          ...member,
+          label: member.slicedName,
+        });
+      } else if (state === "inactive" && enabled) {
+        currentGraph.updateItem(item, {
+          ...member,
+          label: "",
+        });
       }
     },
     afterrender: ({}) => {
@@ -82,7 +98,7 @@ export default function MemberGraph({
   // when the network view opens, animate to find the selected node
   // if no node is selected, choose the first member and click/focus on them
   useEffect(() => {
-    if (showNetwork && graphRef.current) {
+    if (showNetwork && graphRef.current && !graphRef.current.destroyed) {
       var node;
       if (selectionRef.current) {
         node = graphRef.current.findById(selectionRef.current.id);
