@@ -17,6 +17,7 @@ import Reach from "content/reach.mdx";
 import Love from "content/love.mdx";
 import Resources from "content/resources.mdx";
 import atomicHeart from "public/atomic-heart.svg";
+import backToTop from "public/back-to-top.png";
 
 export default function Index() {
   const router = useRouter();
@@ -91,7 +92,7 @@ export default function Index() {
       <div
         ref={containerRef}
         id="container"
-        className="hidden relative sm:block space-gradient"
+        className="space-gradient hidden relative sm:block"
         style={{
           height: "100vh",
           marginTop: "0",
@@ -141,14 +142,21 @@ export default function Index() {
             <ProseSection id="resources">
               <Resources />
             </ProseSection>
-            <div className="flex justify-center py-64">
-              <button
-                onClick={scrollToIntroduction}
-                className="py-3 px-6 font-semibold text-white bg-indigo-700 rounded-md select-none hover:bg-indigo-600"
-              >
-                Back to top
-              </button>
-            </div>
+            <ProseSection id="ending">
+              <div className="flex flex-col justify-center space-y-10">
+                <div className="md:mx-24">
+                  <Image alt="Astronaut on top of a planet" src={backToTop} />
+                </div>
+                <div className="text-center">
+                  <button
+                    onClick={scrollToIntroduction}
+                    className="py-3 px-12 font-semibold text-white bg-indigo-700 rounded-md select-none hover:bg-indigo-600"
+                  >
+                    Back to top
+                  </button>
+                </div>
+              </div>
+            </ProseSection>
           </div>
         </div>
       </div>

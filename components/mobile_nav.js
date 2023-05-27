@@ -15,8 +15,6 @@ export default function MobileNav({ setActive }) {
               key={item.itemId}
               activeClass="!text-indigo-200 font-bold"
               smooth
-              spy
-              hashSpy
               offset={-100}
               to={item.itemId}
               href={`#${item.itemId}`}

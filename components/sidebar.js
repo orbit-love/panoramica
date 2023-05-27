@@ -20,6 +20,7 @@ export default function Sidebar({ fix }) {
               to={item.itemId}
               href={`#${item.itemId}`}
               className="text-indigo-500 hover:text-indigo-600"
+              isDynamic={true}
             >
               {item.title}
             </Link>

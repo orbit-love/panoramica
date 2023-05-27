@@ -10,7 +10,7 @@ export default function Layout({ children }) {
     <>
       <Head />
       <Header fix={true} />
-      <div className="my-24">
+      <div className="mt-24">
         <div className="flex justify-center px-4 pt-10 bg-white md:pl-0 md:pr-28">
           <div className={`flex hidden flex-col md:block`}>
             <div className="shrink-0 whitespace-nowrap md:px-0 md:w-56">
