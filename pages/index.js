@@ -144,7 +144,7 @@ export default function Index() {
             </ProseSection>
             <ProseSection id="ending">
               <div className="flex flex-col justify-center space-y-10">
-                <div className="md:mx-24">
+                <div className="md:mx-32">
                   <Image alt="Astronaut on top of a planet" src={backToTop} />
                 </div>
                 <div className="text-center">
