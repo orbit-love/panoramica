@@ -18,18 +18,18 @@ export default function Member({ member, members, graph, setSelection }) {
   return (
     <div className="bg-[#1D1640] text-indigo-100 px-6 py-4 rounded-md border border-indigo-600">
       <div className="flex flex-col space-y-3">
-        <div className="flex space-x-8">
-          <div className="flex items-baseline space-x-2">
-            <div>
-              <OrbitLevelIcon number={member.level.number} classes="text-xl" />
-            </div>
-            <div
-              className="text-xl font-semibold"
-              style={{ color: c.orbitLevelColorScale(member.level.number) }}
-            >
-              {member.name}
-            </div>
+        <div className="flex items-baseline space-x-2">
+          <div>
+            <OrbitLevelIcon number={member.level.number} classes="text-2xl" />
           </div>
+          <div
+            className="text-2xl font-semibold"
+            style={{ color: c.orbitLevelColorScale(member.level.number) }}
+          >
+            {member.name}
+          </div>
+        </div>
+        <div className="flex py-2 px-4 space-x-4 rounded-lg border border-indigo-600">
           <div className="flex items-center space-x-1 text-indigo-400">
             <FontAwesomeIcon icon="heart" />
             <span>{member.love}/3</span>
@@ -43,14 +43,14 @@ export default function Member({ member, members, graph, setSelection }) {
             <span>{connections.length}</span>
           </div>
         </div>
-        <div className="flex flex-wrap text-sm max-w-[400px]">
+        <div className="flex flex-col">
           {connections.map((connection) => (
             <button
-              className="p-[2px] w-32 text-indigo-100 hover:text-yellow-100"
+              className="p-[1px]"
               key={connection.id}
               onClick={() => setSelectionAndFocusItem(connection)}
             >
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-1 opacity-80 hover:opacity-100">
                 <OrbitLevelIcon number={connection.level.number} />
                 <span
                   style={{
