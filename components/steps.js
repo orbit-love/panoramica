@@ -6,10 +6,7 @@ import helper from "lib/memberGraph/helper";
 
 import Buttons from "components/steps/buttons";
 import Prose from "components/visualization/prose";
-import Orbit1Icon from "components/icons/orbit_1";
-import Orbit2Icon from "components/icons/orbit_2";
-import Orbit3Icon from "components/icons/orbit_3";
-import Orbit4Icon from "components/icons/orbit_4";
+import OrbitLevelIcon from "components/icons/orbit_level";
 
 import WelcomeText from "content/steps/welcome.mdx";
 import GravityText from "content/steps/gravity.mdx";
@@ -122,12 +119,10 @@ const OrbitLevelsStep = function ({ svgRef, setSelection, setCycle }) {
     // because the highlights will be removed on the next render
     // a better way is possible
     const timeout = setTimeout(() => {
-      d3.select(svgRef.current)
-        .selectAll("ellipse")
-        .attr("stroke", c.selectedColor);
+      d3.select(svgRef.current).selectAll("ellipse").attr("stroke-opacity", 1);
       d3.select(svgRef.current)
         .selectAll("text.level-label")
-        .attr("fill", c.selectedColor);
+        .attr("opacity", 1);
     }, 100);
     return () => {
       clearTimeout(timeout);
@@ -137,7 +132,14 @@ const OrbitLevelsStep = function ({ svgRef, setSelection, setCycle }) {
   return <OrbitLevelsText />;
 };
 
-const OrbitStep = function ({ name, icon, component, setSelection, setCycle }) {
+const OrbitStep = function ({
+  name,
+  number,
+  icon,
+  component,
+  setSelection,
+  setCycle,
+}) {
   useEffect(() => {
     setCycle(false);
     setSelection({ name });
@@ -147,7 +149,12 @@ const OrbitStep = function ({ name, icon, component, setSelection, setCycle }) {
     <>
       <div className="flex items-baseline space-x-2">
         <div className="text-2xl">{icon}</div>
-        <div className="text-2xl font-bold">{name}</div>
+        <div
+          className="text-2xl font-bold"
+          style={{ color: c.orbitLevelColorScale(number) }}
+        >
+          {name}
+        </div>
       </div>
       <div className="">{component}</div>
     </>
@@ -237,29 +244,33 @@ export default function Steps({
     <OrbitLevelsStep key={(key += 1)} {...props} />,
     <OrbitStep
       name="Advocates"
+      number={1}
       key={(key += 1)}
-      icon={<Orbit1Icon />}
+      icon={<OrbitLevelIcon number={1} />}
       component={<Orbit1Text />}
       {...props}
     />,
     <OrbitStep
       name="Contributors"
+      number={2}
       key={(key += 1)}
-      icon={<Orbit2Icon />}
+      icon={<OrbitLevelIcon number={2} />}
       component={<Orbit2Text />}
       {...props}
     />,
     <OrbitStep
       name="Participants"
+      number={3}
       key={(key += 1)}
-      icon={<Orbit3Icon />}
+      icon={<OrbitLevelIcon number={3} />}
       component={<Orbit3Text />}
       {...props}
     />,
     <OrbitStep
       name="Explorers"
+      number={4}
       key={(key += 1)}
-      icon={<Orbit4Icon />}
+      icon={<OrbitLevelIcon number={4} />}
       component={<Orbit4Text />}
       {...props}
     />,

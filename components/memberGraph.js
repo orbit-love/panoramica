@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import c from "lib/common";
 
@@ -61,20 +61,20 @@ export default function MemberGraph({
       setSelection(null);
     },
     afteritemstatechange: ({ item, state, enabled }) => {
-      // todo - not all connections get highlighted on activate
-      // relations - not sure why but could be state priority
-      var currentGraph = graphRef.current;
-      const member = item.getModel();
-      if ((state === "active" || state === "selected") && enabled) {
-        currentGraph.updateItem(item, {
-          ...member,
-          label: member.slicedName,
-        });
-      } else if (state === "inactive" && enabled) {
-        currentGraph.updateItem(item, {
-          ...member,
-          label: "",
-        });
+      if (item.getType() === "node") {
+        var currentGraph = graphRef.current;
+        const member = item.getModel();
+        if ((state === "active" || state === "selected") && enabled) {
+          currentGraph.updateItem(item, {
+            ...member,
+            label: member.slicedName,
+          });
+        } else if (state === "inactive" && enabled) {
+          currentGraph.updateItem(item, {
+            ...member,
+            label: "",
+          });
+        }
       }
     },
     afterrender: ({}) => {

@@ -7,10 +7,6 @@ import Callout from "components/mdx/callout";
 import Blockquote from "components/mdx/blockquote";
 import Code from "components/mdx/code";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Orbit1 from "components/icons/orbit_1";
-import Orbit2 from "components/icons/orbit_2";
-import Orbit3 from "components/icons/orbit_3";
-import Orbit4 from "components/icons/orbit_4";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -112,10 +108,6 @@ const components = {
   Callout,
   Placeholder,
   Graph,
-  Orbit1,
-  Orbit2,
-  Orbit3,
-  Orbit4,
 };
 
 function MyApp({ Component, pageProps }) {

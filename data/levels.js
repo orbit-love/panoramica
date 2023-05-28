@@ -1,7 +1,7 @@
 import c from "lib/common";
 
 // factor is the relative distance between levels
-const factor = 22;
+const factor = 23;
 const levels = [
   {
     number: 1,
@@ -10,10 +10,10 @@ const levels = [
     distance: 100 - factor * 3,
     multiplier: 1,
     exponent: 2,
-    r1: 13,
-    r2: 13,
-    r3: 13,
-    ringColor: c.indigo600,
+    r1: 11,
+    r2: 11,
+    r3: 11,
+    ringColor: c.orbitLevelColorScale(1),
     ringOpacity: 0.9,
   },
   {
@@ -22,12 +22,12 @@ const levels = [
     nameSingular: "a Contributor",
     distance: 100 - factor * 2,
     exponent: 2,
-    multiplier: 3,
-    r1: 11,
-    r2: 11,
-    r3: 11,
-    ringColor: c.indigo700,
-    ringOpacity: 0.7,
+    multiplier: 2,
+    r1: 9,
+    r2: 9,
+    r3: 9,
+    ringColor: c.orbitLevelColorScale(2),
+    ringOpacity: 0.8,
   },
   {
     number: 3,
@@ -35,12 +35,12 @@ const levels = [
     nameSingular: "a Participant",
     distance: 100 - factor,
     exponent: 2,
-    multiplier: 6,
-    r1: 9,
-    r2: 9,
-    r3: 9,
-    ringColor: c.indigo800,
-    ringOpacity: 0.7,
+    multiplier: 4,
+    r1: 8,
+    r2: 8,
+    r3: 8,
+    ringColor: c.orbitLevelColorScale(3),
+    ringOpacity: 0.8,
   },
   {
     number: 4,
@@ -48,14 +48,14 @@ const levels = [
     nameSingular: "an Explorer",
     distance: 100,
     exponent: 2,
-    multiplier: 9,
-    r1: 7,
-    r2: 7,
-    r3: 7,
+    multiplier: 6,
+    r1: 6,
+    r2: 6,
+    r3: 6,
     rxFuzz: 0.0,
     ryFuzz: 0.0,
-    ringColor: c.indigo900,
-    ringOpacity: 0.6,
+    ringColor: c.orbitLevelColorScale(4),
+    ringOpacity: 0.9,
   },
 ];
 

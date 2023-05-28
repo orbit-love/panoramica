@@ -1,22 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import Orbit1 from "components/icons/orbit_1";
-import Orbit2 from "components/icons/orbit_2";
-import Orbit3 from "components/icons/orbit_3";
-import Orbit4 from "components/icons/orbit_4";
+import c from "lib/common";
+import OrbitLevelIcon from "components/icons/orbit_level";
 import Meter from "components/meter";
-
-const OrbitLevelIcon = ({ member, classes }) => {
-  return (
-    <>
-      {member.level.number === 1 && <Orbit1 classes={classes} />}
-      {member.level.number === 2 && <Orbit2 classes={classes} />}
-      {member.level.number === 3 && <Orbit3 classes={classes} />}
-      {member.level.number === 4 && <Orbit4 classes={classes} />}
-    </>
-  );
-};
 
 export default function Member({ member, members, setShowNetwork }) {
   const connections = members.getConnections({ member });
@@ -27,9 +14,14 @@ export default function Member({ member, members, setShowNetwork }) {
     <div className="flex flex-col space-y-2">
       <div className="flex items-baseline space-x-2">
         <div>
-          <OrbitLevelIcon member={member} classes="text-2xl" />
+          <OrbitLevelIcon number={member.level.number} classes="text-2xl" />
         </div>
-        <div className="text-2xl font-semibold">{member.name}</div>
+        <div
+          className="text-2xl font-semibold"
+          style={{ color: c.orbitLevelColorScale(member.level.number) }}
+        >
+          {member.name}
+        </div>
       </div>
       <div className="flex flex-col space-y-[-2px]">
         <div className="flex items-center">
