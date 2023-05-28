@@ -66,12 +66,12 @@ export default function MemberGraph({
         const member = item.getModel();
         if ((state === "active" || state === "selected") && enabled) {
           currentGraph.updateItem(item, {
-            ...member,
+            ...item,
             label: member.slicedName,
           });
         } else if (state === "inactive" && enabled) {
           currentGraph.updateItem(item, {
-            ...member,
+            ...item,
             label: "",
           });
         }
