@@ -52,7 +52,7 @@ const updateMember = function ({
   // if we need to add connections
   if (numberNewConnections > 0) {
     // get an array for finding new potential connections
-    const unpackedMembers = members.getUnpackedMembers({ exponent: 4 });
+    const unpackedMembers = members.getUnpackedMembers();
     // track the new connections so we now how many
     const newConnections = [];
 

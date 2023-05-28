@@ -124,7 +124,7 @@ export default function MemberGraph({
       }}
     >
       <div
-        className="relative bg-[#1D1640] rounded-md border-2 border-indigo-600"
+        className="relative bg-[#150d33] rounded-md border-2 border-indigo-600"
         style={{ width: graphWidth + 5, height: graphHeight + 5 }}
       >
         <button
@@ -150,10 +150,9 @@ export default function MemberGraph({
         {selection && selection.level && (
           <div className="absolute right-4 bottom-4">
             <Member
-              member={selection}
-              members={members}
-              setSelection={setSelection}
               graph={graph}
+              member={selection}
+              setSelection={setSelection}
             />
           </div>
         )}

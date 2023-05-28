@@ -4,11 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
 
-export default function Member({ member, members, graph, setSelection }) {
-  const connections = members.getConnections({ member });
-  // show connections to highest orbit levels first
-  connections.sort((a, b) => a.level.number - b.level.number);
-
+export default function Member({ member, graph, setSelection }) {
   const setSelectionAndFocusItem = (connection) => {
     setSelection(connection);
     const node = graph.findById(connection.id);
@@ -40,11 +36,11 @@ export default function Member({ member, members, graph, setSelection }) {
           </div>
           <div className="flex items-center space-x-1 text-indigo-400">
             <FontAwesomeIcon icon="chart-network" />
-            <span>{connections.length}</span>
+            <span>{member.connections.length}</span>
           </div>
         </div>
         <div className="flex flex-col">
-          {connections.map((connection) => (
+          {member.connections.map((connection) => (
             <button
               className="p-[1px]"
               key={connection.id}

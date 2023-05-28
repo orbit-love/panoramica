@@ -3,9 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Info({ members, setShowInfo }) {
   const mostConnectedMember = members.list.sort(
-    (a, b) =>
-      members.getConnections({ member: b }).length -
-      members.getConnections({ member: a }).length
+    (a, b) => b.connections.length - a.connections.length
   )[0];
   return (
     <>
@@ -89,11 +87,7 @@ export default function Info({ members, setShowInfo }) {
                 </td>
                 <td>
                   {mostConnectedMember.name} (
-                  {
-                    members.getConnections({ member: mostConnectedMember })
-                      .length
-                  }
-                  )
+                  {mostConnectedMember.connections.length})
                 </td>
               </tr>
             </tbody>

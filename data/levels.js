@@ -1,7 +1,6 @@
 import c from "lib/common";
 
-// factor is the relative distance between levels
-const factor = 23;
+const factor = c.orbitModel.distanceBetweenLevels;
 const levels = [
   {
     number: 1,
@@ -9,7 +8,7 @@ const levels = [
     nameSingular: "an Advocate",
     distance: 100 - factor * 3,
     multiplier: 1,
-    exponent: 2,
+    exponent: 100,
     r1: 11,
     r2: 11,
     r3: 11,
@@ -21,7 +20,7 @@ const levels = [
     name: "Contributors",
     nameSingular: "a Contributor",
     distance: 100 - factor * 2,
-    exponent: 2,
+    exponent: 30,
     multiplier: 2,
     r1: 9,
     r2: 9,
@@ -34,7 +33,7 @@ const levels = [
     name: "Participants",
     nameSingular: "a Participant",
     distance: 100 - factor,
-    exponent: 2,
+    exponent: 15,
     multiplier: 4,
     r1: 8,
     r2: 8,
@@ -47,7 +46,7 @@ const levels = [
     name: "Explorers",
     nameSingular: "an Explorer",
     distance: 100,
-    exponent: 2,
+    exponent: 10,
     multiplier: 6,
     r1: 6,
     r2: 6,

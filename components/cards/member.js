@@ -52,13 +52,13 @@ export default function Member({ member, members, setShowNetwork }) {
           <span> View Connections: {connections.length}</span>
         </button>
       </div>
-      {!member.summary && <div className="py-1" />}
+      {/* {!member.summary && <div className="py-1" />}
       {member.summary && (
         <div className="leading-tight">
           <span className="font-bold text-indigo-400">Action </span>
           {member.summary}
         </div>
-      )}
+      )} */}
     </div>
   );
 }
