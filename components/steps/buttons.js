@@ -47,7 +47,7 @@ export default function Buttons({
       )}
       {finalStep && (
         <button
-          className={classes + " bg-pink-500 hover:bg-pink-400"}
+          className={classes + " bg-amber-600 hover:bg-amber-500"}
           onClick={scrollToIntroduction}
         >
           Proceed
