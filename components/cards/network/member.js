@@ -17,7 +17,7 @@ export default function Member({ member, members, graph, setSelection }) {
 
   return (
     <div className="bg-[#1D1640] text-indigo-100 px-6 py-4 rounded-md border border-indigo-600">
-      <div className="flex flex-col space-y-2">
+      <div className="flex flex-col space-y-3">
         <div className="flex space-x-8">
           <div className="flex items-baseline space-x-2">
             <div>
