@@ -25,9 +25,14 @@ export default function Visualization({
   const firstStep = 1;
 
   // the default RPM of the orbits
-  const defaultRevolution = 130000;
-  const revolutionStep = 40000;
-  const minRevolution = 10000;
+  const {
+    defaultRevolution,
+    revolutionStep,
+    minRevolution,
+    defaultSort,
+    cycleDelay,
+    firstCycleDelay,
+  } = c.visualization;
 
   // previous values for detecting changes
   const prevNumber = c.usePrevious(number);
@@ -46,7 +51,7 @@ export default function Visualization({
   const [graph, setGraph] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [revolution, setRevolution] = useState(defaultRevolution);
-  const [sort, setSort] = useState("gravity");
+  const [sort, setSort] = useState(defaultSort);
   const [data, setData] = useState();
 
   const prevShowNetwork = c.usePrevious(showNetwork);
@@ -142,15 +147,24 @@ export default function Visualization({
         setSelectionAndFocusItem(member, graph, showNetwork);
       }
     };
-    const cycleInterval = setInterval(eachCycle, 2000);
+    const cycleInterval = setInterval(eachCycle, cycleDelay);
     // wait a little bit (but not 2 seconds) so the user can see the cycling
     // is happening on page load or when they manually enable cycling
-    const timeout = setTimeout(eachCycle, 500);
+    const timeout = setTimeout(eachCycle, firstCycleDelay);
     return () => {
       clearInterval(cycleInterval);
       clearTimeout(timeout);
     };
-  }, [cycle, setCycle, members, graph, showNetwork, setSelection]);
+  }, [
+    cycle,
+    setCycle,
+    cycleDelay,
+    firstCycleDelay,
+    members,
+    graph,
+    showNetwork,
+    setSelection,
+  ]);
 
   // rebuild if width, height, or number change
   useEffect(() => {
