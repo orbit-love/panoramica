@@ -1,6 +1,7 @@
 import G6 from "@antv/g6";
 import React, { useEffect, useRef } from "react";
 import { defaultEdge, edgeStateStyles } from "lib/graph/config";
+import c from "lib/common";
 
 export default function Graph({
   graph,
@@ -18,6 +19,8 @@ export default function Graph({
   const graphRef = useRef();
   graphRef.current = graph;
 
+  const { layout, modes, defaultZoom } = c.graph;
+
   useEffect(() => {
     if (
       !graph ||
@@ -25,47 +28,15 @@ export default function Graph({
       width !== prevWidth ||
       height !== prevHeight
     ) {
-      // https://antv-g6.gitee.io/en/docs/api/graphLayout/force#layoutcfgclustering
-      var layout = {
-        fitCenter: false,
-        type: "force",
-        // alphaMin: 0.025,
-        // don't set nodeSize so the custom ones take precedence
-        nodeSpacing: 50,
-        preventOverlap: true,
-      };
       const container = ref.current;
-      const graphProperties = {
-        defaultEdge,
-        edgeStateStyles,
-        modes: {
-          default: [
-            { type: "drag-canvas" },
-            { type: "drag-node" },
-            {
-              type: "zoom-canvas",
-              sensitivity: 0.8,
-              minZoom: 0.25,
-              maxZoom: 2,
-            },
-            {
-              type: "activate-relations",
-              trigger: "click",
-              activeState: "active",
-              inactiveState: "inactive",
-            },
-            // this must go after activate-relations so the selected
-            // node ends up with the selected state
-            { type: "click-select" },
-          ],
-        },
-      };
       const newGraph = new G6.Graph({
         container,
         height,
         width,
         layout,
-        ...graphProperties,
+        modes,
+        defaultEdge,
+        edgeStateStyles,
       });
       // bind all of the eventHandlers passed in
       for (const [key, value] of Object.entries(eventHandlers)) {
@@ -75,7 +46,7 @@ export default function Graph({
       // set the data and do the initial render
       newGraph.data(data);
       newGraph.render();
-      newGraph.zoomTo(0.65);
+      newGraph.zoomTo(defaultZoom);
 
       setGraph(newGraph);
     }
