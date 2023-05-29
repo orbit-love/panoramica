@@ -7,7 +7,7 @@ export default function Mission({ members }) {
     (a, b) => b.connections?.length - a.connections?.length
   )[0];
   return (
-    <div className="flex flex-col space-y-3">
+    <div className="flex flex-col space-y-4">
       <div
         className="flex items-baseline space-x-2"
         style={{ color: c.visualization.sun.fill }}
@@ -18,7 +18,7 @@ export default function Mission({ members }) {
         <div className="text-2xl font-semibold">Mission</div>
       </div>
       <div className="italic text-sm">{c.orbitModel.mission}</div>
-      <div className="border-b border-indigo-700"></div>
+      <div className="border-b border-indigo-900"></div>
       <table className="table border-separate [border-spacing:0]">
         <tbody>
           <tr>

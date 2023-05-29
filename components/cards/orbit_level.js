@@ -9,7 +9,7 @@ export default function OrbitLevel({ level, members, setSelection }) {
   const levelMembers = members.filterMembers({ levelNumber: level.number });
 
   return (
-    <div className="flex flex-col space-y-2">
+    <div className="flex flex-col space-y-4">
       <div className="flex items-baseline space-x-2">
         <div>
           <OrbitLevelIcon number={level.number} classes="text-2xl" />
@@ -21,6 +21,8 @@ export default function OrbitLevel({ level, members, setSelection }) {
           {level.name} ({levelMembers.length})
         </div>
       </div>
+      <div className="italic text-sm">{level.description}</div>
+      <div className="border-b border-indigo-900"></div>
       <div className="flex flex-col max-h-[200px] overflow-scroll">
         {levelMembers.map((member) => (
           <CompactMember
