@@ -5,6 +5,7 @@ import c from "lib/common";
 import Controls from "components/controls";
 import Member from "components/cards/member";
 import OrbitLevel from "components/cards/orbit_level";
+import Mission from "components/cards/mission";
 import Steps from "components/steps";
 import Info from "components/info";
 
@@ -90,7 +91,7 @@ export default function Widgets({
           <div className="mx-auto" />
         </div>
       </div>
-      {selection && (selection.level || selection.number) && (
+      {selection && (
         <div
           className={`absolute right-0 bottom-0 z-10 px-4 py-5 w-96 pointer-events-none`}
         >
@@ -112,6 +113,7 @@ export default function Widgets({
                 setSelection={setSelection}
               />
             )}
+            {selection.name === "Mission" && <Mission members={members} />}
           </div>
         </div>
       )}

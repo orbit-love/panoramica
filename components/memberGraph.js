@@ -153,6 +153,7 @@ export default function MemberGraph({
               graph={graph}
               member={selection}
               setSelection={setSelection}
+              setShowNetwork={setShowNetwork}
             />
           </div>
         )}
