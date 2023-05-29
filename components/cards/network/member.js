@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
+import CompactMember from "components/compact/member";
+import MemberStats from "components/compact/member_stats";
 
 export default function Member({ member, graph, setSelection }) {
   const setSelectionAndFocusItem = (connection) => {
@@ -26,37 +28,15 @@ export default function Member({ member, graph, setSelection }) {
           </div>
         </div>
         <div className="flex py-2 px-4 space-x-4 rounded-lg border border-indigo-600">
-          <div className="flex items-center space-x-1 text-indigo-400">
-            <FontAwesomeIcon icon="heart" />
-            <span>{member.love}/3</span>
-          </div>
-          <div className="flex items-center space-x-1 text-indigo-400">
-            <FontAwesomeIcon icon="signal-stream" />
-            <span>{member.reach}/3</span>
-          </div>
-          <div className="flex items-center space-x-1 text-indigo-400">
-            <FontAwesomeIcon icon="chart-network" />
-            <span>{member.connections.length}</span>
-          </div>
+          <MemberStats member={member} />
         </div>
         <div className="flex flex-col">
           {member.connections.map((connection) => (
-            <button
-              className="p-[1px]"
+            <CompactMember
               key={connection.id}
-              onClick={() => setSelectionAndFocusItem(connection)}
-            >
-              <div className="flex items-center space-x-1 opacity-80 hover:opacity-100">
-                <OrbitLevelIcon number={connection.level.number} />
-                <span
-                  style={{
-                    color: c.orbitLevelColorScale(connection.level.number),
-                  }}
-                >
-                  {connection.name}
-                </span>
-              </div>
-            </button>
+              member={connection}
+              setSelection={setSelectionAndFocusItem}
+            />
           ))}
         </div>
       </div>

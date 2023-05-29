@@ -297,6 +297,7 @@ export default function Visualization({
         forceUpdate={forceUpdate}
         data={data}
         setData={setData}
+        levels={levels}
       />
     </div>
   );

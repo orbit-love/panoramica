@@ -5,17 +5,16 @@ import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
 import Meter from "components/meter";
 
-export default function Member({ member, members, setShowNetwork }) {
-  const connections = members.getConnections({ member });
+export default function Member({ member, setSelection, setShowNetwork }) {
   const buttonClasses =
     "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none";
 
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex items-baseline space-x-2">
-        <div>
+        <button onClick={() => setSelection(member.level)}>
           <OrbitLevelIcon number={member.level.number} classes="text-2xl" />
-        </div>
+        </button>
         <div
           className="text-2xl font-semibold"
           style={{ color: c.orbitLevelColorScale(member.level.number) }}
@@ -49,7 +48,7 @@ export default function Member({ member, members, setShowNetwork }) {
           }}
         >
           <FontAwesomeIcon icon="chart-network" className="px-1" />
-          <span> View Connections: {connections.length}</span>
+          <span> View Connections: {member.connections.length}</span>
         </button>
       </div>
       {/* {!member.summary && <div className="py-1" />}

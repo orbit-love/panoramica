@@ -137,13 +137,14 @@ const OrbitStep = function ({
   number,
   icon,
   component,
+  level,
   setSelection,
   setCycle,
 }) {
   useEffect(() => {
     setCycle(false);
-    setSelection({ name });
-  }, [name, setSelection, setCycle]);
+    setSelection(level);
+  }, [name, level, setSelection, setCycle]);
 
   return (
     <>
@@ -213,6 +214,7 @@ const FinalStep = function ({ setSelection, setCycle }) {
 export default function Steps({
   svgRef,
   members,
+  levels,
   setMembers,
   setSelection,
   step,
@@ -245,6 +247,7 @@ export default function Steps({
     <OrbitStep
       name="Advocates"
       number={1}
+      level={levels[1]}
       key={(key += 1)}
       icon={<OrbitLevelIcon number={1} />}
       component={<Orbit1Text />}
@@ -253,6 +256,7 @@ export default function Steps({
     <OrbitStep
       name="Contributors"
       number={2}
+      level={levels[2]}
       key={(key += 1)}
       icon={<OrbitLevelIcon number={2} />}
       component={<Orbit2Text />}
@@ -261,6 +265,7 @@ export default function Steps({
     <OrbitStep
       name="Participants"
       number={3}
+      level={levels[3]}
       key={(key += 1)}
       icon={<OrbitLevelIcon number={3} />}
       component={<Orbit3Text />}
@@ -269,6 +274,7 @@ export default function Steps({
     <OrbitStep
       name="Explorers"
       number={4}
+      level={levels[4]}
       key={(key += 1)}
       icon={<OrbitLevelIcon number={4} />}
       component={<Orbit4Text />}
