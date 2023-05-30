@@ -18,6 +18,14 @@ export default function Info({ members, setShowInfo }) {
                 <td>Next member</td>
               </tr>
               <tr>
+                <td>up</td>
+                <td>Higher orbit level</td>
+              </tr>
+              <tr>
+                <td>down</td>
+                <td>Lower orbit level</td>
+              </tr>
+              <tr>
                 <td>a</td>
                 <td>Animation on/off</td>
               </tr>

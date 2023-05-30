@@ -62,34 +62,66 @@ export default function Visualization({
   const selectionStateRef = useRef();
   selectionStateRef.current = selection;
 
-  const setSelectionAndFocusItem = (member, graph, showNetwork) => {
-    setSelection(member);
-    if (showNetwork && graph) {
-      const node = graph.findById(member.id);
-      graph.focusItem(node, true);
-    }
-  };
-
   useHotkeys(
     "right",
     () =>
-      setSelectionAndFocusItem(
-        helper.getNextMember({ selection, members }),
-        graph,
-        showNetwork
+      setSelection(
+        helper.getNextMember({
+          selection,
+          level: helper.selectedLevel({ selection }),
+          members,
+        })
       ),
-    [selection, members, graph, showNetwork]
+    [selection, members]
   );
 
   useHotkeys(
     "left",
     () =>
-      setSelectionAndFocusItem(
-        helper.getPreviousMember({ selection, members }),
-        graph,
-        showNetwork
+      setSelection(
+        helper.getPreviousMember({
+          selection,
+          level: helper.selectedLevel({ selection }),
+          members,
+        })
       ),
-    [selection, members, graph, showNetwork]
+    [selection, members]
+  );
+  useHotkeys(
+    "up",
+    (e) => {
+      e.preventDefault();
+      var nextLevel = helper.getLevelAtOffset({ selection, levels, offset: 1 });
+      setSelection(
+        helper.getNextMember({
+          selection,
+          level: nextLevel,
+          members,
+          toIndex: 0,
+        })
+      );
+    },
+    [selection, members, levels]
+  );
+  useHotkeys(
+    "down",
+    (e) => {
+      e.preventDefault();
+      var nextLevel = helper.getLevelAtOffset({
+        selection,
+        levels,
+        offset: -1,
+      });
+      setSelection(
+        helper.getPreviousMember({
+          selection,
+          level: nextLevel,
+          members,
+          toIndex: 0,
+        })
+      );
+    },
+    [selection, members, levels]
   );
 
   useHotkeys("a", () => setAnimate(!animate), [animate, setAnimate]);
