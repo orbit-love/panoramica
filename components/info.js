@@ -41,6 +41,10 @@ export default function Info({ members, setShowInfo }) {
                 <td>i</td>
                 <td>Information view</td>
               </tr>
+              <tr>
+                <td>e</td>
+                <td>Walk-through view</td>
+              </tr>
             </tbody>
           </table>
         </div>

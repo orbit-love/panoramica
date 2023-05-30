@@ -115,7 +115,15 @@ export default function Visualization({
       setShowInfo(!showInfo);
       !showInfo && setExpanded(false);
     },
-    [showInfo, setShowInfo]
+    [showInfo, setShowInfo, setExpanded]
+  );
+  useHotkeys(
+    "e",
+    () => {
+      setExpanded(!expanded);
+      !expanded && setShowInfo(false);
+    },
+    [expanded, setExpanded, setShowInfo]
   );
   useHotkeys(
     "f",
