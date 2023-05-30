@@ -5,9 +5,14 @@ import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
 import Meter from "components/meter";
 
-export default function Member({ member, setSelection, setShowNetwork }) {
+export default function Member({
+  member,
+  setSelection,
+  showNetwork,
+  setShowNetwork,
+}) {
   const buttonClasses =
-    "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none";
+    "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none outline-none";
 
   return (
     <div className="flex flex-col space-y-2">
@@ -44,11 +49,15 @@ export default function Member({ member, setSelection, setShowNetwork }) {
         <button
           className={buttonClasses}
           onClick={() => {
-            setShowNetwork(true);
+            setShowNetwork(!showNetwork);
           }}
         >
           <FontAwesomeIcon icon="chart-network" className="px-1" />
-          <span> View Connections: {member.connections.length}</span>
+          <span>
+            {showNetwork
+              ? "Hide Connections"
+              : `Show Connections: ${member.connections.length}`}
+          </span>
         </button>
       </div>
       {/* {!member.summary && <div className="py-1" />}

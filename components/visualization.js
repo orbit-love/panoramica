@@ -64,7 +64,7 @@ export default function Visualization({
 
   const setSelectionAndFocusItem = (member, graph, showNetwork) => {
     setSelection(member);
-    if (showNetwork) {
+    if (showNetwork && graph) {
       const node = graph.findById(member.id);
       graph.focusItem(node, true);
     }
@@ -214,6 +214,8 @@ export default function Visualization({
       setExpanded,
       sort,
       prevSort,
+      showNetwork,
+      setShowNetwork,
     };
 
     // these are drawn in order of back to front
@@ -259,7 +261,7 @@ export default function Visualization({
           }}
         ></svg>
       </div>
-      {members && (
+      {/* {members && (
         <MemberGraph
           members={members}
           selection={selection}
@@ -276,7 +278,7 @@ export default function Visualization({
           data={data}
           setData={setData}
         />
-      )}
+      )} */}
       <div className="hidden bg-[#0F0A25] bg-[#150D33] text-[#eef2ff] text-[#1D1640]" />
       <Widgets
         svgRef={svgRef}
