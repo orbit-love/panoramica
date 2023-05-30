@@ -114,7 +114,10 @@ export default function Widgets({
               <OrbitLevel
                 level={selection}
                 members={members}
+                setMembers={setMembers}
                 setSelection={setSelection}
+                sort={sort}
+                setSort={setSort}
               />
             )}
             {selection.name === "Mission" && <Mission members={members} />}

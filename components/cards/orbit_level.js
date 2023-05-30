@@ -1,11 +1,18 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
 import CompactMember from "components/compact/member";
+import SortOptions from "components/sort_options";
 
-export default function OrbitLevel({ level, members, setSelection }) {
+export default function OrbitLevel({
+  level,
+  members,
+  setMembers,
+  setSelection,
+  sort,
+  setSort,
+}) {
   const levelMembers = members.filterMembers({ levelNumber: level.number });
 
   return (
@@ -23,6 +30,14 @@ export default function OrbitLevel({ level, members, setSelection }) {
       </div>
       <div className="text-sm italic">{level.description}</div>
       <div className="border-b border-indigo-900"></div>
+      <div className="text-sm text-indigo-300">
+        <SortOptions
+          sort={sort}
+          setSort={setSort}
+          members={members}
+          setMembers={setMembers}
+        />
+      </div>
       <div className="flex flex-col max-h-[200px] overflow-scroll">
         {levelMembers.map((member) => (
           <CompactMember

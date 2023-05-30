@@ -293,7 +293,7 @@ export default function Steps({
       memberId={memberId}
       changes={{
         levelNumber: 4,
-        love: 2,
+        love: 0.5,
         connections: 1,
       }}
       component={<MemberO4Text />}
@@ -304,7 +304,7 @@ export default function Steps({
       memberId={memberId}
       changes={{
         levelNumber: 3,
-        love: 1,
+        love: 0.33,
         connections: 3,
       }}
       component={<MemberO3Text />}
@@ -315,7 +315,7 @@ export default function Steps({
       memberId={memberId}
       changes={{
         levelNumber: 3,
-        love: 2,
+        love: 0.5,
         connections: 4,
       }}
       component={<MemberO21Text />}
@@ -326,7 +326,7 @@ export default function Steps({
       memberId={memberId}
       changes={{
         levelNumber: 2,
-        love: 1,
+        love: 0.33,
         connections: 5,
       }}
       component={<MemberO22Text />}
@@ -337,7 +337,7 @@ export default function Steps({
       memberId={memberId}
       changes={{
         levelNumber: 2,
-        love: 2,
+        love: 0.5,
         connections: 8,
       }}
       component={<MemberO11Text />}
@@ -348,7 +348,7 @@ export default function Steps({
       memberId={memberId}
       changes={{
         levelNumber: 1,
-        love: 2,
+        love: 0.5,
         connections: 10,
       }}
       component={<MemberO12Text />}
