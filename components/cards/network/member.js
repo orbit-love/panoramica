@@ -6,18 +6,7 @@ import OrbitLevelIcon from "components/icons/orbit_level";
 import CompactMember from "components/compact/member";
 import MemberStats from "components/compact/member_stats";
 
-export default function Member({
-  member,
-  graph,
-  setSelection,
-  setShowNetwork,
-}) {
-  const setSelectionAndFocusItem = (connection) => {
-    setSelection(connection);
-    const node = graph.findById(connection.id);
-    graph.focusItem(node, true);
-  };
-
+export default function Member({ member, setSelection, setShowNetwork }) {
   return (
     <div className="bg-[#1D1640] text-indigo-100 px-6 py-4 rounded-md border border-indigo-600">
       <div className="flex flex-col space-y-3">
@@ -47,7 +36,7 @@ export default function Member({
             <CompactMember
               key={connection.id}
               member={connection}
-              setSelection={setSelectionAndFocusItem}
+              setSelection={setSelection}
             />
           ))}
         </div>

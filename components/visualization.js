@@ -184,7 +184,7 @@ export default function Visualization({
           selection: selectionStateRef.current,
           members,
         });
-        setSelectionAndFocusItem(member, graph, showNetwork);
+        setSelection(member);
       }
     };
     const cycleInterval = setInterval(eachCycle, cycleDelay);
