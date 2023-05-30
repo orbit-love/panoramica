@@ -12,7 +12,6 @@ const levels = [
     exponent: 100,
     radius: 9,
     ringColor: c.orbitLevelColorScale(1),
-    ringOpacity: 0.9,
   },
   {
     number: 2,
@@ -24,7 +23,6 @@ const levels = [
     multiplier: 2,
     radius: 8,
     ringColor: c.orbitLevelColorScale(2),
-    ringOpacity: 0.9,
   },
   {
     number: 3,
@@ -36,7 +34,6 @@ const levels = [
     multiplier: 4,
     radius: 7,
     ringColor: c.orbitLevelColorScale(3),
-    ringOpacity: 0.9,
   },
   {
     number: 4,
@@ -50,7 +47,6 @@ const levels = [
     rxFuzz: 0.0,
     ryFuzz: 0.0,
     ringColor: c.orbitLevelColorScale(4),
-    ringOpacity: 1,
   },
 ];
 
