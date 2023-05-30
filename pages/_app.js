@@ -17,6 +17,7 @@ import {
   faLightbulb,
   faChevronDown,
   faChevronUp,
+  faChevronLeft,
   faArrowsSpin,
   faArrowDown,
   faShuffle,
@@ -93,7 +94,8 @@ library.add(
   faArrowDown,
   faSquare,
   faQuestion,
-  faSort
+  faSort,
+  faChevronLeft
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";

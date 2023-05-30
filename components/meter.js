@@ -3,7 +3,7 @@ import c from "lib/common";
 import * as d3 from "d3";
 
 // number is the orbit level number
-export default function Meter({ number, value }) {
+export default function Meter({ number, value, relative }) {
   var markup = [];
   var scaledValue = c.scale123(value);
 
@@ -16,8 +16,10 @@ export default function Meter({ number, value }) {
   var fullSquares = activeLevel * 3 + scaledValue;
   for (var i = 1; i <= 12; i++) {
     var emptySquare = i > fullSquares;
-    var squareNumberInLevel = (i - 1) % 3;
-    if (squareNumberInLevel === 0) {
+    var squareInLevel = Math.floor((i - 1) / 3);
+    if (relative && activeLevel !== squareInLevel) continue;
+    var squarePositionInLevel = (i - 1) % 3;
+    if (squarePositionInLevel === 0) {
       markup.push(<span className="w-1" key={`top-divider-at-${i}`}></span>);
     }
     const squareStyle = {
@@ -25,7 +27,7 @@ export default function Meter({ number, value }) {
       opacity: emptySquare ? 0.65 : 1,
     };
     markup.push(<div key={i} style={squareStyle} className={`w-[17px] h-3`} />);
-    if (squareNumberInLevel === 2) {
+    if (squarePositionInLevel === 2) {
       markup.push(<span key={`divider-at-${i}`}></span>);
     }
   }

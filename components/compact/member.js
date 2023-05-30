@@ -1,29 +1,30 @@
 import React from "react";
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
-// import MemberStats from "components/compact/member_stats";
+import MemberStats from "components/compact/member_stats";
 
 export default function CompactMember({ member, setSelection, metrics }) {
   return (
-    <>
-      <button
-        className="p-[1px]"
-        key={member.id}
-        onClick={() => setSelection(member)}
-      >
-        <div className="flex items-center space-x-1 opacity-80 hover:opacity-100">
+    <button
+      className="p-[1px]"
+      key={member.id}
+      onClick={() => setSelection(member)}
+    >
+      <div className="flex justify-between space-x-1 opacity-80 hover:opacity-100">
+        <div className="flex items-center space-x-1">
           <OrbitLevelIcon number={member.level.number} />
-          <span
+          <div
+            className="w-24 text-left"
             style={{
               color: c.orbitLevelColorScale(member.level.number),
             }}
           >
             {member.name}
-          </span>
-          {/* <div className="mx-auto" /> */}
-          {/* {metrics && <MemberStats member={member} />} */}
+          </div>
         </div>
-      </button>
-    </>
+        <div className="mx-auto" />
+        {metrics && <MemberStats member={member} />}
+      </div>
+    </button>
   );
 }

@@ -1,9 +1,21 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function Sorter({ sort, setSort, setSortOpen, classes }) {
+export default function Sorter({
+  sort,
+  setSort,
+  setSortOpen,
+  members,
+  setMembers,
+  classes,
+}) {
   const buttonClasses =
     "hover:bg-indigo-600 px-2 py-1 rounded-md whitespace-nowrap";
+  const changeSort = (newSort) => {
+    members.prepareToRender({ sort: newSort });
+    setMembers(members);
+    setSort(newSort);
+  };
   return (
     <div
       className={`${classes} bg-opacity-100 left-[-101px] bottom-[55px] border-1 absolute px-4 py-4 text-sm`}
@@ -21,13 +33,13 @@ export default function Sorter({ sort, setSort, setSortOpen, classes }) {
             className={`${buttonClasses} ${
               sort === "gravity" && "bg-indigo-600"
             }`}
-            onClick={() => setSort("gravity")}
+            onClick={() => changeSort("gravity")}
           >
             Gravity
           </button>
           <button
             className={`${buttonClasses} ${sort === "love" && "bg-indigo-600"}`}
-            onClick={() => setSort("love")}
+            onClick={() => changeSort("love")}
           >
             Love
           </button>
@@ -35,7 +47,7 @@ export default function Sorter({ sort, setSort, setSortOpen, classes }) {
             className={`${buttonClasses} ${
               sort === "reach" && "bg-indigo-600"
             }`}
-            onClick={() => setSort("reach")}
+            onClick={() => changeSort("reach")}
           >
             Reach
           </button>
@@ -43,7 +55,7 @@ export default function Sorter({ sort, setSort, setSortOpen, classes }) {
             className={`${buttonClasses} ${
               sort === "delta" && "bg-indigo-600"
             }`}
-            onClick={() => setSort("delta")}
+            onClick={() => changeSort("delta")}
           >
             L-R Delta
           </button>

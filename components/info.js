@@ -31,7 +31,7 @@ export default function Info({ members, setShowInfo }) {
               </tr>
               <tr>
                 <td>n</td>
-                <td>Network view</td>
+                <td>Show/hide connections</td>
               </tr>
               <tr>
                 <td>f</td>

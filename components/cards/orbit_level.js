@@ -21,7 +21,7 @@ export default function OrbitLevel({ level, members, setSelection }) {
           {level.name} ({levelMembers.length})
         </div>
       </div>
-      <div className="italic text-sm">{level.description}</div>
+      <div className="text-sm italic">{level.description}</div>
       <div className="border-b border-indigo-900"></div>
       <div className="flex flex-col max-h-[200px] overflow-scroll">
         {levelMembers.map((member) => (

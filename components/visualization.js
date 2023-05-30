@@ -188,9 +188,12 @@ export default function Visualization({
       helper.resetEverything({ svgRef, width, height, setSelection, setCycle });
       const newLevels = helper.generateLevels({ width, height });
       setLevels(newLevels);
-      setMembers(
-        helper.generateMembers({ levels: newLevels, advocateCount: number })
-      );
+      const newMembers = helper.generateMembers({
+        levels: newLevels,
+        advocateCount: number,
+      });
+      newMembers.prepareToRender({ sort });
+      setMembers(newMembers);
       return;
     }
 

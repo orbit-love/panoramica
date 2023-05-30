@@ -14,22 +14,29 @@ export default function Member({
   const buttonClasses =
     "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none outline-none";
 
+  const color = c.orbitLevelColorScale(member.level.number);
+
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex items-baseline space-x-2">
-        <button onClick={() => setSelection(member.level)}>
+        <button
+          className="flex items-center"
+          onClick={() => setSelection(member.level)}
+        >
+          <FontAwesomeIcon
+            icon="chevron-left"
+            className="text-xl"
+            style={{ color }}
+          />
           <OrbitLevelIcon number={member.level.number} classes="text-2xl" />
         </button>
-        <div
-          className="text-2xl font-semibold"
-          style={{ color: c.orbitLevelColorScale(member.level.number) }}
-        >
+        <div className="text-2xl font-semibold" style={{ color }}>
           {member.name}
         </div>
       </div>
       <div className="flex flex-col space-y-[-2px]">
         <div className="flex items-center">
-          <span className="w-16 font-semibold text-indigo-400">Love</span>
+          <div className="w-16 font-semibold text-indigo-400">Love</div>
           <Meter
             icon="square"
             number={member.level.number}
@@ -37,7 +44,7 @@ export default function Member({
           ></Meter>
         </div>
         <div className="flex items-center">
-          <span className="w-16 font-semibold text-indigo-400">Reach</span>
+          <div className="w-16 font-semibold text-indigo-400">Reach</div>
           <Meter
             icon="square"
             number={member.level.number}
@@ -55,8 +62,8 @@ export default function Member({
           <FontAwesomeIcon icon="chart-network" className="px-1" />
           <span>
             {showNetwork
-              ? "Hide Connections"
-              : `Show Connections: ${member.connections.length}`}
+              ? " Hide Connections"
+              : ` Show Connections: ${member.connections.length}`}
           </span>
         </button>
       </div>

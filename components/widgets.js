@@ -60,6 +60,7 @@ export default function Widgets({
               data={data}
               setData={setData}
               levels={levels}
+              sort={sort}
             />
           </div>
         )}
@@ -83,6 +84,8 @@ export default function Widgets({
               setExpanded={setExpanded}
               showInfo={showInfo}
               setShowInfo={setShowInfo}
+              members={members}
+              setMembers={setMembers}
               sort={sort}
               setSort={setSort}
               classes={classes}

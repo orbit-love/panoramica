@@ -15,6 +15,8 @@ export default function Controls({
   setShowInfo,
   sort,
   setSort,
+  members,
+  setMembers,
   classes,
 }) {
   const fullscreenIcon = "expand";
@@ -86,6 +88,8 @@ export default function Controls({
             sort={sort}
             setSort={setSort}
             setSortOpen={setSortOpen}
+            members={members}
+            setMembers={setMembers}
             classes={classes}
           />
         )}

@@ -31,6 +31,7 @@ const updateMember = function ({
   setMembers,
   setSelection,
   setData,
+  sort,
   ...changes
 }) {
   const { levelNumber, love, connections } = changes;
@@ -78,6 +79,9 @@ const updateMember = function ({
     members.changeLevel({ id: memberId, levelNumber, love });
   }
   setSelection(member);
+  // prepare members so it's right for all components
+  // on the next render
+  members.prepareToRender({ sort });
   setMembers(members);
   // calling set members and listening to the change in member
   // graph didn't work, we have to call setData here for the graph
@@ -172,6 +176,7 @@ const MemberStep = function ({
   setCycle,
   forceUpdate,
   setData,
+  sort,
 }) {
   useEffect(() => {
     setCycle(false);
@@ -182,6 +187,7 @@ const MemberStep = function ({
       setMembers,
       setSelection,
       setData,
+      sort,
     });
     // it's annoying we need to force an update but the selection doesn't
     // update otherwise; i'm sure there's a better way
@@ -225,6 +231,7 @@ export default function Steps({
   forceUpdate,
   data,
   setData,
+  sort,
 }) {
   const memberId = "jeri";
   const key = 0;
@@ -238,6 +245,7 @@ export default function Steps({
     forceUpdate,
     data,
     setData,
+    sort,
   };
   var steps = [
     <WelcomeStep key={key} {...props} />,
