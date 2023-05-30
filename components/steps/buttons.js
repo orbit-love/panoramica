@@ -9,7 +9,7 @@ export default function Buttons({
   scrollToIntroduction,
 }) {
   const classes =
-    "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none";
+    "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none outline-none";
   const finalStep = step === totalSteps;
   return (
     <div className="flex pt-2 space-x-4">
