@@ -17,7 +17,7 @@ export default function Mission({ members }) {
         </div>
         <div className="text-2xl font-semibold">Mission</div>
       </div>
-      <div className="italic text-sm">{c.orbitModel.mission}</div>
+      <div className="text-sm italic">{c.orbitModel.mission}</div>
       <div className="border-b border-indigo-900"></div>
       <table className="table border-separate [border-spacing:0]">
         <tbody>
@@ -26,7 +26,7 @@ export default function Mission({ members }) {
             <td>{members.list.length}</td>
           </tr>
           {[1, 2, 3, 4].map((number) => (
-            <tr key={number}>
+            <tr key={number} style={{ color: c.orbitLevelColorScale(number) }}>
               <td>
                 <span className="pl-3">Orbit {number}</span>
               </td>
