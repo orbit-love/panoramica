@@ -47,7 +47,7 @@ export default function Visualization({
   const [members, setMembers] = useState(null);
   const [levels, setLevels] = useState([]);
   const [expanded, setExpanded] = useState(true);
-  const [showNetwork, setShowNetwork] = useState(false);
+  const [showNetwork, setShowNetwork] = useState(true);
   const [graph, setGraph] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [revolution, setRevolution] = useState(defaultRevolution);
@@ -251,6 +251,7 @@ export default function Visualization({
       prevSort,
       showNetwork,
       setShowNetwork,
+      revolution,
     };
 
     // these are drawn in order of back to front
