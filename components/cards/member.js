@@ -62,7 +62,7 @@ export default function Member({
           <FontAwesomeIcon icon="chart-network" className="px-1" />
           <span>
             {showNetwork
-              ? " Hide Connections"
+              ? ` Hide Connections: ${member.connections.length}`
               : ` Show Connections: ${member.connections.length}`}
           </span>
         </button>
