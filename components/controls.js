@@ -23,13 +23,14 @@ export default function Controls({
   const cycleIcon = "shuffle";
   const infoIcon = "question";
   const sortIcon = "sort";
+  const buttonClasses = "btn select-none outline-none";
 
   const [sortOpen, setSortOpen] = useState(false);
 
   return (
     <>
       {expanded && (
-        <button onClick={() => setExpanded(false)} className="btn">
+        <button onClick={() => setExpanded(false)} className={buttonClasses}>
           <FontAwesomeIcon
             icon="lightbulb"
             className="text-lg"
@@ -42,7 +43,7 @@ export default function Controls({
             setShowInfo(false);
             setExpanded(true);
           }}
-          className="btn"
+          className={buttonClasses}
         >
           <FontAwesomeIcon
             icon="lightbulb"
@@ -51,7 +52,7 @@ export default function Controls({
         </button>
       )}
       {showInfo && (
-        <button onClick={() => setShowInfo(false)} className="btn">
+        <button onClick={() => setShowInfo(false)} className={buttonClasses}>
           <FontAwesomeIcon
             icon={infoIcon}
             className="text-lg"
@@ -64,7 +65,7 @@ export default function Controls({
             setExpanded(false);
             setShowInfo(true);
           }}
-          className="btn"
+          className={buttonClasses}
         >
           <FontAwesomeIcon
             icon={infoIcon}
@@ -74,7 +75,7 @@ export default function Controls({
       )}
       <div className="relative">
         <button
-          className="btn"
+          className={buttonClasses}
           onClick={() => setSortOpen(!sortOpen)}
           title="Sort"
         >
@@ -99,7 +100,7 @@ export default function Controls({
       </div>
       {animate && (
         <button
-          className="btn"
+          className={buttonClasses}
           onClick={() => setAnimate(false)}
           title="Rotation enabled"
         >
@@ -108,7 +109,7 @@ export default function Controls({
       )}
       {!animate && (
         <button
-          className="btn"
+          className={buttonClasses}
           onClick={() => setAnimate(true)}
           title="Rotation disabled"
         >
@@ -117,7 +118,7 @@ export default function Controls({
       )}
       {cycle && (
         <button
-          className="btn"
+          className={buttonClasses}
           onClick={() => setCycle(false)}
           title="Cycling through members enabled"
         >
@@ -126,7 +127,7 @@ export default function Controls({
       )}
       {!cycle && (
         <button
-          className="btn"
+          className={buttonClasses}
           onClick={() => setCycle(true)}
           title="Cycling through members disabled"
         >
@@ -138,7 +139,7 @@ export default function Controls({
       )}
       {fullscreen && (
         <button
-          className="btn"
+          className={buttonClasses}
           onClick={() => {
             document.exitFullscreen().then(() => setFullscreen(false));
           }}
@@ -149,7 +150,7 @@ export default function Controls({
       )}
       {!fullscreen && (
         <button
-          className="btn"
+          className={buttonClasses}
           onClick={() => {
             document.body.requestFullscreen().then(() => setFullscreen(true));
           }}
