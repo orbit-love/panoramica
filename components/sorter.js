@@ -12,7 +12,7 @@ export default function Sorter({
 }) {
   return (
     <div
-      className={`${classes} bg-opacity-100 left-[-101px] bottom-[55px] border-1 absolute px-4 py-4 text-sm`}
+      className={`${classes} bg-opacity-100 left-[-101px] bottom-[55px] border-1 absolute px-4 py-4 text-sm select-none`}
     >
       <div className="flex flex-col space-y-5">
         <div className="flex font-bold">
