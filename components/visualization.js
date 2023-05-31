@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState, useReducer } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 
 import c from "lib/common";
-import MemberGraph from "components/memberGraph";
+import Shortcuts from "components/shortcuts";
 import helper from "lib/visualization/helper";
 import Widgets from "components/widgets";
 
@@ -25,14 +24,8 @@ export default function Visualization({
   const firstStep = 1;
 
   // the default RPM of the orbits
-  const {
-    defaultRevolution,
-    revolutionStep,
-    minRevolution,
-    defaultSort,
-    cycleDelay,
-    firstCycleDelay,
-  } = c.visualization;
+  const { defaultRevolution, defaultSort, cycleDelay, firstCycleDelay } =
+    c.visualization;
 
   // previous values for detecting changes
   const prevNumber = c.usePrevious(number);
@@ -48,7 +41,6 @@ export default function Visualization({
   const [levels, setLevels] = useState([]);
   const [expanded, setExpanded] = useState(true);
   const [showNetwork, setShowNetwork] = useState(true);
-  const [graph, setGraph] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [revolution, setRevolution] = useState(defaultRevolution);
   const [sort, setSort] = useState(defaultSort);
@@ -61,121 +53,6 @@ export default function Visualization({
   // that effect can't have selection as a dependency so we do it this way
   const selectionStateRef = useRef();
   selectionStateRef.current = selection;
-
-  useHotkeys(
-    "right",
-    () =>
-      setSelection(
-        helper.getNextMember({
-          selection,
-          level: helper.selectedLevel({ selection }),
-          members,
-        })
-      ),
-    [selection, members]
-  );
-
-  useHotkeys(
-    "left",
-    () =>
-      setSelection(
-        helper.getPreviousMember({
-          selection,
-          level: helper.selectedLevel({ selection }),
-          members,
-        })
-      ),
-    [selection, members]
-  );
-  useHotkeys(
-    "up",
-    (e) => {
-      e.preventDefault();
-      var nextLevel = helper.getLevelAtOffset({ selection, levels, offset: 1 });
-      setSelection(
-        helper.getNextMember({
-          selection,
-          level: nextLevel,
-          members,
-          toIndex: 0,
-        })
-      );
-    },
-    [selection, members, levels]
-  );
-  useHotkeys(
-    "down",
-    (e) => {
-      e.preventDefault();
-      var nextLevel = helper.getLevelAtOffset({
-        selection,
-        levels,
-        offset: -1,
-      });
-      setSelection(
-        helper.getPreviousMember({
-          selection,
-          level: nextLevel,
-          members,
-          toIndex: 0,
-        })
-      );
-    },
-    [selection, members, levels]
-  );
-
-  useHotkeys("a", () => setAnimate(!animate), [animate, setAnimate]);
-  useHotkeys(
-    "s",
-    () => {
-      var newRevolution = revolution - revolutionStep;
-      if (newRevolution < minRevolution) newRevolution = defaultRevolution;
-      helper.changeTransitionSpeed({ members, revolution: newRevolution });
-      setRevolution(newRevolution);
-    },
-    [revolution, setRevolution, svgRef, members]
-  );
-  useHotkeys("c", () => setCycle(!cycle), [cycle, setCycle]);
-  useHotkeys("n", () => setShowNetwork(!showNetwork), [
-    showNetwork,
-    setShowNetwork,
-  ]);
-  useHotkeys("escape", () => setShowNetwork(false), [setShowNetwork]);
-  useHotkeys(
-    "i",
-    () => {
-      setShowInfo(!showInfo);
-      !showInfo && setExpanded(false);
-    },
-    [showInfo, setShowInfo, setExpanded]
-  );
-  useHotkeys(
-    "e",
-    () => {
-      setExpanded(!expanded);
-      !expanded && setShowInfo(false);
-    },
-    [expanded, setExpanded, setShowInfo]
-  );
-  useHotkeys(
-    "f",
-    () => {
-      if (fullscreen) {
-        if (document.fullscreenElement) {
-          document.exitFullscreen().then(() => {
-            setFullscreen(false);
-          });
-        }
-      } else {
-        if (!document.fullscreenElement) {
-          document.body.requestFullscreen().then(() => {
-            if (document.fullscreenElement) setFullscreen(true);
-          });
-        }
-      }
-    },
-    [fullscreen, setFullscreen]
-  );
 
   useEffect(() => {
     const eachCycle = () => {
@@ -201,7 +78,6 @@ export default function Visualization({
     cycleDelay,
     firstCycleDelay,
     members,
-    graph,
     showNetwork,
     setSelection,
   ]);
@@ -287,6 +163,27 @@ export default function Visualization({
 
   return (
     <div className="relative" style={{ width, height }}>
+      <Shortcuts
+        members={members}
+        setMembers={setMembers}
+        selection={selection}
+        setSelection={setSelection}
+        fullscreen={fullscreen}
+        setFullscreen={setFullscreen}
+        animate={animate}
+        setAnimate={setAnimate}
+        cycle={cycle}
+        setCycle={setCycle}
+        expanded={expanded}
+        setExpanded={setExpanded}
+        showNetwork={showNetwork}
+        setShowNetwork={setShowNetwork}
+        showInfo={showInfo}
+        setShowInfo={setShowInfo}
+        levels={levels}
+        revolution={revolution}
+        setRevolution={setRevolution}
+      />
       <div>
         <svg
           className="select-none"
@@ -297,24 +194,6 @@ export default function Visualization({
           }}
         ></svg>
       </div>
-      {/* {members && (
-        <MemberGraph
-          members={members}
-          selection={selection}
-          setSelection={setSelection}
-          width={width}
-          prevWidth={prevWidth}
-          height={height}
-          prevHeight={prevHeight}
-          graph={graph}
-          setGraph={setGraph}
-          showNetwork={showNetwork}
-          setShowNetwork={setShowNetwork}
-          forceUpdate={forceUpdate}
-          data={data}
-          setData={setData}
-        />
-      )} */}
       <div className="hidden bg-[#0F0A25] bg-[#150D33] text-[#eef2ff] text-[#1D1640]" />
       <Widgets
         svgRef={svgRef}
@@ -337,7 +216,6 @@ export default function Visualization({
         setShowNetwork={setShowNetwork}
         showInfo={showInfo}
         setShowInfo={setShowInfo}
-        graph={graph}
         sort={sort}
         setSort={setSort}
         forceUpdate={forceUpdate}
