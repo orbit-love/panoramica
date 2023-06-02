@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
-import Scroll from "react-scroll";
 
 import c from "lib/common";
 import Head from "components/head";
 import Header from "components/header";
-import Footer from "components/footer";
 import Vizualization from "components/visualization";
 
 export default function Index() {

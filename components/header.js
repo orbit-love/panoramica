@@ -1,6 +1,5 @@
 import { React, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CSSTransition } from "react-transition-group";
 import Image from "next/image";
 import Link from "next/link";
 
