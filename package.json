@@ -19,8 +19,11 @@
     "@mdx-js/loader": "^2.1.1",
     "@mdx-js/react": "^2.1.1",
     "@next/mdx": "^12.1.4",
+    "@prisma/client": "^4.15.0",
+    "axios": "^1.4.0",
     "d3": "^7.8.2",
     "next": "12.1.0",
+    "prisma": "^4.15.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hotkeys-hook": "^4.4.0",
@@ -34,6 +37,7 @@
     "eslint": "8.11.0",
     "eslint-config-next": "12.1.0",
     "postcss": "^8.4.12",
-    "tailwindcss": "^3.0.23"
+    "tailwindcss": "^3.0.23",
+    "tsx": "^3.12.7"
   }
 }
