@@ -1,22 +1,17 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
 import Controls from "components/controls";
 import Member from "components/cards/member";
 import OrbitLevel from "components/cards/orbit_level";
 import Mission from "components/cards/mission";
-import Steps from "components/steps";
 import Info from "components/info";
 
 export default function Widgets({
-  svgRef,
   members,
   setMembers,
   selection,
   setSelection,
-  step,
-  setStep,
   fullscreen,
   setFullscreen,
   animate,
@@ -25,17 +20,12 @@ export default function Widgets({
   setCycle,
   expanded,
   setExpanded,
-  scrollToIntroduction,
   showNetwork,
   setShowNetwork,
   showInfo,
   setShowInfo,
   sort,
   setSort,
-  forceUpdate,
-  data,
-  setData,
-  levels,
 }) {
   const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90`;
   return (
@@ -43,27 +33,6 @@ export default function Widgets({
       <div
         className={`flex absolute bottom-0 left-0 z-10 flex-col px-4 py-5 space-y-4`}
       >
-        {expanded && members && (
-          <div className={`${classes} w-96`}>
-            <Steps
-              svgRef={svgRef}
-              selection={selection}
-              setSelection={setSelection}
-              members={members}
-              setMembers={setMembers}
-              setExpanded={setExpanded}
-              step={step}
-              setStep={setStep}
-              setCycle={setCycle}
-              scrollToIntroduction={scrollToIntroduction}
-              forceUpdate={forceUpdate}
-              data={data}
-              setData={setData}
-              levels={levels}
-              sort={sort}
-            />
-          </div>
-        )}
         {showInfo && members && (
           <div className={`${classes} w-96`}>
             <Info members={members} setShowInfo={setShowInfo} />
@@ -123,14 +92,6 @@ export default function Widgets({
             {selection.name === "Mission" && <Mission members={members} />}
           </div>
         </div>
-      )}
-      {!fullscreen && (
-        <button
-          className="absolute right-0 left-0 bottom-2 mx-auto w-12 text-center text-indigo-800 hover:text-indigo-600"
-          onClick={scrollToIntroduction}
-        >
-          <FontAwesomeIcon icon="arrow-down" className="text-xl" />
-        </button>
       )}
     </>
   );

@@ -5,10 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 import c from "lib/common";
-import MobileNav from "./mobile_nav";
 import headerLogo from "public/header_logo.svg";
 
-export default function Header({ fix, fullscreen }) {
+export default function Header({ fix }) {
   const [active, setActive] = useState(false);
   const handleClick = () => {
     setActive(!active);
@@ -38,7 +37,7 @@ export default function Header({ fix, fullscreen }) {
 
         <div className="pointer-events-auto">
           <Link href="/" passHref>
-            <a>
+            <a className="flex flex-col items-start text-white">
               <Image
                 src={headerLogo}
                 alt="Orbit Model logo"
@@ -46,33 +45,13 @@ export default function Header({ fix, fullscreen }) {
                 height={40}
                 className="cursor-pointer"
               />
+              <div className="font-mono text-sm text-indigo-500">Simulator</div>
             </a>
           </Link>
         </div>
 
         <div className="flex-1" />
-
-        {!fullscreen && (
-          <div className="hidden md:block">
-            <div className="flex justify-end items-center">
-              <iframe
-                src="https://ghbtns.com/github-btn.html?user=orbit-love&repo=orbit-model&type=star&count=true"
-                frameBorder="0"
-                scrolling="0"
-                width="100"
-                height="20"
-                title="GitHub"
-                className="ml-3 mt-4 opacity-90 sm:mt-0 sm:ml-0"
-              ></iframe>
-            </div>
-          </div>
-        )}
       </nav>
-      <div className={`${active ? "":"hidden"}`}>
-        <CSSTransition in={active} timeout={400} classNames="mobile-nav">
-          <MobileNav setActive={setActive} />
-        </CSSTransition>
-      </div>
     </>
   );
 }

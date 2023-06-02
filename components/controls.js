@@ -9,8 +9,6 @@ export default function Controls({
   setCycle,
   fullscreen,
   setFullscreen,
-  expanded,
-  setExpanded,
   showInfo,
   setShowInfo,
   sort,
@@ -29,28 +27,6 @@ export default function Controls({
 
   return (
     <>
-      {expanded && (
-        <button onClick={() => setExpanded(false)} className={buttonClasses}>
-          <FontAwesomeIcon
-            icon="lightbulb"
-            className="text-lg"
-          ></FontAwesomeIcon>
-        </button>
-      )}
-      {!expanded && (
-        <button
-          onClick={() => {
-            setShowInfo(false);
-            setExpanded(true);
-          }}
-          className={buttonClasses}
-        >
-          <FontAwesomeIcon
-            icon="lightbulb"
-            className="text-lg text-indigo-500"
-          ></FontAwesomeIcon>
-        </button>
-      )}
       {showInfo && (
         <button onClick={() => setShowInfo(false)} className={buttonClasses}>
           <FontAwesomeIcon
@@ -62,7 +38,6 @@ export default function Controls({
       {!showInfo && (
         <button
           onClick={() => {
-            setExpanded(false);
             setShowInfo(true);
           }}
           className={buttonClasses}
