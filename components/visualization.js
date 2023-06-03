@@ -12,6 +12,7 @@ export default function Visualization({
   fullscreen,
   setFullscreen,
   scrollToIntroduction,
+  records,
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
@@ -97,9 +98,11 @@ export default function Visualization({
       const newLevels = helper.generateLevels({ width, height });
       setLevels(newLevels);
       const newMembers = helper.generateMembers({
+        records,
         levels: newLevels,
         advocateCount: number,
       });
+      console.log(newMembers);
       newMembers.prepareToRender({ sort });
       setMembers(newMembers);
       return;
@@ -159,6 +162,7 @@ export default function Visualization({
     revolution,
     sort,
     prevSort,
+    records,
   ]);
 
   return (

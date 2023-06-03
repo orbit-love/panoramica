@@ -17,8 +17,8 @@ model Member {
   id            String       @default(cuid()) @id
   name          String
   slug          String      @unique
-  love          Decimal?
-  reach          Decimal?
+  love          Int?
+  reach          Int?
   level         Int?
   first_activity_at   DateTime
   last_activity_at    DateTime

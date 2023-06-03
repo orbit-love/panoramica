@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
+import { PrismaClient } from "@prisma/client";
 
 import c from "lib/common";
 import Head from "components/head";
 import Header from "components/header";
 import Vizualization from "components/visualization";
 
-export default function Index() {
+export default function Index({ records }) {
   const router = useRouter();
   const containerRef = useRef();
 
@@ -84,9 +85,25 @@ export default function Index() {
             number={number}
             fullscreen={fullscreen}
             setFullscreen={setFullscreen}
+            records={records}
           />
         )}
       </div>
     </>
   );
 }
+
+export const getServerSideProps = async ({ req, res }) => {
+  const prisma = new PrismaClient();
+
+  var members = await prisma.member.findMany({
+    where: {
+      level: { in: [1, 2, 3, 4] },
+    },
+    take: 100,
+  });
+  members = JSON.parse(JSON.stringify(members));
+  return {
+    props: { records: members },
+  };
+};
