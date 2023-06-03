@@ -23,3 +23,14 @@ model Member {
   first_activity_at   DateTime
   last_activity_at    DateTime
 }
+
+model Activity {
+  id            String       @default(cuid()) @id
+  name          String
+  slug          String      @unique
+  love          Int?
+  reach          Int?
+  level         Int?
+  first_activity_at   DateTime
+  last_activity_at    DateTime
+}

@@ -102,7 +102,6 @@ export default function Visualization({
         levels: newLevels,
         advocateCount: number,
       });
-      console.log(newMembers);
       newMembers.prepareToRender({ sort });
       setMembers(newMembers);
       return;

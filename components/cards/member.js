@@ -31,7 +31,7 @@ export default function Member({
           <OrbitLevelIcon number={member.level.number} classes="text-2xl" />
         </button>
         <div className="text-2xl font-semibold" style={{ color }}>
-          {member.name}
+          {member.fullName}
         </div>
       </div>
       <div className="flex flex-col space-y-[-2px]">
