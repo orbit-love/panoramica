@@ -7,6 +7,7 @@ import SortOptions from "components/sort_options";
 
 export default function OrbitLevel({
   level,
+  levels,
   members,
   setMembers,
   setSelection,
@@ -36,6 +37,7 @@ export default function OrbitLevel({
           setSort={setSort}
           members={members}
           setMembers={setMembers}
+          levels={levels}
         />
       </div>
       <div className="flex flex-col max-h-[50vh] overflow-scroll">

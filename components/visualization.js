@@ -8,11 +8,12 @@ import Widgets from "components/widgets";
 export default function Visualization({
   width,
   height,
-  number,
   fullscreen,
   setFullscreen,
-  scrollToIntroduction,
-  records,
+  members,
+  setMembers,
+  levels,
+  setLevels,
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
@@ -21,15 +22,11 @@ export default function Visualization({
     window.matchMedia(`(prefers-reduced-motion: reduce)`) === true ||
     window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
 
-  // change to make developing easier
-  const firstStep = 1;
-
   // the default RPM of the orbits
   const { defaultRevolution, defaultSort, cycleDelay, firstCycleDelay } =
     c.visualization;
 
   // previous values for detecting changes
-  const prevNumber = c.usePrevious(number);
   const prevWidth = c.usePrevious(width);
   const prevHeight = c.usePrevious(height);
 
@@ -37,10 +34,6 @@ export default function Visualization({
   const [animate, setAnimate] = useState(!isReduced);
   const [cycle, setCycle] = useState(false);
   const [selection, setSelection] = useState(null);
-  const [step, setStep] = useState(firstStep);
-  const [members, setMembers] = useState(null);
-  const [levels, setLevels] = useState([]);
-  const [expanded, setExpanded] = useState(true);
   const [showNetwork, setShowNetwork] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
   const [revolution, setRevolution] = useState(defaultRevolution);
@@ -83,31 +76,17 @@ export default function Visualization({
     setSelection,
   ]);
 
-  // rebuild if width, height, or number change
+  // rebuild if width, height change
   useEffect(() => {
-    if (
-      !members ||
-      number !== prevNumber ||
-      width !== prevWidth ||
-      height !== prevHeight
-    ) {
+    if (!levels || width !== prevWidth || height !== prevHeight) {
       // if major parameters have changed
       // clear the canvas and re-prepare the data
       console.log("Clearing canvas and rebuilding members");
       helper.resetEverything({ svgRef, width, height, setSelection, setCycle });
       const newLevels = helper.generateLevels({ width, height });
       setLevels(newLevels);
-      const newMembers = helper.generateMembers({
-        records,
-        levels: newLevels,
-        advocateCount: number,
-      });
-      newMembers.prepareToRender({ sort });
-      setMembers(newMembers);
       return;
     }
-
-    console.log(`Drawing ${members.length()} members...`);
 
     const props = {
       svgRef,
@@ -115,16 +94,11 @@ export default function Visualization({
       height,
       selection,
       setSelection,
-      number,
       members,
       setMembers,
       setCycle,
       animate,
-      step,
-      setStep,
       levels,
-      expanded,
-      setExpanded,
       sort,
       prevSort,
       showNetwork,
@@ -134,34 +108,35 @@ export default function Visualization({
 
     // these are drawn in order of back to front
     helper.drawLevels(props);
-    helper.drawMembers(props);
     helper.drawSun(props);
 
-    if (animate) {
-      helper.startAnimation({ svgRef, revolution });
-    } else {
-      helper.stopAnimation({ svgRef });
+    // draw members if available and start/stop animation
+    if (members) {
+      console.log(`Drawing ${members.length()} members...`);
+      helper.drawMembers(props);
+
+      if (animate) {
+        helper.startAnimation({ svgRef, levels, revolution });
+      } else {
+        helper.stopAnimation({ svgRef, levels });
+      }
     }
   }, [
     width,
     height,
-    number,
-    prevNumber,
     prevWidth,
     prevHeight,
     members,
+    setMembers,
     selection,
-    step,
     animate,
     levels,
-    expanded,
-    setExpanded,
+    setLevels,
     showNetwork,
     prevShowNetwork,
     revolution,
     sort,
     prevSort,
-    records,
   ]);
 
   return (
@@ -177,8 +152,6 @@ export default function Visualization({
         setAnimate={setAnimate}
         cycle={cycle}
         setCycle={setCycle}
-        expanded={expanded}
-        setExpanded={setExpanded}
         showNetwork={showNetwork}
         setShowNetwork={setShowNetwork}
         showInfo={showInfo}
@@ -202,8 +175,6 @@ export default function Visualization({
         svgRef={svgRef}
         members={members}
         setMembers={setMembers}
-        step={step}
-        setStep={setStep}
         selection={selection}
         setSelection={setSelection}
         fullscreen={fullscreen}
@@ -212,9 +183,6 @@ export default function Visualization({
         setAnimate={setAnimate}
         cycle={cycle}
         setCycle={setCycle}
-        expanded={expanded}
-        setExpanded={setExpanded}
-        scrollToIntroduction={scrollToIntroduction}
         showNetwork={showNetwork}
         setShowNetwork={setShowNetwork}
         showInfo={showInfo}

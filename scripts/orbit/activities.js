@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const items = 100;
-const maxPages = 100;
+const maxPages = 10;
 
 const getAPIData = async (url, apiKey, page = 1, allData = []) => {
   return new Promise(async (resolve, reject) => {

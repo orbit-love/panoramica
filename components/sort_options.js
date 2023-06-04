@@ -1,11 +1,17 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function SortOptions({ sort, setSort, members, setMembers }) {
+export default function SortOptions({
+  sort,
+  setSort,
+  members,
+  setMembers,
+  levels,
+}) {
   const buttonClasses =
     "hover:border-b hover:border-indigo-600 px-2 py-1 whitespace-nowrap";
   const changeSort = (newSort) => {
-    members.prepareToRender({ sort: newSort });
+    members.sort({ sort: newSort, levels });
     setMembers(members);
     setSort(newSort);
   };

@@ -67,6 +67,7 @@ export default function Controls({
             members={members}
             setMembers={setMembers}
             classes={classes}
+            levels={levels}
           />
         )}
       </div>

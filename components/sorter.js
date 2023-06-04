@@ -9,6 +9,7 @@ export default function Sorter({
   members,
   setMembers,
   classes,
+  levels,
 }) {
   return (
     <div
@@ -27,6 +28,7 @@ export default function Sorter({
           setSort={setSort}
           members={members}
           setMembers={setMembers}
+          levels={levels}
         />
       </div>
     </div>

@@ -32,7 +32,7 @@ export default function Shortcuts({
       setSelection(
         helper.getNextMember({
           selection,
-          level: helper.selectedLevel({ selection }),
+          level: helper.selectedLevel({ selection, levels }),
           members,
         })
       ),
@@ -45,7 +45,7 @@ export default function Shortcuts({
       setSelection(
         helper.getPreviousMember({
           selection,
-          level: helper.selectedLevel({ selection }),
+          level: helper.selectedLevel({ selection, levels }),
           members,
         })
       ),
@@ -94,7 +94,11 @@ export default function Shortcuts({
     () => {
       var newRevolution = revolution - revolutionStep;
       if (newRevolution < minRevolution) newRevolution = defaultRevolution;
-      helper.changeTransitionSpeed({ members, revolution: newRevolution });
+      helper.changeTransitionSpeed({
+        members,
+        levels,
+        revolution: newRevolution,
+      });
       setRevolution(newRevolution);
     },
     [revolution, setRevolution, members]

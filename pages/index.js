@@ -1,23 +1,22 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useRouter } from "next/router";
-import { PrismaClient } from "@prisma/client";
 
 import c from "lib/common";
 import Head from "components/head";
 import Header from "components/header";
+import MemberReducer from "lib/reducers/member";
 import Vizualization from "components/visualization";
+import MemberCollection from "lib/memberCollection";
 
-export default function Index({ records }) {
-  const router = useRouter();
+export default function Index() {
   const containerRef = useRef();
 
   const [dimensions, setDimensions] = useState({
     height: null,
     width: null,
   });
-  const [number] = useState(c.getInitialNumber(router));
-  const [fix, setFix] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const [members, setMembers] = useState(null);
+  const [levels, setLevels] = useState([]);
 
   useEffect(() => {
     function onFullscreenChange() {
@@ -27,20 +26,6 @@ export default function Index({ records }) {
     return () =>
       document.removeEventListener("fullscreenchange", onFullscreenChange);
   }, [setFullscreen]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const containerHeight = containerRef.current.offsetHeight - 78;
-      const newFix = window.scrollY >= containerHeight;
-      setFix(newFix);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -63,12 +48,46 @@ export default function Index({ records }) {
     };
   }, [setDimensions]);
 
-  const fixClass = fix ? "md:pl-56" : "";
+  // only run once levels is ready
+  useEffect(() => {
+    const processActivities = ({ result }) => {
+      const reducer = new MemberReducer();
+      result.activities.forEach((activity) => {
+        reducer.reduce(activity);
+      });
+      reducer.finalize();
+
+      // the result contains members with OL numbers and love
+      const rResult = reducer.getResult();
+
+      const memberCollection = new MemberCollection();
+      const membersCollectionRecords = Object.values(rResult).map(
+        ({ actor, love, level, activityCount }) => ({
+          id: actor.replace(/[^a-z0-9]/gi, ""),
+          name: actor.split("#")[0],
+          level,
+          love,
+          activityCount,
+          reach: 0.5,
+        })
+      );
+      memberCollection.list.push(...membersCollectionRecords);
+      memberCollection.sort({ sort: c.defaultSort, levels });
+      console.log(memberCollection.list);
+      setMembers(memberCollection);
+    };
+
+    if (levels) {
+      fetch("/api/activities")
+        .then((res) => res.json())
+        .then(processActivities);
+    }
+  }, [levels]);
 
   return (
     <>
       <Head />
-      <Header fix={fix} fullscreen={fullscreen} />
+      <Header fullscreen={fullscreen} />
       <div
         ref={containerRef}
         id="container"
@@ -80,30 +99,17 @@ export default function Index({ records }) {
       >
         {dimensions.width && dimensions.height && (
           <Vizualization
+            members={members}
+            setMembers={setMembers}
             width={dimensions.width}
             height={dimensions.height}
-            number={number}
             fullscreen={fullscreen}
             setFullscreen={setFullscreen}
-            records={records}
+            levels={levels}
+            setLevels={setLevels}
           />
         )}
       </div>
     </>
   );
 }
-
-export const getServerSideProps = async ({ req, res }) => {
-  const prisma = new PrismaClient();
-
-  var members = await prisma.member.findMany({
-    where: {
-      level: { in: [1, 2, 3, 4] },
-    },
-    take: 100,
-  });
-  members = JSON.parse(JSON.stringify(members));
-  return {
-    props: { records: members },
-  };
-};

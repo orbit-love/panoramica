@@ -9,7 +9,7 @@ const getActivities = async () => {
   records = JSON.parse(JSON.stringify(records));
 
   return {
-    props: { records },
+    activities: [...records],
   };
 };
 
@@ -19,5 +19,6 @@ export default async function handler(req, res) {
     res.status(200).json({ result });
   } catch (err) {
     res.status(500).json({ error: "failed to load data" });
+    throw err;
   }
 }

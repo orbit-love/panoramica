@@ -32,9 +32,8 @@ export default function Mission({ members }) {
               </td>
               <td>
                 {
-                  members.list.filter(
-                    (member) => member.level.number === number
-                  ).length
+                  members.list.filter((member) => member.level === number)
+                    .length
                 }
               </td>
             </tr>
@@ -48,8 +47,8 @@ export default function Mission({ members }) {
               <span className="pl-3">Most Connected</span>
             </td>
             <td>
-              {mostConnectedMember.name} (
-              {mostConnectedMember.connections.length})
+              {mostConnectedMember?.name} (
+              {mostConnectedMember?.connections?.length})
             </td>
           </tr>
         </tbody>

@@ -26,6 +26,7 @@ export default function Widgets({
   setShowInfo,
   sort,
   setSort,
+  levels,
 }) {
   const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90`;
   return (
@@ -41,6 +42,7 @@ export default function Widgets({
         <div className="flex">
           <div className={`${classes} py-4 px-5 pointer-events-auto`}>
             <Controls
+              levels={levels}
               animate={animate}
               setAnimate={setAnimate}
               cycle={cycle}
@@ -70,18 +72,20 @@ export default function Widgets({
           <div
             className={`${classes} flex relative flex-col px-6 py-6 pointer-events-auto`}
           >
-            {selection.level && (
+            {typeof selection.level === "number" && (
               <Member
                 member={selection}
                 members={members}
                 setSelection={setSelection}
                 showNetwork={showNetwork}
                 setShowNetwork={setShowNetwork}
+                levels={levels}
               />
             )}
             {selection.number && (
               <OrbitLevel
                 level={selection}
+                levels={levels}
                 members={members}
                 setMembers={setMembers}
                 setSelection={setSelection}
