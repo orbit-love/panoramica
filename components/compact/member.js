@@ -10,7 +10,7 @@ export default function CompactMember({ member, setSelection, metrics }) {
       key={member.id}
       onClick={() => setSelection(member)}
     >
-      <div className="flex justify-between space-x-1 opacity-80 hover:opacity-100">
+      <div className="flex justify-between space-x-1 bg-indigo-900 bg-opacity-0 hover:bg-opacity-50">
         <div className="flex items-center space-x-1">
           <OrbitLevelIcon number={member.level.number} />
           <div

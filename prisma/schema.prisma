@@ -26,11 +26,7 @@ model Member {
 
 model Activity {
   id            String       @default(cuid()) @id
-  name          String
-  slug          String      @unique
-  love          Int?
-  reach          Int?
-  level         Int?
-  first_activity_at   DateTime
-  last_activity_at    DateTime
+  orbit_id      String     @unique
+  actor          String
+  timestamp   DateTime
 }
