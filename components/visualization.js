@@ -14,6 +14,8 @@ export default function Visualization({
   setMembers,
   levels,
   setLevels,
+  sort,
+  setSort,
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
@@ -23,8 +25,7 @@ export default function Visualization({
     window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
 
   // the default RPM of the orbits
-  const { defaultRevolution, defaultSort, cycleDelay, firstCycleDelay } =
-    c.visualization;
+  const { defaultRevolution, cycleDelay, firstCycleDelay } = c.visualization;
 
   // previous values for detecting changes
   const prevWidth = c.usePrevious(width);
@@ -37,7 +38,6 @@ export default function Visualization({
   const [showNetwork, setShowNetwork] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
   const [revolution, setRevolution] = useState(defaultRevolution);
-  const [sort, setSort] = useState(defaultSort);
   const [data, setData] = useState();
 
   const prevShowNetwork = c.usePrevious(showNetwork);

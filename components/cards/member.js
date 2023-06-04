@@ -70,13 +70,8 @@ export default function Member({
           </button>
         </div>
       )}
-      {/* {!member.summary && <div className="py-1" />}
-      {member.summary && (
-        <div className="leading-tight">
-          <span className="font-bold text-indigo-400">Action </span>
-          {member.summary}
-        </div>
-      )} */}
+      <div className="py-1" />
+      {member.activityCount}
     </div>
   );
 }

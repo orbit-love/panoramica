@@ -16,6 +16,7 @@ export default function Index() {
   });
   const [fullscreen, setFullscreen] = useState(false);
   const [members, setMembers] = useState(null);
+  const [sort, setSort] = useState("love");
   const [levels, setLevels] = useState([]);
 
   useEffect(() => {
@@ -72,7 +73,7 @@ export default function Index() {
         })
       );
       memberCollection.list.push(...membersCollectionRecords);
-      memberCollection.sort({ sort: c.defaultSort, levels });
+      memberCollection.sort({ sort, levels });
       console.log(memberCollection.list);
       setMembers(memberCollection);
     };
@@ -82,7 +83,7 @@ export default function Index() {
         .then((res) => res.json())
         .then(processActivities);
     }
-  }, [levels]);
+  }, [sort, levels]);
 
   return (
     <>
@@ -107,6 +108,8 @@ export default function Index() {
             setFullscreen={setFullscreen}
             levels={levels}
             setLevels={setLevels}
+            sort={sort}
+            setSort={setSort}
           />
         )}
       </div>

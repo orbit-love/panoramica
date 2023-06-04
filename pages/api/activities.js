@@ -4,7 +4,7 @@ const getActivities = async () => {
   const prisma = new PrismaClient();
 
   var records = await prisma.activity.findMany({
-    take: 100,
+    take: 1000,
   });
   records = JSON.parse(JSON.stringify(records));
 
