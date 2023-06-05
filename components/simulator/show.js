@@ -4,6 +4,8 @@ import MemberCollection from "lib/memberCollection";
 import MemberReducer from "lib/reducers/member";
 import c from "lib/common";
 
+const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+
 export default function Show({
   sort,
   levels,
@@ -13,8 +15,31 @@ export default function Show({
   setSimulation,
   setSelection,
 }) {
+  const [activities, setActivities] = useState(null);
   const [loading, setLoading] = useState(false);
   const [timestamp, setTimestamp] = useState(null);
+
+  useEffect(() => {
+    const processActivityBatch = async () => {
+      const reducer = new MemberReducer();
+      for (var i = 0; i < activities.length; i++) {
+        var activity = activities[i];
+        reducer.reduce(activity);
+
+        if (i % 10 === 0) {
+          setMembersFromReducer(reducer);
+          setTimestamp(activity.timestamp);
+          await timer(100);
+        }
+      }
+      // and once at the end
+      setMembersFromReducer(reducer);
+    };
+
+    if (activities) {
+      processActivityBatch();
+    }
+  }, [activities]);
 
   const setMembersFromReducer = (reducer) => {
     reducer.finalize();
@@ -32,25 +57,12 @@ export default function Show({
         love,
         activityCount,
         reach: 0.5,
+        reset: true,
       })
     );
     memberCollection.list.push(...membersCollectionRecords);
     memberCollection.sort({ sort, levels });
     setMembers(memberCollection);
-  };
-
-  const processActivities = (result) => {
-    const reducer = new MemberReducer();
-    result.activities.forEach((activity, index) => {
-      reducer.reduce(activity);
-      // render every so often
-      if (index % 100 === 0) {
-        setMembersFromReducer(reducer);
-        setTimestamp(activity.timestamp);
-      }
-    });
-    // and once at the end
-    setMembersFromReducer(reducer);
   };
 
   const importSimulation = async () => {
@@ -79,35 +91,23 @@ export default function Show({
     fetch(`/api/simulations/${simulation.id}/activities`)
       .then((res) => res.json())
       .then(({ result }) => {
-        processActivities(result);
+        setActivities(result.activities);
         setLoading(false);
       });
   };
 
   const onClear = () => {
     setSelection(null);
+    setTimestamp(null);
     setMembers(new MemberCollection());
   };
-
-  let options = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
-  };
-
-  let formattedDate = new Intl.DateTimeFormat("en-US", options).format(
-    new Date(timestamp)
-  );
 
   return (
     <div className="flex flex-col space-y-2">
       <div className="text-lg font-bold">{simulation.name}</div>
       {loading && <div className="py-4">Loading...</div>}
       <div className="border-b border-indigo-900" />
-      {timestamp && <div>{formattedDate}</div>}
+      {timestamp && <div>At: {c.formatDate(timestamp)}</div>}
       <div className="py-1">
         <button onClick={() => runSimulation()} className={c.buttonClasses}>
           Run Simulation

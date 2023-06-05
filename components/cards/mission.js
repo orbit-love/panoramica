@@ -15,10 +15,8 @@ export default function Mission({ members }) {
         <div>
           <FontAwesomeIcon icon="planet-ringed" className="text-2xl" />
         </div>
-        <div className="text-2xl font-semibold">Mission</div>
+        <div className="text-2xl font-semibold">Summary</div>
       </div>
-      <div className="text-sm italic">{c.orbitModel.mission}</div>
-      <div className="border-b border-indigo-900"></div>
       <table className="table border-separate [border-spacing:0]">
         <tbody>
           <tr>
@@ -38,19 +36,23 @@ export default function Mission({ members }) {
               </td>
             </tr>
           ))}
-          <tr>
-            <td className="">Total Connections</td>
-            <td>{members.connections?.size}</td>
-          </tr>
-          <tr>
-            <td>
-              <span className="pl-3">Most Connected</span>
-            </td>
-            <td>
-              {mostConnectedMember?.name} (
-              {mostConnectedMember?.connections?.length})
-            </td>
-          </tr>
+          {members.connections?.size > 0 && (
+            <>
+              <tr>
+                <td className="">Total Connections</td>
+                <td>{members.connections?.size}</td>
+              </tr>
+              <tr>
+                <td>
+                  <span className="pl-3">Most Connected</span>
+                </td>
+                <td>
+                  {mostConnectedMember?.name} (
+                  {mostConnectedMember?.connections?.length})
+                </td>
+              </tr>
+            </>
+          )}
         </tbody>
       </table>
     </div>

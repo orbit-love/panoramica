@@ -4,6 +4,13 @@ export default async function handler(req, res) {
   const { id } = req.query;
   try {
     const prisma = new PrismaClient();
+    // delete existing activities for the simulation
+    await prisma.activity.deleteMany({
+      where: {
+        simulationId: parseInt(id),
+      },
+    });
+
     await prisma.simulation.delete({
       where: {
         id: parseInt(id),

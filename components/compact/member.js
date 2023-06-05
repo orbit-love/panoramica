@@ -19,7 +19,7 @@ export default function CompactMember({ member, setSelection, metrics }) {
               color: c.orbitLevelColorScale(member.level),
             }}
           >
-            {member.name} {member.activityCount}
+            {member.name}
           </div>
         </div>
         <div className="mx-auto" />

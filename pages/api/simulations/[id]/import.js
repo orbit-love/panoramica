@@ -12,6 +12,9 @@ const getAPIData = async ({
   return new Promise(async (resolve, reject) => {
     try {
       const response = await axios.get(url, {
+        params: {
+          items: 100,
+        },
         headers: {
           Authorization: `Bearer ${apiKey}`,
           Accept: "application/json",
@@ -41,7 +44,16 @@ const getAPIData = async ({
           (item) =>
             item.type === "discord_identity" && item.id == discordIdentityId
         );
-        var actor = discordIdentity?.attributes?.username;
+        var githubIdentityId = member.relationships.identities.data.find(
+          (item) => item.type == "github_identity"
+        )?.id;
+        var githubIdentity = included.find(
+          (item) =>
+            item.type === "github_identity" && item.id == githubIdentityId
+        );
+        var actor =
+          discordIdentity?.attributes?.username ||
+          githubIdentity?.attributes?.username;
         if (!actor) {
           continue;
         }
