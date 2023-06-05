@@ -41,6 +41,7 @@ export default function Visualization({
   const [selection, setSelection] = useState(null);
   const [showNetwork, setShowNetwork] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
+  const [showPanel, setShowPanel] = useState(true);
   const [revolution, setRevolution] = useState(defaultRevolution);
   const [data, setData] = useState();
 
@@ -163,6 +164,8 @@ export default function Visualization({
         levels={levels}
         revolution={revolution}
         setRevolution={setRevolution}
+        showPanel={showPanel}
+        setShowPanel={setShowPanel}
       />
       <div>
         <svg
@@ -201,6 +204,8 @@ export default function Visualization({
         setSimulation={setSimulation}
         simulations={simulations}
         setSimulations={setSimulations}
+        showPanel={showPanel}
+        setShowPanel={setShowPanel}
       />
     </div>
   );

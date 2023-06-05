@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 
 import MemberCollection from "lib/memberCollection";
 import MemberReducer from "lib/reducers/member";
@@ -14,34 +14,33 @@ export default function Show({
   simulation,
   setSimulation,
   setSelection,
+  setEditMode,
 }) {
   const [activities, setActivities] = useState(null);
   const [loading, setLoading] = useState(false);
   const [timestamp, setTimestamp] = useState(null);
+  const [step, setStep] = useState(-1);
 
-  useEffect(() => {
-    const processActivityBatch = async () => {
-      const reducer = new MemberReducer();
-      for (var i = 0; i < activities.length; i++) {
-        var activity = activities[i];
-        reducer.reduce(activity);
+  const numSteps = 10;
 
-        if (i % 10 === 0) {
-          setMembersFromReducer(reducer);
-          setTimestamp(activity.timestamp);
-          await timer(100);
-        }
-      }
-      // and once at the end
-      setMembersFromReducer(reducer);
-    };
+  const fetchActivities = useCallback(
+    async () =>
+      fetch(`/api/simulations/${simulation.id}/activities`)
+        .then((res) => res.json())
+        .then(({ result }) => {
+          setActivities(result.activities);
+          setLoading(false);
+        }),
+    [simulation.id]
+  );
 
-    if (activities) {
-      processActivityBatch();
+  const processActivityBatch = (activities) => {
+    const reducer = new MemberReducer();
+    for (var i = 0; i < activities.length; i++) {
+      var activity = activities[i];
+      reducer.reduce(activity);
     }
-  }, [activities]);
 
-  const setMembersFromReducer = (reducer) => {
     reducer.finalize();
 
     // the result contains members with OL numbers and love
@@ -65,6 +64,12 @@ export default function Show({
     setMembers(memberCollection);
   };
 
+  useEffect(() => {
+    if (!activities) {
+      fetchActivities();
+    }
+  }, [activities, fetchActivities]);
+
   const importSimulation = async () => {
     setLoading(true);
     fetch(`/api/simulations/${simulation.id}/import`, {
@@ -77,8 +82,7 @@ export default function Show({
       .then((res) => res.json())
       .then(({ result, message }) => {
         if (result?.count) {
-          alert("Imported " + result.count + " activities");
-          runSimulation();
+          fetchActivities();
         } else {
           alert(message);
         }
@@ -86,58 +90,118 @@ export default function Show({
       });
   };
 
+  // do what we do for cycle here, turn on/off
   const runSimulation = async () => {
-    setLoading(true);
-    fetch(`/api/simulations/${simulation.id}/activities`)
-      .then((res) => res.json())
-      .then(({ result }) => {
-        setActivities(result.activities);
-        setLoading(false);
-      });
+    processActivityBatch(activities);
   };
 
-  const onClear = () => {
+  const onReset = () => {
     setSelection(null);
     setTimestamp(null);
+    setStep(-1);
     setMembers(new MemberCollection());
   };
 
+  const sliceActivitiesForStep = ({ activities, step, numSteps }) => {
+    var endSliceAt = Math.floor((activities.length / numSteps) * (step + 1));
+    var slice = activities.slice(0, endSliceAt);
+    return slice;
+  };
+
+  const handleBack = () => {
+    if (step > 0) {
+      const newStep = step - 1;
+      const slice = sliceActivitiesForStep({
+        activities,
+        step: newStep,
+        numSteps,
+      });
+      processActivityBatch(slice);
+      setTimestamp(slice[slice.length - 1]?.timestamp);
+      setStep(newStep);
+    }
+  };
+
+  const handleForward = () => {
+    if (step < numSteps) {
+      const newStep = step + 1;
+      const slice = sliceActivitiesForStep({
+        activities,
+        step: newStep,
+        numSteps,
+      });
+      processActivityBatch(slice);
+      setTimestamp(slice[slice.length - 1]?.timestamp);
+      setStep(newStep);
+    }
+  };
+
   return (
-    <div className="flex flex-col space-y-2">
+    <div className="flex flex-col space-y-1">
       <div className="text-lg font-bold">{simulation.name}</div>
       {loading && <div className="py-4">Loading...</div>}
       <div className="border-b border-indigo-900" />
-      {timestamp && <div>At: {c.formatDate(timestamp)}</div>}
-      <div className="py-1">
+      {timestamp && <div>From:{c.formatDate(activities[0]?.timestamp)}</div>}
+      {timestamp && <div>To: {c.formatDate(timestamp)}</div>}
+      <div className="py-2 flex space-x-2">
+        <button onClick={() => handleBack()} className={c.buttonClasses}>
+          &laquo;
+        </button>
+        <button onClick={() => handleForward()} className={c.buttonClasses}>
+          &raquo;
+        </button>
         <button onClick={() => runSimulation()} className={c.buttonClasses}>
-          Run Simulation
+          Run
+        </button>
+        <button onClick={onReset} className={c.buttonClasses}>
+          Reset
         </button>
       </div>
-      <div className="py-1">
-        <button onClick={onClear} className={c.buttonClasses}>
-          Clear
-        </button>
+      <div className="flex flex-col space-y-1">
+        <div className="my-1 text-lg font-bold">Data</div>
+        {activities && (
+          <table className="table border-separate [border-spacing:0] text-sm">
+            <tbody>
+              <tr>
+                <td className="w-24">Activities</td>
+                <td>{activities.length}</td>
+              </tr>
+              <tr>
+                <td className="w-24">First Activity</td>
+                <td>{c.formatDate(activities[0]?.timestamp)}</td>
+              </tr>
+              <tr>
+                <td className="w-24">Last Activity</td>
+                <td>
+                  {c.formatDate(activities[activities.length - 1]?.timestamp)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        )}
       </div>
-      <div className="h-4" />
+      <div className="h-1" />
       <div className="flex flex-col space-y-2">
-        <div className="my-1 text-lg font-bold">Setup</div>
-        <div className="flex flex-col space-y-2">
-          <button
-            onClick={() => importSimulation()}
-            className={c.buttonClasses}
-          >
-            Fetch Activities
-          </button>
-          <div>
-            Fetch activities from Orbit and store for analysis; only needs to be
-            done once per simulation
-          </div>
-        </div>
+        <div className="my-1 text-lg font-bold">Actions</div>
       </div>
-      <div className="border-b border-indigo-900" />
-      <button onClick={() => setSimulation(null)} className={c.buttonClasses}>
-        Back
-      </button>
+      <div className="flex space-x-2 text-xs">
+        <button
+          onClick={() => {
+            setSelection(null);
+            setMembers(new MemberCollection());
+            setSimulation(null);
+          }}
+          className={c.buttonClasses}
+        >
+          Back
+        </button>
+        <button onClick={() => setEditMode(true)} className={c.buttonClasses}>
+          Edit
+        </button>
+        <button onClick={() => importSimulation()} className={c.buttonClasses}>
+          Import
+        </button>
+      </div>
     </div>
   );
 }

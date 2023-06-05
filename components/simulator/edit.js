@@ -1,21 +1,20 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState } from "react";
 
 import c from "lib/common";
 
-export default function Import({ setSimulation, loadSimulations }) {
-  const nameRef = useRef(null);
-  const urlRef = useRef(null);
+export default function Edit({ simulation, setSimulation, setEditMode }) {
+  const [name, setName] = useState(simulation.name);
+  const [url, setUrl] = useState(simulation.url);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const url = "/api/simulations/create";
     const data = {
-      url: urlRef.current.value,
-      name: nameRef.current.value,
+      url,
+      name,
     };
-    fetch(url, {
+    fetch(`/api/simulations/${simulation.id}/update`, {
       body: JSON.stringify(data),
-      method: "POST",
+      method: "PUT",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
@@ -25,16 +24,16 @@ export default function Import({ setSimulation, loadSimulations }) {
       .then(({ result, message }) => {
         if (result?.simulation) {
           setSimulation(result.simulation);
+          setEditMode(false);
         } else {
           alert(message);
-          loadSimulations();
         }
       });
   };
 
   return (
     <div className="flex flex-col space-y-2">
-      <div className="text-lg font-semibold">Create a New Simulation</div>
+      <div className="text-lg font-semibold">Update Simulation</div>
       <form
         action="/api/simulations/create"
         method="post"
@@ -44,26 +43,35 @@ export default function Import({ setSimulation, loadSimulations }) {
         <div className="flex flex-col space-y-1">
           <div className="">Name</div>
           <input
-            ref={nameRef}
             type="text"
             required
             className={c.inputClasses}
             placeholder="My Simulation"
+            value={name}
+            onChange={({ target }) => setName(target.value)}
           ></input>
         </div>
         <div className="flex flex-col space-y-1">
           <div className="">Activities API URL</div>
           <input
-            ref={urlRef}
             type="text"
             required
             className={c.inputClasses}
             placeholder="https://app.orbit.love/<w>/activities.json?..."
+            value={url}
+            onChange={({ target }) => setUrl(target.value)}
           ></input>
         </div>
-        <div className="flex flex-col pt-2">
+        <div className="flex space-x-2 pt-2">
+          <button
+            type="button"
+            onClick={() => setEditMode(false)}
+            className={c.buttonClasses}
+          >
+            Back
+          </button>
           <button type="submit" className={c.buttonClasses}>
-            Create
+            Update
           </button>
         </div>
       </form>

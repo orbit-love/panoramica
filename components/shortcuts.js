@@ -18,10 +18,10 @@ export default function Shortcuts({
   setShowNetwork,
   showInfo,
   setShowInfo,
-  expanded,
-  setExpanded,
   fullscreen,
   setFullscreen,
+  showPanel,
+  setShowPanel,
 }) {
   // the default RPM of the orbits
   const { defaultRevolution, revolutionStep, minRevolution } = c.visualization;
@@ -113,17 +113,17 @@ export default function Shortcuts({
     "i",
     () => {
       setShowInfo(!showInfo);
-      !showInfo && setExpanded(false);
+      !showInfo && setShowPanel(false);
     },
-    [showInfo, setShowInfo, setExpanded]
+    [showInfo, setShowInfo, setShowPanel]
   );
   useHotkeys(
-    "e",
+    "o",
     () => {
-      setExpanded(!expanded);
-      !expanded && setShowInfo(false);
+      setShowPanel(!showPanel);
+      !showPanel && setShowInfo(false);
     },
-    [expanded, setExpanded, setShowInfo]
+    [showPanel, setShowPanel, setShowInfo]
   );
   useHotkeys(
     "f",

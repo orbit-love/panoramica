@@ -6,7 +6,7 @@ import Member from "components/cards/member";
 import OrbitLevel from "components/cards/orbit_level";
 import Mission from "components/cards/mission";
 import Info from "components/info";
-import Home from "components/simulator/home";
+import List from "components/simulator/list";
 
 export default function Widgets({
   members,
@@ -32,6 +32,8 @@ export default function Widgets({
   simulations,
   setSimulation,
   setSimulations,
+  showPanel,
+  setShowPanel,
 }) {
   const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90`;
   return (
@@ -39,14 +41,14 @@ export default function Widgets({
       <div
         className={`flex absolute bottom-0 left-0 z-10 flex-col px-4 py-5 space-y-4`}
       >
-        {showInfo && members && (
+        {showInfo && (
           <div className={`${classes} w-96`}>
             <Info members={members} setShowInfo={setShowInfo} />
           </div>
         )}
-        {
+        {showPanel && (
           <div className={`${classes} w-96`}>
-            <Home
+            <List
               members={members}
               levels={levels}
               sort={sort}
@@ -58,7 +60,7 @@ export default function Widgets({
               setSelection={setSelection}
             />
           </div>
-        }
+        )}
         <div className="flex">
           <div className={`${classes} py-4 px-5 pointer-events-auto`}>
             <Controls
@@ -75,6 +77,8 @@ export default function Widgets({
               setExpanded={setExpanded}
               showInfo={showInfo}
               setShowInfo={setShowInfo}
+              showPanel={showPanel}
+              setShowPanel={setShowPanel}
               members={members}
               setMembers={setMembers}
               sort={sort}

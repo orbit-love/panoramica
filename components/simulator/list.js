@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import Show from "components/simulator/show";
-import Create from "components/simulator/create";
+import New from "components/simulator/new";
+import Edit from "components/simulator/edit";
 
 export default function Home({
   sort,
   levels,
-  members,
   simulation,
   simulations,
   setSimulation,
@@ -14,6 +14,8 @@ export default function Home({
   setMembers,
   setSelection,
 }) {
+  const [editMode, setEditMode] = useState(false);
+
   const loadSimulations = () => {
     const url = "/api/simulations";
     fetch(url)
@@ -48,8 +50,8 @@ export default function Home({
 
   return (
     <>
-      <div className="flex relative flex-col py-4 px-5 space-y-4 pointer-events-auto">
-        {simulation && (
+      <div className="flex relative flex-col py-4 px-5 space-y-4 w-full pointer-events-auto">
+        {simulation && !editMode && (
           <Show
             simulation={simulation}
             setSimulation={setSimulation}
@@ -57,6 +59,18 @@ export default function Home({
             levels={levels}
             setMembers={setMembers}
             setSelection={setSelection}
+            setEditMode={setEditMode}
+          />
+        )}
+        {simulation && editMode && (
+          <Edit
+            simulation={simulation}
+            setSimulation={setSimulation}
+            sort={sort}
+            levels={levels}
+            setMembers={setMembers}
+            setSelection={setSelection}
+            setEditMode={setEditMode}
           />
         )}
         {!simulation && (
@@ -85,7 +99,7 @@ export default function Home({
                 <div className="border-b border-indigo-900" />
               </>
             )}
-            <Create
+            <New
               setSimulation={setSimulation}
               loadSimulations={loadSimulations}
             />

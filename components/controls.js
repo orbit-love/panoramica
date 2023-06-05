@@ -17,9 +17,12 @@ export default function Controls({
   setMembers,
   classes,
   levels,
+  showPanel,
+  setShowPanel,
 }) {
   const fullscreenIcon = "expand";
   const cycleIcon = "shuffle";
+  const panelIcon = "rocket-launch";
   const infoIcon = "question";
   const sortIcon = "sort";
   const buttonClasses = "btn select-none outline-none";
@@ -28,6 +31,28 @@ export default function Controls({
 
   return (
     <>
+      {showPanel && (
+        <button onClick={() => setShowPanel(false)} className={buttonClasses}>
+          <FontAwesomeIcon
+            icon={panelIcon}
+            className="text-lg"
+          ></FontAwesomeIcon>
+        </button>
+      )}
+      {!showPanel && (
+        <button
+          onClick={() => {
+            setShowInfo(false);
+            setShowPanel(true);
+          }}
+          className={buttonClasses}
+        >
+          <FontAwesomeIcon
+            icon={panelIcon}
+            className="text-lg text-indigo-500"
+          ></FontAwesomeIcon>
+        </button>
+      )}
       {showInfo && (
         <button onClick={() => setShowInfo(false)} className={buttonClasses}>
           <FontAwesomeIcon
@@ -39,6 +64,7 @@ export default function Controls({
       {!showInfo && (
         <button
           onClick={() => {
+            setShowPanel(false);
             setShowInfo(true);
           }}
           className={buttonClasses}
