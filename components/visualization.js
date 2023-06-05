@@ -16,6 +16,10 @@ export default function Visualization({
   setLevels,
   sort,
   setSort,
+  simulation,
+  simulations,
+  setSimulation,
+  setSimulations,
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
@@ -193,6 +197,10 @@ export default function Visualization({
         data={data}
         setData={setData}
         levels={levels}
+        simulation={simulation}
+        setSimulation={setSimulation}
+        simulations={simulations}
+        setSimulations={setSimulations}
       />
     </div>
   );

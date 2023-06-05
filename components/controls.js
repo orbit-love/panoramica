@@ -16,6 +16,7 @@ export default function Controls({
   members,
   setMembers,
   classes,
+  levels,
 }) {
   const fullscreenIcon = "expand";
   const cycleIcon = "shuffle";

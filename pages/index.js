@@ -1,11 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import c from "lib/common";
 import Head from "components/head";
 import Header from "components/header";
-import MemberReducer from "lib/reducers/member";
 import Vizualization from "components/visualization";
-import MemberCollection from "lib/memberCollection";
 
 export default function Index() {
   const containerRef = useRef();
@@ -18,6 +15,8 @@ export default function Index() {
   const [members, setMembers] = useState(null);
   const [sort, setSort] = useState("love");
   const [levels, setLevels] = useState([]);
+  const [simulation, setSimulation] = useState(null);
+  const [simulations, setSimulations] = useState([]);
 
   useEffect(() => {
     function onFullscreenChange() {
@@ -49,42 +48,6 @@ export default function Index() {
     };
   }, [setDimensions]);
 
-  // only run once levels is ready
-  useEffect(() => {
-    const processActivities = ({ result }) => {
-      const reducer = new MemberReducer();
-      result.activities.forEach((activity) => {
-        reducer.reduce(activity);
-      });
-      reducer.finalize();
-
-      // the result contains members with OL numbers and love
-      const rResult = reducer.getResult();
-
-      const memberCollection = new MemberCollection();
-      const membersCollectionRecords = Object.values(rResult).map(
-        ({ actor, love, level, activityCount }) => ({
-          id: actor.replace(/[^a-z0-9]/gi, ""),
-          name: actor.split("#")[0],
-          level,
-          love,
-          activityCount,
-          reach: 0.5,
-        })
-      );
-      memberCollection.list.push(...membersCollectionRecords);
-      memberCollection.sort({ sort, levels });
-      console.log(memberCollection.list);
-      setMembers(memberCollection);
-    };
-
-    if (levels) {
-      fetch("/api/activities")
-        .then((res) => res.json())
-        .then(processActivities);
-    }
-  }, [sort, levels]);
-
   return (
     <>
       <Head />
@@ -110,6 +73,10 @@ export default function Index() {
             setLevels={setLevels}
             sort={sort}
             setSort={setSort}
+            simulation={simulation}
+            setSimulation={setSimulation}
+            simulations={simulations}
+            setSimulations={setSimulations}
           />
         )}
       </div>

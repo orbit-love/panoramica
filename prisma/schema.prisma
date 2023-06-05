@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Member {
-  id            String       @default(cuid()) @id
+  id            Int         @id @default(autoincrement())
   name          String
   slug          String      @unique
   love          Int?
@@ -24,9 +24,18 @@ model Member {
   last_activity_at    DateTime
 }
 
+model Simulation {
+  id            Int      @id @default(autoincrement())
+  name          String       @unique
+  url           String
+  activities    Activity[]
+}
+
 model Activity {
-  id            String       @default(cuid()) @id
-  orbit_id      String     @unique
+  id            Int      @id @default(autoincrement())
+  orbit_id      String       @unique
   actor          String
   timestamp   DateTime
+  simulation   Simulation    @relation(fields: [simulationId], references: [id])
+  simulationId Int
 }

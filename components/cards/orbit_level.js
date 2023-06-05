@@ -29,8 +29,6 @@ export default function OrbitLevel({
           {level.name} ({levelMembers.length})
         </div>
       </div>
-      <div className="text-sm italic">{level.description}</div>
-      <div className="border-b border-indigo-900"></div>
       <div className="text-sm text-indigo-300">
         <SortOptions
           sort={sort}
@@ -40,7 +38,7 @@ export default function OrbitLevel({
           levels={levels}
         />
       </div>
-      <div className="flex flex-col max-h-[50vh] overflow-scroll">
+      <div className="flex flex-col max-h-[45vh] overflow-scroll">
         {levelMembers.map((member) => (
           <CompactMember
             key={member.id}
