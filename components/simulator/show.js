@@ -18,17 +18,38 @@ export default function Show({
 }) {
   const [activities, setActivities] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [timestamp, setTimestamp] = useState(null);
-  const [step, setStep] = useState(-1);
+  const [low, setLow] = useState(0);
+  const [high, setHigh] = useState(0);
+  const [cycle, setCycle] = useState(false);
 
-  const [minValue, setMinValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(0);
+  const { cycleDelay, firstCycleDelay } = c.visualization;
+
   const onSliderChange = ({ min, max }) => {
-    // setMinValue(min);
-    // setMaxValue(max);
+    setLow(min);
+    setHigh(max);
   };
 
-  const numSteps = 10;
+  useEffect(() => {
+    if (!activities) return;
+    const eachCycle = () => {
+      if (cycle) {
+        if (high < activities.length) {
+          setHigh(high + activities.length * 0.1);
+        } else {
+          console.log("high", high, activities.length);
+          setHigh(100);
+        }
+      }
+    };
+    const cycleInterval = setInterval(eachCycle, cycleDelay);
+    // wait a little bit (but not 2 seconds) so the user can see the cycling
+    // is happening on page load or when they manually enable cycling
+    const timeout = setTimeout(eachCycle, firstCycleDelay);
+    return () => {
+      clearInterval(cycleInterval);
+      clearTimeout(timeout);
+    };
+  }, [cycle, setCycle, cycleDelay, firstCycleDelay, high, activities]);
 
   const fetchActivities = useCallback(
     async () =>
@@ -36,41 +57,10 @@ export default function Show({
         .then((res) => res.json())
         .then(({ result }) => {
           setActivities(result.activities);
-          setMaxValue(result.activities.length);
           setLoading(false);
         }),
     [simulation.id]
   );
-
-  const processActivityBatch = (activities) => {
-    const reducer = new MemberReducer();
-    for (var i = 0; i < activities.length; i++) {
-      var activity = activities[i];
-      reducer.reduce(activity);
-    }
-
-    reducer.finalize();
-
-    // the result contains members with OL numbers and love
-    const rResult = reducer.getResult();
-
-    // now lets get the results ready for display
-    const memberCollection = new MemberCollection();
-    const membersCollectionRecords = Object.values(rResult).map(
-      ({ actor, love, level, activityCount }) => ({
-        id: `id-${actor.replace(/[^a-z0-9]/gi, "")}`,
-        name: actor.split("#")[0],
-        level,
-        love,
-        activityCount,
-        reach: 0.5,
-        reset: true,
-      })
-    );
-    memberCollection.list.push(...membersCollectionRecords);
-    memberCollection.sort({ sort, levels });
-    setMembers(memberCollection);
-  };
 
   useEffect(() => {
     if (!activities) {
@@ -99,109 +89,84 @@ export default function Show({
   };
 
   // do what we do for cycle here, turn on/off
-  const runSimulation = async () => {
-    processActivityBatch(activities);
+  const toggleCycle = async () => {
+    setCycle(!cycle);
   };
 
   const onReset = () => {
     setSelection(null);
-    setTimestamp(null);
-    setStep(-1);
     setMembers(new MemberCollection());
+    setLow(0);
+    setHigh(0);
   };
 
-  const sliceActivitiesForStep = ({ activities, step, numSteps }) => {
-    var endSliceAt = Math.floor((activities.length / numSteps) * (step + 1));
-    var slice = activities.slice(0, endSliceAt);
-    return slice;
-  };
+  useEffect(() => {
+    if (!activities) return;
 
-  const handleBack = () => {
-    if (step > 0) {
-      const newStep = step - 1;
-      const slice = sliceActivitiesForStep({
-        activities,
-        step: newStep,
-        numSteps,
-      });
-      processActivityBatch(slice);
-      setTimestamp(slice[slice.length - 1]?.timestamp);
-      setStep(newStep);
-    }
-  };
+    const processActivitySlice = (activities) => {
+      const reducer = new MemberReducer();
+      for (var i = 0; i < activities.length; i++) {
+        var activity = activities[i];
+        reducer.reduce(activity);
+      }
 
-  const handleForward = () => {
-    if (step < numSteps) {
-      const newStep = step + 1;
-      const slice = sliceActivitiesForStep({
-        activities,
-        step: newStep,
-        numSteps,
-      });
-      processActivityBatch(slice);
-      setTimestamp(slice[slice.length - 1]?.timestamp);
-      setStep(newStep);
-    }
-  };
+      reducer.finalize();
 
-  console.log(maxValue);
+      // the result contains members with OL numbers and love
+      const rResult = reducer.getResult();
+
+      // now lets get the results ready for display
+      const memberCollection = new MemberCollection();
+      const membersCollectionRecords = Object.values(rResult).map(
+        ({ actor, love, level, activityCount }) => ({
+          id: `id-${actor.replace(/[^a-z0-9]/gi, "")}`,
+          name: actor.split("#")[0],
+          level,
+          love,
+          activityCount,
+          reach: 0.5,
+          reset: true,
+        })
+      );
+      memberCollection.list.push(...membersCollectionRecords);
+      memberCollection.sort({ sort, levels });
+      setMembers(memberCollection);
+    };
+
+    processActivitySlice(activities.slice(low, high));
+  }, [activities, sort, levels, setMembers, low, high]);
+
+  var slice = activities?.slice(low, high);
 
   return (
     <div className="flex flex-col space-y-1">
       <div className="text-lg font-bold">{simulation.name}</div>
       {loading && <div className="py-4">Loading...</div>}
       <div className="border-b border-indigo-900" />
-      {maxValue > 0 && (
+      {activities && (
         <MultiRangeSlider
-          min={minValue}
-          max={maxValue}
+          min={0}
+          max={activities.length}
+          minCurrent={low}
+          maxCurrent={high}
           onChange={onSliderChange}
         />
-        // <table className="table border-separate [border-spacing:0] text-sm">
-        //   <tbody>
-        //     <tr>
-        //       <td className="w-24">From</td>
-        //       <td>{c.formatDate(activities[0]?.timestamp)}</td>
-        //     </tr>
-        //     <tr>
-        //       <td className="w-24">To</td>
-        //       <td>{c.formatDate(timestamp)}</td>
-        //     </tr>
-        //   </tbody>
-        // </table>
       )}
-      <div className="flex py-2 space-x-2">
-        <button onClick={() => handleBack()} className={c.buttonClasses}>
-          &laquo;
-        </button>
-        <button onClick={() => handleForward()} className={c.buttonClasses}>
-          &raquo;
-        </button>
-        <button onClick={() => runSimulation()} className={c.buttonClasses}>
-          Run
-        </button>
-        <button onClick={onReset} className={c.buttonClasses}>
-          Reset
-        </button>
-      </div>
       <div className="flex flex-col space-y-1">
-        <div className="my-1 text-lg font-bold">Data</div>
-        {activities && (
+        {slice && (
           <table className="table border-separate [border-spacing:0] text-sm">
             <tbody>
               <tr>
                 <td className="w-24">Activities</td>
-                <td>{activities.length}</td>
+                <td>{slice.length}</td>
               </tr>
               <tr>
-                <td className="w-24">First Activity</td>
-                <td>{c.formatDate(activities[0]?.timestamp)}</td>
+                <td className="w-24">From</td>
+                <td>{c.formatDate(slice[0]?.timestamp)}</td>
               </tr>
               <tr>
-                <td className="w-24">Last Activity</td>
-                <td>
-                  {c.formatDate(activities[activities.length - 1]?.timestamp)}
-                </td>
+                <td className="w-24">To</td>
+                <td>{c.formatDate(slice[slice.length - 1]?.timestamp)}</td>
               </tr>
             </tbody>
           </table>
@@ -210,6 +175,14 @@ export default function Show({
       <div className="h-1" />
       <div className="flex flex-col space-y-2">
         <div className="my-1 text-lg font-bold">Actions</div>
+      </div>
+      <div className="flex py-2 space-x-2">
+        <button onClick={() => toggleCycle()} className={c.buttonClasses}>
+          {cycle ? "Pause" : "Run"}
+        </button>
+        <button onClick={onReset} className={c.buttonClasses}>
+          Reset
+        </button>
       </div>
       <div className="flex space-x-2 text-xs">
         <button
