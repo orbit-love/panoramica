@@ -4,7 +4,7 @@ import MemberCollection from "lib/memberCollection";
 import MemberReducer from "lib/reducers/member";
 import c from "lib/common";
 
-const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+import MultiRangeSlider from "components/multiRangeSlider";
 
 export default function Show({
   sort,
@@ -21,6 +21,13 @@ export default function Show({
   const [timestamp, setTimestamp] = useState(null);
   const [step, setStep] = useState(-1);
 
+  const [minValue, setMinValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(0);
+  const onSliderChange = ({ min, max }) => {
+    // setMinValue(min);
+    // setMaxValue(max);
+  };
+
   const numSteps = 10;
 
   const fetchActivities = useCallback(
@@ -29,6 +36,7 @@ export default function Show({
         .then((res) => res.json())
         .then(({ result }) => {
           setActivities(result.activities);
+          setMaxValue(result.activities.length);
           setLoading(false);
         }),
     [simulation.id]
@@ -136,23 +144,32 @@ export default function Show({
     }
   };
 
+  console.log(maxValue);
+
   return (
     <div className="flex flex-col space-y-1">
       <div className="text-lg font-bold">{simulation.name}</div>
       {loading && <div className="py-4">Loading...</div>}
       <div className="border-b border-indigo-900" />
-      <table className="table border-separate [border-spacing:0] text-sm">
-        <tbody>
-          <tr>
-            <td className="w-24">From</td>
-            <td>{c.formatDate(activities[0]?.timestamp)}</td>
-          </tr>
-          <tr>
-            <td className="w-24">To</td>
-            <td>{c.formatDate(timestamp)}</td>
-          </tr>
-        </tbody>
-      </table>
+      {maxValue > 0 && (
+        <MultiRangeSlider
+          min={minValue}
+          max={maxValue}
+          onChange={onSliderChange}
+        />
+        // <table className="table border-separate [border-spacing:0] text-sm">
+        //   <tbody>
+        //     <tr>
+        //       <td className="w-24">From</td>
+        //       <td>{c.formatDate(activities[0]?.timestamp)}</td>
+        //     </tr>
+        //     <tr>
+        //       <td className="w-24">To</td>
+        //       <td>{c.formatDate(timestamp)}</td>
+        //     </tr>
+        //   </tbody>
+        // </table>
+      )}
       <div className="flex py-2 space-x-2">
         <button onClick={() => handleBack()} className={c.buttonClasses}>
           &laquo;
