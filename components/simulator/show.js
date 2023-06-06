@@ -141,9 +141,19 @@ export default function Show({
       <div className="text-lg font-bold">{simulation.name}</div>
       {loading && <div className="py-4">Loading...</div>}
       <div className="border-b border-indigo-900" />
-      {timestamp && <div>From:{c.formatDate(activities[0]?.timestamp)}</div>}
-      {timestamp && <div>To: {c.formatDate(timestamp)}</div>}
-      <div className="py-2 flex space-x-2">
+      <table className="table border-separate [border-spacing:0] text-sm">
+        <tbody>
+          <tr>
+            <td className="w-24">From</td>
+            <td>{c.formatDate(activities[0]?.timestamp)}</td>
+          </tr>
+          <tr>
+            <td className="w-24">To</td>
+            <td>{c.formatDate(timestamp)}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div className="flex py-2 space-x-2">
         <button onClick={() => handleBack()} className={c.buttonClasses}>
           &laquo;
         </button>
