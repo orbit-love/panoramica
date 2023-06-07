@@ -4,6 +4,7 @@ import MemberCollection from "lib/memberCollection";
 import MemberReducer from "lib/reducers/member";
 import c from "lib/common";
 
+import Infer from "components/simulator/infer";
 import MultiRangeSlider from "components/multiRangeSlider";
 
 export default function Show({
@@ -139,69 +140,75 @@ export default function Show({
   var slice = activities?.slice(low, high);
 
   return (
-    <div className="flex flex-col space-y-1">
-      <div className="text-lg font-bold">{simulation.name}</div>
-      {loading && <div className="py-4">Loading...</div>}
-      <div className="border-b border-indigo-900" />
-      {activities && (
-        <MultiRangeSlider
-          min={0}
-          max={activities.length}
-          minCurrent={low}
-          maxCurrent={high}
-          onChange={onSliderChange}
-        />
-      )}
+    <>
+      {activities && <Infer activities={activities} low={low} high={high} />}
       <div className="flex flex-col space-y-1">
-        {slice && (
-          <table className="table border-separate [border-spacing:0] text-sm">
-            <tbody>
-              <tr>
-                <td className="w-24">Activities</td>
-                <td>{slice.length}</td>
-              </tr>
-              <tr>
-                <td className="w-24">From</td>
-                <td>{c.formatDate(slice[0]?.timestamp)}</td>
-              </tr>
-              <tr>
-                <td className="w-24">To</td>
-                <td>{c.formatDate(slice[slice.length - 1]?.timestamp)}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div className="text-lg font-bold">{simulation.name}</div>
+        {loading && <div className="py-4">Loading...</div>}
+        <div className="border-b border-indigo-900" />
+        {activities && (
+          <MultiRangeSlider
+            min={0}
+            max={activities.length}
+            minCurrent={low}
+            maxCurrent={high}
+            onChange={onSliderChange}
+          />
         )}
+        <div className="flex flex-col space-y-1">
+          {slice && (
+            <table className="table border-separate [border-spacing:0] text-sm">
+              <tbody>
+                <tr>
+                  <td className="w-24">Activities</td>
+                  <td>{slice.length}</td>
+                </tr>
+                <tr>
+                  <td className="w-24">From</td>
+                  <td>{c.formatDate(slice[0]?.timestamp)}</td>
+                </tr>
+                <tr>
+                  <td className="w-24">To</td>
+                  <td>{c.formatDate(slice[slice.length - 1]?.timestamp)}</td>
+                </tr>
+              </tbody>
+            </table>
+          )}
+        </div>
+        <div className="h-1" />
+        <div className="flex flex-col space-y-2">
+          <div className="my-1 text-lg font-bold">Actions</div>
+        </div>
+        <div className="flex py-2 space-x-2">
+          <button onClick={() => toggleCycle()} className={c.buttonClasses}>
+            {cycle ? "Pause" : "Run"}
+          </button>
+          <button onClick={onReset} className={c.buttonClasses}>
+            Reset
+          </button>
+        </div>
+        <div className="flex space-x-2 text-xs">
+          <button
+            onClick={() => {
+              setSelection(null);
+              setMembers(new MemberCollection());
+              setSimulation(null);
+            }}
+            className={c.buttonClasses}
+          >
+            Back
+          </button>
+          <button onClick={() => setEditMode(true)} className={c.buttonClasses}>
+            Edit
+          </button>
+          <button
+            onClick={() => importSimulation()}
+            className={c.buttonClasses}
+          >
+            Import
+          </button>
+        </div>
       </div>
-      <div className="h-1" />
-      <div className="flex flex-col space-y-2">
-        <div className="my-1 text-lg font-bold">Actions</div>
-      </div>
-      <div className="flex py-2 space-x-2">
-        <button onClick={() => toggleCycle()} className={c.buttonClasses}>
-          {cycle ? "Pause" : "Run"}
-        </button>
-        <button onClick={onReset} className={c.buttonClasses}>
-          Reset
-        </button>
-      </div>
-      <div className="flex space-x-2 text-xs">
-        <button
-          onClick={() => {
-            setSelection(null);
-            setMembers(new MemberCollection());
-            setSimulation(null);
-          }}
-          className={c.buttonClasses}
-        >
-          Back
-        </button>
-        <button onClick={() => setEditMode(true)} className={c.buttonClasses}>
-          Edit
-        </button>
-        <button onClick={() => importSimulation()} className={c.buttonClasses}>
-          Import
-        </button>
-      </div>
-    </div>
+    </>
   );
 }
