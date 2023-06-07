@@ -1,6 +1,58 @@
 import { PrismaClient } from "@prisma/client";
 import axios from "axios";
 
+const getTypeFields = ({ activity, included }) => {
+  switch (activity.type) {
+    case "tweet_activity":
+      const tweet = activity.attributes.t_tweet;
+      return {
+        // text: tweet.text,
+        actor: tweet.user.screen_name,
+      };
+    default:
+      return {
+        actor: getActor({ activity, included }),
+      };
+  }
+};
+
+const getActor = ({ activity, included }) => {
+  var memberId = activity.relationships.member.data.id;
+  var member = included.find(
+    (item) => item.type === "member" && item.id == memberId
+  );
+  var discordIdentityId = member.relationships.identities.data.find(
+    (item) => item.type == "discord_identity"
+  )?.id;
+  var discordIdentity = included.find(
+    (item) => item.type === "discord_identity" && item.id == discordIdentityId
+  );
+  var githubIdentityId = member.relationships.identities.data.find(
+    (item) => item.type == "github_identity"
+  )?.id;
+  var githubIdentity = included.find(
+    (item) => item.type === "github_identity" && item.id == githubIdentityId
+  );
+  return (
+    discordIdentity?.attributes?.username ||
+    githubIdentity?.attributes?.username
+  );
+};
+
+const getFields = ({ simulation, activity, included }) => {
+  var orbit_id = activity.id;
+  var timestamp = activity.attributes.occurred_at;
+  var typeFields = getTypeFields({ activity, included });
+
+  return {
+    timestamp,
+    orbit_id,
+    ...typeFields,
+    simulationId: simulation.id,
+    payload: activity,
+  };
+};
+
 const getAPIData = async ({
   url,
   apiKey,
@@ -28,50 +80,18 @@ const getAPIData = async ({
       console.log("Fetched activities: ", activities.length);
       for (var i = 0; i < activities.length; i++) {
         var activity = activities[i];
-
         var orbit_id = activity.id;
-        var timestamp = activity.attributes.occurred_at;
 
-        // get the actor
-        var memberId = activity.relationships.member.data.id;
-        var member = included.find(
-          (item) => item.type === "member" && item.id == memberId
-        );
-        var discordIdentityId = member.relationships.identities.data.find(
-          (item) => item.type == "discord_identity"
-        )?.id;
-        var discordIdentity = included.find(
-          (item) =>
-            item.type === "discord_identity" && item.id == discordIdentityId
-        );
-        var githubIdentityId = member.relationships.identities.data.find(
-          (item) => item.type == "github_identity"
-        )?.id;
-        var githubIdentity = included.find(
-          (item) =>
-            item.type === "github_identity" && item.id == githubIdentityId
-        );
-        var actor =
-          discordIdentity?.attributes?.username ||
-          githubIdentity?.attributes?.username;
-        if (!actor) {
-          continue;
-        }
-
-        var fields = {
-          actor,
-          timestamp,
-          orbit_id,
-          simulationId: simulation.id,
-        };
-        await prisma.activity.upsert({
-          where: {
-            orbit_id,
-          },
-          create: fields,
-          update: fields,
-        });
-        console.log("Created activity " + orbit_id + " from " + actor);
+        var fields = getFields({ simulation, activity, included });
+        if (fields)
+          await prisma.activity.upsert({
+            where: {
+              orbit_id,
+            },
+            create: fields,
+            update: fields,
+          });
+        console.log("Created activity " + orbit_id + " from " + fields.actor);
       }
 
       allData.push(...activities);

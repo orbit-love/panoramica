@@ -38,4 +38,5 @@ model Activity {
   timestamp   DateTime
   simulation   Simulation    @relation(fields: [simulationId], references: [id])
   simulationId Int
+  payload      Json
 }

@@ -26,7 +26,7 @@ export default function Edit({ simulation, setSimulation, setEditMode }) {
           setSimulation(result.simulation);
           setEditMode(false);
         } else {
-          alert(message);
+          console.log("FAILED", message);
         }
       });
   };
@@ -62,7 +62,7 @@ export default function Edit({ simulation, setSimulation, setEditMode }) {
             onChange={({ target }) => setUrl(target.value)}
           ></input>
         </div>
-        <div className="flex space-x-2 pt-2">
+        <div className="flex pt-2 space-x-2">
           <button
             type="button"
             onClick={() => setEditMode(false)}
