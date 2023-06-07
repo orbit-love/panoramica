@@ -4,7 +4,7 @@ import MemberCollection from "lib/memberCollection";
 import MemberReducer from "lib/reducers/member";
 import c from "lib/common";
 
-import Infer from "components/simulator/infer";
+import Console from "components/simulator/console";
 import MultiRangeSlider from "components/multiRangeSlider";
 
 export default function Show({
@@ -141,7 +141,7 @@ export default function Show({
 
   return (
     <>
-      {activities && <Infer activities={activities} low={low} high={high} />}
+      {activities && <Console activities={activities} low={low} high={high} />}
       <div className="flex flex-col space-y-1">
         <div className="text-lg font-bold">{simulation.name}</div>
         {loading && <div className="py-4">Loading...</div>}

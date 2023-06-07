@@ -12,6 +12,20 @@ export default async function handler(req, res) {
         timestamp: "asc",
       },
     });
+    activities = activities.map((activity) => ({
+      ...activity,
+      payload: {
+        attributes: {
+          t_tweet: {
+            user: {
+              screen_name: activity.payload.attributes.t_tweet.user.screen_name,
+            },
+            text: activity.payload.attributes.t_tweet.text,
+            entities: activity.payload.attributes.t_tweet.entities,
+          },
+        },
+      },
+    }));
     activities = JSON.parse(JSON.stringify(activities));
 
     res.status(200).json({ result: { activities } });
