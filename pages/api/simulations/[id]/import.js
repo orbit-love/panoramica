@@ -33,9 +33,14 @@ const getActor = ({ activity, included }) => {
   var githubIdentity = included.find(
     (item) => item.type === "github_identity" && item.id == githubIdentityId
   );
+  var anyIdentityId = member.relationships.identities.data[0]?.id;
+  var anyIdentity = included.find((item) => item.id == anyIdentityId);
   return (
     discordIdentity?.attributes?.username ||
-    githubIdentity?.attributes?.username
+    githubIdentity?.attributes?.username ||
+    anyIdentity?.attributes?.username ||
+    anyIdentity?.attributes?.email ||
+    anyIdentity?.attributes.uid
   );
 };
 
@@ -83,7 +88,8 @@ const getAPIData = async ({
         var orbit_id = activity.id;
 
         var fields = getFields({ simulation, activity, included });
-        if (fields)
+
+        if (fields && fields.actor)
           await prisma.activity.upsert({
             where: {
               orbit_id,
@@ -137,7 +143,7 @@ export default async function handler(req, res) {
     // delete existing activities for the simulation
     await prisma.activity.deleteMany({
       where: {
-        simulationId: parseInt(id),
+        simulationId: simulation.id,
       },
     });
 

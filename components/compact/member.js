@@ -14,7 +14,7 @@ export default function CompactMember({ member, setSelection, metrics }) {
         <div className="flex items-center space-x-1">
           <OrbitLevelIcon number={member.level} />
           <div
-            className="overflow-hidden w-32 text-left text-ellipsis whitespace-nowrap"
+            className="overflow-hidden w-56 text-left text-ellipsis whitespace-nowrap"
             style={{
               color: c.orbitLevelColorScale(member.level),
             }}
