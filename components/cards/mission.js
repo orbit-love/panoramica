@@ -1,8 +1,10 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import c from "lib/common";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function Mission({ members }) {
+import c from "lib/common";
+import CompactMember from "components/compact/member";
+
+export default function Mission({ members, setSelection }) {
   const mostConnectedMember = members.list.sort(
     (a, b) => b.connections?.length - a.connections?.length
   )[0];
@@ -15,9 +17,30 @@ export default function Mission({ members }) {
         <div>
           <FontAwesomeIcon icon="planet-ringed" className="text-2xl" />
         </div>
-        <div className="text-2xl font-semibold">Summary</div>
+        <div className="text-2xl font-semibold">
+          Members: {members.list.length}
+        </div>
       </div>
-      <table className="table border-separate [border-spacing:0]">
+      <div className="flex flex-col space-y-2 max-h-[45vh] overflow-scroll">
+        {[1, 2, 3, 4].map((number) => (
+          <>
+            <div className="" style={{ color: c.orbitLevelColorScale(number) }}>
+              <span className="font-bold">Orbit {number}</span>
+            </div>
+            <div className="flex flex-col space-y-0">
+              {members.filterMembers({ levelNumber: number }).map((member) => (
+                <CompactMember
+                  key={member.id}
+                  member={member}
+                  setSelection={setSelection}
+                  metrics={true}
+                />
+              ))}
+            </div>
+          </>
+        ))}
+      </div>
+      {/* <table className="table border-separate [border-spacing:0]">
         <tbody>
           <tr>
             <td className="w-48">Total Members</td>
@@ -54,7 +77,7 @@ export default function Mission({ members }) {
             </>
           )}
         </tbody>
-      </table>
+      </table> */}
     </div>
   );
 }

@@ -12,16 +12,18 @@ export default async function handler(req, res) {
         timestamp: "asc",
       },
     });
+    // thin out the payload to just what the UI needs
     activities = activities.map((activity) => ({
       ...activity,
       payload: {
         attributes: {
           t_tweet: {
             user: {
-              screen_name: activity.payload.attributes.t_tweet.user.screen_name,
+              screen_name:
+                activity.payload.attributes.t_tweet?.user?.screen_name,
             },
-            text: activity.payload.attributes.t_tweet.text,
-            entities: activity.payload.attributes.t_tweet.entities,
+            text: activity.payload.attributes.t_tweet?.text,
+            entities: activity.payload.attributes.t_tweet?.entities,
           },
         },
       },

@@ -81,6 +81,7 @@ export default function Show({
       .then((res) => res.json())
       .then(({ result, message }) => {
         if (result?.count) {
+          setLoading(true);
           fetchActivities();
         } else {
           alert(message);
@@ -90,16 +91,16 @@ export default function Show({
   };
 
   // do what we do for cycle here, turn on/off
-  const toggleCycle = async () => {
-    setCycle(!cycle);
-  };
+  // const toggleCycle = async () => {
+  //   setCycle(!cycle);
+  // };
 
-  const onReset = () => {
-    setSelection(null);
-    setMembers(new MemberCollection());
-    setLow(0);
-    setHigh(0);
-  };
+  // const onReset = () => {
+  //   setSelection(null);
+  //   setMembers(new MemberCollection());
+  //   setLow(0);
+  //   setHigh(0);
+  // };
 
   useEffect(() => {
     if (!activities) return;
@@ -141,52 +142,55 @@ export default function Show({
 
   return (
     <>
-      {activities && <Console activities={activities} low={low} high={high} />}
+      {/* {activities && <Console activities={activities} low={low} high={high} />} */}
       <div className="flex flex-col space-y-1">
         <div className="text-lg font-bold">{simulation.name}</div>
         {loading && <div className="py-4">Loading...</div>}
         <div className="border-b border-indigo-900" />
         {activities && (
-          <MultiRangeSlider
-            min={0}
-            max={activities.length}
-            minCurrent={low}
-            maxCurrent={high}
-            onChange={onSliderChange}
-          />
+          <div className="pb-9">
+            <MultiRangeSlider
+              min={0}
+              max={activities.length}
+              minCurrent={low}
+              maxCurrent={high}
+              minLabel={c.formatDateShort(slice[0]?.timestamp)}
+              maxLabel={c.formatDateShort(slice[slice.length - 1]?.timestamp)}
+              onChange={onSliderChange}
+            />
+          </div>
         )}
         <div className="flex flex-col space-y-1">
           {slice && (
             <table className="table border-separate [border-spacing:0] text-sm">
               <tbody>
                 <tr>
-                  <td className="w-24">Activities</td>
+                  <td className="w-24 font-semibold">Activities</td>
                   <td>{slice.length}</td>
                 </tr>
                 <tr>
-                  <td className="w-24">From</td>
-                  <td>{c.formatDate(slice[0]?.timestamp)}</td>
-                </tr>
-                <tr>
-                  <td className="w-24">To</td>
-                  <td>{c.formatDate(slice[slice.length - 1]?.timestamp)}</td>
+                  <td className="w-24 font-semibold">Members</td>
+                  <td>
+                    {
+                      slice
+                        .map((activity) => activity.actor)
+                        .filter(c.onlyUnique).length
+                    }
+                  </td>
                 </tr>
               </tbody>
             </table>
           )}
         </div>
-        <div className="h-1" />
-        <div className="flex flex-col space-y-2">
-          <div className="my-1 text-lg font-bold">Actions</div>
-        </div>
-        <div className="flex py-2 space-x-2">
+        <div className="h-6" />
+        {/* <div className="flex py-2 space-x-2">
           <button onClick={() => toggleCycle()} className={c.buttonClasses}>
             {cycle ? "Pause" : "Run"}
           </button>
           <button onClick={onReset} className={c.buttonClasses}>
             Reset
           </button>
-        </div>
+        </div> */}
         <div className="flex space-x-2 text-xs">
           <button
             onClick={() => {
