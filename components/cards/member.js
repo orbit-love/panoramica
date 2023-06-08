@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
+import CompactMember from "components/compact/member";
 import Meter from "components/meter";
 
 export default function Member({
@@ -53,6 +54,9 @@ export default function Member({
           ></Meter>
         </div>
       </div>
+      <div className="font-semibold text-indigo-400">
+        {member.activityCount} activities
+      </div>
       {member.connections && (
         <div className="flex py-2">
           <button
@@ -70,8 +74,15 @@ export default function Member({
           </button>
         </div>
       )}
-      <div className="py-1" />
-      {member.activityCount} activities
+      <div className="flex flex-col">
+        {member.connections.map((connection) => (
+          <CompactMember
+            key={connection.id}
+            member={connection}
+            setSelection={setSelection}
+          />
+        ))}
+      </div>
     </div>
   );
 }

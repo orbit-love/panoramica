@@ -141,7 +141,9 @@ export default function Show({
             )
           )
           .filter((e) => e);
-        member.connections = expandedConnections;
+        member.connections = expandedConnections.sort(
+          (a, b) => a.level - b.level
+        );
       });
       memberCollection.list.push(...membersCollectionRecords);
       memberCollection.sort({ sort, levels });

@@ -1,5 +1,4 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
