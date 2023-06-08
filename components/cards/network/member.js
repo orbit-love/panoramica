@@ -17,12 +17,12 @@ export default function Member({ member, setSelection, setShowNetwork }) {
                 setSelection(member.level);
               }}
             >
-              <OrbitLevelIcon number={member.level.number} classes="text-2xl" />
+              <OrbitLevelIcon number={member.level} classes="text-2xl" />
             </button>
           </div>
           <div
             className="text-2xl font-semibold"
-            style={{ color: c.orbitLevelColorScale(member.level.number) }}
+            style={{ color: c.orbitLevelColorScale(member.level) }}
           >
             {member.name}
           </div>

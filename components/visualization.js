@@ -40,7 +40,7 @@ export default function Visualization({
   const [animate, setAnimate] = useState(!isReduced);
   const [cycle, setCycle] = useState(false);
   const [selection, setSelection] = useState(null);
-  const [showNetwork, setShowNetwork] = useState(true);
+  const [showNetwork, setShowNetwork] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [showPanel, setShowPanel] = useState(true);
   const [revolution, setRevolution] = useState(defaultRevolution);
