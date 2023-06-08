@@ -117,7 +117,9 @@ export default function Widgets({
                 setSort={setSort}
               />
             )}
-            {selection.name === "Mission" && <Mission members={members} />}
+            {selection.name === "Mission" && (
+              <Mission members={members} setSelection={setSelection} />
+            )}
           </div>
         </div>
       )}
