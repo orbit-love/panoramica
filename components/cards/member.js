@@ -22,7 +22,7 @@ export default function Member({
       <div className="flex items-baseline space-x-2">
         <button
           className="flex items-center"
-          onClick={() => setSelection(levels[member.level])}
+          onClick={() => setSelection({ name: "Mission" })}
         >
           <FontAwesomeIcon
             icon="chevron-left"
@@ -71,7 +71,7 @@ export default function Member({
         </div>
       )}
       <div className="py-1" />
-      {member.activityCount}
+      {member.activityCount} activities
     </div>
   );
 }

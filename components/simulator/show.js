@@ -117,19 +117,32 @@ export default function Show({
       // the result contains members with OL numbers and love
       const rResult = reducer.getResult();
 
+      const toId = (actor) => `id-${actor.replace(/[^a-z0-9]/gi, "")}`;
+
       // now lets get the results ready for display
       const memberCollection = new MemberCollection();
       const membersCollectionRecords = Object.values(rResult).map(
-        ({ actor, love, level, activityCount }) => ({
-          id: `id-${actor.replace(/[^a-z0-9]/gi, "")}`,
+        ({ actor, love, reach, level, connections, activityCount }) => ({
+          id: toId(actor),
           name: actor.split("#")[0],
           level,
           love,
+          reach,
           activityCount,
-          reach: 0.5,
+          connections,
           reset: true,
         })
       );
+      membersCollectionRecords.forEach((member) => {
+        var expandedConnections = member.connections
+          .map((connection) =>
+            membersCollectionRecords.find(
+              (member) => member.id === toId(connection)
+            )
+          )
+          .filter((e) => e);
+        member.connections = expandedConnections;
+      });
       memberCollection.list.push(...membersCollectionRecords);
       memberCollection.sort({ sort, levels });
       setMembers(memberCollection);

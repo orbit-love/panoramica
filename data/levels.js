@@ -32,7 +32,7 @@ const levels = [
     distance: 100 - factor,
     exponent: 15,
     multiplier: 4,
-    radius: 7,
+    radius: 6,
     ringColor: c.orbitLevelColorScale(3),
   },
   {
@@ -43,7 +43,7 @@ const levels = [
     distance: 100,
     exponent: 10,
     multiplier: 6,
-    radius: 5,
+    radius: 3,
     rxFuzz: 0.0,
     ryFuzz: 0.0,
     ringColor: c.orbitLevelColorScale(4),

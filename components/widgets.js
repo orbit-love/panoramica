@@ -98,7 +98,10 @@ export default function Widgets({
           >
             {typeof selection.level === "number" && (
               <Member
-                member={selection}
+                member={
+                  members.list.find((member) => selection.id === member.id) ||
+                  selection
+                }
                 members={members}
                 setSelection={setSelection}
                 showNetwork={showNetwork}
@@ -118,7 +121,14 @@ export default function Widgets({
               />
             )}
             {selection.name === "Mission" && (
-              <Mission members={members} setSelection={setSelection} />
+              <Mission
+                members={members}
+                setSelection={setSelection}
+                sort={sort}
+                setSort={setSort}
+                levels={levels}
+                setMembers={setMembers}
+              />
             )}
           </div>
         </div>

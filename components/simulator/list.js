@@ -45,8 +45,10 @@ export default function Home({
   };
 
   useEffect(() => {
-    loadSimulations();
-  }, []);
+    if (!simulation) {
+      loadSimulations();
+    }
+  }, [simulation]);
 
   return (
     <>
