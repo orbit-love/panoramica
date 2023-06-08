@@ -4,7 +4,7 @@ import Show from "components/simulator/show";
 import New from "components/simulator/new";
 import Edit from "components/simulator/edit";
 
-export default function Home({
+export default function List({
   sort,
   levels,
   simulation,

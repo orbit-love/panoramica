@@ -149,7 +149,7 @@ export default function Show({
         {loading && <div className="py-4">Loading...</div>}
         <div className="border-b border-indigo-900" />
         {activities && activities.length > 0 && (
-          <div className="pb-9">
+          <div className="pb-6">
             <MultiRangeSlider
               min={0}
               max={activities.length}
@@ -189,7 +189,7 @@ export default function Show({
             </table>
           )}
         </div>
-        <div className="h-6" />
+        <div className="h-2" />
         <div className="flex space-x-2 text-xs">
           <button
             onClick={() => {

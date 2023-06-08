@@ -64,17 +64,19 @@ export default function MemberGraph({
     afteritemstatechange: ({ item, state, enabled }) => {
       if (item.getType() === "node") {
         var currentGraph = graphRef.current;
-        const member = item.getModel();
+        const model = item.getModel();
         if ((state === "active" || state === "selected") && enabled) {
           currentGraph.updateItem(item, {
             ...item,
-            label: member.slicedName,
+            label: model.slicedName,
           });
         } else if (state === "inactive" && enabled) {
-          currentGraph.updateItem(item, {
-            ...item,
-            label: "",
-          });
+          if (model.member.level === 4) {
+            currentGraph.updateItem(item, {
+              ...item,
+              label: "",
+            });
+          }
         }
       }
     },
@@ -111,21 +113,18 @@ export default function MemberGraph({
     }
   }, [showNetwork, members]);
 
-  const graphWidth = width * 0.75;
+  const graphWidth = width * 0.65;
   const graphHeight = height * 0.95;
 
   // the graphWidth + 5 prevents the canvas from overflowing the modal
   return (
     <div
-      className={`absolute top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-[${
+      className={`absolute top-0 left-0 z-50 pr-4 w-full h-full flex items-center justify-end bg-[${
         c.backgroundColor
-      }] bg-opacity-70 ${!showNetwork && "hidden"}`}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) setShowNetwork(false);
-      }}
+      }] bg-opacity-0 pointer-events-none ${!showNetwork && "hidden"}`}
     >
       <div
-        className="relative bg-[#150d33] rounded-md border-2 border-indigo-600"
+        className="relative bg-[#150d33] rounded-md border-2 border-indigo-600 pointer-events-auto"
         style={{ width: graphWidth + 5, height: graphHeight + 5 }}
       >
         <button

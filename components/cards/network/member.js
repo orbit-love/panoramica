@@ -30,7 +30,7 @@ export default function Member({ member, setSelection, setShowNetwork }) {
         <div className="flex py-2 px-4 space-x-4 rounded-lg border border-indigo-600">
           <MemberStats member={member} />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col max-h-[25vh] overflow-scroll">
           {member.connections.map((connection) => (
             <CompactMember
               key={connection.id}
