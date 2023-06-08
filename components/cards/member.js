@@ -54,9 +54,6 @@ export default function Member({
           ></Meter>
         </div>
       </div>
-      <div className="font-semibold text-indigo-400">
-        {member.activityCount} activities
-      </div>
       {member.connections && (
         <div className="flex py-2">
           <button
@@ -66,15 +63,21 @@ export default function Member({
             }}
           >
             <FontAwesomeIcon icon="chart-network" className="px-1" />
-            <span>
-              {showNetwork
-                ? ` Hide Connections: ${member.connections.length}`
-                : ` Show Connections: ${member.connections.length}`}
-            </span>
+            <span>{showNetwork ? ` Hide Graph` : ` Show Graph`}</span>
           </button>
         </div>
       )}
-      <div className="flex flex-col">
+      <div className="flex flex-col space-y-[-2px]">
+        <div className="flex font-semibold">
+          <span className="w-32 text-indigo-400">Activities</span>
+          <span>{member.activityCount}</span>
+        </div>
+        <div className="flex font-semibold">
+          <span className="w-32 text-indigo-400">Connections</span>
+          <span>{member.connections.length}</span>
+        </div>
+      </div>
+      <div className="flex flex-col max-h-[25vh] overflow-scroll">
         {member.connections.map((connection) => (
           <CompactMember
             key={connection.id}

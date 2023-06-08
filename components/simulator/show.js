@@ -37,7 +37,6 @@ export default function Show({
         if (high < activities.length) {
           setHigh(high + activities.length * 0.1);
         } else {
-          console.log("high", high, activities.length);
           setHigh(100);
         }
       }
@@ -52,16 +51,16 @@ export default function Show({
     };
   }, [cycle, setCycle, cycleDelay, firstCycleDelay, high, activities]);
 
-  const fetchActivities = useCallback(
-    async () =>
-      fetch(`/api/simulations/${simulation.id}/activities`)
-        .then((res) => res.json())
-        .then(({ result }) => {
-          setActivities(result.activities);
-          setLoading(false);
-        }),
-    [simulation.id]
-  );
+  const fetchActivities = useCallback(async () => {
+    setLoading(true);
+    fetch(`/api/simulations/${simulation.id}/activities`)
+      .then((res) => res.json())
+      .then(({ result }) => {
+        setHigh(result.activities.length);
+        setActivities(result.activities);
+        setLoading(false);
+      });
+  }, [simulation.id]);
 
   useEffect(() => {
     if (!activities) {
@@ -79,28 +78,15 @@ export default function Show({
       },
     })
       .then((res) => res.json())
-      .then(({ result, message }) => {
-        if (result?.count) {
-          setLoading(true);
-          fetchActivities();
-        } else {
+      .then(({ message }) => {
+        if (message) {
           alert(message);
+        } else {
+          fetchActivities();
         }
         setLoading(false);
       });
   };
-
-  // do what we do for cycle here, turn on/off
-  // const toggleCycle = async () => {
-  //   setCycle(!cycle);
-  // };
-
-  // const onReset = () => {
-  //   setSelection(null);
-  //   setMembers(new MemberCollection());
-  //   setLow(0);
-  //   setHigh(0);
-  // };
 
   useEffect(() => {
     if (!activities) return;
@@ -162,7 +148,7 @@ export default function Show({
         <div className="text-lg font-bold">{simulation.name}</div>
         {loading && <div className="py-4">Loading...</div>}
         <div className="border-b border-indigo-900" />
-        {activities && (
+        {activities && activities.length > 0 && (
           <div className="pb-9">
             <MultiRangeSlider
               min={0}
@@ -175,8 +161,14 @@ export default function Show({
             />
           </div>
         )}
-        <div className="flex flex-col space-y-1">
-          {slice && (
+        <div className="flex flex-col py-2">
+          {activities?.length === 0 && (
+            <div className="text-semibold text-green-500">
+              A new simulation has been created. Now, click Import to fetch the
+              activities.
+            </div>
+          )}
+          {activities?.length > 0 && slice && (
             <table className="table border-separate [border-spacing:0] text-sm">
               <tbody>
                 <tr>
@@ -198,14 +190,6 @@ export default function Show({
           )}
         </div>
         <div className="h-6" />
-        {/* <div className="flex py-2 space-x-2">
-          <button onClick={() => toggleCycle()} className={c.buttonClasses}>
-            {cycle ? "Pause" : "Run"}
-          </button>
-          <button onClick={onReset} className={c.buttonClasses}>
-            Reset
-          </button>
-        </div> */}
         <div className="flex space-x-2 text-xs">
           <button
             onClick={() => {

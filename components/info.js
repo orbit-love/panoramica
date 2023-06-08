@@ -39,7 +39,7 @@ export default function Info({ members, setShowInfo }) {
               </tr>
               <tr>
                 <td>n</td>
-                <td>Show/hide connections</td>
+                <td>Show/hide graph</td>
               </tr>
               <tr>
                 <td>f</td>
@@ -50,8 +50,8 @@ export default function Info({ members, setShowInfo }) {
                 <td>Information view</td>
               </tr>
               <tr>
-                <td>e</td>
-                <td>Walk-through view</td>
+                <td>o</td>
+                <td>Simulation panel</td>
               </tr>
             </tbody>
           </table>

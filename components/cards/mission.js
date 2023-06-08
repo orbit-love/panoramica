@@ -35,7 +35,7 @@ export default function Mission({
           levels={levels}
         />
       </div>
-      <div className="flex flex-col space-y-2 max-h-[45vh] overflow-scroll">
+      <div className="flex flex-col space-y-2 max-h-[40vh] overflow-scroll">
         {[1, 2, 3, 4].map((number) => (
           <>
             <div className="" style={{ color: c.orbitLevelColorScale(number) }}>

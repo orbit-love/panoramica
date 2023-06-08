@@ -14,14 +14,17 @@ export default function Home({
   setMembers,
   setSelection,
 }) {
+  const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
 
   const loadSimulations = () => {
+    setLoading(true);
     const url = "/api/simulations";
     fetch(url)
       .then((res) => res.json())
       .then(({ result }) => {
         setSimulations(result.simulations);
+        setLoading(false);
       });
   };
 
@@ -77,30 +80,27 @@ export default function Home({
         )}
         {!simulation && (
           <>
-            {simulations.length > 0 && (
-              <>
-                <div className="flex flex-col space-y-2">
-                  <div className="text-lg font-bold">Load a Simulation</div>
-                  {simulations.map((simulation) => (
-                    <div className="flex space-x-4" key={simulation.id}>
-                      <button
-                        className="text-left underline"
-                        onClick={() => setSimulation(simulation)}
-                      >
-                        {simulation.name}
-                      </button>
-                      <button
-                        className="text-left text-red-500 underline"
-                        onClick={() => deleteSimulation(simulation)}
-                      >
-                        delete
-                      </button>
-                    </div>
-                  ))}
+            <div className="flex flex-col space-y-2">
+              <div className="text-lg font-bold">Choose a Simulation</div>
+              {loading && <div className="py-4">Loading...</div>}
+              {simulations?.map((simulation) => (
+                <div className="flex space-x-4" key={simulation.id}>
+                  <button
+                    className="text-left underline"
+                    onClick={() => setSimulation(simulation)}
+                  >
+                    {simulation.name}
+                  </button>
+                  <button
+                    className="text-left text-red-500 underline"
+                    onClick={() => deleteSimulation(simulation)}
+                  >
+                    delete
+                  </button>
                 </div>
-                <div className="border-b border-indigo-900" />
-              </>
-            )}
+              ))}
+            </div>
+            <div className="border-b border-indigo-900" />
             <New
               setSimulation={setSimulation}
               loadSimulations={loadSimulations}

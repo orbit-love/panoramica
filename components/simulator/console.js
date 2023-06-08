@@ -144,7 +144,7 @@ export default function Console({ activities, low, high }) {
     >
       <div
         className="relative bg-[#150d33] pr-2 rounded-md border-2 border-indigo-600 overflow-scroll"
-        style={{ width: "50vw", height: "45vh" }}
+        style={{ width: "50vw", height: "40vh" }}
       >
         <div className="flex flex-col p-4 space-y-0">
           {Object.entries(topicMap)

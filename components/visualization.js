@@ -4,6 +4,7 @@ import c from "lib/common";
 import Shortcuts from "components/shortcuts";
 import helper from "lib/visualization/helper";
 import Widgets from "components/widgets";
+import MemberGraph from "components/memberGraph";
 
 export default function Visualization({
   width,
@@ -44,6 +45,7 @@ export default function Visualization({
   const [showPanel, setShowPanel] = useState(true);
   const [revolution, setRevolution] = useState(defaultRevolution);
   const [data, setData] = useState();
+  const [graph, setGraph] = useState();
 
   const prevShowNetwork = c.usePrevious(showNetwork);
   const prevSort = c.usePrevious(sort);
@@ -177,6 +179,22 @@ export default function Visualization({
           }}
         ></svg>
       </div>
+      {showNetwork && members && (
+        <MemberGraph
+          width={width}
+          height={height}
+          members={members}
+          selection={selection}
+          setSelection={setSelection}
+          graph={graph}
+          setGraph={setGraph}
+          showNetwork={showNetwork}
+          setShowNetwork={setShowNetwork}
+          data={data}
+          setData={setData}
+          levels={levels}
+        />
+      )}
       <div className="hidden bg-[#0F0A25] bg-[#150D33] text-[#eef2ff] text-[#1D1640]" />
       <Widgets
         svgRef={svgRef}

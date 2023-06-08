@@ -18,6 +18,7 @@ export default function MemberGraph({
   setShowNetwork,
   data,
   setData,
+  levels,
 }) {
   const graphRef = useRef();
   graphRef.current = graph;
@@ -92,8 +93,8 @@ export default function MemberGraph({
 
   // set the data
   useEffect(() => {
-    setData(helper.getData({ members }));
-  }, [members, setData]);
+    setData(helper.getData({ members, levels }));
+  }, [members, setData, levels]);
 
   // when the network view opens, animate to find the selected node
   // if no node is selected, choose the first member and click/focus on them

@@ -27,9 +27,6 @@ export default function New({ setSimulation, loadSimulations }) {
           setSimulation(result.simulation);
         } else {
           alert(message);
-          // reload the simulations in case anything changed that
-          // is causing the error
-          loadSimulations();
         }
       });
   };
@@ -54,13 +51,13 @@ export default function New({ setSimulation, loadSimulations }) {
           ></input>
         </div>
         <div className="flex flex-col space-y-1">
-          <div className="">Activities API URL</div>
+          <div className="">Any Activities URL</div>
           <input
             ref={urlRef}
             type="text"
             required
             className={c.inputClasses}
-            placeholder="https://app.orbit.love/<w>/activities.json?..."
+            placeholder="https://app.orbit.love/<w>/activities?..."
           ></input>
         </div>
         <div className="pt-2">
