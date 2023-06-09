@@ -58,10 +58,8 @@ export default function Show({
   }, [simulation.id]);
 
   useEffect(() => {
-    if (!activities) {
-      fetchActivities();
-    }
-  }, [activities, fetchActivities]);
+    fetchActivities();
+  }, [fetchActivities]);
 
   const importSimulation = async () => {
     setLoading(true);

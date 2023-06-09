@@ -15,29 +15,6 @@ body {
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
-.side-navigation-panel-select-option {
-  @apply flex justify-between items-center py-1 w-full text-lg cursor-pointer;
-}
-.side-navigation-panel-select-option:hover {
-  @apply text-indigo-700;
-}
-.side-navigation-panel-select-option-selected {
-  @apply text-indigo-800;
-}
-
-.side-navigation-panel-select-inner {
-  @apply pb-2;
-}
-.side-navigation-panel-select-inner-option {
-  @apply flex justify-between items-center px-2 cursor-pointer;
-}
-.side-navigation-panel-select-inner-option-selected {
-  @apply text-indigo-800;
-}
-.side-navigation-panel-select-inner-option:hover {
-  @apply text-indigo-700;
-}
-
 .space-gradient {
   background: rgb(21, 13, 51, 1);
   background: radial-gradient(
@@ -51,56 +28,8 @@ svg .clickable {
   cursor: pointer;
 }
 
-/* These four classes are necessary for the mobile-nav menu transition */
-.mobile-nav-enter {
-  display: hidden;
-  opacity: 0;
-  transform: translateY(-100%);
-}
-.mobile-nav-enter-active {
-  display: block;
-  opacity: 1;
-  transform: translateX(0);
-  transition: opacity 400ms, transform 400ms;
-}
-.mobile-nav-exit {
-  display: block;
-  transform: translateY(50%);
-}
-.mobile-nav-exit-active {
-  display: block;
-  transform: translateX(0);
-  transition: display 400ms, transform 400ms;
-}
-
 .btn {
   @apply py-1 px-2 text-sm font-semibold rounded;
-}
-.btn-slate {
-  @apply text-white bg-slate-700;
-}
-.btn-slate:hover {
-  @apply bg-slate-800;
-}
-.btn-purple {
-  @apply text-white bg-purple-800;
-}
-.btn-purple:hover {
-  @apply bg-purple-900;
-}
-
-.btn-pink {
-  background-color: #ef04f3;
-  @apply text-white;
-}
-.btn-pink:hover {
-}
-
-a.anchor {
-  display: block;
-  position: relative;
-  top: -100px;
-  visibility: hidden;
 }
 
 .slider-container {
