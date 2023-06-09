@@ -13,17 +13,6 @@ datasource db {
   shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
 }
 
-model Member {
-  id            Int         @id @default(autoincrement())
-  name          String
-  slug          String      @unique
-  love          Int?
-  reach          Int?
-  level         Int?
-  first_activity_at   DateTime
-  last_activity_at    DateTime
-}
-
 model Simulation {
   id            Int      @id @default(autoincrement())
   name          String       @unique
@@ -32,11 +21,31 @@ model Simulation {
 }
 
 model Activity {
+  // required fields
   id            Int      @id @default(autoincrement())
-  orbit_id      String       @unique
-  actor          String
-  timestamp   DateTime
   simulation   Simulation    @relation(fields: [simulationId], references: [id])
   simulationId Int
-  payload      Json
+  actor          String
+  sourceId      String       @unique
+  timestamp   DateTime
+  text         String
+
+  // optional fields
+  actorName          String?
+  textHtml     String?
+  url          String?
+  // member linking
+  mentions     Json?
+  // the activity type for an additional dimension
+  sourceType   String?
+  // entity linking
+  tags      Json?
+  entities      Json?
+  // global actor tracking
+  globalActor          String?
+  globalActorName          String?
+  // conversation linking
+  conversationId String?
+  // debugging
+  payload      Json?
 }

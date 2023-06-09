@@ -1,61 +1,93 @@
 import { PrismaClient } from "@prisma/client";
 import axios from "axios";
 
-const getTypeFields = ({ activity, included }) => {
+const getTypeFields = ({ activity, member, included }) => {
+  // option 1 - default actor / name from identities
+  // const identity = getAnyIdentity({ member, included });
+  // const actor =
+  //   identity.attributes.username ||
+  //   identity.attributes.email ||
+  //   identity.attributes.uid;
+  // const actorName = identity.attributes.name;
+  // const actorFields = { actor, actorName };
+
+  // option 2 - default actor / name from member
+  const actorFields = {
+    actor: member.attributes.slug,
+    actorName: member.attributes.name || member.attributes.slug,
+  };
+
+  // the goal though is to pull the actor id from the platform
   switch (activity.type) {
+    // set actor and actor_name to the local version where possible
+    // actor should be the username or equivalent
     case "tweet_activity":
       const tweet = activity.attributes.t_tweet;
+      // pull out the strings for the mentions and annotations
+      const mentions = (
+        tweet.entities.mentions || tweet.entities.user_mentions
+      ).map((mention) => mention.username || mention.screen_name);
+      const entities = tweet.entities.annotations?.map(
+        (annotation) => annotation.normalized_text
+      );
       return {
-        // text: tweet.text,
+        text: tweet.text,
+        textHtml: tweet.text_html,
         actor: tweet.user.screen_name,
+        actorName: tweet.user.name,
+        mentions,
+        entities,
       };
     default:
       return {
-        actor: getActor({ activity, included }),
+        text: "",
+        ...actorFields,
       };
   }
 };
 
-const getActor = ({ activity, included }) => {
+const getMember = ({ activity, included }) => {
   var memberId = activity.relationships.member.data.id;
-  var member = included.find(
-    (item) => item.type === "member" && item.id == memberId
-  );
-  var discordIdentityId = member.relationships.identities.data.find(
-    (item) => item.type == "discord_identity"
-  )?.id;
-  var discordIdentity = included.find(
-    (item) => item.type === "discord_identity" && item.id == discordIdentityId
-  );
-  var githubIdentityId = member.relationships.identities.data.find(
-    (item) => item.type == "github_identity"
-  )?.id;
-  var githubIdentity = included.find(
-    (item) => item.type === "github_identity" && item.id == githubIdentityId
-  );
-  var anyIdentityId = member.relationships.identities.data[0]?.id;
-  var anyIdentity = included.find((item) => item.id == anyIdentityId);
-  return (
-    discordIdentity?.attributes?.username ||
-    githubIdentity?.attributes?.username ||
-    anyIdentity?.attributes?.username ||
-    anyIdentity?.attributes?.email ||
-    anyIdentity?.attributes.uid
-  );
+  return included.find((item) => item.type === "member" && item.id == memberId);
+};
+
+const getAnyIdentity = ({ member, included }) => {
+  const pointer = member.relationships.identities.data[0];
+  return included.find((item) => item.id == pointer.id);
 };
 
 const getFields = ({ simulation, activity, included }) => {
-  var orbit_id = activity.id;
+  var sourceId = activity.id;
+  var sourceType = activity.type;
   var timestamp = activity.attributes.occurred_at;
-  var typeFields = getTypeFields({ activity, included });
 
-  return {
+  // get the member to provide a global actor_identity for the activity
+  // we do this to avoid any identity stitching on the client side
+  var member = getMember({ activity, included });
+  var { name, slug } = member.attributes;
+
+  const { activity_link, properties } = activity.attributes;
+  var typeFields = getTypeFields({ activity, member, included });
+
+  if (!typeFields.actor) {
+    console.log(member);
+  }
+
+  const fields = {
     timestamp,
-    orbit_id,
+    sourceId,
+    sourceType,
     ...typeFields,
+    globalActor: slug,
+    globalActorName: name,
     simulationId: simulation.id,
-    payload: activity,
+    tags: properties,
+    url: activity_link,
+    entities: {},
+    payload: {},
   };
+
+  return fields;
 };
 
 const getAPIData = async ({
@@ -85,19 +117,17 @@ const getAPIData = async ({
       console.log("Fetched activities: ", activities.length);
       for (var i = 0; i < activities.length; i++) {
         var activity = activities[i];
-        var orbit_id = activity.id;
+        var sourceId = activity.id;
 
         var fields = getFields({ simulation, activity, included });
-
-        if (fields && fields.actor)
-          await prisma.activity.upsert({
-            where: {
-              orbit_id,
-            },
-            create: fields,
-            update: fields,
-          });
-        console.log("Created activity " + orbit_id + " from " + fields.actor);
+        await prisma.activity.upsert({
+          where: {
+            sourceId,
+          },
+          create: fields,
+          update: fields,
+        });
+        console.log("Created activity " + sourceId + " from " + fields.actor);
       }
 
       allData.push(...activities);

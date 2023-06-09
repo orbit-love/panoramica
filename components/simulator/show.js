@@ -132,6 +132,8 @@ export default function Show({
           reset: true,
         })
       );
+      // this should be pushed into a reducer because it understands
+      // local vs global
       membersCollectionRecords.forEach((member) => {
         var expandedConnections = member.connections
           .map((connection) =>

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import neo4j from "neo4j-driver";
 
 export default async function handler(req, res) {
   const { id } = req.query;
@@ -17,6 +18,29 @@ export default async function handler(req, res) {
         simulationId: simulation.id,
       },
     });
+
+    const uri = process.env.MEMGRAPH_URI;
+    const username = process.env.MEMGRAPH_USERNAME;
+    const password = process.env.MEMGRAPH_PASSWORD;
+
+    const driver = neo4j.driver(uri, neo4j.auth.basic(username, password));
+    const message = "Hello Memgraph from Node.js!";
+
+    try {
+      const result = await session.run(
+        `CREATE (n:FirstNode {message: $message}) RETURN n`,
+        { message }
+      );
+
+      const singleRecord = result.records[0];
+      const node = singleRecord.get(0);
+
+      console.log("Created node:", node.properties.message);
+    } finally {
+      await session.close();
+    }
+
+    await driver.close();
 
     res.status(200).json({ result: { count: activities.length } });
     console.log("Successfully processed");

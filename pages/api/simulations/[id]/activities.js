@@ -12,25 +12,7 @@ export default async function handler(req, res) {
         timestamp: "asc",
       },
     });
-    // thin out the payload to just what the UI needs
-    activities = activities.map((activity) => ({
-      ...activity,
-      link: activity.payload.attributes.activity_link,
-      payload: {
-        attributes: {
-          t_tweet: {
-            user: {
-              name: activity.payload.attributes.t_tweet?.user?.name,
-              screen_name:
-                activity.payload.attributes.t_tweet?.user?.screen_name,
-            },
-            text: activity.payload.attributes.t_tweet?.text,
-            text_html: activity.payload.attributes.t_tweet?.text_html,
-            entities: activity.payload.attributes.t_tweet?.entities,
-          },
-        },
-      },
-    }));
+    // avoid Prisma serialization problems
     activities = JSON.parse(JSON.stringify(activities));
 
     res.status(200).json({ result: { activities } });
