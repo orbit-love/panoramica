@@ -24,6 +24,8 @@ export default async function handler(req, res) {
     const password = process.env.MEMGRAPH_PASSWORD;
 
     const driver = neo4j.driver(uri, neo4j.auth.basic(username, password));
+    const session = driver.session();
+
     const message = "Hello Memgraph from Node.js!";
 
     try {
