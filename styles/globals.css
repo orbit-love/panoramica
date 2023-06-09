@@ -208,3 +208,7 @@ a.anchor {
   pointer-events: all;
   position: relative;
 }
+
+.tweet a:hover {
+  @apply underline;
+}

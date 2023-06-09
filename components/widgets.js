@@ -7,6 +7,7 @@ import OrbitLevel from "components/cards/orbit_level";
 import Mission from "components/cards/mission";
 import Info from "components/info";
 import List from "components/simulator/list";
+import ActivitiesConsole from "components/simulator/activitiesConsole";
 
 export default function Widgets({
   members,
@@ -98,6 +99,22 @@ export default function Widgets({
               classes={classes}
             />
           </div>
+          {activities && selection && (
+            <div
+              className={`absolute bottom-6 left-96 ml-10 z-50 flex items-center justify-center bg-[${c.backgroundColor}] bg-opacity-90`}
+            >
+              <div className="overflow-scroll relative pr-2 h-[250px] rounded-md border border-indigo-700">
+                <ActivitiesConsole
+                  activities={activities}
+                  selection={selection}
+                  setSelection={setSelection}
+                  members={members}
+                  low={low}
+                  high={high}
+                />
+              </div>
+            </div>
+          )}
           <div className="mx-auto" />
         </div>
       </div>
