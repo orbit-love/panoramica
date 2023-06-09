@@ -81,6 +81,26 @@ export default function Show({
       });
   };
 
+  const processSimulation = async () => {
+    setLoading(true);
+    fetch(`/api/simulations/${simulation.id}/process`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then(({ message }) => {
+        if (message) {
+          alert(message);
+        } else {
+          // fetchActivities();
+        }
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
     if (!activities) return;
 
@@ -199,6 +219,12 @@ export default function Show({
             className={c.buttonClasses}
           >
             Import
+          </button>
+          <button
+            onClick={() => processSimulation()}
+            className={c.buttonClasses}
+          >
+            Process
           </button>
         </div>
       </div>
