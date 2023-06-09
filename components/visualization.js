@@ -179,7 +179,7 @@ export default function Visualization({
           }}
         ></svg>
       </div>
-      {showNetwork && members && (
+      {members && (
         <MemberGraph
           width={width}
           height={height}
