@@ -73,7 +73,7 @@ export default function Show({
       .then((res) => res.json())
       .then(({ message }) => {
         if (message) {
-          alert(message);
+          console.log(message);
         } else {
           fetchActivities();
         }
@@ -93,7 +93,7 @@ export default function Show({
       .then((res) => res.json())
       .then(({ message }) => {
         if (message) {
-          alert(message);
+          console.log(message);
         } else {
           // fetchActivities();
         }

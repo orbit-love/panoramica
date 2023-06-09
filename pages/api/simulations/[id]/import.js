@@ -83,7 +83,6 @@ const getFields = ({ simulation, activity, included }) => {
     simulationId: simulation.id,
     tags: properties,
     url: activity_link,
-    entities: {},
     payload: {},
   };
 
@@ -127,7 +126,7 @@ const getAPIData = async ({
           create: fields,
           update: fields,
         });
-        console.log("Created activity " + sourceId + " from " + fields.actor);
+        console.log("Created " + fields.sourceType + " from " + fields.actor);
       }
 
       allData.push(...activities);
