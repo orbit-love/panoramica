@@ -1,8 +1,50 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 import classnames from "classnames";
 import PropTypes from "prop-types";
 
-const MultiRangeSlider = ({ min, max, minLabel, maxLabel, onChange }) => {
+function debounce(func, timeout) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, timeout);
+  };
+}
+
+const useDebounce = (callback, timeout) => {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = callback;
+  }, [callback]);
+
+  const debouncedCallback = useMemo(() => {
+    const func = () => {
+      ref.current?.();
+    };
+
+    return debounce(func, timeout);
+  }, [timeout]);
+
+  return debouncedCallback;
+};
+
+const MultiRangeSlider = ({
+  min,
+  max,
+  minLabel,
+  maxLabel,
+  minCurrent,
+  maxCurrent,
+  onChange,
+}) => {
   const [minVal, setMinVal] = useState(min);
   const [maxVal, setMaxVal] = useState(max);
   const minValRef = useRef(null);
@@ -28,6 +70,11 @@ const MultiRangeSlider = ({ min, max, minLabel, maxLabel, onChange }) => {
     }
   }, [minVal, getPercent]);
 
+  useEffect(() => {
+    setMinVal(minCurrent);
+    setMaxVal(maxCurrent);
+  }, [minCurrent, maxCurrent]);
+
   // Set width of the range to decrease from the right side
   useEffect(() => {
     if (minValRef.current) {
@@ -40,10 +87,15 @@ const MultiRangeSlider = ({ min, max, minLabel, maxLabel, onChange }) => {
     }
   }, [maxVal, getPercent]);
 
+  const debouncedRequest = useDebounce(
+    () => onChange({ min: minVal, max: maxVal }),
+    25
+  );
+
   // Get min and max values when their state changes
   useEffect(() => {
-    onChange({ min: minVal, max: maxVal });
-  }, [minVal, maxVal, onChange]);
+    debouncedRequest({ minVal, maxVal });
+  }, [minVal, maxVal]);
 
   return (
     <div className="slider-container">
@@ -57,6 +109,8 @@ const MultiRangeSlider = ({ min, max, minLabel, maxLabel, onChange }) => {
           const value = Math.min(+event.target.value, maxVal - 1);
           setMinVal(value);
           event.target.value = value.toString();
+          // blur to avoid capturing future keyboard shortcuts
+          event.target.blur();
         }}
         className={classnames("thumb thumb--zindex-3", {
           "thumb--zindex-5": minVal > max - 100,
@@ -72,6 +126,8 @@ const MultiRangeSlider = ({ min, max, minLabel, maxLabel, onChange }) => {
           const value = Math.max(+event.target.value, minVal + 1);
           setMaxVal(value);
           event.target.value = value.toString();
+          // blur to avoid capturing future keyboard shortcuts
+          event.target.blur();
         }}
         className="thumb thumb--zindex-4"
       />

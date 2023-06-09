@@ -13,6 +13,12 @@ export default function List({
   setSimulations,
   setMembers,
   setSelection,
+  activities,
+  setActivities,
+  low,
+  setLow,
+  high,
+  setHigh,
 }) {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -65,6 +71,12 @@ export default function List({
             setMembers={setMembers}
             setSelection={setSelection}
             setEditMode={setEditMode}
+            activities={activities}
+            setActivities={setActivities}
+            low={low}
+            setLow={setLow}
+            high={high}
+            setHigh={setHigh}
           />
         )}
         {simulation && editMode && (

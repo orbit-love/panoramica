@@ -2,9 +2,10 @@ import React, { useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import c from "lib/common";
 
-import helper from "lib/memberGraph/helper";
+import helper from "lib/graph/helper";
 import Graph from "components/graph";
 import Member from "components/cards/network/member";
+import ActivitiesSlider from "components/activitiesSlider";
 
 export default function MemberGraph({
   width,
@@ -19,6 +20,12 @@ export default function MemberGraph({
   data,
   setData,
   levels,
+  activities,
+  setActivities,
+  low,
+  setLow,
+  high,
+  setHigh,
 }) {
   const graphRef = useRef();
   graphRef.current = graph;
@@ -45,7 +52,7 @@ export default function MemberGraph({
   };
 
   const eventHandlers = {
-    "node:click": ({ item }) => setSelection(item.getModel().member),
+    "node:click": ({ item }) => setSelection(item?.getModel().member),
     "node:dblclick": ({ item }) => {
       graphRef.current.focusItem(item, true);
     },
@@ -71,7 +78,7 @@ export default function MemberGraph({
             label: model.slicedName,
           });
         } else if (state === "inactive" && enabled) {
-          if (model.member.level === 4) {
+          if (model.member?.level === 4) {
             currentGraph.updateItem(item, {
               ...item,
               label: "",
@@ -93,7 +100,7 @@ export default function MemberGraph({
     highlightSelection({ graph, selection });
   }, [graph, selection]);
 
-  // set the data
+  // set the data when the members change
   useEffect(() => {
     setData(helper.getData({ members, levels }));
   }, [members, setData, levels]);
@@ -119,7 +126,7 @@ export default function MemberGraph({
   // the graphWidth + 5 prevents the canvas from overflowing the modal
   return (
     <div
-      className={`absolute top-0 left-0 z-50 pr-4 w-full h-full flex items-center justify-end bg-[${
+      className={`absolute top-0 left-0 z-50 w-full h-full flex items-center justify-center bg-[${
         c.backgroundColor
       }] bg-opacity-0 pointer-events-none ${!showNetwork && "hidden"}`}
     >
@@ -127,6 +134,17 @@ export default function MemberGraph({
         className="relative bg-[#150d33] rounded-md border-2 border-indigo-600 pointer-events-auto"
         style={{ width: graphWidth + 5, height: graphHeight + 5 }}
       >
+        {activities?.length > 0 && (
+          <div className="absolute top-0 left-2 px-4 w-64">
+            <ActivitiesSlider
+              activities={activities}
+              low={low}
+              setLow={setLow}
+              high={high}
+              setHigh={setHigh}
+            />
+          </div>
+        )}
         <button
           onClick={() => setShowNetwork(false)}
           className="absolute top-4 right-6"

@@ -34,6 +34,12 @@ export default function Widgets({
   setSimulations,
   showPanel,
   setShowPanel,
+  activities,
+  setActivities,
+  low,
+  setLow,
+  high,
+  setHigh,
 }) {
   const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90`;
   return (
@@ -58,6 +64,12 @@ export default function Widgets({
               simulations={simulations}
               setSimulations={setSimulations}
               setSelection={setSelection}
+              activities={activities}
+              setActivities={setActivities}
+              low={low}
+              setLow={setLow}
+              high={high}
+              setHigh={setHigh}
             />
           </div>
         )}

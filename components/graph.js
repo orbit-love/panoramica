@@ -74,7 +74,11 @@ export default function Graph({
   useEffect(() => {
     var currentGraph = graphRef.current;
     if (currentGraph && !currentGraph.destroyed) {
-      currentGraph.changeData(data);
+      // changeData causes an infinite loop but this seems to work
+      // still, we'll catch and log for debugging
+      currentGraph.data(data);
+      currentGraph.render();
+      currentGraph.zoomTo(c.graph.defaultZoom);
     }
   }, [data]);
 

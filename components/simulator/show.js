@@ -5,7 +5,7 @@ import MemberReducer from "lib/reducers/member";
 import c from "lib/common";
 
 import Console from "components/simulator/console";
-import MultiRangeSlider from "components/multiRangeSlider";
+import ActivitiesSlider from "components/activitiesSlider";
 
 export default function Show({
   sort,
@@ -16,19 +16,17 @@ export default function Show({
   setSimulation,
   setSelection,
   setEditMode,
+  activities,
+  setActivities,
+  low,
+  setLow,
+  high,
+  setHigh,
 }) {
-  const [activities, setActivities] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [low, setLow] = useState(0);
-  const [high, setHigh] = useState(0);
   const [cycle, setCycle] = useState(false);
 
   const { cycleDelay, firstCycleDelay } = c.visualization;
-
-  const onSliderChange = ({ min, max }) => {
-    setLow(min);
-    setHigh(max);
-  };
 
   useEffect(() => {
     if (!activities) return;
@@ -148,16 +146,14 @@ export default function Show({
         <div className="text-lg font-bold">{simulation.name}</div>
         {loading && <div className="py-4">Loading...</div>}
         <div className="border-b border-indigo-900" />
-        {activities && activities.length > 0 && (
+        {activities?.length > 0 && (
           <div className="pb-6">
-            <MultiRangeSlider
-              min={0}
-              max={activities.length}
-              minCurrent={low}
-              maxCurrent={high}
-              minLabel={c.formatDateShort(slice[0]?.timestamp)}
-              maxLabel={c.formatDateShort(slice[slice.length - 1]?.timestamp)}
-              onChange={onSliderChange}
+            <ActivitiesSlider
+              activities={activities}
+              low={low}
+              setLow={setLow}
+              high={high}
+              setHigh={setHigh}
             />
           </div>
         )}

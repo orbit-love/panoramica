@@ -47,6 +47,11 @@ export default function Visualization({
   const [data, setData] = useState();
   const [graph, setGraph] = useState();
 
+  // the activities for the running simulation and the focused range
+  const [activities, setActivities] = useState(null);
+  const [low, setLow] = useState(0);
+  const [high, setHigh] = useState(0);
+
   const prevShowNetwork = c.usePrevious(showNetwork);
   const prevSort = c.usePrevious(sort);
 
@@ -193,6 +198,12 @@ export default function Visualization({
           data={data}
           setData={setData}
           levels={levels}
+          activities={activities}
+          setActivities={setActivities}
+          low={low}
+          setLow={setLow}
+          high={high}
+          setHigh={setHigh}
         />
       )}
       <div className="hidden bg-[#0F0A25] bg-[#150D33] text-[#eef2ff] text-[#1D1640]" />
@@ -224,6 +235,12 @@ export default function Visualization({
         setSimulations={setSimulations}
         showPanel={showPanel}
         setShowPanel={setShowPanel}
+        activities={activities}
+        setActivities={setActivities}
+        low={low}
+        setLow={setLow}
+        high={high}
+        setHigh={setHigh}
       />
     </div>
   );
