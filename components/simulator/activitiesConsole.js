@@ -8,7 +8,7 @@ function Activity({ activity, members, setSelection }) {
   return (
     <div
       key={activity.id}
-      className="flex flex-col w-[450px] whitespace-nowrap"
+      className="flex flex-col w-[500px] whitespace-nowrap"
     >
       <div className="flex items-baseline space-x-2">
         <button
@@ -17,12 +17,17 @@ function Activity({ activity, members, setSelection }) {
         >
           {activity.actorName}
         </button>
-        <div className="text-sm text-orange-400">{activity.actor}</div>
+        <div className="max-w-32 overflow-hidden text-sm text-orange-400 text-ellipsis">
+          {activity.actor}
+        </div>
+        <div className="max-w-32 overflow-hidden text-sm text-green-500 text-ellipsis">
+          {activity.sourceType?.replace(/_/g, " ").replace(/activity/, "")}
+        </div>
         <div className="mx-auto" />
         <div className="flex-1 text-xs text-right">
           {activity.url && (
             <a
-              className="text-indigo-500 hover:underline"
+              className="text-indigo-700 underline"
               href={activity.url}
               target="_blank"
               rel="noreferrer"

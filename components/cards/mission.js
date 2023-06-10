@@ -14,7 +14,7 @@ export default function Mission({
   levels,
 }) {
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-2">
       <div
         className="flex items-baseline space-x-2"
         style={{ color: c.visualization.sun.fill }}
@@ -26,7 +26,7 @@ export default function Mission({
           Members: {members.list.length}
         </div>
       </div>
-      <div className="text-sm text-indigo-300">
+      <div className="pb-1 text-sm text-indigo-300">
         <SortOptions
           sort={sort}
           setSort={setSort}
@@ -35,12 +35,9 @@ export default function Mission({
           levels={levels}
         />
       </div>
-      <div className="flex flex-col space-y-2 max-h-[40vh] overflow-scroll">
+      <div className="flex flex-col max-h-[40vh] overflow-scroll">
         {[1, 2, 3, 4].map((number) => (
           <>
-            <div className="" style={{ color: c.orbitLevelColorScale(number) }}>
-              <span className="font-bold">Orbit {number}</span>
-            </div>
             <div className="flex flex-col space-y-0">
               {members.filterMembers({ levelNumber: number }).map((member) => (
                 <CompactMember

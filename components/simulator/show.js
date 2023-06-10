@@ -74,10 +74,10 @@ export default function Show({
       .then(({ message }) => {
         if (message) {
           console.log(message);
+          setLoading(false);
         } else {
-          fetchActivities();
+          processSimulation();
         }
-        setLoading(false);
       });
   };
 
@@ -149,8 +149,8 @@ export default function Show({
         <div className="flex flex-col py-2">
           {activities?.length === 0 && (
             <div className="text-semibold text-green-500">
-              A new simulation has been created. Now, click Import to fetch the
-              activities.
+              This simulation has no activities available yet. Choose Import or
+              Process.
             </div>
           )}
           {activities?.length > 0 && slice && (
@@ -178,9 +178,12 @@ export default function Show({
         <div className="flex space-x-2 text-xs">
           <button
             onClick={() => {
-              setSelection(null);
-              setMembers(new MemberCollection());
               setSimulation(null);
+              setSelection(null);
+              setActivities(null);
+              setLow(null);
+              setHigh(null);
+              setMembers(new MemberCollection());
             }}
             className={c.buttonClasses}
           >
