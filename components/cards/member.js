@@ -76,6 +76,7 @@ export default function Member({
           <span>{member.connections.length}</span>
         </div>
       </div>
+      <div className="border-b border-indigo-800" />
       <div className="flex flex-col max-h-[25vh] overflow-scroll">
         {member.connections.map((connection) => (
           <CompactMember
@@ -84,6 +85,31 @@ export default function Member({
             setSelection={setSelection}
           />
         ))}
+      </div>
+      <div className="border-b border-indigo-800" />
+      <div className="flex flex-col space-y-[-2px]">
+        <div className="flex">
+          <span className="w-32 text-indigo-400">Actor</span>
+          <span>{member.actor}</span>
+        </div>
+        {member.actorName && (
+          <div className="flex">
+            <span className="w-32 text-indigo-400">Actor Name</span>
+            <span>{member.actorName}</span>
+          </div>
+        )}
+        {member.globalActor && (
+          <div className="flex">
+            <span className="w-32 text-indigo-400">Global Actor</span>
+            <span>{member.globalActor}</span>
+          </div>
+        )}
+        {member.globalActorName && (
+          <div className="flex">
+            <span className="w-32 text-indigo-400">Global Name</span>
+            <span>{member.globalActorName}</span>
+          </div>
+        )}
       </div>
     </div>
   );
