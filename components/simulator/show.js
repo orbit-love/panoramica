@@ -44,18 +44,18 @@ export default function Show({
       clearInterval(cycleInterval);
       clearTimeout(timeout);
     };
-  }, [cycle, setCycle, cycleDelay, firstCycleDelay, high, activities]);
+  }, [cycle, setCycle, cycleDelay, firstCycleDelay, high, setHigh, activities]);
 
   const fetchActivities = useCallback(async () => {
     setLoading(true);
-    fetch(`/api/simulations/${simulation.id}/activities`)
+    fetch(`/api/simulations/${simulation.id}/activities2`)
       .then((res) => res.json())
       .then(({ result }) => {
         setHigh(result.activities.length);
         setActivities(result.activities);
         setLoading(false);
       });
-  }, [simulation.id]);
+  }, [simulation.id, setHigh, setLoading, setActivities]);
 
   useEffect(() => {
     fetchActivities();
@@ -95,7 +95,7 @@ export default function Show({
         if (message) {
           console.log(message);
         } else {
-          // fetchActivities();
+          fetchActivities();
         }
         setLoading(false);
       });
@@ -114,41 +114,14 @@ export default function Show({
       reducer.finalize();
 
       // the result contains members with OL numbers and love
-      const rResult = reducer.getResult();
-
-      const toId = (actor) => `id-${actor.replace(/[^a-z0-9]/gi, "")}`;
-
-      // now lets get the results ready for display
-      const memberCollection = new MemberCollection();
-      const membersCollectionRecords = Object.values(rResult).map(
-        ({ actor, love, reach, level, connections, activityCount }) => ({
-          id: toId(actor),
-          name: actor.split("#")[0],
-          level,
-          love,
-          reach,
-          activityCount,
-          connections,
-          reset: true,
-        })
-      );
-      // this should be pushed into a reducer because it understands
-      // local vs global
-      membersCollectionRecords.forEach((member) => {
-        var expandedConnections = member.connections
-          .map((connection) =>
-            membersCollectionRecords.find(
-              (member) => member.id === toId(connection)
-            )
-          )
-          .filter((e) => e);
-        member.connections = expandedConnections.sort(
-          (a, b) => a.level - b.level
-        );
-      });
-      memberCollection.list.push(...membersCollectionRecords);
-      memberCollection.sort({ sort, levels });
-      setMembers(memberCollection);
+      const members = reducer.getResult();
+      // sort the members now that all data is accurate
+      members.sort({ sort, levels });
+      // if there are members, put the reset flag on one so the members redraw
+      if (members.list[0]) {
+        members.list[0].reset = true;
+      }
+      setMembers(members);
     };
 
     processActivitySlice(activities.slice(low, high));

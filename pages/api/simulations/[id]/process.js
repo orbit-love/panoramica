@@ -64,6 +64,8 @@ export default async function handler(req, res) {
             textHtml: $textHtml,
             url: $url,
             tags: $tags,
+            mentions: $mentions,
+            entities: $entities,
             sourceType: $sourceType,
             globalActor: $globalActor,
             globalActorName: $globalActorName

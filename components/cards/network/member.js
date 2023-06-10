@@ -24,7 +24,7 @@ export default function Member({ member, setSelection, setShowNetwork }) {
             className="text-2xl font-semibold"
             style={{ color: c.orbitLevelColorScale(member.level) }}
           >
-            {member.name}
+            {member.actorName}
           </div>
         </div>
         <div className="flex py-2 px-4 space-x-4 rounded-lg border border-indigo-600">

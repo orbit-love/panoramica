@@ -2,7 +2,7 @@ import React from "react";
 import c from "lib/common";
 
 const findMember = (activity, members) =>
-  members.list.find((member) => member.name === activity.actor);
+  members.list.find((member) => member.actor === activity.actor);
 
 function Activity({ activity, members, setSelection }) {
   return (
@@ -65,7 +65,7 @@ export default function Console({
       (activity) =>
         !selection ||
         selection.name === "Mission" ||
-        selection.name === activity.actor ||
+        selection.actor === activity.actor ||
         (selection.number &&
           findMember(activity, members)?.level === selection.number)
     );
