@@ -80,13 +80,15 @@ export default function Member({
         <>
           <div className="border-b border-indigo-800" />
           <div className="flex flex-col max-h-[25vh] overflow-scroll">
-            {member.connectedMembers.map((connection) => (
-              <CompactMember
-                key={connection.id}
-                member={connection}
-                setSelection={setSelection}
-              />
-            ))}
+            {member.connectedMembers
+              .sort((a, b) => a.level - b.level)
+              .map((connection) => (
+                <CompactMember
+                  key={connection.id}
+                  member={connection}
+                  setSelection={setSelection}
+                />
+              ))}
           </div>
         </>
       )}
