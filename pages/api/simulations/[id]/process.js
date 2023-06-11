@@ -45,8 +45,7 @@ export default async function handler(req, res) {
 
       console.log("Removed old activities and set constraints");
 
-      for (var i = 0; i < activities.length; i++) {
-        var activity = activities[i];
+      for (let activity of activities) {
         const result = await graphConnection.run(
           `MERGE (a:Activity { id: $id })
            SET a += {
@@ -87,28 +86,6 @@ export default async function handler(req, res) {
           { ...activity }
         );
 
-        for (var j = 0; j < activity.mentions?.length; j++) {
-          var mention = activity.mentions[j];
-
-          // create a member with only actor, not global actor, since don't know it
-          // a pass after could clean this up, we try to find a global actor with
-          // the local actor; maybe a new schema field - actorSource=twitter e.g.
-          await graphConnection.run(
-            `MERGE (m:Member { actor: $actor })
-             SET m += {
-               simulationId: $simulationId
-             } RETURN m`,
-            { actor: mention, actorName: mention, simulationId }
-          );
-
-          await graphConnection.run(
-            `MATCH (m:Member   { actor: $actor }),
-                   (a:Activity { id: $id })
-           MERGE (a)-[r:MENTIONS { simulationId: $simulationId }]-(m)`,
-            { actor: mention, id: activity.id, simulationId }
-          );
-        }
-
         for (var j = 0; j < activity.entities?.length; j++) {
           var entity = activity.entities[j];
           await graphConnection.run(
@@ -131,6 +108,35 @@ export default async function handler(req, res) {
         const singleRecord = result.records[0];
         const node = singleRecord.get(0);
         console.log("Created activity node for " + node.properties.globalActor);
+      }
+
+      for (let activity of activities) {
+        for (var j = 0; j < activity.mentions?.length; j++) {
+          var mention = activity.mentions[j];
+
+          // TODO - this is going to cause a lot of craziness, so
+          // fix it next - create all members first and then go back
+          // and connect via mentions - just throw out mentions to non-members for now
+          // it would be confusing with timeframes anyway
+          var activityForMention = activities.find(
+            (activity) => activity.actor === mention
+          );
+
+          // if we have an activity for that mention, we know the
+          // member exists at globalActor, so let's proceed
+          if (activityForMention) {
+            const globalActor = activityForMention.globalActor;
+            await graphConnection.run(
+              `MATCH (m:Member   { globalActor: $globalActor }),
+                   (a:Activity { id: $id })
+               MERGE (a)-[r:MENTIONS { simulationId: $simulationId }]-(m)`,
+              { globalActor, id: activity.id, simulationId }
+            );
+            console.log(
+              `Connected mention from ${activity.globalActor} to ${globalActor}`
+            );
+          }
+        }
       }
     } finally {
       await graphConnection.close();
