@@ -1,11 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import neo4j from "neo4j-driver";
+import GraphConnection from "lib/graphConnection";
 
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
-  const { id } = req.query;
+  const graphConnection = new GraphConnection();
 
+  const { id } = req.query;
   const simulationId = parseInt(id);
   try {
     const simulation = await prisma.simulation.findUnique({
@@ -20,31 +21,25 @@ export default async function handler(req, res) {
       },
     });
 
-    const uri = process.env.MEMGRAPH_URI;
-    const username = process.env.MEMGRAPH_USERNAME;
-    const password = process.env.MEMGRAPH_PASSWORD;
-
-    const driver = neo4j.driver(uri, neo4j.auth.basic(username, password));
-    const session = driver.session();
-
     try {
-      await session.run(
-        `MATCH (n)-[r]-(m) WHERE n.simulationId=$simulationId
-         DETACH DELETE n, r, m`,
+      // delete previous nodes and relationships
+      await graphConnection.run(
+        `MATCH (n) WHERE n.simulationId=$simulationId
+        DETACH DELETE n`,
         { simulationId }
       );
 
       // unique within simulation
-      await session.run(
+      await graphConnection.run(
         `CREATE CONSTRAINT ON (a:Activity) ASSERT a.activityId, a.simulationId IS UNIQUE`
       );
-      await session.run(
+      await graphConnection.run(
         `CREATE CONSTRAINT ON (a:Activity) ASSERT a.sourceId, a.simulationId IS UNIQUE`
       );
-      await session.run(
+      await graphConnection.run(
         `CREATE CONSTRAINT ON (m:Member) ASSERT m.globalActor, m.simulationId IS UNIQUE`
       );
-      await session.run(
+      await graphConnection.run(
         `CREATE CONSTRAINT ON (e:Entity) ASSERT e.entityId, e.simulationId IS UNIQUE`
       );
 
@@ -52,7 +47,7 @@ export default async function handler(req, res) {
 
       for (var i = 0; i < activities.length; i++) {
         var activity = activities[i];
-        const result = await session.run(
+        const result = await graphConnection.run(
           `MERGE (a:Activity { activityId: $id })
            SET a += {
             actor: $actor,
@@ -74,7 +69,7 @@ export default async function handler(req, res) {
         );
         // to create the member, we would add local actors to an array
         // instead of overriding
-        await session.run(
+        await graphConnection.run(
           `MERGE (m:Member { globalActor: $globalActor })
            SET m += {
            globalActorName: $globalActorName,
@@ -85,7 +80,7 @@ export default async function handler(req, res) {
           { ...activity }
         );
 
-        await session.run(
+        await graphConnection.run(
           `MATCH (m:Member   { globalActor: $globalActor }),
                  (a:Activity { activityId: $id })
            MERGE (m)-[r:DID { simulationId: $simulationId }]-(a)`,
@@ -98,7 +93,7 @@ export default async function handler(req, res) {
           // create a member with only actor, not global actor, since don't know it
           // a pass after could clean this up, we try to find a global actor with
           // the local actor; maybe a new schema field - actorSource=twitter e.g.
-          await session.run(
+          await graphConnection.run(
             `MERGE (m:Member { actor: $actor })
              SET m += {
                simulationId: $simulationId
@@ -106,7 +101,7 @@ export default async function handler(req, res) {
             { actor: mention, actorName: mention, simulationId }
           );
 
-          await session.run(
+          await graphConnection.run(
             `MATCH (m:Member   { actor: $actor }),
                    (a:Activity { activityId: $activityId })
            MERGE (a)-[r:MENTIONS { simulationId: $simulationId }]-(m)`,
@@ -116,14 +111,14 @@ export default async function handler(req, res) {
 
         for (var j = 0; j < activity.entities?.length; j++) {
           var entity = activity.entities[j];
-          await session.run(
+          await graphConnection.run(
             `MERGE (e:Entity { entityId: $entityId })
              SET e += {
               simulationId: $simulationId
              } RETURN e`,
             { entityId: entity, simulationId }
           );
-          await session.run(
+          await graphConnection.run(
             `MATCH (e:Entity { entityId: $entityId }),
                  (a:Activity { activityId: $activityId })
              MERGE (a)-[r:RELATES { simulationId: $simulationId }]-(e)
@@ -138,10 +133,8 @@ export default async function handler(req, res) {
         console.log("Created activity node for " + node.properties.globalActor);
       }
     } finally {
-      await session.close();
+      await graphConnection.close();
     }
-
-    await driver.close();
 
     res.status(200).json({ result: { count: activities.length } });
     console.log("Successfully processed " + activities.length + " activities");
