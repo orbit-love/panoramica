@@ -31,7 +31,7 @@ export default function Member({ member, setSelection, setShowNetwork }) {
           <MemberStats member={member} />
         </div>
         <div className="flex flex-col max-h-[25vh] overflow-scroll">
-          {member.connections.map((connection) => (
+          {member.connectedMembers.map((connection) => (
             <CompactMember
               key={connection.id}
               member={connection}

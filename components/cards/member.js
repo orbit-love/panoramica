@@ -53,7 +53,7 @@ export default function Member({
           ></Meter>
         </div>
       </div>
-      {member.connections && (
+      {member.connectionCount > 0 && (
         <div className="flex py-2">
           <button
             className={buttonClasses}
@@ -73,19 +73,23 @@ export default function Member({
         </div>
         <div className="flex font-semibold">
           <span className="w-32 text-indigo-400">Connections</span>
-          <span>{member.connections.length}</span>
+          <span>{member.connectionCount}</span>
         </div>
       </div>
-      <div className="border-b border-indigo-800" />
-      <div className="flex flex-col max-h-[25vh] overflow-scroll">
-        {member.connections.map((connection) => (
-          <CompactMember
-            key={connection.id}
-            member={connection}
-            setSelection={setSelection}
-          />
-        ))}
-      </div>
+      {member.connectionCount > 0 && (
+        <>
+          <div className="border-b border-indigo-800" />
+          <div className="flex flex-col max-h-[25vh] overflow-scroll">
+            {member.connectedMembers.map((connection) => (
+              <CompactMember
+                key={connection.id}
+                member={connection}
+                setSelection={setSelection}
+              />
+            ))}
+          </div>
+        </>
+      )}
       <div className="border-b border-indigo-800" />
       <div className="flex flex-col space-y-[-2px]">
         <div className="flex">

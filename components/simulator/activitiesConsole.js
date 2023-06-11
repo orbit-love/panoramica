@@ -9,9 +9,7 @@ function Activity({ activity, community, setSelection }) {
     >
       <div className="flex items-baseline space-x-2">
         <button
-          onClick={() =>
-            setSelection(community.findMemberByActor(activity.actor))
-          }
+          onClick={() => setSelection(community.findMemberByActor(activity))}
           className="max-w-32 overflow-hidden text-sm font-bold text-indigo-100 text-ellipsis"
         >
           {activity.actorName}
@@ -54,21 +52,18 @@ function Activity({ activity, community, setSelection }) {
 }
 
 export default function Console({ community, selection, setSelection }) {
-  community.activities
-    .reverse()
-    .filter(
-      (activity) =>
-        !selection ||
-        selection.name === "Mission" ||
-        selection.actor === activity.actor ||
-        (selection.number &&
-          community.findMemberByActor(activity.actor)?.level ===
-            selection.number)
-    );
+  var activities = community.activities.filter(
+    (activity) =>
+      !selection ||
+      selection.name === "Mission" ||
+      selection.globalActor === activity.globalActor ||
+      (selection.number &&
+        community.findMemberByActor(activity)?.level === selection.number)
+  );
 
   return (
     <div className="flex flex-col p-4 space-y-0">
-      {community.activities.map((activity) => (
+      {activities.map((activity) => (
         <div key={activity.id} className="flex flex-col space-y-0">
           <Activity
             activity={activity}
@@ -77,7 +72,7 @@ export default function Console({ community, selection, setSelection }) {
           />
         </div>
       ))}
-      {community.activities.length === 0 && (
+      {activities.length === 0 && (
         <div className="w-[450px] text-indigo-100">No activities.</div>
       )}
     </div>

@@ -11,6 +11,9 @@ export default function SortOptions({
   const buttonClasses =
     "hover:border-b hover:border-indigo-600 px-2 py-1 whitespace-nowrap";
   const changeSort = (newSort) => {
+    if (community.members[0]) {
+      community.members[0].reset = true;
+    }
     community.sortMembers({ sort: newSort, levels });
     setCommunity(community);
     setSort(newSort);

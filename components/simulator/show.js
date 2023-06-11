@@ -63,6 +63,7 @@ export default function Show({
         if (community.members[0]) {
           community.members[0].reset = true;
         }
+        // only needed when high was not chosen, otherwise it will be thesame
         setHigh(community.activities.length);
         setCommunity(community);
         setLoading(false);
@@ -78,9 +79,10 @@ export default function Show({
     levels,
   ]);
 
+  // fetch initially and if low/high change
   useEffect(() => {
     fetchCommunity();
-  }, [fetchCommunity, low, high, sort]);
+  }, [low, high]);
 
   const importSimulation = async () => {
     setLoading(true);

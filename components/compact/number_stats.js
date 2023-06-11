@@ -10,7 +10,7 @@ export default function NumberStats({ member }) {
       </div>
       <div className="flex items-center space-x-1 w-12 text-indigo-500">
         <FontAwesomeIcon icon="signal-stream" />
-        <span title={member.reach}>{member.connections.length}</span>
+        <span title={member.reach}>{member.connectionCount}</span>
       </div>
     </div>
   );

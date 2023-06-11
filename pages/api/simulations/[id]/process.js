@@ -31,7 +31,7 @@ export default async function handler(req, res) {
 
       // unique within simulation
       await graphConnection.run(
-        `CREATE CONSTRAINT ON (a:Activity) ASSERT a.activityId, a.simulationId IS UNIQUE`
+        `CREATE CONSTRAINT ON (a:Activity) ASSERT a.id, a.simulationId IS UNIQUE`
       );
       await graphConnection.run(
         `CREATE CONSTRAINT ON (a:Activity) ASSERT a.sourceId, a.simulationId IS UNIQUE`
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
       for (var i = 0; i < activities.length; i++) {
         var activity = activities[i];
         const result = await graphConnection.run(
-          `MERGE (a:Activity { activityId: $id })
+          `MERGE (a:Activity { id: $id })
            SET a += {
             actor: $actor,
             sourceId: $sourceId,
@@ -82,7 +82,7 @@ export default async function handler(req, res) {
 
         await graphConnection.run(
           `MATCH (m:Member   { globalActor: $globalActor }),
-                 (a:Activity { activityId: $id })
+                 (a:Activity { id: $id })
            MERGE (m)-[r:DID { simulationId: $simulationId }]-(a)`,
           { ...activity }
         );
@@ -103,9 +103,9 @@ export default async function handler(req, res) {
 
           await graphConnection.run(
             `MATCH (m:Member   { actor: $actor }),
-                   (a:Activity { activityId: $activityId })
+                   (a:Activity { id: $id })
            MERGE (a)-[r:MENTIONS { simulationId: $simulationId }]-(m)`,
-            { actor: mention, activityId: activity.id, simulationId }
+            { actor: mention, id: activity.id, simulationId }
           );
         }
 
@@ -120,10 +120,10 @@ export default async function handler(req, res) {
           );
           await graphConnection.run(
             `MATCH (e:Entity { entityId: $entityId }),
-                 (a:Activity { activityId: $activityId })
+                 (a:Activity { id: $id })
              MERGE (a)-[r:RELATES { simulationId: $simulationId }]-(e)
              RETURN r`,
-            { entityId: entity, activityId: activity.id, simulationId }
+            { entityId: entity, id: activity.id, simulationId }
           );
           console.log("Created entity node " + entity);
         }
