@@ -55,18 +55,22 @@ export default function Show({
         })
     )
       .then((res) => res.json())
-      .then(({ result }) => {
-        const community = new Community({ result, levels });
-        // sort the members before updating
-        community.sortMembers({ sort, levels });
-        // put the reset flag on one so the members redraw
-        if (community.members[0]) {
-          community.members[0].reset = true;
+      .then(({ result, message }) => {
+        if (message) {
+          console.log("Error fetching community", message);
+        } else {
+          const community = new Community({ result, levels });
+          // sort the members before updating
+          community.sortMembers({ sort, levels });
+          // put the reset flag on one so the members redraw
+          if (community.members[0]) {
+            community.members[0].reset = true;
+          }
+          // only needed when high was not chosen, otherwise it will be thesame
+          setHigh(community.activities.length);
+          setCommunity(community);
+          setLoading(false);
         }
-        // only needed when high was not chosen, otherwise it will be thesame
-        setHigh(community.activities.length);
-        setCommunity(community);
-        setLoading(false);
       });
   }, [
     simulation.id,
