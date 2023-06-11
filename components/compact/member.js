@@ -24,7 +24,7 @@ export default function CompactMember({ member, setSelection, metrics }) {
               color: c.orbitLevelColorScale(member.level),
             }}
           >
-            {member.actorName}
+            {member.globalActorName}
           </div>
         </div>
         <div className="mx-auto" />

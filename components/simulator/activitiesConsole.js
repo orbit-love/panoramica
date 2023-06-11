@@ -9,7 +9,7 @@ function Activity({ activity, community, setSelection }) {
     >
       <div className="flex items-baseline space-x-2">
         <button
-          onClick={() => setSelection(community.findMemberByActor(activity))}
+          onClick={() => setSelection(community.findMemberByActivity(activity))}
           className="max-w-32 overflow-hidden text-sm font-bold text-indigo-100 text-ellipsis"
         >
           {activity.actorName}
@@ -58,7 +58,7 @@ export default function Console({ community, selection, setSelection }) {
       selection.name === "Mission" ||
       selection.globalActor === activity.globalActor ||
       (selection.number &&
-        community.findMemberByActor(activity)?.level === selection.number)
+        community.findMemberByActivity(activity)?.level === selection.number)
   );
 
   return (

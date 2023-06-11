@@ -166,10 +166,9 @@ export default function MemberGraph({
         {selection && selection.level && (
           <div className="absolute right-4 bottom-4">
             <Member
-              graph={graph}
               member={selection}
+              community={community}
               setSelection={setSelection}
-              setShowNetwork={setShowNetwork}
             />
           </div>
         )}

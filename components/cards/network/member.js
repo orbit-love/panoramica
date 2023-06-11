@@ -2,12 +2,17 @@ import React from "react";
 
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
-import CompactMember from "components/compact/member";
+import CompactConnections from "components/compact/connections";
 import MemberStats from "components/compact/member_stats";
 
-export default function Member({ member, setSelection, setShowNetwork }) {
+export default function Member({
+  member,
+  community,
+  setSelection,
+  setShowNetwork,
+}) {
   return (
-    <div className="bg-[#1D1640] text-indigo-100 px-6 py-4 rounded-md border border-indigo-600">
+    <div className="w-96 bg-[#1D1640] text-indigo-100 px-6 py-4 rounded-md border border-indigo-600">
       <div className="flex flex-col space-y-3">
         <div className="flex items-baseline space-x-2">
           <div>
@@ -31,15 +36,11 @@ export default function Member({ member, setSelection, setShowNetwork }) {
           <MemberStats member={member} />
         </div>
         <div className="flex flex-col max-h-[25vh] overflow-scroll">
-          {member.connectedMembers
-            .sort((a, b) => a.level - b.level)
-            .map((connection) => (
-              <CompactMember
-                key={connection.id}
-                member={connection}
-                setSelection={setSelection}
-              />
-            ))}
+          <CompactConnections
+            member={member}
+            community={community}
+            setSelection={setSelection}
+          />
         </div>
       </div>
     </div>

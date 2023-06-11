@@ -31,35 +31,30 @@ const getMembers = async ({ simulationId, graphConnection, low, high }) => {
 const mapifyConnections = (records) => {
   let processedResult = {};
 
-  for (let record of records) {
-    let mentioner = record.get("mentioner").properties;
-    mentioner = mentioner.globalActor || mentioner.actor;
-
-    let mentioned = record.get("mentioned").properties;
-    mentioned = mentioned.globalActor || mentioned.actor;
-
-    let count = record.get("count").low;
+  for (let row of records) {
+    let mentioner = row.get("mentioner").properties.globalActor;
+    let mentioned = row.get("mentioned").properties.globalActor;
+    let count = row.get("count").low;
 
     if (!(mentioner in processedResult)) {
       processedResult[mentioner] = {};
     }
+
+    if (!(mentioned in processedResult[mentioner])) {
+      processedResult[mentioner][mentioned] = [0, 0];
+    }
+
+    processedResult[mentioner][mentioned][0] = count;
+
     if (!(mentioned in processedResult)) {
       processedResult[mentioned] = {};
     }
 
-    processedResult[mentioner][mentioned] = [count, 0];
-    processedResult[mentioned][mentioner] = [0, count];
-  }
-
-  for (let [member, connections] of Object.entries(processedResult)) {
-    for (let [connectedMember, counts] of Object.entries(connections)) {
-      if (connectedMember in processedResult[member]) {
-        processedResult[member][connectedMember] = [
-          Math.max(counts[0], processedResult[member][connectedMember][0]),
-          Math.max(counts[1], processedResult[member][connectedMember][1]),
-        ];
-      }
+    if (!(mentioner in processedResult[mentioned])) {
+      processedResult[mentioned][mentioner] = [0, 0];
     }
+
+    processedResult[mentioned][mentioner][1] = count;
   }
 
   return processedResult;
@@ -76,13 +71,6 @@ const getConnections = async ({ simulationId, graphConnection, low, high }) => {
           AND a.timestamp > $low
           AND a.timestamp <= $high
         RETURN m AS actorOutgoing, mentioned AS actorIncoming, COLLECT(a.id) as activities, count(*) AS count
-    UNION
-        WITH m AS main_member
-        MATCH (mentioner:Member)-[:DID]->(a:Activity)-[:MENTIONS]->(main_member)
-        WHERE a.simulationId=$simulationId
-          AND a.timestamp > $low
-          AND a.timestamp <= $high
-        RETURN m AS actorIncoming, mentioner AS actorOutgoing, COLLECT(a.id) AS activities, count(*) AS count
     }
     WITH actorOutgoing, actorIncoming, activities, count WHERE count > 0
     RETURN actorOutgoing as mentioner, actorIncoming as mentioned, activities, count ORDER by mentioner.globalActor, count DESC`,

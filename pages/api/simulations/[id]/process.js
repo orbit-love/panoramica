@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import GraphConnection from "lib/graphConnection";
+import c from "lib/common";
 
 const prisma = new PrismaClient();
 
@@ -110,14 +111,12 @@ export default async function handler(req, res) {
         console.log("Created activity node for " + node.properties.globalActor);
       }
 
+      // go back through all the activities and create mentions
       for (let activity of activities) {
-        for (var j = 0; j < activity.mentions?.length; j++) {
-          var mention = activity.mentions[j];
-
-          // TODO - this is going to cause a lot of craziness, so
-          // fix it next - create all members first and then go back
-          // and connect via mentions - just throw out mentions to non-members for now
-          // it would be confusing with timeframes anyway
+        const mentions = (activity.mentions || []).filter(c.onlyUnique);
+        for (let mention of mentions) {
+          // find some activity where the actor is the same to try
+          // and get the global actor
           var activityForMention = activities.find(
             (activity) => activity.actor === mention
           );
@@ -133,7 +132,7 @@ export default async function handler(req, res) {
               { globalActor, id: activity.id, simulationId }
             );
             console.log(
-              `Connected mention from ${activity.globalActor} to ${globalActor}`
+              `Connected mention on activity ${activity.id} from ${activity.globalActor} to ${globalActor}`
             );
           }
         }

@@ -3,11 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
-import CompactMember from "components/compact/member";
+import CompactConnections from "components/compact/connections";
 import Meter from "components/meter";
 
 export default function Member({
   member,
+  community,
   setSelection,
   showNetwork,
   setShowNetwork,
@@ -19,7 +20,7 @@ export default function Member({
 
   return (
     <div className="flex flex-col space-y-2">
-      <div className="flex items-baseline space-x-2">
+      <div className="flex overflow-hidden items-baseline space-x-2 text-ellipsis whitespace-nowrap">
         <button
           className="flex items-center"
           onClick={() => setSelection({ name: "Mission" })}
@@ -32,7 +33,7 @@ export default function Member({
           <OrbitLevelIcon number={member.level} classes="text-2xl" />
         </button>
         <div className="text-2xl font-semibold" style={{ color }}>
-          {member.actorName}
+          {member.globalActorName || member.actorName}
         </div>
       </div>
       <div className="flex flex-col space-y-[-2px]">
@@ -80,43 +81,43 @@ export default function Member({
         <>
           <div className="border-b border-indigo-800" />
           <div className="flex flex-col max-h-[25vh] overflow-scroll">
-            {member.connectedMembers
-              .sort((a, b) => a.level - b.level)
-              .map((connection) => (
-                <CompactMember
-                  key={connection.id}
-                  member={connection}
-                  setSelection={setSelection}
-                />
-              ))}
+            <CompactConnections
+              member={member}
+              community={community}
+              setSelection={setSelection}
+            />
           </div>
         </>
       )}
-      <div className="border-b border-indigo-800" />
-      <div className="flex flex-col space-y-[-2px]">
-        <div className="flex">
-          <span className="w-32 text-indigo-400">Actor</span>
-          <span>{member.actor}</span>
-        </div>
-        {member.actorName && (
-          <div className="flex">
-            <span className="w-32 text-indigo-400">Actor Name</span>
-            <span>{member.actorName}</span>
+      {false && (
+        <>
+          <div className="border-b border-indigo-800" />
+          <div className="flex flex-col space-y-[-2px]">
+            <div className="flex">
+              <span className="w-32 text-indigo-400">Actor</span>
+              <span>{member.actor}</span>
+            </div>
+            {member.actorName && (
+              <div className="flex">
+                <span className="w-32 text-indigo-400">Actor Name</span>
+                <span>{member.actorName}</span>
+              </div>
+            )}
+            {member.globalActor && (
+              <div className="flex">
+                <span className="w-32 text-indigo-400">Global Actor</span>
+                <span>{member.globalActor}</span>
+              </div>
+            )}
+            {member.globalActorName && (
+              <div className="flex">
+                <span className="w-32 text-indigo-400">Global Name</span>
+                <span>{member.globalActorName}</span>
+              </div>
+            )}
           </div>
-        )}
-        {member.globalActor && (
-          <div className="flex">
-            <span className="w-32 text-indigo-400">Global Actor</span>
-            <span>{member.globalActor}</span>
-          </div>
-        )}
-        {member.globalActorName && (
-          <div className="flex">
-            <span className="w-32 text-indigo-400">Global Name</span>
-            <span>{member.globalActorName}</span>
-          </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 }
