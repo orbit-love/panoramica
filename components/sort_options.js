@@ -4,15 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function SortOptions({
   sort,
   setSort,
-  members,
-  setMembers,
+  community,
+  setCommunity,
   levels,
 }) {
   const buttonClasses =
     "hover:border-b hover:border-indigo-600 px-2 py-1 whitespace-nowrap";
   const changeSort = (newSort) => {
-    members.sort({ sort: newSort, levels });
-    setMembers(members);
+    community.sortMembers({ sort: newSort, levels });
+    setCommunity(community);
     setSort(newSort);
   };
   const activeClass = "border-b border-indigo-600";

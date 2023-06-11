@@ -1,10 +1,7 @@
 import React from "react";
 import c from "lib/common";
 
-const findMember = (activity, members) =>
-  members.list.find((member) => member.actor === activity.actor);
-
-function Activity({ activity, members, setSelection }) {
+function Activity({ activity, community, setSelection }) {
   return (
     <div
       key={activity.id}
@@ -12,7 +9,9 @@ function Activity({ activity, members, setSelection }) {
     >
       <div className="flex items-baseline space-x-2">
         <button
-          onClick={() => setSelection(findMember(activity, members))}
+          onClick={() =>
+            setSelection(community.findMemberByActor(activity.actor))
+          }
           className="max-w-32 overflow-hidden text-sm font-bold text-indigo-100 text-ellipsis"
         >
           {activity.actorName}
@@ -54,17 +53,8 @@ function Activity({ activity, members, setSelection }) {
   );
 }
 
-export default function Console({
-  activities,
-  members,
-  low,
-  high,
-  selection,
-  setSelection,
-}) {
-  var slice = activities.slice(low, high) || [];
-
-  slice = slice
+export default function Console({ community, selection, setSelection }) {
+  community.activities
     .reverse()
     .filter(
       (activity) =>
@@ -72,21 +62,22 @@ export default function Console({
         selection.name === "Mission" ||
         selection.actor === activity.actor ||
         (selection.number &&
-          findMember(activity, members)?.level === selection.number)
+          community.findMemberByActor(activity.actor)?.level ===
+            selection.number)
     );
 
   return (
     <div className="flex flex-col p-4 space-y-0">
-      {slice.map((activity) => (
+      {community.activities.map((activity) => (
         <div key={activity.id} className="flex flex-col space-y-0">
           <Activity
             activity={activity}
-            members={members}
+            community={community}
             setSelection={setSelection}
           />
         </div>
       ))}
-      {slice.length === 0 && (
+      {community.activities.length === 0 && (
         <div className="w-[450px] text-indigo-100">No activities.</div>
       )}
     </div>

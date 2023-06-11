@@ -1,20 +1,18 @@
 import React, { useEffect, useState, useCallback } from "react";
 
 import c from "lib/common";
-import MemberCollection from "lib/memberCollection";
-import MemberReducer from "lib/reducers/member";
+import Community from "lib/community";
 import ActivitiesSlider from "components/activitiesSlider";
 
 export default function Show({
   sort,
   levels,
-  setMembers,
   simulation,
   setSimulation,
   setSelection,
   setEditMode,
-  activities,
-  setActivities,
+  community,
+  setCommunity,
   low,
   setLow,
   high,
@@ -26,11 +24,11 @@ export default function Show({
   const { cycleDelay, firstCycleDelay } = c.visualization;
 
   useEffect(() => {
-    if (!activities) return;
+    if (!community) return;
     const eachCycle = () => {
       if (cycle) {
-        if (high < activities.length) {
-          setHigh(high + activities.length * 0.1);
+        if (high < community.activities.length) {
+          setHigh(high + community.activities.length * 0.1);
         } else {
           setHigh(100);
         }
@@ -44,22 +42,45 @@ export default function Show({
       clearInterval(cycleInterval);
       clearTimeout(timeout);
     };
-  }, [cycle, setCycle, cycleDelay, firstCycleDelay, high, setHigh, activities]);
+  }, [cycle, setCycle, cycleDelay, firstCycleDelay, high, setHigh, community]);
 
-  const fetchActivities = useCallback(async () => {
+  const fetchCommunity = useCallback(async () => {
     setLoading(true);
-    fetch(`/api/simulations/${simulation.id}/activities2`)
+    // send low and high
+    fetch(
+      `/api/simulations/${simulation.id}/community?` +
+        new URLSearchParams({
+          low,
+          high,
+        })
+    )
       .then((res) => res.json())
       .then(({ result }) => {
-        setHigh(result.activities.length);
-        setActivities(result.activities);
+        const community = new Community({ result, levels });
+        // sort the members before updating
+        community.sortMembers({ sort, levels });
+        // put the reset flag on one so the members redraw
+        if (community.members[0]) {
+          community.members[0].reset = true;
+        }
+        setHigh(community.activities.length);
+        setCommunity(community);
         setLoading(false);
       });
-  }, [simulation.id, setHigh, setLoading, setActivities]);
+  }, [
+    simulation.id,
+    low,
+    high,
+    sort,
+    setHigh,
+    setLoading,
+    setCommunity,
+    levels,
+  ]);
 
   useEffect(() => {
-    fetchActivities();
-  }, [fetchActivities]);
+    fetchCommunity();
+  }, [fetchCommunity, low, high, sort]);
 
   const importSimulation = async () => {
     setLoading(true);
@@ -95,39 +116,11 @@ export default function Show({
         if (message) {
           console.log(message);
         } else {
-          fetchActivities();
+          fetchCommunity();
         }
         setLoading(false);
       });
   };
-
-  useEffect(() => {
-    if (!activities) return;
-
-    const processActivitySlice = (activities) => {
-      const reducer = new MemberReducer();
-      for (var i = 0; i < activities.length; i++) {
-        var activity = activities[i];
-        reducer.reduce(activity);
-      }
-
-      reducer.finalize();
-
-      // the result contains members with OL numbers and love
-      const members = reducer.getResult();
-      // sort the members now that all data is accurate
-      members.sort({ sort, levels });
-      // if there are members, put the reset flag on one so the members redraw
-      if (members.list[0]) {
-        members.list[0].reset = true;
-      }
-      setMembers(members);
-    };
-
-    processActivitySlice(activities.slice(low, high));
-  }, [activities, sort, levels, setMembers, low, high]);
-
-  var slice = activities?.slice(low, high);
 
   return (
     <>
@@ -135,10 +128,10 @@ export default function Show({
         <div className="text-lg font-bold">{simulation.name}</div>
         {loading && <div className="py-4">Loading...</div>}
         <div className="border-b border-indigo-900" />
-        {activities?.length > 0 && (
+        {community?.activities.length > 0 && (
           <div className="pb-6">
             <ActivitiesSlider
-              activities={activities}
+              activities={community.activities}
               low={low}
               setLow={setLow}
               high={high}
@@ -147,28 +140,22 @@ export default function Show({
           </div>
         )}
         <div className="flex flex-col py-2">
-          {activities?.length === 0 && (
+          {community?.activities.length === 0 && (
             <div className="text-semibold text-green-500">
               This simulation has no activities available yet. Choose Import or
               Process.
             </div>
           )}
-          {activities?.length > 0 && slice && (
+          {community?.activities.length > 0 && (
             <table className="table border-separate [border-spacing:0] text-sm">
               <tbody>
                 <tr>
                   <td className="w-24 font-semibold">Activities</td>
-                  <td>{slice.length}</td>
+                  <td>{community.activities.length}</td>
                 </tr>
                 <tr>
                   <td className="w-24 font-semibold">Members</td>
-                  <td>
-                    {
-                      slice
-                        .map((activity) => activity.actor)
-                        .filter(c.onlyUnique).length
-                    }
-                  </td>
+                  <td>{community.members.length}</td>
                 </tr>
               </tbody>
             </table>
@@ -178,12 +165,11 @@ export default function Show({
         <div className="flex space-x-2 text-xs">
           <button
             onClick={() => {
+              setCommunity(null);
               setSimulation(null);
               setSelection(null);
-              setActivities(null);
               setLow(null);
               setHigh(null);
-              setMembers(new MemberCollection());
             }}
             className={c.buttonClasses}
           >

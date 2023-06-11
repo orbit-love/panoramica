@@ -10,7 +10,7 @@ import ActivitiesSlider from "components/activitiesSlider";
 export default function MemberGraph({
   width,
   height,
-  members,
+  community,
   selection,
   setSelection,
   graph,
@@ -20,8 +20,6 @@ export default function MemberGraph({
   data,
   setData,
   levels,
-  activities,
-  setActivities,
   low,
   setLow,
   high,
@@ -102,8 +100,8 @@ export default function MemberGraph({
 
   // set the data when the members change
   useEffect(() => {
-    setData(helper.getData({ members, levels }));
-  }, [members, setData, levels]);
+    setData(helper.getData({ community, levels }));
+  }, [community, setData, levels]);
 
   // when the network view opens, animate to find the selected node
   // if no node is selected, choose the first member and click/focus on them
@@ -113,12 +111,12 @@ export default function MemberGraph({
       if (selectionRef.current) {
         node = graphRef.current.findById(selectionRef.current.id);
       } else {
-        node = graphRef.current.findById(members.list[0].id);
+        node = graphRef.current.findById(community.members[0].id);
         graphRef.current.emit("node:click", { item: node });
       }
       graphRef.current.focusItem(node, true);
     }
-  }, [showNetwork, members]);
+  }, [showNetwork, community]);
 
   const graphWidth = width * 0.95;
   const graphHeight = height * 0.95;
@@ -134,10 +132,10 @@ export default function MemberGraph({
         className="relative bg-[#150d33] rounded-md border-2 border-indigo-600 pointer-events-auto"
         style={{ width: graphWidth + 5, height: graphHeight + 5 }}
       >
-        {activities?.length > 0 && (
+        {community.activities?.length > 0 && (
           <div className="absolute top-0 left-2 px-4 w-64">
             <ActivitiesSlider
-              activities={activities}
+              activities={community.activities}
               low={low}
               setLow={setLow}
               high={high}

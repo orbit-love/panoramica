@@ -10,8 +10,8 @@ import List from "components/simulator/list";
 import ActivitiesConsole from "components/simulator/activitiesConsole";
 
 export default function Widgets({
-  members,
-  setMembers,
+  community,
+  setCommunity,
   selection,
   setSelection,
   fullscreen,
@@ -35,8 +35,6 @@ export default function Widgets({
   setSimulations,
   showPanel,
   setShowPanel,
-  activities,
-  setActivities,
   low,
   setLow,
   high,
@@ -50,23 +48,21 @@ export default function Widgets({
       >
         {showInfo && (
           <div className={`${classes} w-96`}>
-            <Info members={members} setShowInfo={setShowInfo} />
+            <Info community={community} setShowInfo={setShowInfo} />
           </div>
         )}
         {showPanel && (
           <div className={`${classes} w-96`}>
             <List
-              members={members}
+              community={community}
+              setCommunity={setCommunity}
               levels={levels}
               sort={sort}
-              setMembers={setMembers}
               simulation={simulation}
               setSimulation={setSimulation}
               simulations={simulations}
               setSimulations={setSimulations}
               setSelection={setSelection}
-              activities={activities}
-              setActivities={setActivities}
               low={low}
               setLow={setLow}
               high={high}
@@ -92,23 +88,22 @@ export default function Widgets({
               setShowInfo={setShowInfo}
               showPanel={showPanel}
               setShowPanel={setShowPanel}
-              members={members}
-              setMembers={setMembers}
+              community={community}
+              setCommunity={setCommunity}
               sort={sort}
               setSort={setSort}
               classes={classes}
             />
           </div>
-          {activities && selection && (
+          {community && selection && (
             <div
               className={`absolute bottom-6 left-96 ml-10 z-50 flex items-center justify-center bg-[${c.backgroundColor}] bg-opacity-90`}
             >
               <div className="overflow-scroll relative pr-2 h-[250px] rounded-md border border-indigo-700">
                 <ActivitiesConsole
-                  activities={activities}
                   selection={selection}
                   setSelection={setSelection}
-                  members={members}
+                  community={community}
                   low={low}
                   high={high}
                 />
@@ -118,7 +113,7 @@ export default function Widgets({
           <div className="mx-auto" />
         </div>
       </div>
-      {selection && members && (
+      {selection && community && (
         <div
           className={`absolute right-0 bottom-0 z-10 px-4 py-5 w-96 pointer-events-none`}
         >
@@ -128,10 +123,11 @@ export default function Widgets({
             {typeof selection.level === "number" && (
               <Member
                 member={
-                  members.list.find((member) => selection.id === member.id) ||
-                  selection
+                  community.members.find(
+                    (member) => selection.id === member.id
+                  ) || selection
                 }
-                members={members}
+                community={community}
                 setSelection={setSelection}
                 showNetwork={showNetwork}
                 setShowNetwork={setShowNetwork}
@@ -142,8 +138,8 @@ export default function Widgets({
               <OrbitLevel
                 level={selection}
                 levels={levels}
-                members={members}
-                setMembers={setMembers}
+                community={community}
+                setCommunity={setCommunity}
                 setSelection={setSelection}
                 sort={sort}
                 setSort={setSort}
@@ -151,12 +147,12 @@ export default function Widgets({
             )}
             {selection.name === "Mission" && (
               <Mission
-                members={members}
+                community={community}
                 setSelection={setSelection}
                 sort={sort}
                 setSort={setSort}
                 levels={levels}
-                setMembers={setMembers}
+                setCommunity={setCommunity}
               />
             )}
           </div>

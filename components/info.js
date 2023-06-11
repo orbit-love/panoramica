@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function Info({ members, setShowInfo }) {
+export default function Info({ community, setShowInfo }) {
   return (
     <>
       <div className="flex relative flex-col py-4 px-5 space-y-4 pointer-events-auto">

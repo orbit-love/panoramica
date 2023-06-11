@@ -8,13 +8,15 @@ import SortOptions from "components/sort_options";
 export default function OrbitLevel({
   level,
   levels,
-  members,
-  setMembers,
+  community,
+  setCommunity,
   setSelection,
   sort,
   setSort,
 }) {
-  const levelMembers = members.filterMembers({ levelNumber: level.number });
+  const levelMembers = community.members.filter(
+    (member) => member.level === level.number
+  );
 
   return (
     <div className="flex flex-col space-y-4">
@@ -33,8 +35,8 @@ export default function OrbitLevel({
         <SortOptions
           sort={sort}
           setSort={setSort}
-          members={members}
-          setMembers={setMembers}
+          community={community}
+          setCommunity={setCommunity}
           levels={levels}
         />
       </div>

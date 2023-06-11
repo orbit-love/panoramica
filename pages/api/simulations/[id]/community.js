@@ -8,6 +8,8 @@ export default async function handler(req, res) {
   const username = process.env.MEMGRAPH_USERNAME;
   const password = process.env.MEMGRAPH_PASSWORD;
 
+  console.log("params", { id, low, high });
+
   var driver, session;
 
   try {
@@ -23,7 +25,10 @@ export default async function handler(req, res) {
     const records = result.records;
     const activities = records.map((record) => record.get(0).properties);
 
-    res.status(200).json({ result: { activities } });
+    const members = [];
+    const connections = [];
+
+    res.status(200).json({ result: { activities, members, connections } });
   } catch (err) {
     res.status(500).json({ error: "failed to load data" });
     console.log(err);

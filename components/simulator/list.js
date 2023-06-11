@@ -11,10 +11,9 @@ export default function List({
   simulations,
   setSimulation,
   setSimulations,
-  setMembers,
   setSelection,
-  activities,
-  setActivities,
+  community,
+  setCommunity,
   low,
   setLow,
   high,
@@ -68,11 +67,10 @@ export default function List({
             setSimulation={setSimulation}
             sort={sort}
             levels={levels}
-            setMembers={setMembers}
+            community={community}
+            setCommunity={setCommunity}
             setSelection={setSelection}
             setEditMode={setEditMode}
-            activities={activities}
-            setActivities={setActivities}
             low={low}
             setLow={setLow}
             high={high}
@@ -85,7 +83,7 @@ export default function List({
             setSimulation={setSimulation}
             sort={sort}
             levels={levels}
-            setMembers={setMembers}
+            setCommunity={setCommunity}
             setSelection={setSelection}
             setEditMode={setEditMode}
           />

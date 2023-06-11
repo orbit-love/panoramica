@@ -9,7 +9,7 @@ const ActivitiesSlider = ({ low, high, setLow, setHigh, activities }) => {
     setHigh(max);
   };
 
-  var slice = activities?.slice(low, high);
+  var slice = activities.slice(low, high);
 
   return (
     <MultiRangeSlider

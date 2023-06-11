@@ -6,11 +6,11 @@ import CompactMember from "components/compact/member";
 import SortOptions from "components/sort_options";
 
 export default function Mission({
-  members,
+  community,
   setSelection,
   sort,
   setSort,
-  setMembers,
+  setCommunity,
   levels,
 }) {
   return (
@@ -23,15 +23,15 @@ export default function Mission({
           <FontAwesomeIcon icon="planet-ringed" className="text-2xl" />
         </div>
         <div className="text-2xl font-semibold">
-          Members: {members.list.length}
+          Members: {community.members.length}
         </div>
       </div>
       <div className="pb-1 text-sm text-indigo-300">
         <SortOptions
           sort={sort}
           setSort={setSort}
-          members={members}
-          setMembers={setMembers}
+          community={community}
+          setCommunity={setCommunity}
           levels={levels}
         />
       </div>
@@ -39,14 +39,16 @@ export default function Mission({
         {[1, 2, 3, 4].map((number) => (
           <>
             <div className="flex flex-col space-y-0">
-              {members.filterMembers({ levelNumber: number }).map((member) => (
-                <CompactMember
-                  key={member.id}
-                  member={member}
-                  setSelection={setSelection}
-                  metrics={true}
-                />
-              ))}
+              {community.members
+                .filter((member) => member.level === number)
+                .map((member) => (
+                  <CompactMember
+                    key={member.id}
+                    member={member}
+                    setSelection={setSelection}
+                    metrics={true}
+                  />
+                ))}
             </div>
           </>
         ))}

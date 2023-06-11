@@ -13,8 +13,8 @@ export default function Controls({
   setShowInfo,
   sort,
   setSort,
-  members,
-  setMembers,
+  community,
+  setCommunity,
   classes,
   levels,
   showPanel,
@@ -91,8 +91,8 @@ export default function Controls({
             sort={sort}
             setSort={setSort}
             setSortOpen={setSortOpen}
-            members={members}
-            setMembers={setMembers}
+            community={community}
+            setCommunity={setCommunity}
             classes={classes}
             levels={levels}
           />

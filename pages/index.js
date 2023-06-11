@@ -12,11 +12,6 @@ export default function Index() {
     width: null,
   });
   const [fullscreen, setFullscreen] = useState(false);
-  const [members, setMembers] = useState(null);
-  const [sort, setSort] = useState("love");
-  const [levels, setLevels] = useState([]);
-  const [simulation, setSimulation] = useState(null);
-  const [simulations, setSimulations] = useState([]);
 
   useEffect(() => {
     function onFullscreenChange() {
@@ -63,20 +58,10 @@ export default function Index() {
       >
         {dimensions.width && dimensions.height && (
           <Vizualization
-            members={members}
-            setMembers={setMembers}
             width={dimensions.width}
             height={dimensions.height}
             fullscreen={fullscreen}
             setFullscreen={setFullscreen}
-            levels={levels}
-            setLevels={setLevels}
-            sort={sort}
-            setSort={setSort}
-            simulation={simulation}
-            setSimulation={setSimulation}
-            simulations={simulations}
-            setSimulations={setSimulations}
           />
         )}
       </div>

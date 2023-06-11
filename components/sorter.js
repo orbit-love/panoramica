@@ -6,8 +6,8 @@ export default function Sorter({
   sort,
   setSort,
   setSortOpen,
-  members,
-  setMembers,
+  community,
+  setCommunity,
   classes,
   levels,
 }) {
@@ -26,8 +26,8 @@ export default function Sorter({
         <SortOptions
           sort={sort}
           setSort={setSort}
-          members={members}
-          setMembers={setMembers}
+          community={community}
+          setCommunity={setCommunity}
           levels={levels}
         />
       </div>

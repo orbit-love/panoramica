@@ -11,16 +11,6 @@ export default function Visualization({
   height,
   fullscreen,
   setFullscreen,
-  members,
-  setMembers,
-  levels,
-  setLevels,
-  sort,
-  setSort,
-  simulation,
-  simulations,
-  setSimulation,
-  setSimulations,
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
@@ -37,6 +27,16 @@ export default function Visualization({
   const prevHeight = c.usePrevious(height);
 
   const svgRef = useRef();
+
+  const [levels, setLevels] = useState([]);
+
+  const [community, setCommunity] = useState(null);
+  const [low, setLow] = useState(0);
+  const [high, setHigh] = useState(0);
+  const [sort, setSort] = useState("love");
+  const [simulation, setSimulation] = useState(null);
+  const [simulations, setSimulations] = useState([]);
+
   const [animate, setAnimate] = useState(!isReduced);
   const [cycle, setCycle] = useState(false);
   const [selection, setSelection] = useState(null);
@@ -48,10 +48,6 @@ export default function Visualization({
   const [graph, setGraph] = useState();
 
   // the activities for the running simulation and the focused range
-  const [activities, setActivities] = useState(null);
-  const [low, setLow] = useState(0);
-  const [high, setHigh] = useState(0);
-
   const prevShowNetwork = c.usePrevious(showNetwork);
   const prevSort = c.usePrevious(sort);
 
@@ -62,10 +58,10 @@ export default function Visualization({
 
   useEffect(() => {
     const eachCycle = () => {
-      if (cycle && members?.length() > 0) {
+      if (cycle && community?.members.length > 0) {
         var member = helper.getNextMember({
           selection: selectionStateRef.current,
-          members,
+          community,
         });
         setSelection(member);
       }
@@ -83,7 +79,7 @@ export default function Visualization({
     setCycle,
     cycleDelay,
     firstCycleDelay,
-    members,
+    community,
     showNetwork,
     setSelection,
   ]);
@@ -106,8 +102,8 @@ export default function Visualization({
       height,
       selection,
       setSelection,
-      members,
-      setMembers,
+      community,
+      setCommunity,
       setCycle,
       animate,
       levels,
@@ -123,8 +119,8 @@ export default function Visualization({
     helper.drawSun(props);
 
     // draw members if available and start/stop animation
-    if (members) {
-      console.log(`Drawing ${members.length()} members...`);
+    if (community) {
+      console.log(`Drawing ${community.members.length} members...`);
       helper.drawMembers(props);
 
       if (animate) {
@@ -138,8 +134,8 @@ export default function Visualization({
     height,
     prevWidth,
     prevHeight,
-    members,
-    setMembers,
+    community,
+    setCommunity,
     selection,
     animate,
     levels,
@@ -154,8 +150,8 @@ export default function Visualization({
   return (
     <div className="relative" style={{ width, height }}>
       <Shortcuts
-        members={members}
-        setMembers={setMembers}
+        community={community}
+        setCommunity={setCommunity}
         selection={selection}
         setSelection={setSelection}
         fullscreen={fullscreen}
@@ -184,11 +180,11 @@ export default function Visualization({
           }}
         ></svg>
       </div>
-      {members && (
+      {community && (
         <MemberGraph
           width={width}
           height={height}
-          members={members}
+          community={community}
           selection={selection}
           setSelection={setSelection}
           graph={graph}
@@ -198,8 +194,6 @@ export default function Visualization({
           data={data}
           setData={setData}
           levels={levels}
-          activities={activities}
-          setActivities={setActivities}
           low={low}
           setLow={setLow}
           high={high}
@@ -209,8 +203,8 @@ export default function Visualization({
       <div className="hidden bg-[#0F0A25] bg-[#150D33] text-[#eef2ff] text-[#1D1640]" />
       <Widgets
         svgRef={svgRef}
-        members={members}
-        setMembers={setMembers}
+        community={community}
+        setCommunity={setCommunity}
         selection={selection}
         setSelection={setSelection}
         fullscreen={fullscreen}
@@ -235,8 +229,6 @@ export default function Visualization({
         setSimulations={setSimulations}
         showPanel={showPanel}
         setShowPanel={setShowPanel}
-        activities={activities}
-        setActivities={setActivities}
         low={low}
         setLow={setLow}
         high={high}

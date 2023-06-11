@@ -6,7 +6,7 @@ import helper from "lib/visualization/helper";
 export default function Shortcuts({
   selection,
   setSelection,
-  members,
+  community,
   levels,
   animate,
   setAnimate,
@@ -33,10 +33,10 @@ export default function Shortcuts({
         helper.getNextMember({
           selection,
           level: helper.selectedLevel({ selection, levels }),
-          members,
+          community,
         })
       ),
-    [selection, members]
+    [selection, community]
   );
 
   useHotkeys(
@@ -46,10 +46,10 @@ export default function Shortcuts({
         helper.getPreviousMember({
           selection,
           level: helper.selectedLevel({ selection, levels }),
-          members,
+          community,
         })
       ),
-    [selection, members]
+    [selection, community]
   );
   useHotkeys(
     "up",
@@ -60,12 +60,12 @@ export default function Shortcuts({
         helper.getNextMember({
           selection,
           level: nextLevel,
-          members,
+          community,
           toIndex: 0,
         })
       );
     },
-    [selection, members, levels]
+    [selection, community, levels]
   );
   useHotkeys(
     "down",
@@ -80,12 +80,12 @@ export default function Shortcuts({
         helper.getPreviousMember({
           selection,
           level: nextLevel,
-          members,
+          community,
           toIndex: 0,
         })
       );
     },
-    [selection, members, levels]
+    [selection, community, levels]
   );
 
   useHotkeys("a", () => setAnimate(!animate), [animate, setAnimate]);
@@ -95,13 +95,13 @@ export default function Shortcuts({
       var newRevolution = revolution - revolutionStep;
       if (newRevolution < minRevolution) newRevolution = defaultRevolution;
       helper.changeTransitionSpeed({
-        members,
+        community,
         levels,
         revolution: newRevolution,
       });
       setRevolution(newRevolution);
     },
-    [revolution, setRevolution, members]
+    [revolution, setRevolution, community]
   );
   useHotkeys("c", () => setCycle(!cycle), [cycle, setCycle]);
   useHotkeys("n", () => setShowNetwork(!showNetwork), [
