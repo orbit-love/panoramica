@@ -37,20 +37,18 @@ export default function Mission({
       </div>
       <div className="flex flex-col max-h-[40vh] overflow-scroll">
         {[1, 2, 3, 4].map((number) => (
-          <>
-            <div className="flex flex-col space-y-0">
-              {community.members
-                .filter((member) => member.level === number)
-                .map((member) => (
-                  <CompactMember
-                    key={member.id}
-                    member={member}
-                    setSelection={setSelection}
-                    metrics={true}
-                  />
-                ))}
-            </div>
-          </>
+          <div key={number} className="flex flex-col space-y-0">
+            {community.members
+              .filter((member) => member.level === number)
+              .map((member) => (
+                <CompactMember
+                  key={member.id}
+                  member={member}
+                  setSelection={setSelection}
+                  metrics={true}
+                />
+              ))}
+          </div>
         ))}
       </div>
     </div>

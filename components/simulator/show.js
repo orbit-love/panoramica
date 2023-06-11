@@ -170,8 +170,8 @@ export default function Show({
               setCommunity(null);
               setSimulation(null);
               setSelection(null);
-              setLow(null);
-              setHigh(null);
+              setLow(0);
+              setHigh(0);
             }}
             className={c.buttonClasses}
           >

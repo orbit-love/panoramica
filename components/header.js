@@ -13,7 +13,7 @@ export default function Header({ fix }) {
   };
 
   const fixClass = fix
-    ? `fixed top-0 left-0 bg-[${c.purpleBgColor}] bg-[#1D1640] z-50`
+    ? `fixed top-0 left-0 bg-[${c.purpleBgColor}] bg-[#1D1640] z-40`
     : "absolute";
 
   return (

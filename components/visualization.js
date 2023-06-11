@@ -148,7 +148,7 @@ export default function Visualization({
   ]);
 
   return (
-    <div className="relative" style={{ width, height }}>
+    <div className="relative z-50" style={{ width, height }}>
       <Shortcuts
         community={community}
         setCommunity={setCommunity}
