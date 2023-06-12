@@ -10,6 +10,7 @@ export default function CompactConnection({
   directions,
   setSelection,
 }) {
+  // safety check to remove later
   if (!directions) {
     return <div />;
   }

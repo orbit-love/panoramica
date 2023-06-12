@@ -29,15 +29,6 @@ export default function CompactConnections({
       return outgoing === 0 && incoming > 0;
     })
     .sort(sortByMentions);
-  const Connection = ({ connection, directions }) => (
-    <CompactConnection
-      key={connection.id}
-      member={member}
-      connection={connection}
-      setSelection={setSelection}
-      directions={directions}
-    />
-  );
 
   const Connections = ({ name, connections }) => {
     // if the connection doesn't exist, right now it could
@@ -54,10 +45,12 @@ export default function CompactConnections({
               <div className="pb-1 font-semibold text-indigo-400">{name}</div>
               <div className="flex flex-col">
                 {connectedMembers.map((connection) => (
-                  <Connection
-                    key={member.actor}
+                  <CompactConnection
+                    key={connection.id}
+                    member={member}
                     connection={connection}
-                    directions={member.connections[connection.actor]}
+                    setSelection={setSelection}
+                    directions={member.connections[connection.globalActor]}
                   />
                 ))}
               </div>
