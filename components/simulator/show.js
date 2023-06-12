@@ -168,6 +168,7 @@ export default function Show({
           )}
         </div>
         <div className="h-2" />
+        <div className="my-auto" />
         <div className="flex space-x-2 text-xs">
           <button
             onClick={() => {

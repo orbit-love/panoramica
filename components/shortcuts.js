@@ -113,7 +113,7 @@ export default function Shortcuts({
     "i",
     () => {
       setShowInfo(!showInfo);
-      !showInfo && setShowPanel(false);
+      !showInfo && setShowPanel(true);
     },
     [showInfo, setShowInfo, setShowPanel]
   );

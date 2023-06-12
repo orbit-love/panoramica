@@ -35,9 +35,9 @@ export default function Mission({
           levels={levels}
         />
       </div>
-      <div className="flex flex-col max-h-[40vh] overflow-scroll">
+      <div className="flex flex-col">
         {[1, 2, 3, 4].map((number) => (
-          <div key={number} className="flex flex-col space-y-0">
+          <div key={number} className="flex flex-col">
             {community.members
               .filter((member) => member.level === number)
               .map((member) => (

@@ -40,66 +40,73 @@ export default function Widgets({
   high,
   setHigh,
 }) {
-  const classes = `flex space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90`;
+  const width = "w-[31vw]";
+  const height = "h-[40vh]";
+  const classes = `flex ${height} px-4 py-3 overflow-scroll space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90`;
+
+  const DControls = () => (
+    <div className={`flex absolute top-0 right-0 z-10 p-5 space-x-4`}>
+      <div className={`${classes} py-4 px-5 h-auto pointer-events-auto`}>
+        <Controls
+          levels={levels}
+          animate={animate}
+          setAnimate={setAnimate}
+          cycle={cycle}
+          setCycle={setCycle}
+          fullscreen={fullscreen}
+          setFullscreen={setFullscreen}
+          showNetwork={showNetwork}
+          setShowNetwork={setShowNetwork}
+          expanded={expanded}
+          setExpanded={setExpanded}
+          showInfo={showInfo}
+          setShowInfo={setShowInfo}
+          showPanel={showPanel}
+          setShowPanel={setShowPanel}
+          community={community}
+          setCommunity={setCommunity}
+          sort={sort}
+          setSort={setSort}
+          classes={classes}
+        />
+      </div>
+    </div>
+  );
+
   return (
     <>
+      <DControls />
       <div
-        className={`flex absolute bottom-0 left-0 z-10 flex-col px-4 py-5 space-y-4`}
+        className={`w-[100vw] flex absolute bottom-0 left-0 z-10 justify-between p-5 space-x-4`}
       >
-        {showInfo && (
-          <div className={`${classes} w-96`}>
-            <Info community={community} setShowInfo={setShowInfo} />
-          </div>
-        )}
         {showPanel && (
-          <div className={`${classes} w-96`}>
-            <List
-              community={community}
-              setCommunity={setCommunity}
-              levels={levels}
-              sort={sort}
-              simulation={simulation}
-              setSimulation={setSimulation}
-              simulations={simulations}
-              setSimulations={setSimulations}
-              setSelection={setSelection}
-              low={low}
-              setLow={setLow}
-              high={high}
-              setHigh={setHigh}
-            />
-          </div>
-        )}
-        <div className="flex">
-          <div className={`${classes} py-4 px-5 pointer-events-auto`}>
-            <Controls
-              levels={levels}
-              animate={animate}
-              setAnimate={setAnimate}
-              cycle={cycle}
-              setCycle={setCycle}
-              fullscreen={fullscreen}
-              setFullscreen={setFullscreen}
-              showNetwork={showNetwork}
-              setShowNetwork={setShowNetwork}
-              expanded={expanded}
-              setExpanded={setExpanded}
-              showInfo={showInfo}
-              setShowInfo={setShowInfo}
-              showPanel={showPanel}
-              setShowPanel={setShowPanel}
-              community={community}
-              setCommunity={setCommunity}
-              sort={sort}
-              setSort={setSort}
-              classes={classes}
-            />
-          </div>
-          {community && selection && (
-            <div
-              className={`absolute bottom-6 left-96 ml-10 z-50 flex items-center justify-center bg-[${c.backgroundColor}] bg-opacity-90`}
-            >
-              <div className="overflow-scroll relative pr-2 h-[250px] rounded-md border border-indigo-700">
+          <>
+            {showInfo && (
+              <div className={`${classes} ${width}`}>
+                <Info community={community} setShowInfo={setShowInfo} />
+              </div>
+            )}
+            {!showInfo && (
+              <div className={`${classes} ${width}`}>
+                <List
+                  community={community}
+                  setCommunity={setCommunity}
+                  levels={levels}
+                  sort={sort}
+                  simulation={simulation}
+                  setSimulation={setSimulation}
+                  simulations={simulations}
+                  setSimulations={setSimulations}
+                  setSelection={setSelection}
+                  low={low}
+                  setLow={setLow}
+                  high={high}
+                  setHigh={setHigh}
+                />
+              </div>
+            )}
+            {community && selection && (
+              <div className={`${classes} ${width}`}>
                 <ActivitiesConsole
                   selection={selection}
                   setSelection={setSelection}
@@ -108,56 +115,51 @@ export default function Widgets({
                   high={high}
                 />
               </div>
-            </div>
-          )}
-          <div className="mx-auto" />
-        </div>
+            )}
+            {community && selection && (
+              <div
+                className={`${classes} ${width} flex relative flex-col pointer-events-auto`}
+              >
+                {typeof selection.level === "number" && (
+                  <Member
+                    member={
+                      community.members.find(
+                        (member) => selection.id === member.id
+                      ) || selection
+                    }
+                    community={community}
+                    setSelection={setSelection}
+                    showNetwork={showNetwork}
+                    setShowNetwork={setShowNetwork}
+                    levels={levels}
+                  />
+                )}
+                {selection.number && (
+                  <OrbitLevel
+                    level={selection}
+                    levels={levels}
+                    community={community}
+                    setCommunity={setCommunity}
+                    setSelection={setSelection}
+                    sort={sort}
+                    setSort={setSort}
+                  />
+                )}
+                {selection.name === "Mission" && (
+                  <Mission
+                    community={community}
+                    setSelection={setSelection}
+                    sort={sort}
+                    setSort={setSort}
+                    levels={levels}
+                    setCommunity={setCommunity}
+                  />
+                )}
+              </div>
+            )}
+          </>
+        )}
       </div>
-      {selection && community && (
-        <div
-          className={`absolute right-0 bottom-0 z-10 px-4 py-5 w-96 pointer-events-none`}
-        >
-          <div
-            className={`${classes} flex relative flex-col px-6 py-6 pointer-events-auto`}
-          >
-            {typeof selection.level === "number" && (
-              <Member
-                member={
-                  community.members.find(
-                    (member) => selection.id === member.id
-                  ) || selection
-                }
-                community={community}
-                setSelection={setSelection}
-                showNetwork={showNetwork}
-                setShowNetwork={setShowNetwork}
-                levels={levels}
-              />
-            )}
-            {selection.number && (
-              <OrbitLevel
-                level={selection}
-                levels={levels}
-                community={community}
-                setCommunity={setCommunity}
-                setSelection={setSelection}
-                sort={sort}
-                setSort={setSort}
-              />
-            )}
-            {selection.name === "Mission" && (
-              <Mission
-                community={community}
-                setSelection={setSelection}
-                sort={sort}
-                setSort={setSort}
-                levels={levels}
-                setCommunity={setCommunity}
-              />
-            )}
-          </div>
-        </div>
-      )}
     </>
   );
 }

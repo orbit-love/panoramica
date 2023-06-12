@@ -40,7 +40,7 @@ export default function OrbitLevel({
           levels={levels}
         />
       </div>
-      <div className="flex flex-col max-h-[40vh] overflow-scroll">
+      <div className="flex flex-col">
         {levelMembers.map((member) => (
           <CompactMember
             key={member.id}

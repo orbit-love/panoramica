@@ -3,25 +3,22 @@ import c from "lib/common";
 
 function Activity({ activity, community, setSelection }) {
   return (
-    <div
-      key={activity.id}
-      className="flex flex-col w-[500px] whitespace-nowrap"
-    >
+    <div key={activity.id} className="flex flex-col">
       <div className="flex items-baseline space-x-2">
         <button
           onClick={() => setSelection(community.findMemberByActivity(activity))}
-          className="max-w-32 overflow-hidden text-sm font-bold text-indigo-100 text-ellipsis"
+          className="overflow-hidden text-sm font-bold text-indigo-100 text-ellipsis whitespace-nowrap"
         >
           {activity.actorName}
         </button>
-        <div className="max-w-32 overflow-hidden text-sm text-orange-400 text-ellipsis">
+        <div className="overflow-hidden text-sm text-orange-400 text-ellipsis">
           {activity.actor}
         </div>
-        <div className="max-w-32 overflow-hidden text-sm text-green-500 text-ellipsis">
+        <div className="overflow-hidden text-sm text-green-500 text-ellipsis">
           {activity.sourceType?.replace(/_/g, " ").replace(/activity/, "")}
         </div>
         <div className="mx-auto" />
-        <div className="flex-1 text-xs text-right">
+        <div className="flex-1 text-xs text-right whitespace-nowrap">
           {activity.url && (
             <a
               className="text-indigo-700 underline"
@@ -40,7 +37,7 @@ function Activity({ activity, community, setSelection }) {
         </div>
       </div>
       {activity.textHtml && (
-        <div className="flex mb-3 space-x-2 text-xs text-indigo-300 whitespace-normal">
+        <div className="flex mb-3 space-x-2 text-xs text-indigo-300">
           <div
             className="tweet"
             dangerouslySetInnerHTML={{ __html: activity.textHtml }}
@@ -62,7 +59,7 @@ export default function Console({ community, selection, setSelection }) {
   );
 
   return (
-    <div className="flex flex-col p-4 space-y-0">
+    <div className="flex overflow-scroll flex-col space-y-0">
       {activities.map((activity) => (
         <div key={activity.id} className="flex flex-col space-y-0">
           <Activity
@@ -73,7 +70,7 @@ export default function Console({ community, selection, setSelection }) {
         </div>
       ))}
       {activities.length === 0 && (
-        <div className="w-[450px] text-indigo-100">No activities.</div>
+        <div className="text-indigo-100">No activities.</div>
       )}
     </div>
   );

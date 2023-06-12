@@ -80,7 +80,7 @@ export default function Member({
       {member.connectionCount > 0 && (
         <>
           <div className="border-b border-indigo-800" />
-          <div className="flex flex-col max-h-[25vh] overflow-scroll">
+          <div className="flex flex-col">
             <CompactConnections
               member={member}
               community={community}
