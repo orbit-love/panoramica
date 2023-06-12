@@ -55,6 +55,9 @@ export default function Show({
         from,
         to,
       });
+    } else {
+      // show loading just the first time, not every range move
+      setLoading(true);
     }
     // only needed when high was not chosen, otherwise it will be thesame
     // send low and high
@@ -72,6 +75,7 @@ export default function Show({
             newCommunity.members[0].reset = true;
           }
           setCommunity(newCommunity);
+          setLoading(false);
         }
       });
   }, [simulation.id, community, low, high, sort, setCommunity, levels]);
@@ -121,15 +125,16 @@ export default function Show({
       });
   };
 
+  const imported = community?.stats.activities.count > 0;
   return (
     <>
-      <div className="flex flex-col space-y-1">
+      <div className="flex flex-col space-y-2">
         <div className="flex items-baseline space-x-2">
           <div className="text-lg font-bold">{simulation.name}</div>
           {loading && <div className="text-indigo-700">Loading...</div>}
         </div>
         <div className="border-b border-indigo-900" />
-        {community && (
+        {imported && (
           <div className="pb-6">
             <ActivitiesSlider
               community={community}
@@ -140,8 +145,8 @@ export default function Show({
             />
           </div>
         )}
-        <div className="flex flex-col space-y-4">
-          {community && community.stats.activities.count === 0 && (
+        <div className="flex flex-col space-y-2">
+          {community && !imported && (
             <div className="text-semibold text-green-500">
               This simulation has not been imported yet. Choose Import or
               Process.
