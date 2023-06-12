@@ -1,4 +1,6 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
 
@@ -14,27 +16,33 @@ export default function CompactConnection({
   const [outgoing, incoming] = directions;
   return (
     <button
-      className="p-[1px]"
       key={connection.id}
+      className="bg-opacity-0 hover:bg-opacity-50 flex overflow-hidden items-center space-x-1 whitespace-nowrap bg-indigo-900"
       onClick={() => setSelection(connection)}
     >
-      <div className="bg-opacity-0 hover:bg-opacity-50 flex justify-between space-x-1 whitespace-nowrap bg-indigo-900">
-        <div className="text-ellisis flex overflow-hidden items-center space-x-1 text-left">
-          <OrbitLevelIcon number={connection.level} />
-          <div
-            style={{
-              color: c.orbitLevelColorScale(connection.level),
-            }}
-          >
-            {connection.globalActorName || connection.actorName}
-          </div>
+      {outgoing > 0 && (
+        <div className="w-8 text-xs text-indigo-400">
+          <FontAwesomeIcon icon="arrow-right" />
+          {" " + outgoing}
         </div>
-        <div className="mx-auto" />
-        <div className="flex space-x-2">
-          <div>In: {incoming}</div>
-          <div>Out: {outgoing}</div>
+      )}
+      <div className="max-w-[200px] flex items-center space-x-1">
+        <OrbitLevelIcon number={connection.level} />
+        <div
+          className="overflow-hidden text-ellipsis"
+          style={{
+            color: c.orbitLevelColorScale(connection.level),
+          }}
+        >
+          {connection.globalActorName || connection.actorName}
         </div>
       </div>
+      {incoming > 0 && (
+        <div className="w-8 text-xs text-indigo-400">
+          {incoming + " "}
+          <FontAwesomeIcon icon="arrow-right" />
+        </div>
+      )}
     </button>
   );
 }

@@ -20,6 +20,8 @@ import {
   faChevronLeft,
   faArrowsSpin,
   faArrowDown,
+  faArrowLeft,
+  faArrowRight,
   faShuffle,
   faExpand,
   faSquare,
@@ -97,7 +99,9 @@ library.add(
   faQuestion,
   faSort,
   faChevronLeft,
-  faKeyboard
+  faKeyboard,
+  faArrowLeft,
+  faArrowRight
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
