@@ -135,7 +135,7 @@ export default function MemberGraph({
         {community.activities?.length > 0 && (
           <div className="absolute top-0 left-2 px-4 w-64">
             <ActivitiesSlider
-              activities={community.activities}
+              community={community}
               low={low}
               setLow={setLow}
               high={high}

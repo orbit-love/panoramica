@@ -46,38 +46,43 @@ export default function Show({
 
   const fetchCommunity = useCallback(async () => {
     setLoading(true);
+
+    var params = "";
+    // if a community is already loaded, we should use low and high to narrow the query
+    if (community) {
+      const { minDate } = community.getActivityDateRange();
+      const from = c.addDays(minDate, low).toISOString();
+      const to = c.addDays(minDate, high).toISOString();
+      params = new URLSearchParams({
+        from,
+        to,
+      });
+    }
+    // only needed when high was not chosen, otherwise it will be thesame
     // send low and high
-    fetch(
-      `/api/simulations/${simulation.id}/community?` +
-        new URLSearchParams({
-          low,
-          high,
-        })
-    )
+    fetch(`/api/simulations/${simulation.id}/community?` + params)
       .then((res) => res.json())
       .then(({ result, message }) => {
         if (message) {
           console.log("Error fetching community", message);
         } else {
-          const community = new Community({ result, levels });
+          const newCommunity = new Community({ result, levels });
           // sort the members before updating
-          community.sortMembers({ sort, levels });
+          newCommunity.sortMembers({ sort, levels });
           // put the reset flag on one so the members redraw
-          if (community.members[0]) {
-            community.members[0].reset = true;
+          if (newCommunity.members[0]) {
+            newCommunity.members[0].reset = true;
           }
-          // only needed when high was not chosen, otherwise it will be thesame
-          setHigh(community.activities.length);
-          setCommunity(community);
+          setCommunity(newCommunity);
           setLoading(false);
         }
       });
   }, [
     simulation.id,
+    community,
     low,
     high,
     sort,
-    setHigh,
     setLoading,
     setCommunity,
     levels,
@@ -131,13 +136,15 @@ export default function Show({
   return (
     <>
       <div className="flex flex-col space-y-1">
-        <div className="text-lg font-bold">{simulation.name}</div>
-        {loading && <div className="py-4">Loading...</div>}
+        <div className="flex items-baseline space-x-2">
+          <div className="text-lg font-bold">{simulation.name}</div>
+          {loading && <div className="text-indigo-700">Loading...</div>}
+        </div>
         <div className="border-b border-indigo-900" />
         {community?.activities.length > 0 && (
           <div className="pb-6">
             <ActivitiesSlider
-              activities={community.activities}
+              community={community}
               low={low}
               setLow={setLow}
               high={high}
@@ -157,11 +164,11 @@ export default function Show({
               <tbody>
                 <tr>
                   <td className="w-24 font-semibold">Activities</td>
-                  <td>{community.activities.length}</td>
+                  <td>{community.stats.activities.count}</td>
                 </tr>
                 <tr>
                   <td className="w-24 font-semibold">Members</td>
-                  <td>{community.members.length}</td>
+                  <td>{community.stats.members.count}</td>
                 </tr>
               </tbody>
             </table>

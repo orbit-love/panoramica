@@ -33,7 +33,7 @@ export default function Visualization({
   const [community, setCommunity] = useState(null);
   const [low, setLow] = useState(0);
   const [high, setHigh] = useState(0);
-  const [sort, setSort] = useState("love");
+  const [sort, setSort] = useState("gravity");
   const [simulation, setSimulation] = useState(null);
   const [simulations, setSimulations] = useState([]);
 

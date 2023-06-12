@@ -91,8 +91,10 @@ export default function List({
         {!simulation && (
           <>
             <div className="flex flex-col space-y-2">
-              <div className="text-lg font-bold">Choose a Simulation</div>
-              {loading && <div className="py-4">Loading...</div>}
+              <div className="flex items-baseline space-x-2">
+                <div className="text-lg font-bold">Choose a Simulation</div>
+                {loading && <div className="text-indigo-700">Loading...</div>}
+              </div>
               {simulations?.map((simulation) => (
                 <div className="flex space-x-4" key={simulation.id}>
                   <button
