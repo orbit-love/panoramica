@@ -45,8 +45,6 @@ export default function Show({
   }, [cycle, setCycle, cycleDelay, firstCycleDelay, high, setHigh, community]);
 
   const fetchCommunity = useCallback(async () => {
-    setLoading(true);
-
     var params = "";
     // if a community is already loaded, we should use low and high to narrow the query
     if (community) {
@@ -74,19 +72,9 @@ export default function Show({
             newCommunity.members[0].reset = true;
           }
           setCommunity(newCommunity);
-          setLoading(false);
         }
       });
-  }, [
-    simulation.id,
-    community,
-    low,
-    high,
-    sort,
-    setLoading,
-    setCommunity,
-    levels,
-  ]);
+  }, [simulation.id, community, low, high, sort, setCommunity, levels]);
 
   // fetch initially and if low/high change
   useEffect(() => {
@@ -141,7 +129,7 @@ export default function Show({
           {loading && <div className="text-indigo-700">Loading...</div>}
         </div>
         <div className="border-b border-indigo-900" />
-        {community?.activities.length > 0 && (
+        {community && (
           <div className="pb-6">
             <ActivitiesSlider
               community={community}
@@ -152,14 +140,14 @@ export default function Show({
             />
           </div>
         )}
-        <div className="flex flex-col py-2">
-          {community?.activities.length === 0 && (
+        <div className="flex flex-col space-y-4">
+          {community && community.stats.activities.count === 0 && (
             <div className="text-semibold text-green-500">
-              This simulation has no activities available yet. Choose Import or
+              This simulation has not been imported yet. Choose Import or
               Process.
             </div>
           )}
-          {community?.activities.length > 0 && (
+          {community && (
             <table className="table border-separate [border-spacing:0] text-sm">
               <tbody>
                 <tr>
