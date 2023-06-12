@@ -29,40 +29,44 @@ export default function CompactConnections({
       return outgoing === 0 && incoming > 0;
     })
     .sort(sortByMentions);
-  const Connection = ({ actor }) => {
-    const directions = member.connections[actor];
+  const Connection = ({ connection, directions }) => (
+    <CompactConnection
+      key={connection.id}
+      member={member}
+      connection={connection}
+      setSelection={setSelection}
+      directions={directions}
+    />
+  );
+
+  const Connections = ({ name, connections }) => {
     // if the connection doesn't exist, right now it could
     // be because the time slider reducer and some members aren't there
     // that's bad though, so this is a protection for now
-    const connection = community.findMemberByActor(actor);
-    return connection ? (
-      <CompactConnection
-        key={actor}
-        member={member}
-        connection={connection}
-        setSelection={setSelection}
-        directions={directions}
-      />
-    ) : (
-      <div />
-    );
-  };
-  const Connections = ({ name, connections }) => (
-    <>
-      {connections.length > 0 && (
-        <div className="flex flex-col space-y-3">
-          <div className="flex flex-col pb-2">
-            <div className="pb-1 font-semibold text-indigo-400">{name}</div>
-            <div className="flex flex-col">
-              {connections.map((actor) => (
-                <Connection key={actor} actor={actor} />
-              ))}
+    var connectedMembers = connections
+      .map((actor) => community.findMemberByActor(actor))
+      .filter((m) => m);
+    return (
+      <>
+        {connectedMembers.length > 0 && (
+          <div className="flex flex-col space-y-3">
+            <div className="flex flex-col pb-2">
+              <div className="pb-1 font-semibold text-indigo-400">{name}</div>
+              <div className="flex flex-col">
+                {connectedMembers.map((connection) => (
+                  <Connection
+                    key={member.actor}
+                    connection={connection}
+                    directions={member.connections[connection.actor]}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </>
-  );
+        )}
+      </>
+    );
+  };
   return (
     <>
       <Connections name="Mutuals" connections={mutuals} />
