@@ -50,19 +50,56 @@ function Activity({ activity, community, setSelection }) {
   );
 }
 
-export default function Console({ community, selection, setSelection }) {
-  var activities = community.activities.filter(
-    (activity) =>
-      !selection ||
-      selection.name === "Mission" ||
-      selection.globalActor === activity.globalActor ||
-      (selection.number &&
-        community.findMemberByActivity(activity)?.level === selection.number)
-  );
+export default function Console({
+  community,
+  selection,
+  setSelection,
+  connection,
+}) {
+  var activities = community.activities;
+  var title;
+
+  // if it's a member
+  if (selection?.actor) {
+    if (connection) {
+      // first get the activities that they both did
+      activities = activities.filter(
+        (activity) =>
+          activity.globalActor === selection.globalActor ||
+          activity.globalActor === connection.globalActor
+      );
+      // now filter out for mentions
+      activities = activities.filter(
+        (activity) =>
+          (activity.globalActor === selection.globalActor &&
+            activity.mentions.indexOf(connection.actor) > -1) ||
+          (activity.globalActor === connection.globalActor &&
+            activity.mentions.indexOf(selection.actor) > -1)
+      );
+      title = `${selection.globalActorName} <> ${connection.globalActorName}`;
+    } else {
+      activities = activities.filter(
+        (activity) => activity.globalActor === selection.globalActor
+      );
+      title = selection.globalActorName;
+    }
+    // it's an orbit level
+  } else if (selection?.number) {
+    activities = activities.filter(
+      (activity) =>
+        community.findMemberByActivity(activity)?.level === selection.number
+    );
+    title = `Orbit ${selection.number}`;
+  }
 
   return (
-    <div className="flex overflow-scroll flex-col space-y-2">
-      <div className="px-4 pt-4 text-lg font-bold">Activities</div>
+    <div className="flex overflow-scroll flex-col space-y-2 w-full">
+      <div className="flex items-baseline px-4 pt-4 space-x-2 whitespace-nowrap">
+        <span className="text-lg font-bold text-ellipsis">Activities</span>
+        <span className="overflow-hidden flex-1 text-sm text-right text-indigo-500 text-ellipsis">
+          {title}
+        </span>
+      </div>
       <div className="mx-4 border-b border-indigo-900" />
       {activities.slice(0, 100).map((activity, index) => (
         <div
@@ -80,7 +117,7 @@ export default function Console({ community, selection, setSelection }) {
         </div>
       ))}
       {activities.length === 0 && (
-        <div className="py-3 px-4 text-indigo-700">No activities.</div>
+        <div className="py-3 px-4 text-indigo-500">No activities.</div>
       )}
     </div>
   );

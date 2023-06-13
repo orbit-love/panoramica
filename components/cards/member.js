@@ -25,7 +25,10 @@ export default function Member({
       <div className="flex overflow-hidden items-baseline space-x-2 text-ellipsis whitespace-nowrap">
         <button
           className="flex items-center"
-          onClick={() => setSelection({ name: "Mission" })}
+          onClick={() => {
+            setSelection({ name: "Mission" });
+            setConnection(null);
+          }}
         >
           <FontAwesomeIcon
             icon="chevron-left"

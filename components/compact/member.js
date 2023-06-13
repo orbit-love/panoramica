@@ -4,12 +4,20 @@ import classnames from "classnames";
 import OrbitLevelIcon from "components/icons/orbit_level";
 import NumberStats from "components/compact/number_stats";
 
-export default function CompactMember({ member, setSelection, metrics }) {
+export default function CompactMember({
+  member,
+  setSelection,
+  metrics,
+  setConnection,
+}) {
   return (
     <button
       className="p-[1px]"
       key={member.id}
-      onClick={() => setSelection(member)}
+      onClick={() => {
+        setConnection(null);
+        setSelection(member);
+      }}
     >
       <div className="bg-opacity-0 hover:bg-opacity-50 flex justify-between space-x-1 bg-indigo-900">
         <div

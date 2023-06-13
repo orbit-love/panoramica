@@ -24,6 +24,8 @@ export default function MemberGraph({
   setLow,
   high,
   setHigh,
+  connection,
+  setConnection,
 }) {
   const graphRef = useRef();
   graphRef.current = graph;
@@ -50,7 +52,10 @@ export default function MemberGraph({
   };
 
   const eventHandlers = {
-    "node:click": ({ item }) => setSelection(item?.getModel().member),
+    "node:click": ({ item }) => {
+      setConnection(null);
+      setSelection(item?.getModel().member);
+    },
     "node:dblclick": ({ item }) => {
       graphRef.current.focusItem(item, true);
     },
@@ -64,6 +69,7 @@ export default function MemberGraph({
       currentGraph
         .getEdges()
         .forEach((item) => resetItem({ graph: currentGraph, item }));
+      setConnection(null);
       setSelection(null);
     },
     afteritemstatechange: ({ item, state, enabled }) => {
@@ -169,6 +175,8 @@ export default function MemberGraph({
               member={selection}
               community={community}
               setSelection={setSelection}
+              connection={connection}
+              setConnection={setConnection}
             />
           </div>
         )}

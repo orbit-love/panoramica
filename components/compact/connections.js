@@ -5,6 +5,8 @@ export default function CompactConnections({
   member,
   community,
   setSelection,
+  connection,
+  setConnection,
 }) {
   const sortByMentions = (a, b) => {
     var [outgoingA, incomingA] = member.connections[a];
@@ -44,13 +46,15 @@ export default function CompactConnections({
             <div className="flex flex-col pb-2">
               <div className="pb-1 font-semibold text-indigo-400">{name}</div>
               <div className="flex flex-col">
-                {connectedMembers.map((connection) => (
+                {connectedMembers.map((connectedMember) => (
                   <CompactConnection
-                    key={connection.id}
+                    key={connectedMember.id}
                     member={member}
-                    connection={connection}
+                    connectedMember={connectedMember}
                     setSelection={setSelection}
-                    directions={member.connections[connection.globalActor]}
+                    connection={connection}
+                    setConnection={setConnection}
+                    directions={member.connections[connectedMember.globalActor]}
                   />
                 ))}
               </div>

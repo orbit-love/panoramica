@@ -12,6 +12,7 @@ export default function Mission({
   setSort,
   setCommunity,
   levels,
+  setConnection,
 }) {
   return (
     <div className="flex flex-col space-y-2">
@@ -46,6 +47,7 @@ export default function Mission({
                   member={member}
                   setSelection={setSelection}
                   metrics={true}
+                  setConnection={setConnection}
                 />
               ))}
           </div>

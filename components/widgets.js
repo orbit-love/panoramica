@@ -108,17 +108,6 @@ export default function Widgets({
               </div>
             )}
             {community && selection && (
-              <div className={`${classes} ${width} !p-0`}>
-                <Activities
-                  selection={selection}
-                  setSelection={setSelection}
-                  community={community}
-                  low={low}
-                  high={high}
-                />
-              </div>
-            )}
-            {community && selection && (
               <div className={`${classes} ${width} flex relative flex-col`}>
                 {typeof selection.level === "number" && (
                   <Member
@@ -145,6 +134,7 @@ export default function Widgets({
                     setSelection={setSelection}
                     sort={sort}
                     setSort={setSort}
+                    setConnection={setConnection}
                   />
                 )}
                 {selection.name === "Mission" && (
@@ -155,8 +145,21 @@ export default function Widgets({
                     setSort={setSort}
                     levels={levels}
                     setCommunity={setCommunity}
+                    setConnection={setConnection}
                   />
                 )}
+              </div>
+            )}
+            {community && selection && (
+              <div className={`${classes} ${width} !p-0`}>
+                <Activities
+                  selection={selection}
+                  setSelection={setSelection}
+                  community={community}
+                  connection={connection}
+                  low={low}
+                  high={high}
+                />
               </div>
             )}
           </>

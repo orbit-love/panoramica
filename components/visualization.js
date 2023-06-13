@@ -199,6 +199,8 @@ export default function Visualization({
           setLow={setLow}
           high={high}
           setHigh={setHigh}
+          connection={connection}
+          setConnection={setConnection}
         />
       )}
       <div className="hidden bg-[#0F0A25] bg-[#150D33] text-[#eef2ff] text-[#1D1640]" />

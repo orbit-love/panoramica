@@ -10,6 +10,8 @@ export default function Member({
   community,
   setSelection,
   setShowNetwork,
+  connection,
+  setConnection,
 }) {
   return (
     <div className="w-96 bg-[#1D1640] text-indigo-100 px-6 py-4 rounded-md border border-indigo-600">
@@ -18,7 +20,7 @@ export default function Member({
           <div>
             <button
               onClick={() => {
-                setShowNetwork(false);
+                setConnection(null);
                 setSelection(member.level);
               }}
             >
@@ -40,6 +42,8 @@ export default function Member({
             member={member}
             community={community}
             setSelection={setSelection}
+            connection={connection}
+            setConnection={setConnection}
           />
         </div>
       </div>

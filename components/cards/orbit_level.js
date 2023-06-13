@@ -13,6 +13,7 @@ export default function OrbitLevel({
   setSelection,
   sort,
   setSort,
+  setConnection,
 }) {
   const levelMembers = community.members.filter(
     (member) => member.level === level.number
@@ -47,6 +48,7 @@ export default function OrbitLevel({
             member={member}
             setSelection={setSelection}
             metrics={true}
+            setConnection={setConnection}
           />
         ))}
       </div>
