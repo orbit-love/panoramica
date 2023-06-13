@@ -92,6 +92,23 @@ const getActivities = async ({ simulationId, graphConnection, from, to }) => {
   return toProperties(records);
 };
 
+const getConnectionCount = async ({ simulationId, graphConnection }) => {
+  const { records } = await graphConnection.run(
+    `MATCH (m:Member)-[r:DID]-(a:Activity)-[r2:MENTIONS]-(m2:Member)
+      WHERE a.simulationId=$simulationId
+      RETURN m.globalActor, m2.globalActor;
+    `,
+    { simulationId }
+  );
+  const set = new Set();
+  for (let record of records) {
+    set.add([record.get(0), record.get(1)].sort().join("---"));
+  }
+  return set.size;
+};
+
+// stats are global and used to provide information for the UI
+// and for debugging
 const getStats = async ({ simulationId, graphConnection }) => {
   const { records } = await graphConnection.run(
     `MATCH (a:Activity)-[:DID]-(m:Member)
@@ -104,6 +121,10 @@ const getStats = async ({ simulationId, graphConnection }) => {
     { simulationId }
   );
   const record = records[0];
+  let connectionCount = await getConnectionCount({
+    simulationId,
+    graphConnection,
+  });
   return {
     activities: {
       first: record.get("first"),
@@ -112,6 +133,9 @@ const getStats = async ({ simulationId, graphConnection }) => {
     },
     members: {
       count: record.get("memberCount").low,
+      connections: {
+        count: connectionCount,
+      },
     },
   };
 };

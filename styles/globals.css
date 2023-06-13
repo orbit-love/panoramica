@@ -94,7 +94,7 @@ svg .clickable {
   pointer-events: none;
   position: absolute;
   height: 0;
-  width: 90%;
+  width: 100%;
   outline: none;
 }
 

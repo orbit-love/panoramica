@@ -127,78 +127,96 @@ export default function Show({
 
   const imported = community?.stats.activities.count > 0;
   return (
-    <>
-      <div className="flex flex-col space-y-2">
-        <div className="flex items-baseline space-x-2">
-          <div className="text-lg font-bold">{simulation.name}</div>
-          {loading && <div className="text-indigo-700">Loading...</div>}
+    <div className="flex flex-col space-y-2 h-full">
+      <div className="flex items-baseline space-x-2">
+        <div className="text-lg font-bold">{simulation.name}</div>
+        {loading && <div className="text-indigo-700">Loading...</div>}
+      </div>
+      <div className="border-b border-indigo-900" />
+      {imported && (
+        <div className="pb-6">
+          <ActivitiesSlider
+            community={community}
+            low={low}
+            setLow={setLow}
+            high={high}
+            setHigh={setHigh}
+          />
         </div>
-        <div className="border-b border-indigo-900" />
-        {imported && (
-          <div className="pb-6">
-            <ActivitiesSlider
-              community={community}
-              low={low}
-              setLow={setLow}
-              high={high}
-              setHigh={setHigh}
-            />
+      )}
+      <div className="flex flex-col space-y-2">
+        {community && !imported && (
+          <div className="text-semibold text-green-500">
+            This simulation has not been imported yet. Choose Import or Process.
           </div>
         )}
-        <div className="flex flex-col space-y-2">
-          {community && !imported && (
-            <div className="text-semibold text-green-500">
-              This simulation has not been imported yet. Choose Import or
-              Process.
-            </div>
-          )}
-          {community && (
-            <table className="table border-separate [border-spacing:0] text-sm">
-              <tbody>
-                <tr>
-                  <td className="w-24 font-semibold">Activities</td>
-                  <td>{community.stats.activities.count}</td>
-                </tr>
-                <tr>
-                  <td className="w-24 font-semibold">Members</td>
-                  <td>{community.stats.members.count}</td>
-                </tr>
-              </tbody>
-            </table>
-          )}
-        </div>
-        <div className="h-2" />
-        <div className="my-auto" />
-        <div className="flex space-x-2 text-xs">
-          <button
-            onClick={() => {
-              setCommunity(null);
-              setSimulation(null);
-              setSelection(null);
-              setLow(0);
-              setHigh(0);
-            }}
-            className={c.buttonClasses}
-          >
-            Back
-          </button>
-          <button onClick={() => setEditMode(true)} className={c.buttonClasses}>
-            Edit
-          </button>
-          <button
-            onClick={() => importSimulation()}
-            className={c.buttonClasses}
-          >
-            Import
-          </button>
-          <button
-            onClick={() => processSimulation()}
-            className={c.buttonClasses}
-          >
-            Process
-          </button>
-        </div>
+        {community && (
+          <table className="table border-separate [border-spacing:0] text-sm">
+            <thead>
+              <tr>
+                <td className="w-1/2 font-semibold"></td>
+                <td className="w-24 font-semibold">In View</td>
+                <td className="font-semibold">Total</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="w-1/3">Activities</td>
+                <td>{community.activities.length}</td>
+                <td>{community.stats.activities.count}</td>
+              </tr>
+              <tr>
+                <td className="">Members</td>
+                <td>{community.members.length}</td>
+                <td>{community.stats.members.count}</td>
+              </tr>
+              <tr>
+                <td className="">Connections</td>
+                <td>{community.getConnectionCount()}</td>
+                <td>{community.stats.members.connections.count}</td>
+              </tr>
+              <tr>
+                <td className="">Density</td>
+                <td>
+                  {c.round(
+                    community.getConnectionCount() / community.members.length
+                  )}
+                </td>
+                <td>
+                  {c.round(
+                    community.stats.members.connections.count /
+                      community.stats.members.count
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        )}
       </div>
-    </>
+      <div className="flex-grow my-auto" />
+      <div className="flex py-2 space-x-2 text-xs">
+        <button
+          onClick={() => {
+            setCommunity(null);
+            setSimulation(null);
+            setSelection(null);
+            setLow(0);
+            setHigh(0);
+          }}
+          className={c.buttonClasses}
+        >
+          Back
+        </button>
+        <button onClick={() => setEditMode(true)} className={c.buttonClasses}>
+          Edit
+        </button>
+        <button onClick={() => importSimulation()} className={c.buttonClasses}>
+          Import
+        </button>
+        <button onClick={() => processSimulation()} className={c.buttonClasses}>
+          Process
+        </button>
+      </div>
+    </div>
   );
 }

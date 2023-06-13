@@ -60,7 +60,7 @@ export default function List({
 
   return (
     <>
-      <div className="flex relative flex-col space-y-4 w-full pointer-events-auto">
+      <div className="flex relative flex-col space-y-4 w-full h-full pointer-events-auto">
         {simulation && !editMode && (
           <Show
             simulation={simulation}
