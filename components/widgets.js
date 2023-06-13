@@ -7,7 +7,7 @@ import OrbitLevel from "components/cards/orbit_level";
 import Mission from "components/cards/mission";
 import Info from "components/info";
 import List from "components/simulator/list";
-import ActivitiesConsole from "components/simulator/activitiesConsole";
+import Activities from "components/simulator/console/activities";
 
 export default function Widgets({
   community,
@@ -106,8 +106,8 @@ export default function Widgets({
               </div>
             )}
             {community && selection && (
-              <div className={`${classes} ${width}`}>
-                <ActivitiesConsole
+              <div className={`${classes} ${width} !p-0`}>
+                <Activities
                   selection={selection}
                   setSelection={setSelection}
                   community={community}
