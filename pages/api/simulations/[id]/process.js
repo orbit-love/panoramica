@@ -41,7 +41,7 @@ export default async function handler(req, res) {
         `CREATE CONSTRAINT ON (m:Member) ASSERT m.globalActor, m.simulationId IS UNIQUE`
       );
       await graphConnection.run(
-        `CREATE CONSTRAINT ON (e:Entity) ASSERT e.entityId, e.simulationId IS UNIQUE`
+        `CREATE CONSTRAINT ON (e:Entity) ASSERT e.id, e.simulationId IS UNIQUE`
       );
 
       console.log("Removed old activities and set constraints");
@@ -90,18 +90,18 @@ export default async function handler(req, res) {
         for (var j = 0; j < activity.entities?.length; j++) {
           var entity = activity.entities[j];
           await graphConnection.run(
-            `MERGE (e:Entity { entityId: $entityId })
+            `MERGE (e:Entity { id: $id })
              SET e += {
               simulationId: $simulationId
              } RETURN e`,
-            { entityId: entity, simulationId }
+            { id: entity, simulationId }
           );
           await graphConnection.run(
-            `MATCH (e:Entity { entityId: $entityId }),
-                 (a:Activity { id: $id })
+            `MATCH (e:Entity { id: $entityId }),
+                 (a:Activity { id: $activityId })
              MERGE (a)-[r:RELATES { simulationId: $simulationId }]-(e)
              RETURN r`,
-            { entityId: entity, id: activity.id, simulationId }
+            { entityId: entity, activityId: activity.id, simulationId }
           );
           console.log("Created entity node " + entity);
         }

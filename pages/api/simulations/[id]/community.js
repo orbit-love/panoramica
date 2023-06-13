@@ -92,6 +92,24 @@ const getActivities = async ({ simulationId, graphConnection, from, to }) => {
   return toProperties(records);
 };
 
+const getEntities = async ({ simulationId, graphConnection, from, to }) => {
+  const { records } = await graphConnection.run(
+    `MATCH (e:Entity)-[:RELATES]-(a:Activity)-[:DID]-(m:Member)
+      WHERE e.simulationId=$simulationId
+        AND a.timestamp > $from
+        AND a.timestamp <= $to
+      WITH e, COLLECT(DISTINCT m.globalActor) AS members, COLLECT(DISTINCT a.id) AS activities, count(a) AS count
+      RETURN e, members, activities, count ORDER BY count DESC;
+    `,
+    { simulationId, from, to }
+  );
+  return toProperties(records, (record) => ({
+    members: record.get("members"),
+    activities: record.get("activities"),
+    count: record.get("count").low,
+  }));
+};
+
 const getConnectionCount = async ({ simulationId, graphConnection }) => {
   const { records } = await graphConnection.run(
     `MATCH (m:Member)-[r:DID]-(a:Activity)-[r2:MENTIONS]-(m2:Member)
@@ -154,6 +172,7 @@ export default async function handler(req, res) {
     const props = { simulationId, graphConnection, from, to };
 
     const result = {
+      entities: await getEntities(props),
       stats: await getStats(props),
       members: await getMembers(props),
       activities: await getActivities(props),

@@ -8,6 +8,7 @@ import Mission from "components/cards/mission";
 import Info from "components/info";
 import List from "components/simulator/list";
 import Activities from "components/simulator/console/activities";
+import Entities from "components/simulator/console/entities";
 
 export default function Widgets({
   community,
@@ -79,7 +80,7 @@ export default function Widgets({
     <>
       <DControls />
       <div
-        className={`w-[100vw] flex absolute bottom-0 left-0 z-10 justify-between p-5 space-x-4 pointer-events-none`}
+        className={`w-[100vw] flex absolute bottom-0 left-0 z-10 items-end justify-between p-5 space-x-4 pointer-events-none`}
       >
         {showPanel && (
           <>
@@ -151,16 +152,25 @@ export default function Widgets({
               </div>
             )}
             {community && selection && (
-              <div className={`${classes} ${width} !p-0`}>
-                <Activities
-                  selection={selection}
-                  setSelection={setSelection}
-                  community={community}
-                  connection={connection}
-                  setConnection={setConnection}
-                  low={low}
-                  high={high}
-                />
+              <div className="flex flex-col space-y-4">
+                {/* <div className={`${classes} ${width} !h-[250px] !p-0`}>
+                  <Entities
+                    selection={selection}
+                    setSelection={setSelection}
+                    community={community}
+                    connection={connection}
+                    setConnection={setConnection}
+                  />
+                </div> */}
+                <div className={`${classes} ${width} !p-0`}>
+                  <Activities
+                    selection={selection}
+                    setSelection={setSelection}
+                    community={community}
+                    connection={connection}
+                    setConnection={setConnection}
+                  />
+                </div>
               </div>
             )}
           </>

@@ -27,16 +27,20 @@ const getTypeFields = ({ activity, member, included }) => {
       const mentions = (
         tweet.entities.mentions || tweet.entities.user_mentions
       ).map((mention) => mention.username || mention.screen_name);
-      const entities = tweet.entities.annotations?.map(
+      const entities = (tweet.entities.annotations || [])?.map(
         (annotation) => annotation.normalized_text
       );
+      function extractHashtags(s) {
+        return s.match(/#\w+/g) || [];
+      }
+      const hashtags = extractHashtags(tweet.text);
       return {
         text: tweet.text,
         textHtml: tweet.text_html,
         actor: tweet.user.screen_name,
         actorName: tweet.user.name,
         mentions,
-        entities,
+        entities: [...entities, ...hashtags],
       };
     default:
       return {

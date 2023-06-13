@@ -1,15 +1,14 @@
 import React from "react";
 import classnames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import c from "lib/common";
-import OrbitLevelIcon from "components/icons/orbit_level";
+import NameAndIcon from "components/compact/name_and_icon";
 
 export default function CompactConnection({
   connectedMember,
   directions,
   connection,
   setConnection,
+  setSelection,
 }) {
   // safety check to remove later
   if (!directions) {
@@ -42,17 +41,12 @@ export default function CompactConnection({
           {" " + outgoing}
         </div>
       )}
-      <div className="max-w-[200px] flex items-center space-x-1">
-        <OrbitLevelIcon number={connectedMember.level} />
-        <div
-          className="overflow-hidden text-ellipsis"
-          style={{
-            color: c.orbitLevelColorScale(connectedMember.level),
-          }}
-        >
-          {connectedMember.globalActorName || connectedMember.actorName}
-        </div>
-      </div>
+      <NameAndIcon
+        member={connectedMember}
+        onClick={onClick}
+        setConnection={setConnection}
+        setSelection={setSelection}
+      />
       {incoming > 0 && (
         <div className="w-8 text-xs text-indigo-400">
           {incoming + " "}

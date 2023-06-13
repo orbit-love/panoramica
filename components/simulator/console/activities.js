@@ -4,6 +4,7 @@ import classnames from "classnames";
 
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
+import NameAndIcon from "components/compact/name_and_icon";
 
 function Activity({ activity, community, setSelection }) {
   const member = community.findMemberByActivity(activity);
@@ -59,26 +60,6 @@ export default function Console({
   connection,
   setConnection,
 }) {
-  const NameAndIcon = ({ member }) => (
-    <button
-      onClick={() => {
-        setConnection(null);
-        setSelection(member);
-      }}
-      className="flex overflow-hidden items-center space-x-1 text-sm text-ellipsis"
-    >
-      <OrbitLevelIcon number={member.level} />
-      <div
-        className="overflow-hidden text-left text-ellipsis whitespace-nowrap hover:underline"
-        style={{
-          color: c.orbitLevelColorScale(member.level),
-        }}
-      >
-        {member.globalActorName}
-      </div>
-    </button>
-  );
-
   var activities = community.activities;
   var title;
   // if it's a member
@@ -100,7 +81,11 @@ export default function Console({
       );
       title = (
         <>
-          <NameAndIcon member={selection} />
+          <NameAndIcon
+            member={selection}
+            setConnection={setConnection}
+            setSelection={setSelection}
+          />
           <FontAwesomeIcon
             icon="right-left"
             className="text-xs text-indigo-600"
@@ -112,7 +97,13 @@ export default function Console({
       activities = activities.filter(
         (activity) => activity.globalActor === selection.globalActor
       );
-      title = <NameAndIcon member={selection} />;
+      title = (
+        <NameAndIcon
+          member={selection}
+          setConnection={setConnection}
+          setSelection={setSelection}
+        />
+      );
     }
     // it's an orbit level
   } else if (selection?.number) {
