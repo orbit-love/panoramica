@@ -157,6 +157,7 @@ export default function Widgets({
                   setSelection={setSelection}
                   community={community}
                   connection={connection}
+                  setConnection={setConnection}
                   low={low}
                   high={high}
                 />

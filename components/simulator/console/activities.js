@@ -1,5 +1,7 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
+
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
 
@@ -55,10 +57,30 @@ export default function Console({
   selection,
   setSelection,
   connection,
+  setConnection,
 }) {
+  const NameAndIcon = ({ member }) => (
+    <button
+      onClick={() => {
+        setConnection(null);
+        setSelection(member);
+      }}
+      className="flex overflow-hidden items-center space-x-1 text-sm text-ellipsis"
+    >
+      <OrbitLevelIcon number={member.level} />
+      <div
+        className="overflow-hidden text-left text-ellipsis whitespace-nowrap hover:underline"
+        style={{
+          color: c.orbitLevelColorScale(member.level),
+        }}
+      >
+        {member.globalActorName}
+      </div>
+    </button>
+  );
+
   var activities = community.activities;
   var title;
-
   // if it's a member
   if (selection?.actor) {
     if (connection) {
@@ -76,12 +98,21 @@ export default function Console({
           (activity.globalActor === connection.globalActor &&
             activity.mentions.indexOf(selection.actor) > -1)
       );
-      title = `${selection.globalActorName} <> ${connection.globalActorName}`;
+      title = (
+        <>
+          <NameAndIcon member={selection} />
+          <FontAwesomeIcon
+            icon="right-left"
+            className="text-xs text-indigo-600"
+          />
+          <NameAndIcon member={connection} />
+        </>
+      );
     } else {
       activities = activities.filter(
         (activity) => activity.globalActor === selection.globalActor
       );
-      title = selection.globalActorName;
+      title = <NameAndIcon member={selection} />;
     }
     // it's an orbit level
   } else if (selection?.number) {
@@ -89,16 +120,14 @@ export default function Console({
       (activity) =>
         community.findMemberByActivity(activity)?.level === selection.number
     );
-    title = `Orbit ${selection.number}`;
+    title = <div>Orbit {selection.number}</div>;
   }
 
   return (
     <div className="flex overflow-scroll flex-col space-y-2 w-full">
-      <div className="flex items-baseline px-4 pt-4 space-x-2 whitespace-nowrap">
+      <div className="flex justify-between items-baseline px-4 pt-4 space-x-2 whitespace-nowrap">
         <span className="text-lg font-bold text-ellipsis">Activities</span>
-        <span className="overflow-hidden flex-1 text-sm text-right text-indigo-500 text-ellipsis">
-          {title}
-        </span>
+        <div className="flex items-baseline space-x-2">{title}</div>
       </div>
       <div className="mx-4 border-b border-indigo-900" />
       {activities.slice(0, 100).map((activity, index) => (

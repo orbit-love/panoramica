@@ -27,7 +27,9 @@ import {
   faSquare,
   faSort,
   faKeyboard,
+  faRightLeft,
 } from "@fortawesome/free-solid-svg-icons";
+
 import {
   faBars,
   faXmark,
@@ -55,6 +57,7 @@ import {
   faSignalStream,
   faCircle,
   faQuestion,
+  faArrowLeftRight,
 } from "@fortawesome/pro-solid-svg-icons";
 
 // add to library
@@ -101,7 +104,8 @@ library.add(
   faChevronLeft,
   faKeyboard,
   faArrowLeft,
-  faArrowRight
+  faArrowRight,
+  faRightLeft
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
