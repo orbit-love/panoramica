@@ -99,7 +99,11 @@ export default function List({
                 <div className="flex space-x-4" key={simulation.id}>
                   <button
                     className="text-left underline"
-                    onClick={() => setSimulation(simulation)}
+                    onClick={() => {
+                      setCommunity(null);
+                      setSimulation(simulation);
+                      setSelection({ name: "Mission" });
+                    }}
                   >
                     {simulation.name}
                   </button>

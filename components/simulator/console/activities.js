@@ -94,9 +94,9 @@ export default function Console({
       activities = activities.filter(
         (activity) =>
           (activity.globalActor === selection.globalActor &&
-            activity.mentions.indexOf(connection.actor) > -1) ||
+            activity.mentions?.indexOf(connection.actor) > -1) ||
           (activity.globalActor === connection.globalActor &&
-            activity.mentions.indexOf(selection.actor) > -1)
+            activity.mentions?.indexOf(selection.actor) > -1)
       );
       title = (
         <>

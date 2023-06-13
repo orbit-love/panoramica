@@ -51,6 +51,7 @@ export default function Visualization({
   // the activities for the running simulation and the focused range
   const prevShowNetwork = c.usePrevious(showNetwork);
   const prevSort = c.usePrevious(sort);
+  const prevSimulation = c.usePrevious(simulation);
 
   // store the selection in a ref so we can access it in useEffect
   // that effect can't have selection as a dependency so we do it this way
@@ -87,7 +88,12 @@ export default function Visualization({
 
   // rebuild if width, height change
   useEffect(() => {
-    if (!levels || width !== prevWidth || height !== prevHeight) {
+    if (
+      !levels ||
+      width !== prevWidth ||
+      height !== prevHeight ||
+      simulation?.id !== prevSimulation?.id
+    ) {
       // if major parameters have changed
       // clear the canvas and re-prepare the data
       console.log("Clearing canvas and rebuilding members");
