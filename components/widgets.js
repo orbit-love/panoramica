@@ -39,10 +39,12 @@ export default function Widgets({
   setLow,
   high,
   setHigh,
+  connection,
+  setConnection,
 }) {
-  const width = "w-[31vw]";
+  const width = "w-[32vw]";
   const height = "h-[40vh]";
-  const classes = `flex ${height} px-4 py-3 overflow-scroll space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90`;
+  const classes = `flex ${height} px-4 py-4 overflow-scroll space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90 pointer-events-auto`;
 
   const DControls = () => (
     <div className={`flex absolute top-0 right-0 z-10 p-5 space-x-4`}>
@@ -77,7 +79,7 @@ export default function Widgets({
     <>
       <DControls />
       <div
-        className={`w-[100vw] flex absolute bottom-0 left-0 z-10 justify-between p-5 space-x-4`}
+        className={`w-[100vw] flex absolute bottom-0 left-0 z-10 justify-between p-5 space-x-4 pointer-events-none`}
       >
         {showPanel && (
           <>
@@ -117,9 +119,7 @@ export default function Widgets({
               </div>
             )}
             {community && selection && (
-              <div
-                className={`${classes} ${width} flex relative flex-col pointer-events-auto`}
-              >
+              <div className={`${classes} ${width} flex relative flex-col`}>
                 {typeof selection.level === "number" && (
                   <Member
                     member={
@@ -132,6 +132,8 @@ export default function Widgets({
                     showNetwork={showNetwork}
                     setShowNetwork={setShowNetwork}
                     levels={levels}
+                    connection={connection}
+                    setConnection={setConnection}
                   />
                 )}
                 {selection.number && (

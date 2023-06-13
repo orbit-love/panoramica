@@ -8,7 +8,7 @@ function Activity({ activity, community, setSelection }) {
   const color = c.orbitLevelColorScale(member.level);
   return (
     <div key={activity.id} className="flex flex-col">
-      <div className="flex items-baseline space-x-2">
+      <div className="flex items-center space-x-2">
         <button
           onClick={() => setSelection(member)}
           className="flex overflow-hidden items-center space-x-1 text-sm font-bold text-indigo-100 text-ellipsis whitespace-nowrap hover:underline"
@@ -61,13 +61,15 @@ export default function Console({ community, selection, setSelection }) {
   );
 
   return (
-    <div className="flex overflow-scroll flex-col space-y-0">
+    <div className="flex overflow-scroll flex-col space-y-2">
+      <div className="px-4 pt-4 text-lg font-bold">Activities</div>
+      <div className="mx-4 border-b border-indigo-900" />
       {activities.slice(0, 100).map((activity, index) => (
         <div
           key={activity.id}
-          className={classnames("flex flex-col space-y-0 px-4 py-3", {
+          className={classnames("flex flex-col space-y-0 px-4 py-2", {
             "bg-indigo-900": index % 2 === 1,
-            "bg-opacity-30": index % 2 === 1,
+            "bg-opacity-20": index % 2 === 1,
           })}
         >
           <Activity
@@ -78,7 +80,7 @@ export default function Console({ community, selection, setSelection }) {
         </div>
       ))}
       {activities.length === 0 && (
-        <div className="text-indigo-100">No activities.</div>
+        <div className="py-3 px-4 text-indigo-700">No activities.</div>
       )}
     </div>
   );

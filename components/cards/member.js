@@ -12,6 +12,8 @@ export default function Member({
   setSelection,
   showNetwork,
   setShowNetwork,
+  connection,
+  setConnection,
 }) {
   const buttonClasses =
     "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none outline-none";
@@ -85,6 +87,8 @@ export default function Member({
               member={member}
               community={community}
               setSelection={setSelection}
+              connection={connection}
+              setConnection={setConnection}
             />
           </div>
         </>

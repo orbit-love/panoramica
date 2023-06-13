@@ -40,6 +40,7 @@ export default function Visualization({
   const [animate, setAnimate] = useState(!isReduced);
   const [cycle, setCycle] = useState(false);
   const [selection, setSelection] = useState(null);
+  const [connection, setConnection] = useState(null);
   const [showNetwork, setShowNetwork] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [showPanel, setShowPanel] = useState(true);
@@ -233,6 +234,8 @@ export default function Visualization({
         setLow={setLow}
         high={high}
         setHigh={setHigh}
+        connection={connection}
+        setConnection={setConnection}
       />
     </div>
   );

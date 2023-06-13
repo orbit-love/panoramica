@@ -138,6 +138,9 @@ svg .clickable {
   position: relative;
 }
 
+.tweet a {
+  @apply font-bold text-indigo-500;
+}
 .tweet a:hover {
   @apply underline;
 }
