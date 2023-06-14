@@ -120,6 +120,8 @@ export default function Show({
         if (message) {
           console.log(message);
         } else {
+          // set community to null so everything is reset
+          setCommunity(null);
           fetchCommunity();
         }
         setLoading(false);

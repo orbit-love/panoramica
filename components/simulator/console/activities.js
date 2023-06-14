@@ -141,7 +141,7 @@ export default function Console({
         </div>
       ))}
       {activities.length === 0 && (
-        <div className="py-3 px-4 text-indigo-500">No activities.</div>
+        <div className="px-4 text-indigo-500">No activities.</div>
       )}
     </div>
   );

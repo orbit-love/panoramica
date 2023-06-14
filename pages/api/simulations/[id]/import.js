@@ -119,16 +119,8 @@ const getAPIData = async ({
 
       var records = [];
 
-      console.log("Fetched activities: ", activities.length);
       for (let activity of activities) {
         var fields = getFields({ simulation, activity, included });
-        // await prisma.activity.upsert({
-        //   where: {
-        //     sourceId,
-        //   },
-        //   create: fields,
-        //   update: fields,
-        // });
         records.push(fields);
       }
 
@@ -137,10 +129,7 @@ const getAPIData = async ({
         data: records,
       });
 
-      // log everything
-      for (let fields of records) {
-        console.log("Created " + fields.sourceType + " from " + fields.actor);
-      }
+      console.log("Created activities: ", records.length);
 
       allData.push(...activities);
 

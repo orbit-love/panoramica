@@ -9,6 +9,9 @@ export default function NameAndIcon({
   setSelection,
   onClick,
 }) {
+  if (!member) {
+    return <div>No member!</div>;
+  }
   if (!onClick) {
     onClick = () => {
       setConnection(null);

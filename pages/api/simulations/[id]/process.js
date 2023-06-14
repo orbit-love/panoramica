@@ -25,32 +25,31 @@ export default async function handler(req, res) {
       activity.timestamp = activity.timestamp.toISOString();
     }
 
-    try {
-      // delete previous nodes and relationships
-      await graphConnection.run(
-        `MATCH (n) WHERE n.simulationId=$simulationId
+    // delete previous nodes and relationships
+    await graphConnection.run(
+      `MATCH (n) WHERE n.simulationId=$simulationId
         DETACH DELETE n`,
-        { simulationId }
-      );
+      { simulationId }
+    );
 
-      // unique within simulation
-      await graphConnection.run(
-        `CREATE CONSTRAINT ON (a:Activity) ASSERT a.id, a.simulationId IS UNIQUE`
-      );
-      await graphConnection.run(
-        `CREATE CONSTRAINT ON (a:Activity) ASSERT a.sourceId, a.simulationId IS UNIQUE`
-      );
-      await graphConnection.run(
-        `CREATE CONSTRAINT ON (m:Member) ASSERT m.globalActor, m.simulationId IS UNIQUE`
-      );
-      await graphConnection.run(
-        `CREATE CONSTRAINT ON (e:Entity) ASSERT e.id, e.simulationId IS UNIQUE`
-      );
+    // unique within simulation
+    await graphConnection.run(
+      `CREATE CONSTRAINT ON (a:Activity) ASSERT a.id, a.simulationId IS UNIQUE`
+    );
+    await graphConnection.run(
+      `CREATE CONSTRAINT ON (a:Activity) ASSERT a.sourceId, a.simulationId IS UNIQUE`
+    );
+    await graphConnection.run(
+      `CREATE CONSTRAINT ON (m:Member) ASSERT m.globalActor, m.simulationId IS UNIQUE`
+    );
+    await graphConnection.run(
+      `CREATE CONSTRAINT ON (e:Entity) ASSERT e.id, e.simulationId IS UNIQUE`
+    );
 
-      console.log("Removed old activities and set constraints");
+    console.log("Memgraph: Removed old data and applied constraints");
 
-      await graphConnection.run(
-        `WITH $activities AS batch
+    await graphConnection.run(
+      `WITH $activities AS batch
            UNWIND batch AS activity
            MERGE (a:Activity { id: activity.id })
            SET a += {
@@ -69,11 +68,11 @@ export default async function handler(req, res) {
             globalActor: activity.globalActor,
             globalActorName: activity.globalActorName
           } RETURN a`,
-        { activities }
-      );
+      { activities }
+    );
 
-      await graphConnection.run(
-        `WITH $activities AS batch
+    await graphConnection.run(
+      `WITH $activities AS batch
           UNWIND batch AS activity
           MERGE (m:Member { globalActor: activity.globalActor })
            SET m += {
@@ -82,92 +81,91 @@ export default async function handler(req, res) {
            actorName: activity.actorName,
            simulationId: activity.simulationId
           } RETURN m`,
-        { activities }
-      );
+      { activities }
+    );
 
-      await graphConnection.run(
-        `WITH $activities AS batch
+    await graphConnection.run(
+      `WITH $activities AS batch
             UNWIND batch AS activity
             MATCH (m:Member   { globalActor: activity.globalActor }),
                  (a:Activity { id: activity.id })
            MERGE (m)-[r:DID { simulationId: activity.simulationId }]-(a)`,
-        { activities }
-      );
+      { activities }
+    );
 
-      var entities = [];
-      var connections = [];
+    var entities = [];
+    var connections = [];
 
-      for (let activity of activities) {
-        for (let entity of activity.entities || []) {
-          entities.push({ id: entity, simulationId });
-          connections.push({
-            entityId: entity,
-            activityId: activity.id,
-            simulationId,
-          });
-        }
+    for (let activity of activities) {
+      for (let entity of activity.entities || []) {
+        entities.push({ id: entity, simulationId });
+        connections.push({
+          entityId: entity,
+          activityId: activity.id,
+          simulationId,
+        });
       }
+    }
 
-      await graphConnection.run(
-        `WITH $entities AS batch
+    await graphConnection.run(
+      `WITH $entities AS batch
           UNWIND batch AS entity
           MERGE (e:Entity { id: entity.id })
           SET e += {
           simulationId: entity.simulationId
           } RETURN e`,
-        { entities }
-      );
-      await graphConnection.run(
-        `WITH $connections AS batch
+      { entities }
+    );
+    await graphConnection.run(
+      `WITH $connections AS batch
         UNWIND batch AS connection
         MATCH (e:Entity { id: connection.entityId }),
               (a:Activity { id: connection.activityId })
           MERGE (a)-[r:RELATES { simulationId: connection.simulationId }]-(e)
           RETURN r`,
-        { connections }
-      );
+      { connections }
+    );
 
-      let mentions = [];
+    let mentions = [];
 
-      // go back through all the activities and create mentions
-      for (let activity of activities) {
-        const activityMentions = (activity.mentions || []).filter(c.onlyUnique);
-        for (let mention of activityMentions) {
-          // find some activity where the actor is the same to try
-          // and get the global actor
-          var activityForMention = activities.find(
-            (activity) => activity.actor === mention
-          );
+    // go back through all the activities and create mentions
+    for (let activity of activities) {
+      const activityMentions = (activity.mentions || []).filter(c.onlyUnique);
+      for (let mention of activityMentions) {
+        // find some activity where the actor is the same to try
+        // and get the global actor
+        var activityForMention = activities.find(
+          (activity) => activity.actor === mention
+        );
 
-          // if we have an activity for that mention, we know the
-          // member exists at globalActor, so let's proceed
-          if (activityForMention) {
-            const globalActor = activityForMention.globalActor;
-            mentions.push({
-              globalActor,
-              activityId: activity.id,
-              simulationId,
-            });
-          }
+        // if we have an activity for that mention, we know the
+        // member exists at globalActor, so let's proceed
+        if (activityForMention) {
+          const globalActor = activityForMention.globalActor;
+          mentions.push({
+            globalActor,
+            activityId: activity.id,
+            simulationId,
+          });
         }
       }
-      await graphConnection.run(
-        `WITH $mentions AS batch
+    }
+    await graphConnection.run(
+      `WITH $mentions AS batch
           UNWIND batch AS mention
             MATCH (m:Member   { globalActor: mention.globalActor }),
               (a:Activity { id: mention.activityId })
           MERGE (a)-[r:MENTIONS { simulationId: mention.simulationId }]-(m)`,
-        { mentions }
-      );
-      console.log(`Connected ${mentions.length} mentions`);
-    } finally {
-      await graphConnection.close();
-    }
+      { mentions }
+    );
+    console.log(`Connected ${mentions.length} mentions`);
 
     res.status(200).json({ result: { count: activities.length } });
     console.log("Successfully processed " + activities.length + " activities");
   } catch (err) {
     console.log("Could not process activities", err);
     return res.status(500).json({ message: "Could not process activities" });
+  } finally {
+    await graphConnection.close();
   }
 }
