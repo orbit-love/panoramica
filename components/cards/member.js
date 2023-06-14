@@ -22,7 +22,7 @@ export default function Member({
 
   return (
     <div className="flex flex-col space-y-2">
-      <div className="flex overflow-hidden items-baseline space-x-2 text-lg text-ellipsis whitespace-nowrap">
+      <div className="flex overflow-hidden items-baseline space-x-1 text-ellipsis whitespace-nowrap">
         <button
           className="flex items-center"
           onClick={() => {
@@ -30,17 +30,15 @@ export default function Member({
             setConnection(null);
           }}
         >
-          <FontAwesomeIcon
-            icon="chevron-left"
-            className="text-lg"
-            style={{ color }}
-          />
+          <FontAwesomeIcon icon="chevron-left" className="" style={{ color }} />
         </button>
-        <NameAndIcon
-          member={member}
-          setSelection={setSelection}
-          setConnection={setConnection}
-        />
+        <div className="text-lg font-bold">
+          <NameAndIcon
+            member={member}
+            setSelection={setSelection}
+            setConnection={setConnection}
+          />
+        </div>
       </div>
       <div className="border-b border-indigo-900" />
       <div className="flex flex-col space-y-[-2px]">

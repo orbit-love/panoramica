@@ -16,11 +16,13 @@ export default function CompactConnection({
   }
   const isConnection = connection?.id === connectedMember.id;
   const [outgoing, incoming] = directions;
-  const onClick = () => {
-    if (isConnection) {
+  const onClick = (event) => {
+    console.log(event.detail);
+    if (event.detail === 2) {
       setConnection(null);
+      setSelection(connectedMember);
     } else {
-      setConnection(connectedMember);
+      setConnection(isConnection ? null : connectedMember);
     }
   };
   return (
