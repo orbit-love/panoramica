@@ -115,9 +115,13 @@ export default function Console({
 
   return (
     <div className="flex overflow-scroll flex-col space-y-2 w-full">
-      <div className="flex justify-between items-baseline px-4 pt-4 space-x-2 whitespace-nowrap">
-        <span className="text-lg font-bold text-ellipsis">Activities</span>
-        <div className="flex items-baseline space-x-2">{title}</div>
+      <div className="flex justify-between items-center px-4 pt-4 space-x-1 whitespace-nowrap">
+        <span className="text-lg font-bold">Activities</span>
+        <span className="px-2 text-indigo-500">{activities.length}</span>
+        <span className="!mx-auto" />
+        <div className="flex overflow-hidden items-baseline space-x-2 text-sm">
+          {title}
+        </div>
       </div>
       <div className="mx-4 border-b border-indigo-900" />
       {activities.slice(0, 100).map((activity, index) => (

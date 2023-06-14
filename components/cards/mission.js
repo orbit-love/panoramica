@@ -1,7 +1,5 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import c from "lib/common";
 import CompactMember from "components/compact/member";
 import SortOptions from "components/sort_options";
 
@@ -16,17 +14,13 @@ export default function Mission({
 }) {
   return (
     <div className="flex flex-col space-y-2">
-      <div
-        className="flex items-baseline space-x-2"
-        style={{ color: c.visualization.sun.fill }}
-      >
-        <div>
-          <FontAwesomeIcon icon="planet-ringed" className="text-2xl" />
-        </div>
-        <div className="text-2xl font-semibold">
-          Members: {community.members.length}
-        </div>
+      <div className="flex items-baseline space-x-2">
+        <span className="text-lg font-bold">Members</span>
+        <span className="text-md text-indigo-500">
+          {community.members.length}
+        </span>
       </div>
+      <div className="border-b border-indigo-900" />
       <div className="pb-1 text-sm text-indigo-300">
         <SortOptions
           sort={sort}

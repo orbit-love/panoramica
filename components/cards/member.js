@@ -2,7 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
-import OrbitLevelIcon from "components/icons/orbit_level";
+import NameAndIcon from "components/compact/name_and_icon";
 import CompactConnections from "components/compact/connections";
 import Meter from "components/meter";
 
@@ -22,7 +22,7 @@ export default function Member({
 
   return (
     <div className="flex flex-col space-y-2">
-      <div className="flex overflow-hidden items-baseline space-x-2 text-ellipsis whitespace-nowrap">
+      <div className="flex overflow-hidden items-baseline space-x-2 text-lg text-ellipsis whitespace-nowrap">
         <button
           className="flex items-center"
           onClick={() => {
@@ -32,15 +32,17 @@ export default function Member({
         >
           <FontAwesomeIcon
             icon="chevron-left"
-            className="text-xl"
+            className="text-lg"
             style={{ color }}
           />
-          <OrbitLevelIcon number={member.level} classes="text-2xl" />
         </button>
-        <div className="text-2xl font-semibold" style={{ color }}>
-          {member.globalActorName || member.actorName}
-        </div>
+        <NameAndIcon
+          member={member}
+          setSelection={setSelection}
+          setConnection={setConnection}
+        />
       </div>
+      <div className="border-b border-indigo-900" />
       <div className="flex flex-col space-y-[-2px]">
         <div className="flex items-center">
           <div className="w-16 font-semibold text-indigo-400">Love</div>

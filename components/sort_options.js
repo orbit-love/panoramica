@@ -22,7 +22,6 @@ export default function SortOptions({
   return (
     <>
       <div className="flex-start flex items-center space-x-1">
-        <FontAwesomeIcon icon="sort" className="pr-2" />
         <button
           className={`${buttonClasses} ${sort === "gravity" && activeClass}`}
           onClick={() => changeSort("gravity")}

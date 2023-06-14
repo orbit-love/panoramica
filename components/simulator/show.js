@@ -130,8 +130,10 @@ export default function Show({
   return (
     <div className="flex flex-col space-y-2 h-full">
       <div className="flex items-baseline space-x-2">
-        <div className="text-lg font-bold">{simulation.name}</div>
+        <span className="text-lg font-bold">Project</span>
         {loading && <div className="text-indigo-700">Loading...</div>}
+        <div className="!mx-auto" />
+        <span className="text-md">{simulation.name}</span>
       </div>
       <div className="border-b border-indigo-900" />
       {imported && (

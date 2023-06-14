@@ -119,6 +119,7 @@ export default function Visualization({
       showNetwork,
       setShowNetwork,
       revolution,
+      simulation,
     };
 
     // these are drawn in order of back to front
