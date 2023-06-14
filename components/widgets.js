@@ -42,6 +42,8 @@ export default function Widgets({
   setHigh,
   connection,
   setConnection,
+  entity,
+  setEntity,
 }) {
   const width = "w-[32vw]";
   const height = "h-[40vh]";
@@ -80,7 +82,7 @@ export default function Widgets({
     <>
       <DControls />
       <div
-        className={`w-[100vw] flex absolute bottom-0 left-0 z-10 items-end justify-between p-5 space-x-4 pointer-events-none`}
+        className={`w-[100vw] flex absolute bottom-0 left-0 z-10 justify-between items-end p-5 space-x-4 pointer-events-none`}
       >
         {showPanel && (
           <>
@@ -118,12 +120,15 @@ export default function Widgets({
                       ) || selection
                     }
                     community={community}
+                    selection={selection}
                     setSelection={setSelection}
                     showNetwork={showNetwork}
                     setShowNetwork={setShowNetwork}
                     levels={levels}
                     connection={connection}
                     setConnection={setConnection}
+                    entity={entity}
+                    setEntity={setEntity}
                   />
                 )}
                 {selection.number && (
@@ -136,6 +141,8 @@ export default function Widgets({
                     sort={sort}
                     setSort={setSort}
                     setConnection={setConnection}
+                    entity={entity}
+                    setEntity={setEntity}
                   />
                 )}
                 {selection.name === "Mission" && (
@@ -147,21 +154,25 @@ export default function Widgets({
                     levels={levels}
                     setCommunity={setCommunity}
                     setConnection={setConnection}
+                    entity={entity}
+                    setEntity={setEntity}
                   />
                 )}
               </div>
             )}
             {community && selection && (
               <div className="flex flex-col space-y-4">
-                {/* <div className={`${classes} ${width} !h-[250px] !p-0`}>
+                <div className={`${classes} ${width} !h-[250px] !p-0`}>
                   <Entities
                     selection={selection}
                     setSelection={setSelection}
                     community={community}
                     connection={connection}
                     setConnection={setConnection}
+                    entity={entity}
+                    setEntity={setEntity}
                   />
-                </div> */}
+                </div>
                 <div className={`${classes} ${width} !p-0`}>
                   <Activities
                     selection={selection}
@@ -169,6 +180,8 @@ export default function Widgets({
                     community={community}
                     connection={connection}
                     setConnection={setConnection}
+                    entity={entity}
+                    setEntity={setEntity}
                   />
                 </div>
               </div>

@@ -8,6 +8,7 @@ export default function CompactConnection({
   directions,
   connection,
   setConnection,
+  selection,
   setSelection,
 }) {
   // safety check to remove later
@@ -17,7 +18,6 @@ export default function CompactConnection({
   const isConnection = connection?.id === connectedMember.id;
   const [outgoing, incoming] = directions;
   const onClick = (event) => {
-    console.log(event.detail);
     if (event.detail === 2) {
       setConnection(null);
       setSelection(connectedMember);
@@ -47,6 +47,7 @@ export default function CompactConnection({
         member={connectedMember}
         onClick={onClick}
         setConnection={setConnection}
+        selection={selection}
         setSelection={setSelection}
       />
       {incoming > 0 && (

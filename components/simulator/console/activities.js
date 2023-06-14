@@ -4,14 +4,22 @@ import classnames from "classnames";
 
 import c from "lib/common";
 import NameAndIcon from "components/compact/name_and_icon";
+import Entity from "components/compact/entity";
 
-function Activity({ activity, community, setSelection, setConnection }) {
+function Activity({
+  activity,
+  community,
+  selection,
+  setSelection,
+  setConnection,
+}) {
   const member = community.findMemberByActivity(activity);
   return (
     <div key={activity.id} className="flex flex-col">
       <div className="flex items-center space-x-2">
         <NameAndIcon
           member={member}
+          selection={selection}
           setConnection={setConnection}
           setSelection={setSelection}
         />
@@ -54,6 +62,8 @@ export default function Console({
   setSelection,
   connection,
   setConnection,
+  entity,
+  setEntity,
 }) {
   var activities = community.activities;
   var title;
@@ -79,6 +89,7 @@ export default function Console({
           <NameAndIcon
             member={selection}
             setConnection={setConnection}
+            selection={selection}
             setSelection={setSelection}
           />
           <FontAwesomeIcon
@@ -88,6 +99,7 @@ export default function Console({
           <NameAndIcon
             member={connection}
             setConnection={setConnection}
+            selection={selection}
             setSelection={setSelection}
           />
         </>
@@ -100,6 +112,7 @@ export default function Console({
         <NameAndIcon
           member={selection}
           setConnection={setConnection}
+          selection={selection}
           setSelection={setSelection}
         />
       );
@@ -113,13 +126,27 @@ export default function Console({
     title = <div>Orbit {selection.number}</div>;
   }
 
+  if (entity) {
+    title = (
+      <>
+        {title}
+        <div className="text-xs">
+          <Entity entity={entity} setEntity={setEntity} active={true} />
+        </div>
+      </>
+    );
+    activities = activities.filter(
+      (activity) => entity.activities.indexOf(activity.id) > -1
+    );
+  }
+
   return (
     <div className="flex overflow-scroll flex-col space-y-2 w-full">
       <div className="flex justify-between items-center px-4 pt-4 space-x-1 whitespace-nowrap">
         <span className="text-lg font-bold">Activities</span>
         <span className="px-2 text-indigo-500">{activities.length}</span>
         <span className="!mx-auto" />
-        <div className="flex overflow-hidden items-baseline space-x-2 text-sm">
+        <div className="flex overflow-hidden items-center space-x-2 text-sm">
           {title}
         </div>
       </div>
@@ -136,6 +163,7 @@ export default function Console({
             activity={activity}
             community={community}
             setConnection={setConnection}
+            selection={selection}
             setSelection={setSelection}
           />
         </div>

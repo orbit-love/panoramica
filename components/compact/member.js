@@ -1,12 +1,11 @@
 import React from "react";
-import c from "lib/common";
 import classnames from "classnames";
-import OrbitLevelIcon from "components/icons/orbit_level";
 import NumberStats from "components/compact/number_stats";
 import NameAndIcon from "components/compact/name_and_icon";
 
 export default function CompactMember({
   member,
+  selection,
   setSelection,
   metrics,
   setConnection,
@@ -27,6 +26,7 @@ export default function CompactMember({
       >
         <NameAndIcon
           member={member}
+          selection={selection}
           setSelection={setSelection}
           setConnection={setConnection}
           onClick={() => {}}

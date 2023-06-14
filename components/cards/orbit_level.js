@@ -4,34 +4,55 @@ import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
 import CompactMember from "components/compact/member";
 import SortOptions from "components/sort_options";
+import Entity from "components/compact/entity";
 
 export default function OrbitLevel({
   level,
   levels,
   community,
   setCommunity,
+  selection,
   setSelection,
   sort,
   setSort,
   setConnection,
+  entity,
+  setEntity,
 }) {
-  const levelMembers = community.members.filter(
+  var title;
+  var members = community.members.filter(
     (member) => member.level === level.number
   );
+  if (entity) {
+    members = members.filter(
+      (member) => entity.members.indexOf(member.globalActor) > -1
+    );
+    title = (
+      <div className="text-xs">
+        <Entity entity={entity} setEntity={setEntity} active={true} />
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col space-y-4">
-      <div className="flex items-baseline space-x-2">
-        <div>
-          <OrbitLevelIcon number={level.number} classes="text-2xl" />
+    <div className="flex flex-col space-y-2">
+      <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1">
+          <OrbitLevelIcon number={level.number} classes="text-lg" />
+          <span
+            className="text-lg font-bold"
+            style={{ color: c.orbitLevelColorScale(level.number) }}
+          >
+            {level.name}
+          </span>
         </div>
-        <div
-          className="text-2xl font-semibold"
-          style={{ color: c.orbitLevelColorScale(level.number) }}
-        >
-          {level.name} ({levelMembers.length})
+        <span className="text-md text-indigo-500">{members.length}</span>
+        <span className="!mx-auto" />
+        <div className="flex overflow-hidden items-baseline space-x-2 text-sm">
+          {title}
         </div>
       </div>
+      <div className="border-b border-indigo-900" />
       <div className="text-sm text-indigo-300">
         <SortOptions
           sort={sort}
@@ -42,10 +63,11 @@ export default function OrbitLevel({
         />
       </div>
       <div className="flex flex-col">
-        {levelMembers.map((member) => (
+        {members.map((member) => (
           <CompactMember
             key={member.id}
             member={member}
+            selection={selection}
             setSelection={setSelection}
             metrics={true}
             setConnection={setConnection}

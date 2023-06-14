@@ -1,37 +1,7 @@
 import React from "react";
-import classnames from "classnames";
+import Entity from "components/compact/entity";
 
-import NameAndIcon from "components/compact/name_and_icon";
-
-function Entity({ entity, community, setSelection, setConnection }) {
-  let onClick = () => {};
-  return (
-    <button onClick={onClick} key={entity.id} className="px-1 py-1">
-      <div className="font-semibold text-sm flex space-x-2 py-[4px] px-4 bg-opacity-60 text-indigo-100 bg-fuchsia-900 hover:bg-opacity-100 rounded rounded-lg">
-        <div>{entity.id}</div>
-        <div className="font-light">{entity.count}</div>
-      </div>
-      <div className="hidden flex flex-wrap">
-        {entity.members.map((globalActor) => {
-          let member = community.findMemberByActor(globalActor);
-          if (member) {
-            return (
-              <div className="pr-2 text-sm" key={member.globalActor}>
-                <NameAndIcon
-                  member={member}
-                  setConnection={setConnection}
-                  setSelection={setSelection}
-                />
-              </div>
-            );
-          }
-        })}
-      </div>
-    </button>
-  );
-}
-
-export default function Console({ community, setSelection, setConnection }) {
+export default function Console({ community, entity, setEntity }) {
   var entities = community.entities;
   return (
     <div className="flex overflow-scroll flex-col space-y-2 w-full">
@@ -39,20 +9,19 @@ export default function Console({ community, setSelection, setConnection }) {
         <span className="text-lg font-bold text-ellipsis">Entities</span>
       </div>
       <div className="mx-4 border-b border-indigo-900" />
-      <div className="flex flex-wrap px-4 py-1">
-        {entities.map((entity) => (
-          <div key={entity.id} className="">
+      <div className="flex flex-wrap py-1 px-4 text-xs">
+        {entities.map((anEntity) => (
+          <div key={anEntity.id} className="">
             <Entity
-              entity={entity}
-              community={community}
-              setSelection={setSelection}
-              setConnection={setConnection}
+              entity={anEntity}
+              setEntity={setEntity}
+              active={entity?.id === anEntity.id}
             />
           </div>
         ))}
       </div>
       {entities.length === 0 && (
-        <div className="py-3 px-4 text-indigo-500">No entities.</div>
+        <div className="px-4 text-indigo-500">No entities.</div>
       )}
     </div>
   );

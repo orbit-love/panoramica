@@ -6,6 +6,7 @@ import OrbitLevelIcon from "components/icons/orbit_level";
 export default function NameAndIcon({
   member,
   setConnection,
+  selection,
   setSelection,
   onClick,
 }) {
@@ -15,11 +16,18 @@ export default function NameAndIcon({
   if (!onClick) {
     onClick = () => {
       setConnection(null);
-      setSelection(member);
+      if (selection?.id === member.id) {
+        setSelection({ name: "Mission" });
+      } else {
+        setSelection(member);
+      }
     };
   }
   return (
-    <button onClick={onClick} className="flex items-center space-x-1">
+    <div
+      onClick={onClick}
+      className="flex items-center space-x-1 cursor-pointer"
+    >
       <OrbitLevelIcon number={member.level} />
       <div
         className="whitespace-nowrap"
@@ -29,6 +37,6 @@ export default function NameAndIcon({
       >
         {member.globalActorName || member.actorName}
       </div>
-    </button>
+    </div>
   );
 }

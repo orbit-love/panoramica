@@ -4,6 +4,7 @@ import CompactConnection from "components/compact/connection";
 export default function CompactConnections({
   member,
   community,
+  selection,
   setSelection,
   connection,
   setConnection,
@@ -51,6 +52,7 @@ export default function CompactConnections({
                     key={connectedMember.id}
                     member={member}
                     connectedMember={connectedMember}
+                    selection={selection}
                     setSelection={setSelection}
                     connection={connection}
                     setConnection={setConnection}

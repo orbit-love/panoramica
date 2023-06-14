@@ -2,23 +2,41 @@ import React from "react";
 
 import CompactMember from "components/compact/member";
 import SortOptions from "components/sort_options";
+import Entity from "components/compact/entity";
 
 export default function Mission({
   community,
+  selection,
   setSelection,
   sort,
   setSort,
   setCommunity,
   levels,
   setConnection,
+  entity,
+  setEntity,
 }) {
+  var title;
+  var members = community.members;
+  if (entity) {
+    members = members.filter(
+      (member) => entity.members.indexOf(member.globalActor) > -1
+    );
+    title = (
+      <div className="text-xs">
+        <Entity entity={entity} setEntity={setEntity} active={true} />
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex items-baseline space-x-2">
         <span className="text-lg font-bold">Members</span>
-        <span className="text-md text-indigo-500">
-          {community.members.length}
-        </span>
+        <span className="text-md text-indigo-500">{members.length}</span>
+        <span className="!mx-auto" />
+        <div className="flex overflow-hidden items-baseline space-x-2 text-sm">
+          {title}
+        </div>
       </div>
       <div className="border-b border-indigo-900" />
       <div className="pb-1 text-sm text-indigo-300">
@@ -33,12 +51,13 @@ export default function Mission({
       <div className="flex flex-col">
         {[1, 2, 3, 4].map((number) => (
           <div key={number} className="flex flex-col">
-            {community.members
+            {members
               .filter((member) => member.level === number)
               .map((member) => (
                 <CompactMember
                   key={member.id}
                   member={member}
+                  selection={selection}
                   setSelection={setSelection}
                   metrics={true}
                   setConnection={setConnection}

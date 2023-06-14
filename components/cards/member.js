@@ -5,20 +5,31 @@ import c from "lib/common";
 import NameAndIcon from "components/compact/name_and_icon";
 import CompactConnections from "components/compact/connections";
 import Meter from "components/meter";
+import Entity from "components/compact/entity";
 
 export default function Member({
   member,
   community,
+  selection,
   setSelection,
   showNetwork,
   setShowNetwork,
   connection,
   setConnection,
+  entity,
+  setEntity,
 }) {
   const buttonClasses =
     "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none outline-none";
 
   const color = c.orbitLevelColorScale(member.level);
+
+  let entities = [];
+  for (let entity of community.entities) {
+    if (entity.members.indexOf(member.globalActor) > -1) {
+      entities.push(entity);
+    }
+  }
 
   return (
     <div className="flex flex-col space-y-2">
@@ -35,6 +46,7 @@ export default function Member({
         <div className="text-lg font-bold">
           <NameAndIcon
             member={member}
+            selection={selection}
             setSelection={setSelection}
             setConnection={setConnection}
           />
@@ -82,6 +94,21 @@ export default function Member({
           <span>{member.connectionCount}</span>
         </div>
       </div>
+      {entities.length > 0 && (
+        <>
+          <div className="border-b border-indigo-900" />
+          <div className="flex flex-wrap py-1 text-xs">
+            {entities.map((anEntity) => (
+              <Entity
+                key={anEntity.id}
+                entity={anEntity}
+                setEntity={setEntity}
+                active={entity?.id === anEntity}
+              />
+            ))}
+          </div>
+        </>
+      )}
       {member.connectionCount > 0 && (
         <>
           <div className="border-b border-indigo-800" />

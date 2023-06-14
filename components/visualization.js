@@ -41,6 +41,7 @@ export default function Visualization({
   const [cycle, setCycle] = useState(false);
   const [selection, setSelection] = useState(null);
   const [connection, setConnection] = useState(null);
+  const [entity, setEntity] = useState(null);
   const [showNetwork, setShowNetwork] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [showPanel, setShowPanel] = useState(true);
@@ -153,6 +154,8 @@ export default function Visualization({
     revolution,
     sort,
     prevSort,
+    simulation,
+    prevSimulation,
   ]);
 
   return (
@@ -245,6 +248,8 @@ export default function Visualization({
         setHigh={setHigh}
         connection={connection}
         setConnection={setConnection}
+        entity={entity}
+        setEntity={setEntity}
       />
     </div>
   );
