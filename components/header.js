@@ -44,15 +44,15 @@ export default function Header({ fix }) {
                 }}
               />
               <div className="flex font-thin">
-                <span className="pr-[4px]">t</span>
-                <span className="pr-[4px]">e</span>
-                <span className="pr-[4px]">l</span>
-                <span className="pr-[4px]">e</span>
-                <span className="pr-[4px]">s</span>
-                <span className="pr-[4px]">c</span>
-                <span className="pr-[4px]">o</span>
-                <span className="pr-[4px]">p</span>
-                <span className="">e</span>
+                <span className="opacity-90 px-[2px]">t</span>
+                <span className="opacity-80 px-[2px]">e</span>
+                <span className="opacity-80 px-[2px]">l</span>
+                <span className="opacity-70 px-[2px]">e</span>
+                <span className="opacity-70 px-[2px]">s</span>
+                <span className="opacity-60 px-[2px]">c</span>
+                <span className="opacity-60 px-[2px]">o</span>
+                <span className="opacity-50 px-[2px]">p</span>
+                <span className="opacity-50 px-[2px]">e</span>
               </div>
             </div>
           </Link>

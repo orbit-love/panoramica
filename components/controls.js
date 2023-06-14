@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Sorter from "components/sorter";
 
 export default function Controls({
   animate,
@@ -11,12 +10,6 @@ export default function Controls({
   setFullscreen,
   showInfo,
   setShowInfo,
-  sort,
-  setSort,
-  community,
-  setCommunity,
-  classes,
-  levels,
   showPanel,
   setShowPanel,
 }) {
@@ -26,8 +19,6 @@ export default function Controls({
   const infoIcon = "question";
   const sortIcon = "sort";
   const buttonClasses = "btn select-none outline-none";
-
-  const [sortOpen, setSortOpen] = useState(false);
 
   return (
     <>
@@ -75,29 +66,6 @@ export default function Controls({
           ></FontAwesomeIcon>
         </button>
       )}
-      <div className="relative">
-        <button
-          className={buttonClasses}
-          onClick={() => setSortOpen(!sortOpen)}
-          title="Sort"
-        >
-          <FontAwesomeIcon
-            icon={sortIcon}
-            className={`text-lg ${sortOpen ? "text-white" : "text-indigo-500"}`}
-          />
-        </button>
-        {sortOpen && (
-          <Sorter
-            sort={sort}
-            setSort={setSort}
-            setSortOpen={setSortOpen}
-            community={community}
-            setCommunity={setCommunity}
-            classes={classes}
-            levels={levels}
-          />
-        )}
-      </div>
       <div className="flex px-2">
         <div className="w-[1px] bg-indigo-900" />
       </div>
