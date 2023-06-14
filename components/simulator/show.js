@@ -55,10 +55,11 @@ export default function Show({
         from,
         to,
       });
-    } else {
-      // show loading just the first time, not every range move
-      setLoading(true);
     }
+
+    // show loading always since it takes a while in prod right now
+    setLoading(true);
+
     // only needed when high was not chosen, otherwise it will be thesame
     // send low and high
     fetch(`/api/simulations/${simulation.id}/community?` + params)

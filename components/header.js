@@ -37,7 +37,7 @@ export default function Header({ fix }) {
             <div className="flex items-center p-1 space-x-3 text-3xl text-indigo-500">
               <FontAwesomeIcon
                 icon={["fad", "telescope"]}
-                className="rotate-[10%] text-2xl"
+                className="text-2xl"
                 style={{
                   "--fa-primary-color": c.colors.indigo[500],
                   "--fa-secondary-color": c.colors.indigo[600],
