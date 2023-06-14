@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "lib/db";
 import GraphConnection from "lib/graphConnection";
 import c from "lib/common";
-
-const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   const graphConnection = new GraphConnection();
@@ -21,6 +19,11 @@ export default async function handler(req, res) {
         simulationId: simulation.id,
       },
     });
+
+    // stringify the timestamps for putting into memgraph
+    for (let activity of activities) {
+      activity.timestamp = activity.timestamp.toISOString();
+    }
 
     try {
       // delete previous nodes and relationships
@@ -46,75 +49,90 @@ export default async function handler(req, res) {
 
       console.log("Removed old activities and set constraints");
 
-      for (let activity of activities) {
-        const result = await graphConnection.run(
-          `MERGE (a:Activity { id: $id })
+      await graphConnection.run(
+        `WITH $activities AS batch
+           UNWIND batch AS activity
+           MERGE (a:Activity { id: activity.id })
            SET a += {
-            actor: $actor,
-            sourceId: $sourceId,
-            timestamp: $timestamp,
-            text: $text,
-            simulationId: $simulationId,
-            actorName: $actorName,
-            textHtml: $textHtml,
-            url: $url,
-            tags: $tags,
-            mentions: $mentions,
-            entities: $entities,
-            sourceType: $sourceType,
-            globalActor: $globalActor,
-            globalActorName: $globalActorName
+            actor: activity.actor,
+            sourceId: activity.sourceId,
+            text: activity.text,
+            timestamp: activity.timestamp,
+            simulationId: activity.simulationId,
+            actorName: activity.actorName,
+            textHtml: activity.textHtml,
+            url: activity.url,
+            tags: activity.tags,
+            mentions: activity.mentions,
+            entities: activity.entities,
+            sourceType: activity.sourceType,
+            globalActor: activity.globalActor,
+            globalActorName: activity.globalActorName
           } RETURN a`,
-          { ...activity, timestamp: activity.timestamp.toISOString() }
-        );
-        // to create the member, we would add local actors to an array
-        // instead of overriding
-        await graphConnection.run(
-          `MERGE (m:Member { globalActor: $globalActor })
+        { activities }
+      );
+
+      await graphConnection.run(
+        `WITH $activities AS batch
+          UNWIND batch AS activity
+          MERGE (m:Member { globalActor: activity.globalActor })
            SET m += {
-           globalActorName: $globalActorName,
-           actor: $actor,
-           actorName: $actorName,
-           simulationId: $simulationId
+           globalActorName: activity.globalActorName,
+           actor: activity.actor,
+           actorName: activity.actorName,
+           simulationId: activity.simulationId
           } RETURN m`,
-          { ...activity }
-        );
+        { activities }
+      );
 
-        await graphConnection.run(
-          `MATCH (m:Member   { globalActor: $globalActor }),
-                 (a:Activity { id: $id })
-           MERGE (m)-[r:DID { simulationId: $simulationId }]-(a)`,
-          { ...activity }
-        );
+      await graphConnection.run(
+        `WITH $activities AS batch
+            UNWIND batch AS activity
+            MATCH (m:Member   { globalActor: activity.globalActor }),
+                 (a:Activity { id: activity.id })
+           MERGE (m)-[r:DID { simulationId: activity.simulationId }]-(a)`,
+        { activities }
+      );
 
-        for (var j = 0; j < activity.entities?.length; j++) {
-          var entity = activity.entities[j];
-          await graphConnection.run(
-            `MERGE (e:Entity { id: $id })
-             SET e += {
-              simulationId: $simulationId
-             } RETURN e`,
-            { id: entity, simulationId }
-          );
-          await graphConnection.run(
-            `MATCH (e:Entity { id: $entityId }),
-                 (a:Activity { id: $activityId })
-             MERGE (a)-[r:RELATES { simulationId: $simulationId }]-(e)
-             RETURN r`,
-            { entityId: entity, activityId: activity.id, simulationId }
-          );
-          console.log("Created entity node " + entity);
+      var entities = [];
+      var connections = [];
+
+      for (let activity of activities) {
+        for (let entity of activity.entities || []) {
+          entities.push({ id: entity, simulationId });
+          connections.push({
+            entityId: entity,
+            activityId: activity.id,
+            simulationId,
+          });
         }
-
-        const singleRecord = result.records[0];
-        const node = singleRecord.get(0);
-        console.log("Created activity node for " + node.properties.globalActor);
       }
+
+      await graphConnection.run(
+        `WITH $entities AS batch
+          UNWIND batch AS entity
+          MERGE (e:Entity { id: entity.id })
+          SET e += {
+          simulationId: entity.simulationId
+          } RETURN e`,
+        { entities }
+      );
+      await graphConnection.run(
+        `WITH $connections AS batch
+        UNWIND batch AS connection
+        MATCH (e:Entity { id: connection.entityId }),
+              (a:Activity { id: connection.activityId })
+          MERGE (a)-[r:RELATES { simulationId: connection.simulationId }]-(e)
+          RETURN r`,
+        { connections }
+      );
+
+      let mentions = [];
 
       // go back through all the activities and create mentions
       for (let activity of activities) {
-        const mentions = (activity.mentions || []).filter(c.onlyUnique);
-        for (let mention of mentions) {
+        const activityMentions = (activity.mentions || []).filter(c.onlyUnique);
+        for (let mention of activityMentions) {
           // find some activity where the actor is the same to try
           // and get the global actor
           var activityForMention = activities.find(
@@ -125,18 +143,23 @@ export default async function handler(req, res) {
           // member exists at globalActor, so let's proceed
           if (activityForMention) {
             const globalActor = activityForMention.globalActor;
-            await graphConnection.run(
-              `MATCH (m:Member   { globalActor: $globalActor }),
-                   (a:Activity { id: $id })
-               MERGE (a)-[r:MENTIONS { simulationId: $simulationId }]-(m)`,
-              { globalActor, id: activity.id, simulationId }
-            );
-            console.log(
-              `Connected mention on activity ${activity.id} from ${activity.globalActor} to ${globalActor}`
-            );
+            mentions.push({
+              globalActor,
+              activityId: activity.id,
+              simulationId,
+            });
           }
         }
       }
+      await graphConnection.run(
+        `WITH $mentions AS batch
+          UNWIND batch AS mention
+            MATCH (m:Member   { globalActor: mention.globalActor }),
+              (a:Activity { id: mention.activityId })
+          MERGE (a)-[r:MENTIONS { simulationId: mention.simulationId }]-(m)`,
+        { mentions }
+      );
+      console.log(`Connected ${mentions.length} mentions`);
     } finally {
       await graphConnection.close();
     }
