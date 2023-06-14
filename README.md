@@ -1,3 +1,3 @@
-# The Simulator
+# Telescope
 
 Coming soon :rocket:

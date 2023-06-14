@@ -57,8 +57,9 @@ import {
   faSignalStream,
   faCircle,
   faQuestion,
-  faArrowLeftRight,
 } from "@fortawesome/pro-solid-svg-icons";
+
+import { faTelescope } from "@fortawesome/pro-duotone-svg-icons";
 
 // add to library
 library.add(
@@ -105,7 +106,8 @@ library.add(
   faKeyboard,
   faArrowLeft,
   faArrowRight,
-  faRightLeft
+  faRightLeft,
+  faTelescope
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";

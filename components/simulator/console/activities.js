@@ -3,23 +3,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 
 import c from "lib/common";
-import OrbitLevelIcon from "components/icons/orbit_level";
 import NameAndIcon from "components/compact/name_and_icon";
 
-function Activity({ activity, community, setSelection }) {
+function Activity({ activity, community, setSelection, setConnection }) {
   const member = community.findMemberByActivity(activity);
-  const color = c.orbitLevelColorScale(member.level);
   return (
     <div key={activity.id} className="flex flex-col">
       <div className="flex items-center space-x-2">
-        <button
-          onClick={() => setSelection(member)}
-          className="flex overflow-hidden items-center space-x-1 text-sm font-bold text-indigo-100 text-ellipsis whitespace-nowrap hover:underline"
-          style={{ color }}
-        >
-          <OrbitLevelIcon number={member.level} classes="" />
-          <div>{member.globalActorName || member.actorName}</div>
-        </button>
+        <NameAndIcon
+          member={member}
+          setConnection={setConnection}
+          setSelection={setSelection}
+        />
         <div className="overflow-hidden flex-1 text-xs text-right text-indigo-700 text-ellipsis">
           {activity.sourceType?.replace(/_/g, " ").replace(/activity/, "")}
         </div>
@@ -90,7 +85,11 @@ export default function Console({
             icon="right-left"
             className="text-xs text-indigo-600"
           />
-          <NameAndIcon member={connection} />
+          <NameAndIcon
+            member={connection}
+            setConnection={setConnection}
+            setSelection={setSelection}
+          />
         </>
       );
     } else {
@@ -132,6 +131,7 @@ export default function Console({
           <Activity
             activity={activity}
             community={community}
+            setConnection={setConnection}
             setSelection={setSelection}
           />
         </div>

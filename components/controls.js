@@ -64,7 +64,7 @@ export default function Controls({
       {!showInfo && (
         <button
           onClick={() => {
-            setShowPanel(false);
+            setShowPanel(true);
             setShowInfo(true);
           }}
           className={buttonClasses}

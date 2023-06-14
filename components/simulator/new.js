@@ -33,7 +33,7 @@ export default function New({ setSimulation, loadSimulations }) {
 
   return (
     <div className="flex flex-col space-y-2">
-      <div className="text-lg font-semibold">Create a New Simulation</div>
+      <div className="text-lg font-semibold">Create a New Project</div>
       <form
         action="/api/simulations/create"
         method="post"

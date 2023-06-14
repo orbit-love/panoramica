@@ -19,7 +19,7 @@ export default function NameAndIcon({
     <button onClick={onClick} className="flex items-center space-x-1">
       <OrbitLevelIcon number={member.level} />
       <div
-        className="overflow-hidden text-left text-ellipsis whitespace-nowrap hover:underline"
+        className="whitespace-nowrap"
         style={{
           color: c.orbitLevelColorScale(member.level),
         }}

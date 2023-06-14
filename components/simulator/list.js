@@ -92,7 +92,7 @@ export default function List({
           <>
             <div className="flex flex-col space-y-2">
               <div className="flex items-baseline space-x-2">
-                <div className="text-lg font-bold">Choose a Simulation</div>
+                <div className="text-lg font-bold">Choose a Project</div>
                 {loading && <div className="text-indigo-700">Loading...</div>}
               </div>
               {simulations?.map((simulation) => (

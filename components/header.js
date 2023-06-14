@@ -1,10 +1,8 @@
 import { React, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
-import headerLogo from "public/header_logo.svg";
 
 export default function Header({ fix }) {
   const [active, setActive] = useState(false);
@@ -36,16 +34,27 @@ export default function Header({ fix }) {
 
         <div className="pointer-events-auto">
           <Link href="/" passHref>
-            <a className="flex flex-col items-start text-white">
-              <Image
-                src={headerLogo}
-                alt="Orbit Model logo"
-                width={190}
-                height={40}
-                className="cursor-pointer"
+            <div className="flex items-center p-1 space-x-3 text-3xl text-indigo-500">
+              <FontAwesomeIcon
+                icon={["fad", "telescope"]}
+                className="rotate-[10%] text-2xl"
+                style={{
+                  "--fa-primary-color": c.colors.indigo[500],
+                  "--fa-secondary-color": c.colors.indigo[600],
+                }}
               />
-              <div className="font-mono text-sm text-indigo-500">Simulator</div>
-            </a>
+              <div className="flex font-thin">
+                <span className="pr-[4px]">t</span>
+                <span className="pr-[4px]">e</span>
+                <span className="pr-[4px]">l</span>
+                <span className="pr-[4px]">e</span>
+                <span className="pr-[4px]">s</span>
+                <span className="pr-[4px]">c</span>
+                <span className="pr-[4px]">o</span>
+                <span className="pr-[4px]">p</span>
+                <span className="">e</span>
+              </div>
+            </div>
           </Link>
         </div>
 
