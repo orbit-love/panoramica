@@ -47,11 +47,11 @@ export default function New({ setSimulation, loadSimulations }) {
             type="text"
             required
             className={c.inputClasses}
-            placeholder="My Simulation"
+            placeholder="Project Name"
           ></input>
         </div>
         <div className="flex flex-col space-y-1">
-          <div className="">Any Activities URL</div>
+          <div className="">Any Activities URL / Saved View</div>
           <input
             ref={urlRef}
             type="text"

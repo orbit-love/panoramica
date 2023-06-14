@@ -33,7 +33,7 @@ export default function Edit({ simulation, setSimulation, setEditMode }) {
 
   return (
     <div className="flex flex-col space-y-2">
-      <div className="text-lg font-semibold">Update Simulation</div>
+      <div className="text-lg font-semibold">Edit Project</div>
       <form
         action="/api/simulations/create"
         method="post"
@@ -46,7 +46,7 @@ export default function Edit({ simulation, setSimulation, setEditMode }) {
             type="text"
             required
             className={c.inputClasses}
-            placeholder="My Simulation"
+            placeholder="My Project"
             value={name}
             onChange={({ target }) => setName(target.value)}
           ></input>
