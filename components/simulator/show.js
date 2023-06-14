@@ -149,11 +149,12 @@ export default function Show({
       )}
       <div className="flex flex-col space-y-2">
         {community && !imported && (
-          <div className="text-semibold text-green-500">
-            This simulation has not been imported yet. Choose Import or Process.
+          <div className="text-semibold py-3 text-green-500">
+            The project has been created. Now, press the Import button to fetch
+            data into the project.
           </div>
         )}
-        {community && (
+        {community && imported && (
           <table className="table border-separate [border-spacing:0] text-sm">
             <thead>
               <tr>
@@ -215,9 +216,6 @@ export default function Show({
         </button>
         <button onClick={() => importSimulation()} className={c.buttonClasses}>
           Import
-        </button>
-        <button onClick={() => processSimulation()} className={c.buttonClasses}>
-          Process
         </button>
       </div>
     </div>

@@ -10,7 +10,6 @@ datasource db {
   provider = "postgresql"
   url = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
-  shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
 }
 
 model Simulation {
@@ -26,7 +25,7 @@ model Activity {
   simulation   Simulation    @relation(fields: [simulationId], references: [id])
   simulationId Int
   actor          String
-  sourceId      String       @unique
+  sourceId      String
   timestamp   DateTime
   text         String
 
@@ -48,4 +47,6 @@ model Activity {
   conversationId String?
   // debugging
   payload      Json?
+  // don't allow the same activity twice in the same project
+  @@unique([sourceId, simulationId])
 }

@@ -117,19 +117,28 @@ const getAPIData = async ({
       var activities = response.data.data;
       var included = response.data.included;
 
-      console.log("Fetched activities: ", activities.length);
-      for (var i = 0; i < activities.length; i++) {
-        var activity = activities[i];
-        var sourceId = activity.id;
+      var records = [];
 
+      console.log("Fetched activities: ", activities.length);
+      for (let activity of activities) {
         var fields = getFields({ simulation, activity, included });
-        await prisma.activity.upsert({
-          where: {
-            sourceId,
-          },
-          create: fields,
-          update: fields,
-        });
+        // await prisma.activity.upsert({
+        //   where: {
+        //     sourceId,
+        //   },
+        //   create: fields,
+        //   update: fields,
+        // });
+        records.push(fields);
+      }
+
+      // do a bulk insert for speed
+      await prisma.activity.createMany({
+        data: records,
+      });
+
+      // log everything
+      for (let fields of records) {
         console.log("Created " + fields.sourceType + " from " + fields.actor);
       }
 
