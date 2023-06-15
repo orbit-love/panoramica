@@ -191,7 +191,7 @@ export default function Visualization({
           }}
         ></svg>
       </div>
-      {community && (
+      {/* {community && (
         <MemberGraph
           width={width}
           height={height}
@@ -212,7 +212,7 @@ export default function Visualization({
           connection={connection}
           setConnection={setConnection}
         />
-      )}
+      )} */}
       <div className="hidden bg-[#0F0A25] bg-[#150D33] text-[#eef2ff] text-[#1D1640]" />
       <Widgets
         svgRef={svgRef}

@@ -91,7 +91,7 @@ export default function MemberGraph({
         }
       }
     },
-    afterrender: ({}) => {
+    afterrender: () => {
       var currentGraph = graphRef.current;
       var currentSelection = selectionRef.current;
       highlightSelection({ graph: currentGraph, selection: currentSelection });

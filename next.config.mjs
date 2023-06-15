@@ -14,9 +14,6 @@ const nextConfig = {
   basePath: process.env.BASE_PATH || "",
   reactStrictMode: true,
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
-  github: {
-    silent: true,
-  },
 };
 
 export default withMDX(nextConfig);
