@@ -36,7 +36,7 @@ export default function Threads({
         </>
       )}
       {threads.length === 0 && (
-        <div className="px-4 text-indigo-500">No conversations.</div>
+        <div className="px-4 py-4 text-indigo-500">No conversations.</div>
       )}
     </div>
   );

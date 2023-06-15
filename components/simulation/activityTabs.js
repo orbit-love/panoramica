@@ -110,23 +110,21 @@ export default function ActivityTabs(props) {
   var tabProps = {
     selectedClassName: "!text-indigo-100",
     className:
-      "cursor-pointer text-indigo-500 font-semibold flex space-x-1 items-baseline",
+      "cursor-pointer text-indigo-500 px-4 font-semibold flex space-x-1 items-baseline",
   };
 
   return (
     <Tabs className="w-full">
       <TabList
-        className={`flex fixed items-baseline px-4 pt-4 pb-2 space-x-5 bg-[${c.backgroundColor}] rounded rounded-lg overflow-hidden w-full`}
+        className={`flex fixed w-[calc(32vw-4px)] items-baseline pt-4 pb-2 bg-[${c.backgroundColor}] rounded-t-lg overflow-hidden`}
       >
         <Tab {...tabProps}>
           <span className="text-lg">Conversations</span>
-          <span className="text-md font-normal text-indigo-500">
-            {threads.length}
-          </span>
+          <span className="font-normal text-indigo-500">{threads.length}</span>
         </Tab>
         <Tab {...tabProps}>
           <span className="text-lg">Activities</span>
-          <span className="text-md font-normal text-indigo-500">
+          <span className="font-normal text-indigo-500">
             {activities.length}
           </span>
         </Tab>
