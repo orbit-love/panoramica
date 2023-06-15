@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-import Show from "components/simulator/show";
-import New from "components/simulator/new";
-import Edit from "components/simulator/edit";
+import Show from "components/simulation/show";
+import New from "components/simulation/new";
+import Edit from "components/simulation/edit";
 
 export default function List({
   sort,

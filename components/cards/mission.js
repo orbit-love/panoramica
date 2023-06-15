@@ -30,9 +30,9 @@ export default function Mission({
   }
   return (
     <div className="flex flex-col space-y-2">
-      <div className="flex items-baseline space-x-2">
+      <div className="flex items-baseline space-x-1">
         <span className="text-lg font-bold">Members</span>
-        <span className="text-md text-indigo-500">{members.length}</span>
+        <span className="text-md px-1 text-indigo-500">{members.length}</span>
         <span className="!mx-auto" />
         <div className="flex overflow-hidden items-baseline space-x-2 text-sm">
           {title}

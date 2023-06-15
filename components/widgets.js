@@ -6,9 +6,10 @@ import Member from "components/cards/member";
 import OrbitLevel from "components/cards/orbit_level";
 import Mission from "components/cards/mission";
 import Info from "components/info";
-import List from "components/simulator/list";
-import Activities from "components/simulator/console/activities";
-import Entities from "components/simulator/console/entities";
+import List from "components/simulation/list";
+import Activities from "components/console/activities";
+import Entities from "components/console/entities";
+import Threads from "components/console/threads";
 
 export default function Widgets({
   community,
@@ -173,8 +174,19 @@ export default function Widgets({
                     setEntity={setEntity}
                   />
                 </div>
-                <div className={`${classes} ${width} !p-0`}>
+                {/* <div className={`${classes} ${width} !p-0`}>
                   <Activities
+                    selection={selection}
+                    setSelection={setSelection}
+                    community={community}
+                    connection={connection}
+                    setConnection={setConnection}
+                    entity={entity}
+                    setEntity={setEntity}
+                  />
+                </div> */}
+                <div className={`${classes} ${width} !p-0`}>
+                  <Threads
                     selection={selection}
                     setSelection={setSelection}
                     community={community}

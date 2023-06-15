@@ -80,16 +80,37 @@ const getConnections = async ({ simulationId, graphConnection, from, to }) => {
   return records && mapifyConnections(records);
 };
 
-const getActivities = async ({ simulationId, graphConnection, from, to }) => {
+// get activities that have no parent
+const getThreads = async ({ simulationId, graphConnection, from, to }) => {
   const { records } = await graphConnection.run(
-    `MATCH (a:Activity)
-       WHERE a.simulationId=$simulationId
+    `MATCH (a:Activity)<-[:REPLIES_TO]-(b:Activity)
+       WHERE NOT EXISTS((a)-[:REPLIES_TO]->())
+        AND a.simulationId=$simulationId
         AND a.timestamp > $from
         AND a.timestamp <= $to
-       RETURN a ORDER BY a.timestamp DESC`,
+        AND a.sourceParentId IS NULL
+       WITH a, COLLECT(b.id) as children
+       RETURN DISTINCT a, children ORDER BY a.timestamp DESC`,
     { simulationId, from, to }
   );
   return toProperties(records);
+};
+
+const getActivities = async ({ simulationId, graphConnection, from, to }) => {
+  const { records } = await graphConnection.run(
+    `MATCH (a:Activity)
+       OPTIONAL MATCH (a)<-[:REPLIES_TO]-(b:Activity)
+       OPTIONAL MATCH (a)-[:REPLIES_TO]->(c:Activity)
+       WHERE a.simulationId=$simulationId
+        AND a.timestamp > $from
+        AND a.timestamp <= $to
+       RETURN a, c.id AS parent, COLLECT(b.id) AS children ORDER BY a.timestamp DESC`,
+    { simulationId, from, to }
+  );
+  return toProperties(records, (record) => ({
+    children: record.get("children"),
+    parent: record.get("parent"),
+  }));
 };
 
 const getEntities = async ({ simulationId, graphConnection, from, to }) => {
@@ -125,11 +146,57 @@ const getConnectionCount = async ({ simulationId, graphConnection }) => {
   return set.size;
 };
 
-// stats are global and used to provide information for the UI
-// and for debugging
+// count the number of activities that have replies but no parent -
+// i.e. the thread starters
+// filter out activities that have a parent on the source platform but not
+// in telescope - these will be treated at (partial) islands
+const getThreadCount = async ({ simulationId, graphConnection }) => {
+  const { records } = await graphConnection.run(
+    `MATCH (a:Activity)<-[:REPLIES_TO]-(b:Activity)
+      WHERE NOT EXISTS((a)-[:REPLIES_TO]->())
+      AND a.simulationId=$simulationId
+      AND a.sourceParentId IS NULL
+     WITH count(DISTINCT a) as count
+     RETURN count
+    `,
+    { simulationId }
+  );
+  const record = records[0];
+  return record.get("count").low;
+};
+
+// count the number of activities that have a parent, includes leafs and branches
+const getReplyCount = async ({ simulationId, graphConnection }) => {
+  const { records } = await graphConnection.run(
+    `MATCH (a:Activity)-[:REPLIES_TO]->(b:Activity)
+      WHERE a.simulationId=$simulationId
+     WITH count(DISTINCT a) as count
+     RETURN count
+    `,
+    { simulationId }
+  );
+  const record = records[0];
+  return record.get("count").low;
+};
+
+const getIslandCount = async ({ simulationId, graphConnection }) => {
+  const { records } = await graphConnection.run(
+    `MATCH (a:Activity)
+      WHERE NOT EXISTS((a)-[:REPLIES_TO]->())
+      AND NOT EXISTS(()-[:REPLIES_TO]->(a))
+      AND a.simulationId=$simulationId
+     WITH count(DISTINCT a) as count
+     RETURN count
+    `,
+    { simulationId }
+  );
+  const record = records[0];
+  return record.get("count").low;
+};
+
 const getStats = async ({ simulationId, graphConnection }) => {
   const { records } = await graphConnection.run(
-    `MATCH (a:Activity)-[:DID]-(m:Member)
+    `MATCH (a:Activity)<-[:DID]-(m:Member)
       WHERE a.simulationId=$simulationId
      WITH MIN(a.timestamp) AS first,
      MAX(a.timestamp) AS last,
@@ -139,20 +206,25 @@ const getStats = async ({ simulationId, graphConnection }) => {
     { simulationId }
   );
   const record = records[0];
-  let connectionCount = await getConnectionCount({
+  const props = {
     simulationId,
     graphConnection,
-  });
+  };
   return {
     activities: {
       first: record.get("first"),
       last: record.get("last"),
       count: record.get("count").low,
     },
+    threads: {
+      threadCount: await getThreadCount(props),
+      replyCount: await getReplyCount(props),
+      islandCount: await getIslandCount(props),
+    },
     members: {
       count: record.get("memberCount").low,
       connections: {
-        count: connectionCount,
+        count: await getConnectionCount(props),
       },
     },
   };
@@ -172,8 +244,9 @@ export default async function handler(req, res) {
     const props = { simulationId, graphConnection, from, to };
 
     const result = {
-      entities: await getEntities(props),
       stats: await getStats(props),
+      threads: await getThreads(props),
+      entities: await getEntities(props),
       members: await getMembers(props),
       activities: await getActivities(props),
       connections: await getConnections(props),

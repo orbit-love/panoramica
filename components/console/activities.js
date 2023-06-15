@@ -2,61 +2,11 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 
-import c from "lib/common";
 import NameAndIcon from "components/compact/name_and_icon";
 import Entity from "components/compact/entity";
+import Activity from "components/compact/activity";
 
-function Activity({
-  activity,
-  community,
-  selection,
-  setSelection,
-  setConnection,
-}) {
-  const member = community.findMemberByActivity(activity);
-  return (
-    <div key={activity.id} className="flex flex-col">
-      <div className="flex items-center space-x-2">
-        <NameAndIcon
-          member={member}
-          selection={selection}
-          setConnection={setConnection}
-          setSelection={setSelection}
-        />
-        <div className="overflow-hidden flex-1 text-xs text-right text-indigo-700 text-ellipsis">
-          {activity.sourceType?.replace(/_/g, " ").replace(/activity/, "")}
-        </div>
-        <div className="text-xs text-right whitespace-nowrap">
-          {activity.url && (
-            <a
-              className="text-indigo-700 hover:underline"
-              href={activity.url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {c.formatDate(activity.timestamp)}
-            </a>
-          )}
-          {!activity.url && (
-            <div className="text-indigo-700">
-              {c.formatDate(activity.timestamp)}
-            </div>
-          )}
-        </div>
-      </div>
-      {activity.textHtml && (
-        <div className="flex space-x-2 text-xs text-indigo-300">
-          <div
-            className="tweet"
-            dangerouslySetInnerHTML={{ __html: activity.textHtml }}
-          ></div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-export default function Console({
+export default function Activities({
   community,
   selection,
   setSelection,
@@ -147,7 +97,9 @@ export default function Console({
     <div className="flex overflow-scroll flex-col space-y-2 w-full">
       <div className="flex justify-between items-center px-4 pt-4 space-x-1 whitespace-nowrap">
         <span className="text-lg font-bold">Activities</span>
-        <span className="px-2 text-indigo-500">{activities.length}</span>
+        <span className="px-1 text-indigo-500">
+          {community.activities.length}
+        </span>
         <span className="!mx-auto" />
         <div className="flex overflow-hidden items-center space-x-2 text-sm">
           {title}

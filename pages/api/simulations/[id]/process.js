@@ -58,6 +58,7 @@ export default async function handler(req, res) {
            SET a += {
             actor: activity.actor,
             sourceId: activity.sourceId,
+            sourceParentId: activity.sourceParentId,
             text: activity.text,
             timestamp: activity.timestamp,
             simulationId: activity.simulationId,

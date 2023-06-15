@@ -172,6 +172,11 @@ export default function Show({
                 <td>{community.stats.activities.count}</td>
               </tr>
               <tr>
+                <td className="">Conversations</td>
+                <td>{community.threads.length}</td>
+                <td>{community.stats.threads.threadCount}</td>
+              </tr>
+              <tr>
                 <td className="">Members</td>
                 <td>{community.members.length}</td>
                 <td>{community.stats.members.count}</td>
