@@ -140,6 +140,9 @@ export default function Console({
     );
   }
 
+  // only show the first 100 activities for performance reasons
+  activities = activities.slice(0, 100);
+
   return (
     <div className="flex overflow-scroll flex-col space-y-2 w-full">
       <div className="flex justify-between items-center px-4 pt-4 space-x-1 whitespace-nowrap">
@@ -151,23 +154,28 @@ export default function Console({
         </div>
       </div>
       <div className="mx-4 border-b border-indigo-900" />
-      {activities.slice(0, 100).map((activity, index) => (
-        <div
-          key={activity.id}
-          className={classnames("flex flex-col space-y-0 px-4 py-2", {
-            "bg-indigo-900": index % 2 === 1,
-            "bg-opacity-20": index % 2 === 1,
-          })}
-        >
-          <Activity
-            activity={activity}
-            community={community}
-            setConnection={setConnection}
-            selection={selection}
-            setSelection={setSelection}
-          />
-        </div>
-      ))}
+      {activities.length > 0 && (
+        <>
+          {activities.map((activity, index) => (
+            <div
+              key={activity.id}
+              className={classnames("flex flex-col space-y-0 px-4 py-2", {
+                "bg-indigo-900": index % 2 === 1,
+                "bg-opacity-20": index % 2 === 1,
+              })}
+            >
+              <Activity
+                activity={activity}
+                community={community}
+                setConnection={setConnection}
+                selection={selection}
+                setSelection={setSelection}
+              />
+            </div>
+          ))}
+          <div className="mx-4 border-b border-indigo-900" />
+        </>
+      )}
       {activities.length === 0 && (
         <div className="px-4 text-indigo-500">No activities.</div>
       )}
