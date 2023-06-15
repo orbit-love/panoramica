@@ -18,6 +18,9 @@ export default async function handler(req, res) {
       where: {
         simulationId: simulation.id,
       },
+      include: {
+        parent: true,
+      },
     });
 
     // stringify the timestamps for putting into memgraph
@@ -69,6 +72,27 @@ export default async function handler(req, res) {
             globalActorName: activity.globalActorName
           } RETURN a`,
       { activities }
+    );
+
+    let parentEdges = [];
+    for (let activity of activities) {
+      let parent = activity.parent;
+      if (parent) {
+        parentEdges.push({
+          activity,
+          parent,
+          simulationId,
+        });
+      }
+    }
+
+    await graphConnection.run(
+      `WITH $parentEdges AS batch
+            UNWIND batch AS edge
+            MATCH (a:Activity   { id: edge.activity.id }),
+                  (p:Activity { id: edge.parent.id })
+           MERGE (a)-[r:REPLIES_TO { simulationId: edge.simulationId }]-(p)`,
+      { parentEdges }
     );
 
     await graphConnection.run(

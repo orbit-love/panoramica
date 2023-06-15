@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "lib/db";
 
 export default async function handler(req, res) {
   // Get data submitted in request's body.
@@ -12,7 +12,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    const prisma = new PrismaClient();
     var simulation = await prisma.simulation.create({
       data: {
         name: body.name,

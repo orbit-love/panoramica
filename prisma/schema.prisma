@@ -20,33 +20,47 @@ model Simulation {
 }
 
 model Activity {
-  // required fields
+  // core fields
   id            Int      @id @default(autoincrement())
   simulation   Simulation    @relation(fields: [simulationId], references: [id])
   simulationId Int
-  actor          String
-  sourceId      String
   timestamp   DateTime
-  text         String
 
-  // optional fields
+  // activities and and parents
+  // an activity's parent is the activity it replies to
+  parentId Int?
+  parent   Activity?    @relation("Parent", fields: [parentId], references: [id])
+  activities    Activity[] @relation("Parent")
+  // the source platform id for the parent activity
+  sourceParentId String?
+
+  // managing actors
+  actor          String
   actorName          String?
-  textHtml     String?
-  url          String?
-  // member linking
-  mentions     Json?
-  // the activity type for an additional dimension
-  sourceType   String?
-  // entity linking
-  tags      Json?
-  entities      Json?
-  // global actor tracking
   globalActor          String?
   globalActorName          String?
-  // conversation linking
-  conversationId String?
-  // debugging
+
+  // the id on the source platform, i.e. tweet id
+  sourceId     String // put back to non-optional later
+  // the activity type for an additional dimension
+  sourceType   String?
+
+  // content fields
+  text         String
+  textHtml     String?
+  url          String?
+
+  // member linking
+  mentions     Json?
+
+  // general properties for filtering
+  tags      Json?
+  // entity linking
+  entities      Json?
+
+  // debugging - the raw contents
   payload      Json?
+
   // don't allow the same activity twice in the same project
-  @@unique([sourceId, simulationId])
+  // @@unique([sourceId, simulationId])
 }

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "lib/db";
 
 export default async function handler(req, res) {
   const { id } = req.query;
@@ -14,7 +14,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    const prisma = new PrismaClient();
     var simulation = await prisma.simulation.update({
       where: {
         id: parseInt(id),

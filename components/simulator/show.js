@@ -219,6 +219,9 @@ export default function Show({
         <button onClick={() => importSimulation()} className={c.buttonClasses}>
           Import
         </button>
+        <button onClick={() => processSimulation()} className={c.buttonClasses}>
+          Process
+        </button>
       </div>
     </div>
   );

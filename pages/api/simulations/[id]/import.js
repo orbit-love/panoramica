@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "lib/db";
 import axios from "axios";
 
 const getTypeFields = ({ activity, member, included }) => {
@@ -23,6 +23,7 @@ const getTypeFields = ({ activity, member, included }) => {
     // actor should be the username or equivalent
     case "tweet_activity":
       const tweet = activity.attributes.t_tweet;
+      const sourceId = tweet.id_str;
       // pull out the strings for the mentions and annotations
       const mentions = (
         tweet.entities.mentions || tweet.entities.user_mentions
@@ -34,7 +35,15 @@ const getTypeFields = ({ activity, member, included }) => {
         return s.match(/#\w+/g) || [];
       }
       const hashtags = extractHashtags(tweet.text);
+
+      // look to see if the tweet is a reply and grab the id
+      var sourceParentId = tweet.referenced_tweets?.find(
+        (reference) => reference.type === "replied_to"
+      )?.id;
+
       return {
+        sourceId,
+        sourceParentId,
         text: tweet.text,
         textHtml: tweet.text_html,
         actor: tweet.user.screen_name,
@@ -158,12 +167,12 @@ const getAPIData = async ({
 
 export default async function handler(req, res) {
   const { id } = req.query;
-  const prisma = new PrismaClient();
+  const simulationId = parseInt(id);
 
   try {
     const simulation = await prisma.simulation.findUnique({
       where: {
-        id: parseInt(id),
+        id: simulationId,
       },
     });
 
@@ -174,11 +183,40 @@ export default async function handler(req, res) {
     // delete existing activities for the simulation
     await prisma.activity.deleteMany({
       where: {
-        simulationId: simulation.id,
+        simulationId,
       },
     });
 
     await getAPIData({ url, apiKey, page: 1, allData, prisma, simulation });
+
+    // for some reason the orbit API returned duplicate tweets, so we delete any
+    // duplicates here before sending to graph-db
+    let deletedCount =
+      await prisma.$executeRaw`DELETE FROM public. "Activity" a USING public. "Activity" b WHERE a.id < b.id AND a."sourceId" = b."sourceId"`;
+    console.log("Deleted " + deletedCount + " duplicate records");
+
+    // now that all activities are inserted, connect the parents
+    const activities = await prisma.activity.findMany({
+      where: {
+        simulationId,
+      },
+    });
+    for (let activity of activities) {
+      if (activity.sourceParentId) {
+        const parent = await prisma.activity.findFirst({
+          where: { sourceId: activity.sourceParentId },
+        });
+        if (parent) {
+          await prisma.activity.update({
+            where: { id: activity.id },
+            data: { parent: { connect: { id: parent.id } } },
+          });
+          console.log(
+            `Connected activity ${activity.id} with parent ${parent.id}`
+          );
+        }
+      }
+    }
 
     res.status(200).json({ result: { count: allData.length } });
     console.log("Successfully imported activities");

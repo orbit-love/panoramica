@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "lib/db";
 import GraphConnection from "lib/graphConnection";
 
 export default async function handler(req, res) {
@@ -8,7 +8,6 @@ export default async function handler(req, res) {
   const simulationId = parseInt(id);
 
   try {
-    const prisma = new PrismaClient();
     // delete existing activities for the simulation
     await prisma.activity.deleteMany({
       where: {
