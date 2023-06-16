@@ -6,9 +6,6 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
-  pages: {
-    // signIn: "/index",
-  },
   providers: [
     EmailProvider({
       server: {

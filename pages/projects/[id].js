@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { prisma } from "lib/db";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "pages/api/auth/[...nextauth]";
 
