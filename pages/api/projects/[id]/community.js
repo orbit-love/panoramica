@@ -1,3 +1,4 @@
+import { prisma } from "lib/db";
 import GraphConnection from "lib/graphConnection";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "pages/api/auth/[...nextauth]";
