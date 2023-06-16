@@ -110,7 +110,7 @@ export default function ActivityTabs(props) {
   var tabProps = {
     selectedClassName: "!text-indigo-100",
     className:
-      "cursor-pointer text-indigo-500 px-4 font-semibold flex space-x-1 items-baseline",
+      "cursor-pointer text-indigo-500 px-4 font-semibold flex space-x-2 items-baseline",
   };
 
   return (

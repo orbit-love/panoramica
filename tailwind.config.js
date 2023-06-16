@@ -1,3 +1,5 @@
+const colors = require("tailwindcss/colors");
+
 module.exports = {
   darkMode: "class",
   content: [
@@ -8,11 +10,6 @@ module.exports = {
     "./lib/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      animation: {
-        "spin-slow": "spin 4s linear infinite",
-      },
-    },
     // Note: screen sizes ('sm', 'md', etc) need to be wrapped
     // in quotes. So if auto-format saves without quotes, please
     // save this file without auto-formatting.
@@ -21,6 +18,14 @@ module.exports = {
       sm: "640px",
       md: "905px",
       lg: "1024px",
+    },
+    colors: {
+      ...colors,
+      indigo: {
+        ...colors.indigo,
+        800: "#1A2441",
+        900: "#1A2441",
+      },
     },
   },
   plugins: [require("@tailwindcss/typography")],

@@ -18,7 +18,7 @@ export default function SortOptions({
     setCommunity(community);
     setSort(newSort);
   };
-  const activeClass = "border-b border-indigo-600";
+  const activeClass = "border-b border-indigo-800";
   return (
     <>
       <div className="flex-start flex items-center space-x-1">
