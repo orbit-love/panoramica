@@ -1,6 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
+import { getCsrfToken } from "next-auth/react";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "pages/api/auth/[...nextauth]";
+import c from "lib/common";
 
 import Head from "components/head";
 import Header from "components/header";
@@ -8,7 +12,7 @@ import Button from "components/button";
 import Panel from "components/panel";
 import New from "components/project/new";
 
-export default function Index() {
+export default function Index({ csrfToken }) {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState([]);
@@ -24,7 +28,9 @@ export default function Index() {
           setLoading(false);
         });
     };
-    loadProjects();
+    if (session) {
+      loadProjects();
+    }
   }, []);
 
   return (
@@ -41,7 +47,7 @@ export default function Index() {
       >
         <div className="flex flex-col items-center space-y-2 w-full font-thin">
           <h1 className="text-3xl">welcome to telescope</h1>
-          {session ? (
+          {session && (
             <>
               <div className="flex space-x-4 text-sm">
                 <span>Signed in as {session.user.email}</span>
@@ -77,18 +83,45 @@ export default function Index() {
                 </div>
               </Panel>
             </>
-          ) : (
-            <div className="py-6">
-              <Button
-                className="w-48 text-xl bg-indigo-700"
-                onClick={() => signIn()}
+          )}
+          {!session && (
+            <div className="py-2">
+              <form
+                className="flex justify-center space-x-2 w-72"
+                method="post"
+                action="/api/auth/signin/email"
               >
-                Sign in
-              </Button>
+                <input
+                  name="csrfToken"
+                  type="hidden"
+                  defaultValue={csrfToken}
+                />
+                <label>
+                  <input
+                    placeholder="foo@foo.com"
+                    className={c.inputClasses + " !w-56"}
+                    type="email"
+                    id="email"
+                    name="email"
+                  />
+                </label>
+                <Button type="submit">Sign in with Email</Button>
+              </form>
+              <div className="my-4 text-sm text-center">
+                Enter your email to receive a sign in link.
+              </div>
             </div>
           )}
         </div>
       </div>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  const csrfToken = await getCsrfToken(context);
+  return {
+    props: { session, csrfToken },
+  };
 }
