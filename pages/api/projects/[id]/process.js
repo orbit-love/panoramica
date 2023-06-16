@@ -1,22 +1,35 @@
 import { prisma } from "lib/db";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "pages/api/auth/[...nextauth]";
+
 import GraphConnection from "lib/graphConnection";
 import c from "lib/common";
 
 export default async function handler(req, res) {
+  const session = await getServerSession(req, res, authOptions);
+  const user = session?.user;
   const graphConnection = new GraphConnection();
 
   const { id } = req.query;
-  const simulationId = parseInt(id);
   try {
-    const simulation = await prisma.simulation.findUnique({
+    const project = await prisma.project.findFirst({
       where: {
-        id: simulationId,
+        id,
+        user: {
+          email: user.email,
+        },
       },
     });
 
+    if (!project) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+
+    const projectId = project.id;
+
     const activities = await prisma.activity.findMany({
       where: {
-        simulationId: simulation.id,
+        projectId,
       },
       include: {
         parent: true,
@@ -30,23 +43,23 @@ export default async function handler(req, res) {
 
     // delete previous nodes and relationships
     await graphConnection.run(
-      `MATCH (n) WHERE n.simulationId=$simulationId
+      `MATCH (n) WHERE n.projectId=$projectId
         DETACH DELETE n`,
-      { simulationId }
+      { projectId }
     );
 
-    // unique within simulation
+    // unique within project
     await graphConnection.run(
-      `CREATE CONSTRAINT ON (a:Activity) ASSERT a.id, a.simulationId IS UNIQUE`
+      `CREATE CONSTRAINT ON (a:Activity) ASSERT a.id, a.projectId IS UNIQUE`
     );
     await graphConnection.run(
-      `CREATE CONSTRAINT ON (a:Activity) ASSERT a.sourceId, a.simulationId IS UNIQUE`
+      `CREATE CONSTRAINT ON (a:Activity) ASSERT a.sourceId, a.projectId IS UNIQUE`
     );
     await graphConnection.run(
-      `CREATE CONSTRAINT ON (m:Member) ASSERT m.globalActor, m.simulationId IS UNIQUE`
+      `CREATE CONSTRAINT ON (m:Member) ASSERT m.globalActor, m.projectId IS UNIQUE`
     );
     await graphConnection.run(
-      `CREATE CONSTRAINT ON (e:Entity) ASSERT e.id, e.simulationId IS UNIQUE`
+      `CREATE CONSTRAINT ON (e:Entity) ASSERT e.id, e.projectId IS UNIQUE`
     );
 
     console.log("Memgraph: Removed old data and applied constraints");
@@ -61,7 +74,7 @@ export default async function handler(req, res) {
             sourceParentId: activity.sourceParentId,
             text: activity.text,
             timestamp: activity.timestamp,
-            simulationId: activity.simulationId,
+            projectId: activity.projectId,
             actorName: activity.actorName,
             textHtml: activity.textHtml,
             url: activity.url,
@@ -82,7 +95,7 @@ export default async function handler(req, res) {
         parentEdges.push({
           activity,
           parent,
-          simulationId,
+          projectId,
         });
       }
     }
@@ -92,7 +105,7 @@ export default async function handler(req, res) {
             UNWIND batch AS edge
             MATCH (a:Activity   { id: edge.activity.id }),
                   (p:Activity { id: edge.parent.id })
-           MERGE (a)-[r:REPLIES_TO { simulationId: edge.simulationId }]-(p)`,
+           MERGE (a)-[r:REPLIES_TO { projectId: edge.projectId }]-(p)`,
       { parentEdges }
     );
 
@@ -104,7 +117,7 @@ export default async function handler(req, res) {
            globalActorName: activity.globalActorName,
            actor: activity.actor,
            actorName: activity.actorName,
-           simulationId: activity.simulationId
+           projectId: activity.projectId
           } RETURN m`,
       { activities }
     );
@@ -114,7 +127,7 @@ export default async function handler(req, res) {
             UNWIND batch AS activity
             MATCH (m:Member   { globalActor: activity.globalActor }),
                  (a:Activity { id: activity.id })
-           MERGE (m)-[r:DID { simulationId: activity.simulationId }]-(a)`,
+           MERGE (m)-[r:DID { projectId: activity.projectId }]-(a)`,
       { activities }
     );
 
@@ -123,11 +136,11 @@ export default async function handler(req, res) {
 
     for (let activity of activities) {
       for (let entity of activity.entities || []) {
-        entities.push({ id: entity, simulationId });
+        entities.push({ id: entity, projectId });
         connections.push({
           entityId: entity,
           activityId: activity.id,
-          simulationId,
+          projectId,
         });
       }
     }
@@ -137,7 +150,7 @@ export default async function handler(req, res) {
           UNWIND batch AS entity
           MERGE (e:Entity { id: entity.id })
           SET e += {
-          simulationId: entity.simulationId
+          projectId: entity.projectId
           } RETURN e`,
       { entities }
     );
@@ -146,7 +159,7 @@ export default async function handler(req, res) {
         UNWIND batch AS connection
         MATCH (e:Entity { id: connection.entityId }),
               (a:Activity { id: connection.activityId })
-          MERGE (a)-[r:RELATES { simulationId: connection.simulationId }]-(e)
+          MERGE (a)-[r:RELATES { projectId: connection.projectId }]-(e)
           RETURN r`,
       { connections }
     );
@@ -170,7 +183,7 @@ export default async function handler(req, res) {
           mentions.push({
             globalActor,
             activityId: activity.id,
-            simulationId,
+            projectId,
           });
         }
       }
@@ -180,7 +193,7 @@ export default async function handler(req, res) {
           UNWIND batch AS mention
             MATCH (m:Member   { globalActor: mention.globalActor }),
               (a:Activity { id: mention.activityId })
-          MERGE (a)-[r:MENTIONS { simulationId: mention.simulationId }]-(m)`,
+          MERGE (a)-[r:MENTIONS { projectId: mention.projectId }]-(m)`,
       { mentions }
     );
     console.log(`Connected ${mentions.length} mentions`);

@@ -1,5 +1,7 @@
 import { prisma } from "lib/db";
 import axios from "axios";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "pages/api/auth/[...nextauth]";
 
 const getTypeFields = ({ activity, member, included }) => {
   // option 1 - default actor / name from identities
@@ -69,7 +71,7 @@ const getAnyIdentity = ({ member, included }) => {
   return included.find((item) => item.id == pointer.id);
 };
 
-const getFields = ({ simulation, activity, included }) => {
+const getFields = ({ project, activity, included }) => {
   var sourceId = activity.id;
   var sourceType = activity.type;
   var timestamp = activity.attributes.occurred_at;
@@ -93,7 +95,7 @@ const getFields = ({ simulation, activity, included }) => {
     ...typeFields,
     globalActor: slug,
     globalActorName: name,
-    simulationId: simulation.id,
+    projectId: project.id,
     tags: properties,
     url: activity_link,
     payload: {},
@@ -106,7 +108,7 @@ const getAPIData = async ({
   url,
   apiKey,
   prisma,
-  simulation,
+  project,
   page = 1,
   allData = [],
 }) => {
@@ -129,7 +131,7 @@ const getAPIData = async ({
       var records = [];
 
       for (let activity of activities) {
-        var fields = getFields({ simulation, activity, included });
+        var fields = getFields({ project, activity, included });
         records.push(fields);
       }
 
@@ -151,7 +153,7 @@ const getAPIData = async ({
             url: nextUrl,
             apiKey,
             prisma,
-            simulation,
+            project,
             page: page + 1,
             allData,
           })
@@ -166,28 +168,36 @@ const getAPIData = async ({
 };
 
 export default async function handler(req, res) {
+  const session = await getServerSession(req, res, authOptions);
+  const user = session?.user;
   const { id } = req.query;
-  const simulationId = parseInt(id);
 
   try {
-    const simulation = await prisma.simulation.findUnique({
+    const project = await prisma.project.findFirst({
       where: {
-        id: simulationId,
+        id,
+        user: {
+          email: user.email,
+        },
       },
     });
 
-    const apiKey = process.env.ORBIT_API_KEY;
-    const url = simulation.url;
+    if (!project) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+
+    const apiKey = project.apiKey;
+    const url = project.url;
     const allData = [];
 
-    // delete existing activities for the simulation
+    // delete existing activities for the project
     await prisma.activity.deleteMany({
       where: {
-        simulationId,
+        projectId: project.id,
       },
     });
 
-    await getAPIData({ url, apiKey, page: 1, allData, prisma, simulation });
+    await getAPIData({ url, apiKey, page: 1, allData, prisma, project });
 
     // for some reason the orbit API returned duplicate tweets, so we delete any
     // duplicates here before sending to graph-db
@@ -198,7 +208,7 @@ export default async function handler(req, res) {
     // now that all activities are inserted, connect the parents
     const activities = await prisma.activity.findMany({
       where: {
-        simulationId,
+        projectId: project.id,
       },
     });
     for (let activity of activities) {

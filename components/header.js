@@ -11,13 +11,13 @@ export default function Header({ fix }) {
   };
 
   const fixClass = fix
-    ? `fixed top-0 left-0 bg-[${c.purpleBgColor}] bg-[#1D1640] z-40`
+    ? `fixed top-0 left-0 bg-[${c.purpleBgColor}] bg-[#1D1640] z-50`
     : "absolute";
 
   return (
     <>
       <nav
-        className={`${fixClass} flex z-30 items-center px-2 py-3 w-full whitespace-nowrap pointer-events-none md:px-5`}
+        className={`${fixClass} flex items-center px-2 py-3 w-full whitespace-nowrap pointer-events-none md:px-5`}
       >
         <div>
           <button

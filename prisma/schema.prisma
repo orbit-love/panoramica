@@ -12,23 +12,72 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model Simulation {
-  id            Int      @id @default(autoincrement())
+model Account {
+  id                String    @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id                 String    @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                 String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  projects   Project[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Project {
+   id                 String    @id @default(cuid())
+  userId        String
+  user   User   @relation(fields: [userId], references: [id])
   name          String       @unique
   url           String
+  apiKey           String
   activities    Activity[]
 }
 
 model Activity {
   // core fields
-  id            Int      @id @default(autoincrement())
-  simulation   Simulation    @relation(fields: [simulationId], references: [id])
-  simulationId Int
+   id                 String    @id @default(cuid())
+  project   Project    @relation(fields: [projectId], references: [id])
+  projectId String
   timestamp   DateTime
 
   // activities and and parents
   // an activity's parent is the activity it replies to
-  parentId Int?
+  parentId String?
   parent   Activity?    @relation("Parent", fields: [parentId], references: [id])
   activities    Activity[] @relation("Parent")
   // the source platform id for the parent activity
@@ -62,5 +111,7 @@ model Activity {
   payload      Json?
 
   // don't allow the same activity twice in the same project
-  // @@unique([sourceId, simulationId])
+  // commented out because the incoming data is not clean and
+  // not dealing with that yet
+  // @@unique([sourceId, projectId])
 }

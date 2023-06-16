@@ -51,7 +51,7 @@ export default function Info({ setShowInfo }) {
               </tr>
               <tr>
                 <td>o</td>
-                <td>Simulation panel</td>
+                <td>Project panel</td>
               </tr>
             </tbody>
           </table>

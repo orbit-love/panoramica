@@ -11,6 +11,8 @@ export default function Visualization({
   height,
   fullscreen,
   setFullscreen,
+  project,
+  setProject,
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
@@ -34,8 +36,6 @@ export default function Visualization({
   const [low, setLow] = useState(0);
   const [high, setHigh] = useState(0);
   const [sort, setSort] = useState("gravity");
-  const [simulation, setSimulation] = useState(null);
-  const [simulations, setSimulations] = useState([]);
 
   const [animate, setAnimate] = useState(!isReduced);
   const [cycle, setCycle] = useState(false);
@@ -49,10 +49,10 @@ export default function Visualization({
   const [data, setData] = useState();
   const [graph, setGraph] = useState();
 
-  // the activities for the running simulation and the focused range
+  // the activities for the running project and the focused range
   const prevShowNetwork = c.usePrevious(showNetwork);
   const prevSort = c.usePrevious(sort);
-  const prevSimulation = c.usePrevious(simulation);
+  const prevProject = c.usePrevious(project);
 
   // store the selection in a ref so we can access it in useEffect
   // that effect can't have selection as a dependency so we do it this way
@@ -93,7 +93,7 @@ export default function Visualization({
       !levels ||
       width !== prevWidth ||
       height !== prevHeight ||
-      simulation?.id !== prevSimulation?.id
+      project?.id !== prevProject?.id
     ) {
       // if major parameters have changed
       // clear the canvas and re-prepare the data
@@ -120,7 +120,7 @@ export default function Visualization({
       showNetwork,
       setShowNetwork,
       revolution,
-      simulation,
+      project,
     };
 
     // these are drawn in order of back to front
@@ -154,12 +154,12 @@ export default function Visualization({
     revolution,
     sort,
     prevSort,
-    simulation,
-    prevSimulation,
+    project,
+    prevProject,
   ]);
 
   return (
-    <div className="relative z-50" style={{ width, height }}>
+    <div className="relative z-40" style={{ width, height }}>
       <Shortcuts
         community={community}
         setCommunity={setCommunity}
@@ -236,10 +236,8 @@ export default function Visualization({
         data={data}
         setData={setData}
         levels={levels}
-        simulation={simulation}
-        setSimulation={setSimulation}
-        simulations={simulations}
-        setSimulations={setSimulations}
+        project={project}
+        setProject={setProject}
         showPanel={showPanel}
         setShowPanel={setShowPanel}
         low={low}

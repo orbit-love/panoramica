@@ -1,18 +1,43 @@
 import React, { useRef, useState } from "react";
+import classnames from "classnames";
+import { useRouter } from "next/router";
 
 import c from "lib/common";
 
-export default function Edit({ simulation, setSimulation, setEditMode }) {
-  const [name, setName] = useState(simulation.name);
-  const [url, setUrl] = useState(simulation.url);
+export default function Edit({ project, setProject, setEditMode }) {
+  const router = useRouter();
+
+  const [name, setName] = useState(project.name);
+  const [url, setUrl] = useState(project.url);
+  const [apiKey, setApiKey] = useState(null);
+
+  const deleteProject = () => {
+    const url = `/api/projects/${project.id}/delete`;
+    fetch(url, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then(({ result, message }) => {
+        if (result === "deleted") {
+          router.push("/projects");
+        } else {
+          alert(message);
+        }
+      });
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     const data = {
       url,
       name,
+      apiKey,
     };
-    fetch(`/api/simulations/${simulation.id}/update`, {
+    fetch(`/api/projects/${project.id}/update`, {
       body: JSON.stringify(data),
       method: "PUT",
       headers: {
@@ -22,8 +47,8 @@ export default function Edit({ simulation, setSimulation, setEditMode }) {
     })
       .then((res) => res.json())
       .then(({ result, message }) => {
-        if (result?.simulation) {
-          setSimulation(result.simulation);
+        if (result?.project) {
+          setProject(result?.project);
           setEditMode(false);
         } else {
           console.log("FAILED", message);
@@ -35,7 +60,7 @@ export default function Edit({ simulation, setSimulation, setEditMode }) {
     <div className="flex flex-col space-y-2">
       <div className="text-lg font-semibold">Edit Project</div>
       <form
-        action="/api/simulations/create"
+        action="/api/projects/create"
         method="post"
         className="flex flex-col space-y-4"
         onSubmit={onSubmit}
@@ -62,6 +87,16 @@ export default function Edit({ simulation, setSimulation, setEditMode }) {
             onChange={({ target }) => setUrl(target.value)}
           ></input>
         </div>
+        <div className="flex flex-col space-y-1">
+          <div className="">Orbit API Key (optional, provide to change)</div>
+          <input
+            type="text"
+            className={c.inputClasses}
+            placeholder="*********************************"
+            value={apiKey}
+            onChange={({ target }) => setApiKey(target.value)}
+          ></input>
+        </div>
         <div className="flex pt-2 space-x-2">
           <button
             type="button"
@@ -72,6 +107,13 @@ export default function Edit({ simulation, setSimulation, setEditMode }) {
           </button>
           <button type="submit" className={c.buttonClasses}>
             Update
+          </button>
+          <button
+            type="button"
+            onClick={() => deleteProject()}
+            className={classnames(c.buttonClasses, "bg-red-500")}
+          >
+            Delete
           </button>
         </div>
       </form>

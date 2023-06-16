@@ -7,6 +7,7 @@ import Callout from "components/mdx/callout";
 import Blockquote from "components/mdx/blockquote";
 import Code from "components/mdx/code";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { SessionProvider } from "next-auth/react";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -126,11 +127,13 @@ const components = {
   Graph,
 };
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
-    <MDXProvider components={components}>
-      <Component {...pageProps} />
-    </MDXProvider>
+    <SessionProvider session={session}>
+      <MDXProvider components={components}>
+        <Component {...pageProps} />
+      </MDXProvider>
+    </SessionProvider>
   );
 }
 

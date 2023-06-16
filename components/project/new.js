@@ -1,17 +1,21 @@
 import React, { useRef } from "react";
+import { useRouter } from "next/router";
 
 import c from "lib/common";
 
-export default function New({ setSimulation, loadSimulations }) {
+export default function New({}) {
+  const router = useRouter();
   const nameRef = useRef(null);
   const urlRef = useRef(null);
+  const apiKeyRef = useRef(null);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const url = "/api/simulations/create";
+    const url = "/api/projects/create";
     const data = {
       url: urlRef.current.value,
       name: nameRef.current.value,
+      apiKey: apiKeyRef.current.value,
     };
     fetch(url, {
       body: JSON.stringify(data),
@@ -23,8 +27,8 @@ export default function New({ setSimulation, loadSimulations }) {
     })
       .then((res) => res.json())
       .then(({ result, message }) => {
-        if (result?.simulation) {
-          setSimulation(result.simulation);
+        if (result?.project) {
+          router.push(`/projects/${result.project.id}`);
         } else {
           alert(message);
         }
@@ -32,10 +36,10 @@ export default function New({ setSimulation, loadSimulations }) {
   };
 
   return (
-    <div className="flex flex-col space-y-2">
+    <div className="flex flex-col space-y-2 w-full">
       <div className="text-lg font-semibold">Create a New Project</div>
       <form
-        action="/api/simulations/create"
+        action="/api/projects/create"
         method="post"
         className="flex flex-col space-y-4"
         onSubmit={onSubmit}
@@ -51,13 +55,23 @@ export default function New({ setSimulation, loadSimulations }) {
           ></input>
         </div>
         <div className="flex flex-col space-y-1">
-          <div className="">Any Activities URL / Saved View</div>
+          <div className="">Orbit Activities URL</div>
           <input
             ref={urlRef}
             type="text"
             required
             className={c.inputClasses}
             placeholder="https://app.orbit.love/<w>/activities?..."
+          ></input>
+        </div>
+        <div className="flex flex-col space-y-1">
+          <div className="">Orbit API Key</div>
+          <input
+            ref={apiKeyRef}
+            type="text"
+            required
+            className={c.inputClasses}
+            placeholder=""
           ></input>
         </div>
         <div className="pt-2">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import c from "lib/common";
 import Controls from "components/controls";
@@ -6,11 +6,15 @@ import Member from "components/cards/member";
 import OrbitLevel from "components/cards/orbit_level";
 import Mission from "components/cards/mission";
 import Info from "components/info";
-import List from "components/simulation/list";
 import Entities from "components/console/entities";
-import ActivityTabs from "components/simulation/activityTabs";
+import ActivityTabs from "components/project/activityTabs";
+
+import Show from "components/project/show";
+import Edit from "components/project/edit";
 
 export default function Widgets(props) {
+  const [editMode, setEditMode] = useState(false);
+  const childProps = { editMode, setEditMode };
   const { showPanel, showInfo, community, selection } = props;
   const width = "w-[32vw]";
   const height = "h-[40vh]";
@@ -38,9 +42,14 @@ export default function Widgets(props) {
               </div>
             )}
             {!showInfo && (
-              <div className={`${classes} ${width}`}>
-                <List {...props} />
-              </div>
+              <>
+                <div className={`${classes} ${width}`}>
+                  <div className="flex relative flex-col space-y-4 w-full h-full">
+                    {!editMode && <Show {...props} {...childProps} />}
+                    {editMode && <Edit {...props} {...childProps} />}
+                  </div>
+                </div>
+              </>
             )}
             {community && selection && (
               <div className={`${classes} ${width} flex relative flex-col`}>

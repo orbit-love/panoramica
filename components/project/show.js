@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/router";
 
 import c from "lib/common";
 import Community from "lib/community";
@@ -7,9 +8,7 @@ import ActivitiesSlider from "components/activitiesSlider";
 export default function Show({
   sort,
   levels,
-  simulation,
-  setSimulation,
-  setSelection,
+  project,
   setEditMode,
   community,
   setCommunity,
@@ -18,6 +17,7 @@ export default function Show({
   high,
   setHigh,
 }) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [cycle, setCycle] = useState(false);
 
@@ -60,9 +60,9 @@ export default function Show({
     // show loading always since it takes a while in prod right now
     setLoading(true);
 
-    // only needed when high was not chosen, otherwise it will be thesame
+    // only needed when high was not chosen, otherwise it will be the same
     // send low and high
-    fetch(`/api/simulations/${simulation.id}/community?` + params)
+    fetch(`/api/projects/${project.id}/community?` + params)
       .then((res) => res.json())
       .then(({ result, message }) => {
         if (message) {
@@ -79,16 +79,16 @@ export default function Show({
           setLoading(false);
         }
       });
-  }, [simulation.id, community, low, high, sort, setCommunity, levels]);
+  }, [project.id, community, low, high, sort, setCommunity, levels]);
 
   // fetch initially and if low/high change
   useEffect(() => {
     fetchCommunity();
   }, [low, high]);
 
-  const importSimulation = async () => {
+  const importProject = async () => {
     setLoading(true);
-    fetch(`/api/simulations/${simulation.id}/import`, {
+    fetch(`/api/projects/${project.id}/import`, {
       method: "PUT",
       headers: {
         Accept: "application/json",
@@ -101,14 +101,14 @@ export default function Show({
           console.log(message);
           setLoading(false);
         } else {
-          processSimulation();
+          processProject();
         }
       });
   };
 
-  const processSimulation = async () => {
+  const processProject = async () => {
     setLoading(true);
-    fetch(`/api/simulations/${simulation.id}/process`, {
+    fetch(`/api/projects/${project.id}/process`, {
       method: "PUT",
       headers: {
         Accept: "application/json",
@@ -135,7 +135,7 @@ export default function Show({
         <span className="text-lg font-bold">Project</span>
         {loading && <div className="text-indigo-700">Loading...</div>}
         <div className="!mx-auto" />
-        <span className="text-md">{simulation.name}</span>
+        <span className="text-md">{project.name}</span>
       </div>
       <div className="border-b border-indigo-900" />
       {imported && (
@@ -208,11 +208,7 @@ export default function Show({
       <div className="flex py-2 space-x-2 text-xs">
         <button
           onClick={() => {
-            setCommunity(null);
-            setSimulation(null);
-            setSelection(null);
-            setLow(0);
-            setHigh(0);
+            router.push("/");
           }}
           className={c.buttonClasses}
         >
@@ -221,10 +217,10 @@ export default function Show({
         <button onClick={() => setEditMode(true)} className={c.buttonClasses}>
           Edit
         </button>
-        <button onClick={() => importSimulation()} className={c.buttonClasses}>
+        <button onClick={() => importProject()} className={c.buttonClasses}>
           Import
         </button>
-        <button onClick={() => processSimulation()} className={c.buttonClasses}>
+        <button onClick={() => processProject()} className={c.buttonClasses}>
           Process
         </button>
       </div>
