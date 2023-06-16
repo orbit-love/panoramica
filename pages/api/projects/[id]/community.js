@@ -102,11 +102,12 @@ const getThreads = async ({ projectId, graphConnection, from, to }) => {
 const getActivities = async ({ projectId, graphConnection, from, to }) => {
   const { records } = await graphConnection.run(
     `MATCH (a:Activity)
+       WHERE a.projectId=$projectId
+        AND a.timestamp >= $from
+        AND a.timestamp <= $to
+      WITH a
        OPTIONAL MATCH (a)<-[:REPLIES_TO]-(b:Activity)
        OPTIONAL MATCH (a)-[:REPLIES_TO]->(c:Activity)
-       WHERE a.projectId=$projectId
-        AND a.timestamp > $from
-        AND a.timestamp <= $to
        RETURN a, c.id AS parent, COLLECT(b.id) AS children ORDER BY a.timestamp DESC`,
     { projectId, from, to }
   );
