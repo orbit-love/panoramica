@@ -4,6 +4,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import c from "lib/common";
 import NameAndIcon from "components/compact/name_and_icon";
 
+const TypeIcon = function ({ activity }) {
+  switch (activity.sourceType) {
+    case "twitter":
+      return <FontAwesomeIcon icon="fa-brands fa-twitter" />;
+    case "discord":
+      return <FontAwesomeIcon icon="fa-brands fa-discord" />;
+    default:
+      let cleanedSourceType = activity.sourceType
+        ?.replace(/_/g, " ")
+        .replace(/activity/, "");
+      return <span>{cleanedSourceType}</span>;
+  }
+};
+
 export default function Activity({
   activity,
   community,
@@ -22,11 +36,7 @@ export default function Activity({
           setSelection={setSelection}
         />
         <div className="overflow-hidden flex-1 text-xs text-right text-indigo-700 text-ellipsis">
-          {activity.sourceType === "tweet_activity" ? (
-            <FontAwesomeIcon icon="fa-brands fa-twitter" />
-          ) : (
-            activity.sourceType?.replace(/_/g, " ").replace(/activity/, "")
-          )}
+          <TypeIcon activity={activity} />
         </div>
         <div className="text-xs text-right whitespace-nowrap">
           {activity.url && (
@@ -36,7 +46,7 @@ export default function Activity({
               target="_blank"
               rel="noreferrer"
             >
-              {c.formatDate(activity.timestamp)}
+              {c.formatDateShort(activity.timestamp)}
             </a>
           )}
           {!activity.url && (

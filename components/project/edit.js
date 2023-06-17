@@ -77,7 +77,7 @@ export default function Edit({ project, setProject, setEditMode }) {
           ></input>
         </div>
         <div className="flex flex-col space-y-1">
-          <div className="">Activities API URL</div>
+          <div className="">Orbit Activities Page URL</div>
           <input
             type="text"
             required

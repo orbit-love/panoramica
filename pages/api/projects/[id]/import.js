@@ -2,61 +2,92 @@ import { prisma } from "lib/db";
 import axios from "axios";
 import { check, redirect, authorizeProject } from "lib/auth";
 
-const getTypeFields = ({ activity, member, included }) => {
-  // option 1 - default actor / name from identities
-  // const identity = getAnyIdentity({ member, included });
-  // const actor =
-  //   identity.attributes.username ||
-  //   identity.attributes.email ||
-  //   identity.attributes.uid;
-  // const actorName = identity.attributes.name;
-  // const actorFields = { actor, actorName };
+const getTweetFields = ({ activity }) => {
+  const tweet = activity.attributes.t_tweet;
+  const sourceId = tweet.id_str;
+  const sourceType = "twitter";
+  // pull out the strings for the mentions and annotations
+  const mentions = (
+    tweet.entities.mentions || tweet.entities.user_mentions
+  ).map((mention) => mention.username || mention.screen_name);
+  const entities = (tweet.entities.annotations || [])?.map(
+    (annotation) => annotation.normalized_text
+  );
+  function extractHashtags(s) {
+    return s.match(/#\w+/g) || [];
+  }
+  const hashtags = extractHashtags(tweet.text);
 
-  // option 2 - default actor / name from member
-  const actorFields = {
-    actor: member.attributes.slug,
-    actorName: member.attributes.name || member.attributes.slug,
+  // look to see if the tweet is a reply and grab the id
+  var sourceParentId = tweet.referenced_tweets?.find(
+    (reference) => reference.type === "replied_to"
+  )?.id;
+
+  return {
+    sourceId,
+    sourceParentId,
+    sourceType,
+    text: tweet.text,
+    textHtml: tweet.text_html,
+    actor: tweet.user.screen_name,
+    actorName: tweet.user.name,
+    mentions,
+    entities: [...entities, ...hashtags],
   };
+};
 
+const getDiscordFields = ({ activity, member, included }) => {
+  let { key, referenced_activities } = activity.attributes;
+  let sourceId = key;
+  let sourceType = "discord";
+  let sourceParentId = referenced_activities?.find(
+    (refActivity) => !!refActivity.key
+  )?.key;
+  console.log(sourceParentId);
+
+  let mentions = [];
+  let entities = [];
+  let actor;
+  let actorName;
+  let text = `${actorName} said something...`;
+
+  let discordIdentity = getIdentity({
+    type: "discord_identity",
+    member,
+    included,
+  });
+  if (discordIdentity) {
+    let { username, name } = discordIdentity.attributes;
+    actor = username;
+    actorName = name || username;
+  }
+
+  return {
+    sourceId,
+    sourceParentId,
+    sourceType,
+    text,
+    actor,
+    actorName,
+    mentions,
+    entities,
+  };
+};
+
+const getTypeFields = ({ activity, member, included }) => {
   // the goal though is to pull the actor id from the platform
+  const props = { activity, member, included };
   switch (activity.type) {
     // set actor and actor_name to the local version where possible
     // actor should be the username or equivalent
     case "tweet_activity":
-      const tweet = activity.attributes.t_tweet;
-      const sourceId = tweet.id_str;
-      // pull out the strings for the mentions and annotations
-      const mentions = (
-        tweet.entities.mentions || tweet.entities.user_mentions
-      ).map((mention) => mention.username || mention.screen_name);
-      const entities = (tweet.entities.annotations || [])?.map(
-        (annotation) => annotation.normalized_text
-      );
-      function extractHashtags(s) {
-        return s.match(/#\w+/g) || [];
-      }
-      const hashtags = extractHashtags(tweet.text);
-
-      // look to see if the tweet is a reply and grab the id
-      var sourceParentId = tweet.referenced_tweets?.find(
-        (reference) => reference.type === "replied_to"
-      )?.id;
-
-      return {
-        sourceId,
-        sourceParentId,
-        text: tweet.text,
-        textHtml: tweet.text_html,
-        actor: tweet.user.screen_name,
-        actorName: tweet.user.name,
-        mentions,
-        entities: [...entities, ...hashtags],
-      };
+      return getTweetFields(props);
+    case "discord_message_sent_activity":
+    case "discord_thread_replied_activity":
+    case "discord_message_replied_activity":
+      return getDiscordFields(props);
     default:
-      return {
-        text: "",
-        ...actorFields,
-      };
+      return {};
   }
 };
 
@@ -65,9 +96,16 @@ const getMember = ({ activity, included }) => {
   return included.find((item) => item.type === "member" && item.id == memberId);
 };
 
-const getAnyIdentity = ({ member, included }) => {
-  const pointer = member.relationships.identities.data[0];
-  return included.find((item) => item.id == pointer.id);
+const getIdentity = ({ type, member, included }) => {
+  const identities = member.relationships.identities.data;
+  const identity = identities.find((identity) => identity.type === type);
+  if (identity) {
+    return included.find(
+      (item) => item.type === type && item.id === identity.id
+    );
+  } else {
+    return null;
+  }
 };
 
 const getFields = ({ project, activity, included }) => {
@@ -83,14 +121,20 @@ const getFields = ({ project, activity, included }) => {
   const { activity_link, properties } = activity.attributes;
   var typeFields = getTypeFields({ activity, member, included });
 
+  // if no actor was found, use the global member information
   if (!typeFields.actor) {
-    console.log(member);
+    typeFields.actor = member.attributes.slug;
+    typeFields.actorName = member.attributes.name || member.attributes.slug;
   }
+
+  // set a default for text that should be overridden
+  let text = "";
 
   const fields = {
     timestamp,
     sourceId,
     sourceType,
+    text,
     ...typeFields,
     globalActor: slug,
     globalActorName: name,
@@ -113,6 +157,7 @@ const getAPIData = async ({
 }) => {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log("JOSH", url);
       const response = await axios.get(url, {
         params: {
           items: 100,
@@ -200,6 +245,7 @@ export default async function handler(req, res) {
     console.log("Deleted " + deletedCount + " duplicate records");
 
     // now that all activities are inserted, connect the parents
+    // this really may not be necessary and could be super slow
     const activities = await prisma.activity.findMany({
       where: {
         projectId: project.id,

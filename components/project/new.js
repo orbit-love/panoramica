@@ -55,7 +55,7 @@ export default function New({}) {
           ></input>
         </div>
         <div className="flex flex-col space-y-1">
-          <div className="">Orbit Activities URL</div>
+          <div className="">Orbit Activities Page URL</div>
           <input
             ref={urlRef}
             type="text"
