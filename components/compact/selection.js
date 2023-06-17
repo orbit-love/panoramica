@@ -22,7 +22,11 @@ export default function Selection({
             setConnection={setConnection}
             selection={selection}
             setSelection={setSelection}
-            onClick={() => setSelection(null)}
+            onClick={() => {
+              // if the connection is removed, set the selection to the connection
+              setConnection(null);
+              setSelection(connection);
+            }}
           />
           <FontAwesomeIcon
             icon="right-left"
@@ -33,7 +37,9 @@ export default function Selection({
             setConnection={setConnection}
             selection={selection}
             setSelection={setSelection}
-            onClick={() => setConnection(null)}
+            onClick={() => {
+              setConnection(null);
+            }}
           />
         </>
       );
