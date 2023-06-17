@@ -13,9 +13,9 @@ export default function CompactEntity({ entity, setEntity, active }) {
     <button onClick={onClick} key={entity.id} className="px-1 py-1">
       <div
         className={classnames(
-          "py-[5px] bg-opacity-50 flex px-3 space-x-2 font-semibold text-indigo-100 bg-fuchsia-900 rounded rounded-lg",
+          "py-[5px] bg-opacity-40 flex px-3 space-x-2 font-semibold text-indigo-100 bg-fuchsia-900 rounded rounded-lg",
           {
-            "bg-opacity-100": active,
+            "!bg-opacity-100": active,
             "hover:bg-opacity-80": !active,
           }
         )}

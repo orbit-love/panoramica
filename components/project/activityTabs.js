@@ -1,27 +1,13 @@
 import React from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
-import Activities from "components/console/activities";
-import Threads from "components/console/threads";
-import NameAndIcon from "components/compact/name_and_icon";
-import Entity from "components/compact/entity";
+import Feed from "components/console/feed";
+import Entities from "components/console/entities";
 
-export default function ActivityTabs(props) {
-  const {
-    community,
-    selection,
-    setSelection,
-    connection,
-    setConnection,
-    entity,
-    setEntity,
-  } = props;
-
+const filterActivities = ({ community, selection, connection, entity }) => {
   // filter the activities and threads based on the selection
   var activities = community.activities;
-  var title;
 
   // if it's a member
   if (selection?.actor) {
@@ -40,37 +26,9 @@ export default function ActivityTabs(props) {
           (activity.globalActor === connection.globalActor &&
             activity.mentions?.indexOf(selection.actor) > -1)
       );
-      title = (
-        <>
-          <NameAndIcon
-            member={selection}
-            setConnection={setConnection}
-            selection={selection}
-            setSelection={setSelection}
-          />
-          <FontAwesomeIcon
-            icon="right-left"
-            className="text-xs text-indigo-600"
-          />
-          <NameAndIcon
-            member={connection}
-            setConnection={setConnection}
-            selection={selection}
-            setSelection={setSelection}
-          />
-        </>
-      );
     } else {
       activities = activities.filter(
         (activity) => activity.globalActor === selection.globalActor
-      );
-      title = (
-        <NameAndIcon
-          member={selection}
-          setConnection={setConnection}
-          selection={selection}
-          setSelection={setSelection}
-        />
       );
     }
     // it's an orbit level
@@ -79,32 +37,25 @@ export default function ActivityTabs(props) {
       (activity) =>
         community.findMemberByActivity(activity)?.level === selection.number
     );
-    title = <div>Orbit {selection.number}</div>;
   }
 
   if (entity) {
-    title = (
-      <>
-        {title}
-        <div className="text-xs">
-          <Entity entity={entity} setEntity={setEntity} active={true} />
-        </div>
-      </>
-    );
     activities = activities.filter(
       (activity) => entity.activities.indexOf(activity.id) > -1
     );
   }
 
-  var threads = activities.filter(
-    (activity) =>
-      !activity.parent &&
-      activity.children?.length > 0 &&
-      !activity.sourceParentId
-  );
+  return activities;
+};
 
-  // only show the first 100 activities for performance reasons
-  activities = activities.slice(0, 100);
+export default function ActivityTabs(props) {
+  const { community, selection, connection, entity } = props;
+  const activities = filterActivities({
+    community,
+    selection,
+    entity,
+    connection,
+  });
 
   // classes
   var tabProps = {
@@ -119,28 +70,25 @@ export default function ActivityTabs(props) {
         className={`flex fixed w-[calc(32vw-4px)] items-baseline pt-4 pb-2 bg-[${c.backgroundColor}] rounded-t-lg overflow-hidden`}
       >
         <Tab {...tabProps}>
-          <span className="text-lg">Activities</span>
+          <span className="text-lg">Feed</span>
           <span className="font-normal text-indigo-500">
             {activities.length}
           </span>
         </Tab>
         <Tab {...tabProps}>
-          <span className="text-lg">Conversations</span>
-          <span className="font-normal text-indigo-500">{threads.length}</span>
+          <span className="text-lg">Topics</span>
+          <span className="font-normal text-indigo-500">
+            {community.entities.length}
+          </span>
         </Tab>
       </TabList>
       <div className="pt-1 px-4 mb-1 mt-12 w-full border-b border-indigo-900" />
       <div className="">
-        {title && (
-          <div className="flex justify-center py-2 px-4 space-x-3 w-full text-sm">
-            {title}
-          </div>
-        )}
         <TabPanel>
-          <Activities {...props} activities={activities} />
+          <Feed {...props} activities={activities} />
         </TabPanel>
         <TabPanel className="">
-          <Threads {...props} threads={threads} />
+          <Entities {...props} />
         </TabPanel>
       </div>
     </Tabs>

@@ -41,6 +41,7 @@ const getDiscordFields = ({ activity, member, included }) => {
     (refActivity) => !!refActivity.key
   )?.key;
 
+  // once we have the text, we can update this
   let mentions = [];
   let entities = [];
   let actor;

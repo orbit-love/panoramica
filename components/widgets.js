@@ -6,8 +6,8 @@ import Member from "components/cards/member";
 import OrbitLevel from "components/cards/orbit_level";
 import Mission from "components/cards/mission";
 import Info from "components/info";
-import Entities from "components/console/entities";
 import ActivityTabs from "components/project/activityTabs";
+import Selection from "components/compact/selection";
 
 import Show from "components/project/show";
 import Edit from "components/project/edit";
@@ -70,9 +70,9 @@ export default function Widgets(props) {
               </div>
             )}
             {community && selection && (
-              <div className="flex flex-col space-y-4">
-                <div className={`${classes} ${width} !h-[250px] !p-0`}>
-                  <Entities {...props} />
+              <div className="flex flex-col space-y-2">
+                <div className={`${classes} ${width} !h-auto !py-2 !px-0`}>
+                  <Selection {...props} />
                 </div>
                 <div className={`${classes} ${width} !p-0`}>
                   <ActivityTabs {...props} />

@@ -59,7 +59,7 @@ export default function Activity({
           )}
         </div>
       </div>
-      {activity.text && (
+      {activity.text && !activity.textHtml && (
         <div className="flex space-x-2 text-xs text-indigo-300">
           {activity.text}
         </div>
