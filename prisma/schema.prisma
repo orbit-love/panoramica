@@ -89,8 +89,10 @@ model Activity {
   globalActor          String?
   globalActorName          String?
 
+  // the name of the source platform, e.g. twitter
+  source       String?
   // the id on the source platform, i.e. tweet id
-  sourceId     String // put back to non-optional later
+  sourceId     String? // put back to non-optional later
   // the activity type for an additional dimension
   sourceType   String?
 

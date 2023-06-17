@@ -31,7 +31,11 @@ import {
   faRightLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { faTwitter, faDiscord } from "@fortawesome/free-brands-svg-icons";
+import {
+  faTwitter,
+  faDiscord,
+  faGithub,
+} from "@fortawesome/free-brands-svg-icons";
 
 import {
   faBars,
@@ -112,7 +116,8 @@ library.add(
   faRightLeft,
   faTelescope,
   faTwitter,
-  faDiscord
+  faDiscord,
+  faGithub
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";

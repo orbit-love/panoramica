@@ -119,14 +119,14 @@ export default function ActivityTabs(props) {
         className={`flex fixed w-[calc(32vw-4px)] items-baseline pt-4 pb-2 bg-[${c.backgroundColor}] rounded-t-lg overflow-hidden`}
       >
         <Tab {...tabProps}>
-          <span className="text-lg">Conversations</span>
-          <span className="font-normal text-indigo-500">{threads.length}</span>
-        </Tab>
-        <Tab {...tabProps}>
           <span className="text-lg">Activities</span>
           <span className="font-normal text-indigo-500">
             {activities.length}
           </span>
+        </Tab>
+        <Tab {...tabProps}>
+          <span className="text-lg">Conversations</span>
+          <span className="font-normal text-indigo-500">{threads.length}</span>
         </Tab>
       </TabList>
       <div className="pt-1 px-4 mb-1 mt-12 w-full border-b border-indigo-900" />
@@ -136,11 +136,11 @@ export default function ActivityTabs(props) {
             {title}
           </div>
         )}
-        <TabPanel className="">
-          <Threads {...props} threads={threads} />
-        </TabPanel>
         <TabPanel>
           <Activities {...props} activities={activities} />
+        </TabPanel>
+        <TabPanel className="">
+          <Threads {...props} threads={threads} />
         </TabPanel>
       </div>
     </Tabs>

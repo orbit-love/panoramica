@@ -74,6 +74,7 @@ export default async function handler(req, res) {
             tags: activity.tags,
             mentions: activity.mentions,
             entities: activity.entities,
+            source: activity.source,
             sourceType: activity.sourceType,
             globalActor: activity.globalActor,
             globalActorName: activity.globalActorName

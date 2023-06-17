@@ -1,11 +1,12 @@
 import { prisma } from "lib/db";
 import axios from "axios";
 import { check, redirect, authorizeProject } from "lib/auth";
+import c from "lib/common";
 
 const getTweetFields = ({ activity }) => {
   const tweet = activity.attributes.t_tweet;
   const sourceId = tweet.id_str;
-  const sourceType = "twitter";
+  const source = "twitter";
   // pull out the strings for the mentions and annotations
   const mentions = (
     tweet.entities.mentions || tweet.entities.user_mentions
@@ -13,11 +14,7 @@ const getTweetFields = ({ activity }) => {
   const entities = (tweet.entities.annotations || [])?.map(
     (annotation) => annotation.normalized_text
   );
-  function extractHashtags(s) {
-    return s.match(/#\w+/g) || [];
-  }
-  const hashtags = extractHashtags(tweet.text);
-
+  const hashtags = c.getHashtags(tweet.text);
   // look to see if the tweet is a reply and grab the id
   var sourceParentId = tweet.referenced_tweets?.find(
     (reference) => reference.type === "replied_to"
@@ -26,7 +23,7 @@ const getTweetFields = ({ activity }) => {
   return {
     sourceId,
     sourceParentId,
-    sourceType,
+    source,
     text: tweet.text,
     textHtml: tweet.text_html,
     actor: tweet.user.screen_name,
@@ -39,11 +36,10 @@ const getTweetFields = ({ activity }) => {
 const getDiscordFields = ({ activity, member, included }) => {
   let { key, referenced_activities } = activity.attributes;
   let sourceId = key;
-  let sourceType = "discord";
+  let source = "discord";
   let sourceParentId = referenced_activities?.find(
     (refActivity) => !!refActivity.key
   )?.key;
-  console.log(sourceParentId);
 
   let mentions = [];
   let entities = [];
@@ -65,7 +61,57 @@ const getDiscordFields = ({ activity, member, included }) => {
   return {
     sourceId,
     sourceParentId,
-    sourceType,
+    source,
+    text,
+    actor,
+    actorName,
+    mentions,
+    entities,
+  };
+};
+
+const getGitHubFields = ({ activity, member, included }) => {
+  let { key, g_body, g_title, g_number } = activity.attributes;
+  let sourceId = key;
+  let source = "github";
+  let sourceParentId;
+
+  // orbit-love/orbit-browser-extension#67-1593362322
+  if (activity.type === "issue_comment_activity") {
+    let parts = key.split("-");
+    // Remove the last part
+    parts.pop();
+    // Rejoin the first parts
+    sourceParentId = parts.join("-");
+  }
+
+  // parse out any mentions
+  let mentions = c.getMentions(g_body);
+  let entities = [];
+  let actor;
+  let actorName;
+
+  if (g_title) {
+    g_title = `#${g_number}: ${g_title}`;
+  }
+
+  let text = [g_title, g_body].filter((e) => e).join("—");
+
+  let githubIdentity = getIdentity({
+    type: "github_identity",
+    member,
+    included,
+  });
+  if (githubIdentity) {
+    let { username, name } = githubIdentity.attributes;
+    actor = username;
+    actorName = name || username;
+  }
+
+  return {
+    sourceId,
+    sourceParentId,
+    source,
     text,
     actor,
     actorName,
@@ -86,6 +132,11 @@ const getTypeFields = ({ activity, member, included }) => {
     case "discord_thread_replied_activity":
     case "discord_message_replied_activity":
       return getDiscordFields(props);
+    case "issue_activity":
+    case "pull_request_activity":
+    case "issue_comment_activity":
+    case "fork_activity":
+      return getGitHubFields(props);
     default:
       return {};
   }
@@ -157,7 +208,6 @@ const getAPIData = async ({
 }) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("JOSH", url);
       const response = await axios.get(url, {
         params: {
           items: 100,
