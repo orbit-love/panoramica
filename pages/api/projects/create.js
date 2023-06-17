@@ -1,10 +1,11 @@
 import { prisma } from "lib/db";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "pages/api/auth/[...nextauth]";
+import { check, redirect } from "lib/auth";
 
 export default async function handler(req, res) {
-  const session = await getServerSession(req, res, authOptions);
-  const user = session?.user;
+  const user = await check(req, res);
+  if (!user) {
+    return redirect(res);
+  }
 
   // Get data submitted in request's body.
   const body = req.body;

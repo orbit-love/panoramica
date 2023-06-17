@@ -45,6 +45,7 @@ export default function Show({
   }, [cycle, setCycle, cycleDelay, firstCycleDelay, high, setHigh, community]);
 
   const fetchCommunity = useCallback(async () => {
+    console.log("Community fetch: started");
     var params = "";
     // if a community is already loaded, we should use low and high to narrow the query
     if (community) {
@@ -65,6 +66,7 @@ export default function Show({
     fetch(`/api/projects/${project.id}/community?` + params)
       .then((res) => res.json())
       .then(({ result, message }) => {
+        console.log("Community fetch: finished");
         if (message) {
           console.log("Error fetching community", message);
         } else {

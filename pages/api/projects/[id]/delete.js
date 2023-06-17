@@ -1,17 +1,17 @@
 import { prisma } from "lib/db";
 import GraphConnection from "lib/graphConnection";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "pages/api/auth/[...nextauth]";
+import { check, redirect } from "lib/auth";
 
 export default async function handler(req, res) {
+  const user = await check(req, res);
+  if (!user) {
+    return redirect(res);
+  }
   const graphConnection = new GraphConnection();
 
   const { id } = req.query;
   const projectId = parseInt(id);
 
-  // do authorization
-  const session = await getServerSession(req, res, authOptions);
-  const user = session?.user;
   try {
     const project = await prisma.project.findUnique({
       where: {

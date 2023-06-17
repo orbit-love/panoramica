@@ -1,7 +1,6 @@
 import { prisma } from "lib/db";
 import axios from "axios";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "pages/api/auth/[...nextauth]";
+import { check, redirect, authorizeProject } from "lib/auth";
 
 const getTypeFields = ({ activity, member, included }) => {
   // option 1 - default actor / name from identities
@@ -168,22 +167,17 @@ const getAPIData = async ({
 };
 
 export default async function handler(req, res) {
-  const session = await getServerSession(req, res, authOptions);
-  const user = session?.user;
+  const user = await check(req, res);
+  if (!user) {
+    return redirect(res);
+  }
+
   const { id } = req.query;
 
   try {
-    const project = await prisma.project.findFirst({
-      where: {
-        id,
-        user: {
-          email: user.email,
-        },
-      },
-    });
-
+    var project = await authorizeProject({ id, user, res });
     if (!project) {
-      return res.status(401).json({ message: "Not authorized" });
+      return;
     }
 
     const apiKey = project.apiKey;

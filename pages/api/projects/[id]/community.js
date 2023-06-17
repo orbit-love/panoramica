@@ -1,7 +1,5 @@
-import { prisma } from "lib/db";
 import GraphConnection from "lib/graphConnection";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "pages/api/auth/[...nextauth]";
+import { check, redirect, authorizeProject } from "lib/auth";
 
 const toProperties = (records, extra = () => {}) => {
   // filter out the weird empty single record when a query returns nothing
@@ -235,22 +233,17 @@ const getStats = async ({ projectId, graphConnection }) => {
 };
 
 export default async function handler(req, res) {
+  const user = await check(req, res);
+  if (!user) {
+    return redirect(res);
+  }
+
   const graphConnection = new GraphConnection();
-  const session = await getServerSession(req, res, authOptions);
-  const user = session?.user;
   var { id, from, to } = req.query;
 
-  var project = await prisma.project.findFirst({
-    where: {
-      id,
-      user: {
-        email: user.email,
-      },
-    },
-  });
-
+  var project = await authorizeProject({ id, user, res });
   if (!project) {
-    return res.status(401).json({ message: "Not authorized" });
+    return;
   }
 
   const projectId = project.id;
