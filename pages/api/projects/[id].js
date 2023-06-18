@@ -78,35 +78,20 @@ const getConnections = async ({ projectId, graphConnection, from, to }) => {
       RETURN outgoing, incoming, activities, count
     UNION
       WITH m AS outgoing
-      MATCH (outgoing)-[:DID]->(a:Activity)-[:REPLIES_TO]-(:Activity)<-[:DID]-(incoming:Member)
+      MATCH (outgoing)-[:DID]->(a:Activity)-[:REPLIES_TO]->(:Activity)<-[:DID]-(incoming:Member)
             WHERE a.timestamp >= $from
               AND a.timestamp <= $to
       WITH outgoing, incoming, COLLECT(a.id) as activities, count(*) AS count
       WITH outgoing, incoming, activities, count WHERE count > 0
       RETURN outgoing, incoming, activities, count
     }
+    WITH outgoing, incoming, activities, count
+      WHERE outgoing <> incoming
     RETURN outgoing, incoming, activities, count ORDER by outgoing.globalActor, count DESC;`,
     { projectId, from, to }
   );
 
   return records && mapifyConnections(records);
-};
-
-// get activities that have no parent
-const getThreads = async ({ projectId, graphConnection, from, to }) => {
-  const { records } = await graphConnection.run(
-    `MATCH (p:Project { id: $projectId })
-    WITH p
-    MATCH (p)-[:OWNS]->(a:Activity)<-[:REPLIES_TO]-(b:Activity)
-       WHERE NOT EXISTS((a)-[:REPLIES_TO]->())
-        AND a.timestamp >= $from
-        AND a.timestamp <= $to
-        AND a.sourceParentId IS NULL
-       WITH a, COLLECT(b.id) as children
-       RETURN DISTINCT a, children ORDER BY a.timestamp DESC`,
-    { projectId, from, to }
-  );
-  return toProperties(records);
 };
 
 const getActivities = async ({ projectId, graphConnection, from, to }) => {
@@ -152,13 +137,13 @@ const getConnectionCount = async ({ projectId, graphConnection }) => {
   const { records } = await graphConnection.run(
     `MATCH (p:Project { id: $projectId })
     WITH p
-    MATCH (p)-[:OWNS]->(m:Member)
-      WITH m
-        OPTIONAL MATCH (m)-[:DID]-(a:Activity)-[:MENTIONS]-(m2:Member)
-        OPTIONAL MATCH (m)-[:DID]-(a:Activity)-[:REPLIES_TO]-(:Activity)<-[:DID]-(m3:Member)
-      WITH m, coalesce(m2, m3) as m23
-      RETURN m.globalActor, m23.globalActor;
-    `,
+      MATCH (p)-[:OWNS]->(m1:Member)-[:DID]->(a1:Activity)-[r1:REPLIES_TO]->(a2:Activity)<-[:DID]-(m2:Member)
+      WHERE m1 <> m2
+      RETURN m1.globalActor, m2.globalActor
+    UNION
+      MATCH (p)-[:OWNS]->(m1:Member)-[:DID]->(a:Activity)-[r2:MENTIONS]->(m2:Member)
+      WHERE m1 <> m2
+      RETURN m1.globalActor, m2.globalActor`,
     { projectId }
   );
   // mentions can be in two directions, so we use a set to ensure only 1 per pair of members
@@ -281,7 +266,6 @@ export default async function handler(req, res) {
 
     const result = {
       stats: await getStats(props),
-      threads: await getThreads(props),
       entities: await getEntities(props),
       members: await getMembers(props),
       activities: await getActivities(props),
