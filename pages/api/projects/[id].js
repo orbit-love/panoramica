@@ -15,9 +15,10 @@ const toProperties = (records, extra = () => {}) => {
 // can deal with this corner case later
 const getMembers = async ({ projectId, graphConnection, from, to }) => {
   const { records } = await graphConnection.run(
-    `MATCH (m:Member)-[r:DID]-(a:Activity)
-       WHERE a.projectId=$projectId
-        AND a.timestamp > $from
+    `MATCH (p:Project { id: $projectId })
+       WITH p
+     MATCH (p)-[:OWNS]->(m:Member)-[r:DID]-(a:Activity)
+       WHERE a.timestamp >= $from
         AND a.timestamp <= $to
        RETURN m, count(a) as count
        ORDER BY count DESC`,
@@ -33,8 +34,8 @@ const mapifyConnections = (records) => {
   let processedResult = {};
 
   for (let row of records) {
-    let mentioner = row.get("mentioner").properties.globalActor;
-    let mentioned = row.get("mentioned").properties.globalActor;
+    let mentioner = row.get("outgoing").properties.globalActor;
+    let mentioned = row.get("incoming").properties.globalActor;
     let count = row.get("count").low;
 
     if (!(mentioner in processedResult)) {
@@ -61,20 +62,30 @@ const mapifyConnections = (records) => {
   return processedResult;
 };
 
+// get connections derived from mentions and from replies
 const getConnections = async ({ projectId, graphConnection, from, to }) => {
   const { records } = await graphConnection.run(
-    `
-    MATCH (m:Member)
+    `MATCH (p:Project { id: $projectId })
+       WITH p
+    MATCH (p)-[:OWNS]->(m:Member)
     CALL {
-        WITH m AS main_member
-        MATCH (main_member)-[:DID]->(a:Activity)-[:MENTIONS]->(mentioned:Member)
-        WHERE a.projectId=$projectId
-          AND a.timestamp > $from
-          AND a.timestamp <= $to
-        RETURN m AS actorOutgoing, mentioned AS actorIncoming, COLLECT(a.id) as activities, count(*) AS count
+      WITH m AS outgoing
+      MATCH (outgoing)-[:DID]->(a:Activity)-[:MENTIONS]->(incoming:Member)
+            WHERE a.timestamp >= $from
+              AND a.timestamp <= $to
+      WITH outgoing, incoming, COLLECT(a.id) as activities, count(*) AS count
+      WITH outgoing, incoming, activities, count WHERE count > 0
+      RETURN outgoing, incoming, activities, count
+    UNION
+      WITH m AS outgoing
+      MATCH (outgoing)-[:DID]->(a:Activity)-[:REPLIES_TO]-(:Activity)<-[:DID]-(incoming:Member)
+            WHERE a.timestamp >= $from
+              AND a.timestamp <= $to
+      WITH outgoing, incoming, COLLECT(a.id) as activities, count(*) AS count
+      WITH outgoing, incoming, activities, count WHERE count > 0
+      RETURN outgoing, incoming, activities, count
     }
-    WITH actorOutgoing, actorIncoming, activities, count WHERE count > 0
-    RETURN actorOutgoing as mentioner, actorIncoming as mentioned, activities, count ORDER by mentioner.globalActor, count DESC`,
+    RETURN outgoing, incoming, activities, count ORDER by outgoing.globalActor, count DESC;`,
     { projectId, from, to }
   );
 
@@ -84,10 +95,11 @@ const getConnections = async ({ projectId, graphConnection, from, to }) => {
 // get activities that have no parent
 const getThreads = async ({ projectId, graphConnection, from, to }) => {
   const { records } = await graphConnection.run(
-    `MATCH (a:Activity)<-[:REPLIES_TO]-(b:Activity)
+    `MATCH (p:Project { id: $projectId })
+    WITH p
+    MATCH (p)-[:OWNS]->(a:Activity)<-[:REPLIES_TO]-(b:Activity)
        WHERE NOT EXISTS((a)-[:REPLIES_TO]->())
-        AND a.projectId=$projectId
-        AND a.timestamp > $from
+        AND a.timestamp >= $from
         AND a.timestamp <= $to
         AND a.sourceParentId IS NULL
        WITH a, COLLECT(b.id) as children
@@ -99,9 +111,10 @@ const getThreads = async ({ projectId, graphConnection, from, to }) => {
 
 const getActivities = async ({ projectId, graphConnection, from, to }) => {
   const { records } = await graphConnection.run(
-    `MATCH (a:Activity)
-       WHERE a.projectId=$projectId
-        AND a.timestamp >= $from
+    `MATCH (p:Project { id: $projectId })
+    WITH p
+    MATCH (p)-[:OWNS]->(a:Activity)
+       WHERE a.timestamp >= $from
         AND a.timestamp <= $to
       WITH a
        OPTIONAL MATCH (a)<-[:REPLIES_TO]-(b:Activity)
@@ -117,9 +130,10 @@ const getActivities = async ({ projectId, graphConnection, from, to }) => {
 
 const getEntities = async ({ projectId, graphConnection, from, to }) => {
   const { records } = await graphConnection.run(
-    `MATCH (e:Entity)-[:RELATES]-(a:Activity)-[:DID]-(m:Member)
-      WHERE e.projectId=$projectId
-        AND a.timestamp > $from
+    `MATCH (p:Project { id: $projectId })
+    WITH p
+    MATCH (p)-[:OWNS]->(e:Entity)-[:RELATES]-(a:Activity)-[:DID]-(m:Member)
+      WHERE a.timestamp >= $from
         AND a.timestamp <= $to
       WITH e, COLLECT(DISTINCT m.globalActor) AS members, COLLECT(DISTINCT a.id) AS activities, count(a) AS count
       RETURN e, members, activities, count ORDER BY count DESC;
@@ -133,14 +147,21 @@ const getEntities = async ({ projectId, graphConnection, from, to }) => {
   }));
 };
 
+// count the number of mention connections or reply connections
 const getConnectionCount = async ({ projectId, graphConnection }) => {
   const { records } = await graphConnection.run(
-    `MATCH (m:Member)-[r:DID]-(a:Activity)-[r2:MENTIONS]-(m2:Member)
-      WHERE a.projectId=$projectId
-      RETURN m.globalActor, m2.globalActor;
+    `MATCH (p:Project { id: $projectId })
+    WITH p
+    MATCH (p)-[:OWNS]->(m:Member)
+      WITH m
+        OPTIONAL MATCH (m)-[:DID]-(a:Activity)-[:MENTIONS]-(m2:Member)
+        OPTIONAL MATCH (m)-[:DID]-(a:Activity)-[:REPLIES_TO]-(:Activity)<-[:DID]-(m3:Member)
+      WITH m, coalesce(m2, m3) as m23
+      RETURN m.globalActor, m23.globalActor;
     `,
     { projectId }
   );
+  // mentions can be in two directions, so we use a set to ensure only 1 per pair of members
   const set = new Set();
   for (let record of records) {
     set.add([record.get(0), record.get(1)].sort().join("---"));
@@ -154,9 +175,10 @@ const getConnectionCount = async ({ projectId, graphConnection }) => {
 // in telescope - these will be treated at (partial) islands
 const getThreadCount = async ({ projectId, graphConnection }) => {
   const { records } = await graphConnection.run(
-    `MATCH (a:Activity)<-[:REPLIES_TO]-(b:Activity)
+    `MATCH (p:Project { id: $projectId })
+    WITH p
+    MATCH (p)-[:OWNS]->(a:Activity)<-[:REPLIES_TO]-(b:Activity)
       WHERE NOT EXISTS((a)-[:REPLIES_TO]->())
-      AND a.projectId=$projectId
       AND a.sourceParentId IS NULL
      WITH count(DISTINCT a) as count
      RETURN count
@@ -170,8 +192,9 @@ const getThreadCount = async ({ projectId, graphConnection }) => {
 // count the number of activities that have a parent, includes leafs and branches
 const getReplyCount = async ({ projectId, graphConnection }) => {
   const { records } = await graphConnection.run(
-    `MATCH (a:Activity)-[:REPLIES_TO]->(b:Activity)
-      WHERE a.projectId=$projectId
+    `MATCH (p:Project { id: $projectId })
+    WITH p
+    MATCH (p)-[:OWNS]->(a:Activity)-[:REPLIES_TO]->(b:Activity)
      WITH count(DISTINCT a) as count
      RETURN count
     `,
@@ -183,10 +206,11 @@ const getReplyCount = async ({ projectId, graphConnection }) => {
 
 const getIslandCount = async ({ projectId, graphConnection }) => {
   const { records } = await graphConnection.run(
-    `MATCH (a:Activity)
+    `MATCH (p:Project { id: $projectId })
+    WITH p
+    MATCH (p)-[:OWNS]->(a:Activity)
       WHERE NOT EXISTS((a)-[:REPLIES_TO]->())
       AND NOT EXISTS(()-[:REPLIES_TO]->(a))
-      AND a.projectId=$projectId
      WITH count(DISTINCT a) as count
      RETURN count
     `,
@@ -198,8 +222,9 @@ const getIslandCount = async ({ projectId, graphConnection }) => {
 
 const getStats = async ({ projectId, graphConnection }) => {
   const { records } = await graphConnection.run(
-    `MATCH (a:Activity)<-[:DID]-(m:Member)
-      WHERE a.projectId=$projectId
+    `MATCH (p:Project { id: $projectId })
+    WITH p
+    MATCH (p)-[:OWNS]->(a:Activity)<-[:DID]-(m:Member)
      WITH MIN(a.timestamp) AS first,
      MAX(a.timestamp) AS last,
      COUNT(a) AS count,
@@ -245,7 +270,6 @@ export default async function handler(req, res) {
   if (!project) {
     return;
   }
-
   const projectId = project.id;
 
   // default from and to to values that will not filter anything

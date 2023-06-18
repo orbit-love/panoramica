@@ -34,40 +34,48 @@ export default async function handler(req, res) {
       activity.timestamp = activity.timestamp.toISOString();
     }
 
-    // delete previous nodes and relationships
+    // merge project node
     await graphConnection.run(
-      `MATCH (n) WHERE n.projectId=$projectId
+      `MERGE (p:Project { id: $projectId })
+        RETURN p`,
+      { projectId }
+    );
+    console.log("Memgraph: Created project");
+
+    // delete previous nodes and relationships
+    // this really messes up memgraph, probbably infinite loops
+    await graphConnection.run(
+      `MATCH (p:Project { id: $projectId })-[*..4]->(n)
         DETACH DELETE n`,
       { projectId }
     );
+    console.log("Memgraph: Deleted data");
 
-    // unique within project
+    // ensure only one project with the same id is ever created
     await graphConnection.run(
-      `CREATE CONSTRAINT ON (a:Activity) ASSERT a.id, a.projectId IS UNIQUE`
+      `CREATE CONSTRAINT ON (p:Parent) ASSERT p.id IS UNIQUE`
     );
-    await graphConnection.run(
-      `CREATE CONSTRAINT ON (a:Activity) ASSERT a.sourceId, a.projectId IS UNIQUE`
-    );
-    await graphConnection.run(
-      `CREATE CONSTRAINT ON (m:Member) ASSERT m.globalActor, m.projectId IS UNIQUE`
-    );
-    await graphConnection.run(
-      `CREATE CONSTRAINT ON (e:Entity) ASSERT e.id, e.projectId IS UNIQUE`
-    );
+    await graphConnection.run(`CREATE INDEX ON :Project(id)`);
+    await graphConnection.run(`CREATE INDEX ON :Member(globalActor)`);
+    await graphConnection.run(`CREATE INDEX ON :Activity(id)`);
+    await graphConnection.run(`CREATE INDEX ON :Activity(low)`);
+    await graphConnection.run(`CREATE INDEX ON :Activity(high)`);
+    await graphConnection.run(`CREATE INDEX ON :Activity(timestamp)`);
 
-    console.log("Memgraph: Removed old data and applied constraints");
+    console.log("Memgraph: Created uniqueness constraint");
 
+    // bulk add all the activities
     await graphConnection.run(
-      `WITH $activities AS batch
-           UNWIND batch AS activity
-           MERGE (a:Activity { id: activity.id })
+      `MATCH (p:Project { id: $projectId })
+        WITH p, $activities AS batch
+          UNWIND batch AS activity
+          MERGE (a:Activity { id: activity.id })
            SET a += {
             actor: activity.actor,
             sourceId: activity.sourceId,
             sourceParentId: activity.sourceParentId,
             text: activity.text,
             timestamp: activity.timestamp,
-            projectId: activity.projectId,
             actorName: activity.actorName,
             textHtml: activity.textHtml,
             url: activity.url,
@@ -78,10 +86,12 @@ export default async function handler(req, res) {
             sourceType: activity.sourceType,
             globalActor: activity.globalActor,
             globalActorName: activity.globalActorName
-          } RETURN a`,
-      { activities }
+          } MERGE (p)-[:OWNS]->(a)`,
+      { activities, projectId }
     );
+    console.log("Memgraph: Added (:Activity) nodes - " + activities.length);
 
+    // connect activities to other activities if they are replies
     let parentEdges = [];
     for (let activity of activities) {
       let parent = activity.parent;
@@ -95,39 +105,54 @@ export default async function handler(req, res) {
     }
 
     await graphConnection.run(
-      `WITH $parentEdges AS batch
+      `MATCH (p:Project { id: $projectId })
+       WITH p, $parentEdges AS batch
             UNWIND batch AS edge
-            MATCH (a:Activity   { id: edge.activity.id }),
-                  (p:Activity { id: edge.parent.id })
-           MERGE (a)-[r:REPLIES_TO { projectId: edge.projectId }]-(p)`,
-      { parentEdges }
+            MATCH (p)-[:OWNS]->(a:Activity { id: edge.activity.id })
+            MATCH (p)-[:OWNS]->(parent:Activity { id: edge.parent.id })
+            MERGE (a)-[r:REPLIES_TO]->(parent)`,
+      { parentEdges, projectId }
+    );
+    console.log(
+      "Memgraph: Added (a:Activity)-[:REPLIES_TO]->(p:Activity) edges - " +
+        parentEdges.length
     );
 
+    // create the set of members for the activities
+    // TODO: actors could be an array here, otherwise it just gets overridden
     await graphConnection.run(
-      `WITH $activities AS batch
+      `MATCH (p:Project { id: $projectId })
+        WITH p, $activities AS batch
           UNWIND batch AS activity
           MERGE (m:Member { globalActor: activity.globalActor })
-           SET m += {
+          SET m += {
            globalActorName: activity.globalActorName,
            actor: activity.actor,
-           actorName: activity.actorName,
-           projectId: activity.projectId
-          } RETURN m`,
-      { activities }
+           actorName: activity.actorName
+          } MERGE (p)-[:OWNS]->(m)`,
+      { activities, projectId }
     );
+    console.log("Memgraph: Created (:Member) nodes");
 
+    // create the :DID edge between Members and Activities
     await graphConnection.run(
-      `WITH $activities AS batch
+      `MATCH (p:Project { id: $projectId })
+        WITH p, $activities AS batch
             UNWIND batch AS activity
-            MATCH (m:Member   { globalActor: activity.globalActor }),
-                 (a:Activity { id: activity.id })
-           MERGE (m)-[r:DID { projectId: activity.projectId }]-(a)`,
-      { activities }
+            MATCH (p)-[:OWNS]->(m:Member { globalActor: activity.globalActor }),
+                  (p)-[:OWNS]->(a:Activity { id: activity.id })
+           MERGE (m)-[r:DID]-(a)`,
+      { activities, projectId }
+    );
+    console.log(
+      "Memgraph: Created (:Member)->[:DID]->(:Activity) edges - " +
+        activities.length
     );
 
     var entities = [];
     var connections = [];
 
+    // create Entity nodes and :RELATES edges to connect them to activities
     for (let activity of activities) {
       for (let entity of activity.entities || []) {
         entities.push({ id: entity, projectId });
@@ -138,28 +163,34 @@ export default async function handler(req, res) {
         });
       }
     }
+    await graphConnection.run(
+      `MATCH (p:Project { id: $projectId })
+        WITH p, $entities AS batch
+          UNWIND batch AS entity
+          MERGE (p)-[:OWNS]->(e:Entity { id: entity.id })
+          SET e += { } RETURN e`,
+      { entities, projectId }
+    );
+    console.log("Memgraph: Created (:Entity) nodes - ", entities.length);
 
     await graphConnection.run(
-      `WITH $entities AS batch
-          UNWIND batch AS entity
-          MERGE (e:Entity { id: entity.id })
-          SET e += {
-          projectId: entity.projectId
-          } RETURN e`,
-      { entities }
-    );
-    await graphConnection.run(
-      `WITH $connections AS batch
+      `MATCH (p:Project { id: $projectId })
+        WITH p, $connections AS batch
         UNWIND batch AS connection
-        MATCH (e:Entity { id: connection.entityId }),
-              (a:Activity { id: connection.activityId })
-          MERGE (a)-[r:RELATES { projectId: connection.projectId }]-(e)
-          RETURN r`,
-      { connections }
+        MATCH (p)-[:OWNS]->(e:Entity { id: connection.entityId }),
+              (p)-[:OWNS]->(a:Activity { id: connection.activityId })
+          MERGE (a)-[r:RELATES]-(e)`,
+      { connections, projectId }
+    );
+    console.log(
+      "Memgraph: Created (:Entity)-[:RELATES]-(:Activity) edges - ",
+      connections.length
     );
 
     let mentions = [];
 
+    // not that all the the member nodes exist, we can look them up by their
+    // actor property and create :MENTIONS edges from Activity to Member
     // go back through all the activities and create mentions
     for (let activity of activities) {
       const activityMentions = (activity.mentions || []).filter(c.onlyUnique);
@@ -183,17 +214,21 @@ export default async function handler(req, res) {
       }
     }
     await graphConnection.run(
-      `WITH $mentions AS batch
+      `MATCH (p:Project { id: $projectId })
+        WITH p, $mentions AS batch
           UNWIND batch AS mention
-            MATCH (m:Member   { globalActor: mention.globalActor }),
-              (a:Activity { id: mention.activityId })
-          MERGE (a)-[r:MENTIONS { projectId: mention.projectId }]-(m)`,
-      { mentions }
+            MATCH
+              (p)-[:OWNS]->(m:Member   { globalActor: mention.globalActor }),
+              (p)-[:OWNS]->(a:Activity { id: mention.activityId })
+            MERGE (a)-[r:MENTIONS]-(m)`,
+      { mentions, projectId }
     );
-    console.log(`Connected ${mentions.length} mentions`);
+    console.log(
+      "Memgraph: Created (:Activity)-[:MENTIONS]-(:Activity) edges - ",
+      mentions.length
+    );
 
     res.status(200).json({ result: { count: activities.length } });
-    console.log("Successfully processed " + activities.length + " activities");
   } catch (err) {
     console.log("Could not process activities", err);
     return res.status(500).json({ message: "Could not process activities" });

@@ -44,8 +44,8 @@ export default function Show({
     };
   }, [cycle, setCycle, cycleDelay, firstCycleDelay, high, setHigh, community]);
 
-  const fetchCommunity = useCallback(async () => {
-    console.log("Community fetch: started");
+  const fetchProject = useCallback(async () => {
+    console.log("Project fetch: started");
     var params = "";
     // if a community is already loaded, we should use low and high to narrow the query
     if (community) {
@@ -63,12 +63,12 @@ export default function Show({
 
     // only needed when high was not chosen, otherwise it will be the same
     // send low and high
-    fetch(`/api/projects/${project.id}/community?` + params)
+    fetch(`/api/projects/${project.id}?` + params)
       .then((res) => res.json())
       .then(({ result, message }) => {
-        console.log("Community fetch: finished");
+        console.log("Project fetch: finished");
         if (message) {
-          console.log("Error fetching community", message);
+          console.log("Error fetching project", message);
         } else {
           const newCommunity = new Community({ result, levels });
           // sort the members before updating
@@ -85,7 +85,7 @@ export default function Show({
 
   // fetch initially and if low/high change
   useEffect(() => {
-    fetchCommunity();
+    fetchProject();
   }, [low, high]);
 
   const importProject = async () => {
@@ -124,7 +124,7 @@ export default function Show({
         } else {
           // set community to null so everything is reset
           setCommunity(null);
-          fetchCommunity();
+          fetchProject();
         }
         setLoading(false);
       });
@@ -191,14 +191,18 @@ export default function Show({
               <tr>
                 <td className="">Density</td>
                 <td>
-                  {c.round(
-                    community.getConnectionCount() / community.members.length
+                  {String(
+                    c.round(
+                      community.getConnectionCount() / community.members.length
+                    )
                   )}
                 </td>
                 <td>
-                  {c.round(
-                    community.stats.members.connections.count /
-                      community.stats.members.count
+                  {String(
+                    c.round(
+                      community.stats.members.connections.count /
+                        community.stats.members.count
+                    )
                   )}
                 </td>
               </tr>
