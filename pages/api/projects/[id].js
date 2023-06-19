@@ -135,12 +135,12 @@ const getEntities = async ({ projectId, graphConnection, from, to }) => {
 // count the number of mention connections or reply connections
 const getConnectionCount = async ({ projectId, graphConnection }) => {
   const { records } = await graphConnection.run(
-    `MATCH (p:Project { id: $projectId })
-    WITH p
+    `MATCH (p:Project { id: $projectId }) WITH p
       MATCH (p)-[:OWNS]->(m1:Member)-[:DID]->(a1:Activity)-[r1:REPLIES_TO]->(a2:Activity)<-[:DID]-(m2:Member)
       WHERE m1 <> m2
       RETURN m1.globalActor, m2.globalActor
     UNION
+      MATCH (p:Project { id: $projectId }) WITH p
       MATCH (p)-[:OWNS]->(m1:Member)-[:DID]->(a:Activity)-[r2:MENTIONS]->(m2:Member)
       WHERE m1 <> m2
       RETURN m1.globalActor, m2.globalActor`,
