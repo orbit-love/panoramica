@@ -4,7 +4,14 @@ import c from "lib/common";
 
 // low and high come in as strings - these are the current values
 // the minimum and maximum are taken from activities
-const ActivitiesSlider = ({ low, high, setLow, setHigh, community }) => {
+const ActivitiesSlider = ({
+  low,
+  high,
+  setLow,
+  setHigh,
+  community,
+  onSliderChange,
+}) => {
   // the min and max date in all the activities
   let { minDate, maxDate } = community.getActivityDayRange();
 
@@ -29,9 +36,8 @@ const ActivitiesSlider = ({ low, high, setLow, setHigh, community }) => {
   const minLabel = formatter.format(minDateCurrent);
   const maxLabel = formatter.format(maxDateCurrent);
 
-  const onSliderChange = ({ min, max }) => {
-    setLow(min);
-    setHigh(max);
+  const onChange = ({ min, max }) => {
+    onSliderChange({ low: min, high: max });
   };
 
   return (
@@ -42,7 +48,7 @@ const ActivitiesSlider = ({ low, high, setLow, setHigh, community }) => {
       maxCurrent={high}
       minLabel={minLabel}
       maxLabel={maxLabel}
-      onChange={onSliderChange}
+      onChange={onChange}
     />
   );
 };

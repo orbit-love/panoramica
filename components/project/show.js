@@ -44,49 +44,58 @@ export default function Show({
     };
   }, [cycle, setCycle, cycleDelay, firstCycleDelay, high, setHigh, community]);
 
-  const fetchProject = useCallback(async () => {
-    console.log("Project fetch: started");
-    var params = "";
-    // if a community is already loaded, we should use low and high to narrow the query
-    if (community) {
-      const { minDate } = community.getActivityDayRange();
-      const from = c.addDays(minDate, low).toISOString();
-      const to = c.addDays(minDate, high).toISOString();
-      params = new URLSearchParams({
-        from,
-        to,
-      });
-    }
+  const fetchProject = useCallback(
+    async ({ low, high }) => {
+      console.log(`Project fetch started low=${low} high=${high}`);
+      var params = "";
+      // if a community is already loaded, we should use low and high to narrow the query
+      if (community) {
+        const { minDate } = community.getActivityDayRange();
+        const from = c.addDays(minDate, low).toISOString();
+        const to = c.addDays(minDate, high).toISOString();
+        params = new URLSearchParams({
+          from,
+          to,
+        });
+      }
 
-    // show loading always since it takes a while in prod right now
-    setLoading(true);
+      // show loading always since it takes a while in prod right now
+      setLoading(true);
 
-    // only needed when high was not chosen, otherwise it will be the same
-    // send low and high
-    fetch(`/api/projects/${project.id}?` + params)
-      .then((res) => res.json())
-      .then(({ result, message }) => {
-        console.log("Project fetch: finished");
-        if (message) {
-          console.log("Error fetching project", message);
-        } else {
-          const newCommunity = new Community({ result, levels });
-          // sort the members before updating
-          newCommunity.sortMembers({ sort, levels });
-          // put the reset flag on one so the members redraw
-          if (newCommunity.members[0]) {
-            newCommunity.members[0].reset = true;
+      // only needed when high was not chosen, otherwise it will be the same
+      // send low and high
+      fetch(`/api/projects/${project.id}?` + params)
+        .then((res) => res.json())
+        .then(({ result, message }) => {
+          console.log("Project fetch: finished");
+          if (message) {
+            console.log("Error fetching project", message);
+          } else {
+            const newCommunity = new Community({ result, levels });
+            // sort the members before updating
+            newCommunity.sortMembers({ sort, levels });
+            // put the reset flag on one so the members redraw
+            if (newCommunity.members[0]) {
+              newCommunity.members[0].reset = true;
+            }
+            setCommunity(newCommunity);
+            setLoading(false);
           }
-          setCommunity(newCommunity);
-          setLoading(false);
-        }
-      });
-  }, [project.id, community, low, high, sort, setCommunity, levels]);
+        });
+    },
+    [project.id, community, sort, setCommunity, levels]
+  );
 
-  // fetch initially and if low/high change
+  // fetch initially
   useEffect(() => {
-    fetchProject();
-  }, [low, high]);
+    console.log("Use effect");
+    fetchProject({ low: 0, high: 0 });
+  }, []);
+
+  const onSliderChange = async ({ low, high }) => {
+    console.log("Slider changing");
+    fetchProject({ low, high });
+  };
 
   const importProject = async () => {
     setLoading(true);
@@ -144,6 +153,7 @@ export default function Show({
         <div className="pb-6">
           <ActivitiesSlider
             community={community}
+            onSliderChange={onSliderChange}
             low={low}
             setLow={setLow}
             high={high}

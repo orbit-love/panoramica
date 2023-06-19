@@ -89,7 +89,7 @@ const MultiRangeSlider = ({
 
   const debouncedRequest = useDebounce(
     () => onChange({ min: minVal, max: maxVal }),
-    25
+    100
   );
 
   // Get min and max values when their state changes
