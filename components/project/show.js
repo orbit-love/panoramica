@@ -196,11 +196,13 @@ export default function Show({
               <tr>
                 <td className="">Density</td>
                 <td>
-                  {String(
-                    c.round(
-                      community.getConnectionCount() / community.members.length
-                    )
-                  )}
+                  {community.members.length > 0 &&
+                    String(
+                      c.round(
+                        community.getConnectionCount() /
+                          community.members.length
+                      )
+                    )}
                 </td>
                 <td>
                   {String(
