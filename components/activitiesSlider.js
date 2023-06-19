@@ -6,7 +6,8 @@ import c from "lib/common";
 // the minimum and maximum are taken from activities
 const ActivitiesSlider = ({ low, high, setLow, setHigh, community }) => {
   // the min and max date in all the activities
-  const { minDate, maxDate } = community.getActivityDateRange();
+  let { minDate, maxDate } = community.getActivityDayRange();
+
   // the number of days between the min and max dates
   const daysInRange = c.diffDays(minDate, maxDate);
 

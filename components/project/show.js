@@ -49,7 +49,7 @@ export default function Show({
     var params = "";
     // if a community is already loaded, we should use low and high to narrow the query
     if (community) {
-      const { minDate } = community.getActivityDateRange();
+      const { minDate } = community.getActivityDayRange();
       const from = c.addDays(minDate, low).toISOString();
       const to = c.addDays(minDate, high).toISOString();
       params = new URLSearchParams({

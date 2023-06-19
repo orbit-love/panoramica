@@ -15,15 +15,19 @@ export default function Thread(props) {
     >
       <Activity {...props} />
       {activity.children.map((id) => {
+        // if the child activity is missing, it's because it didn't get
+        // brought back in the time slice, so just skip it
         var childActivity = community.activities.find((a) => a.id === id);
-        return (
-          <Thread
-            {...props}
-            key={childActivity.id}
-            activity={childActivity}
-            nesting={nesting + 1}
-          />
-        );
+        if (childActivity) {
+          return (
+            <Thread
+              {...props}
+              key={childActivity.id}
+              activity={childActivity}
+              nesting={nesting + 1}
+            />
+          );
+        }
       })}
     </div>
   );

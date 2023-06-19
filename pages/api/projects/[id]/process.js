@@ -43,7 +43,6 @@ export default async function handler(req, res) {
     console.log("Memgraph: Created project");
 
     // delete previous nodes and relationships
-    // this really messes up memgraph, probbably infinite loops
     await graphConnection.run(
       `MATCH (p:Project { id: $projectId })-[*..4]->(n)
         DETACH DELETE n`,
@@ -69,7 +68,7 @@ export default async function handler(req, res) {
       `MATCH (p:Project { id: $projectId })
         WITH p, $activities AS batch
           UNWIND batch AS activity
-          MERGE (a:Activity { id: activity.id })
+          MERGE (p)-[:OWNS]-(a:Activity { id: activity.id })
            SET a += {
             actor: activity.actor,
             sourceId: activity.sourceId,
@@ -86,7 +85,7 @@ export default async function handler(req, res) {
             sourceType: activity.sourceType,
             globalActor: activity.globalActor,
             globalActorName: activity.globalActorName
-          } MERGE (p)-[:OWNS]->(a)`,
+          }`,
       { activities, projectId }
     );
     console.log("Memgraph: Added (:Activity) nodes - " + activities.length);
@@ -124,12 +123,12 @@ export default async function handler(req, res) {
       `MATCH (p:Project { id: $projectId })
         WITH p, $activities AS batch
           UNWIND batch AS activity
-          MERGE (m:Member { globalActor: activity.globalActor })
+          MERGE (p)-[:OWNS]-(m:Member { globalActor: activity.globalActor })
           SET m += {
            globalActorName: activity.globalActorName,
            actor: activity.actor,
            actorName: activity.actorName
-          } MERGE (p)-[:OWNS]->(m)`,
+          }`,
       { activities, projectId }
     );
     console.log("Memgraph: Created (:Member) nodes");
