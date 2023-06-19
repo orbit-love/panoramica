@@ -133,7 +133,7 @@ export default function Show({
         } else {
           // set community to null so everything is reset
           setCommunity(null);
-          fetchProject();
+          fetchProject({ low: 0, high: 0 });
         }
         setLoading(false);
       });

@@ -23,7 +23,7 @@ export default function Edit({ project, setProject, setEditMode }) {
       .then((res) => res.json())
       .then(({ result, message }) => {
         if (result === "deleted") {
-          router.push("/projects");
+          router.push("/");
         } else {
           alert(message);
         }
@@ -112,7 +112,10 @@ export default function Edit({ project, setProject, setEditMode }) {
           <button
             type="button"
             onClick={() => deleteProject()}
-            className={classnames(c.buttonClasses, "bg-red-500")}
+            className={classnames(
+              c.buttonClasses,
+              "bg-red-500 hover:bg-red-400"
+            )}
           >
             Delete
           </button>
