@@ -108,7 +108,7 @@ export default function Index({ csrfToken }) {
                 <Button type="submit">Sign in with Email</Button>
               </form>
               <div className="my-4 text-sm text-center">
-                Enter your email to receive a sign in link.
+                Enter your email to receive a secure sign in link.
               </div>
             </div>
           )}
@@ -120,7 +120,7 @@ export default function Index({ csrfToken }) {
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);
-  const csrfToken = await getCsrfToken(context);
+  const csrfToken = (await getCsrfToken(context)) || "";
   return {
     props: { session, csrfToken },
   };
