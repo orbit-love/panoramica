@@ -46,7 +46,6 @@ const getDiscordFields = ({ activity, member, included }) => {
   let entities = [];
   let actor;
   let actorName;
-  let text = `${actorName} said something...`;
 
   let discordIdentity = getIdentity({
     type: "discord_identity",
@@ -58,6 +57,8 @@ const getDiscordFields = ({ activity, member, included }) => {
     actor = username;
     actorName = name || username;
   }
+
+  let text = `${actorName} said something...`;
 
   return {
     sourceId,
