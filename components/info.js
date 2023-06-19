@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function Info({ setShowInfo }) {
   return (
     <>
-      <div className="flex relative flex-col space-y-4 pointer-events-auto">
+      <div className="flex relative flex-col space-y-4">
         <div>
           <h3 className="text-lg font-bold">Keyboard Shortcuts</h3>
           <table className="table border-separate [border-spacing:0] text-sm">

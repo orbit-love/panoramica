@@ -57,7 +57,7 @@ export default function Edit({ project, setProject, setEditMode }) {
   };
 
   return (
-    <div className="flex flex-col space-y-2">
+    <>
       <div className="text-lg font-semibold">Edit Project</div>
       <form
         action="/api/projects/create"
@@ -97,6 +97,7 @@ export default function Edit({ project, setProject, setEditMode }) {
             onChange={({ target }) => setApiKey(target.value)}
           ></input>
         </div>
+        <div className="flex-grow my-auto" />
         <div className="flex pt-2 space-x-2">
           <button
             type="button"
@@ -117,6 +118,6 @@ export default function Edit({ project, setProject, setEditMode }) {
           </button>
         </div>
       </form>
-    </div>
+    </>
   );
 }

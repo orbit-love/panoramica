@@ -141,7 +141,7 @@ export default function Show({
 
   const imported = community?.stats.activities.count > 0;
   return (
-    <div className="flex flex-col space-y-2 h-full">
+    <>
       <div className="flex items-baseline space-x-2">
         <span className="text-lg font-bold">Project</span>
         {loading && <div className="text-indigo-700">Loading...</div>}
@@ -235,6 +235,6 @@ export default function Show({
           Process
         </button>
       </div>
-    </div>
+    </>
   );
 }
