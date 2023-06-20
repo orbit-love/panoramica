@@ -1,6 +1,8 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import c from "lib/common";
+import OrbitLevelIcon from "components/icons/orbit_level";
 import NameAndIcon from "components/compact/name_and_icon";
 import Entity from "components/compact/entity";
 
@@ -11,6 +13,7 @@ export default function Selection({
   setConnection,
   entity,
   setEntity,
+  levels,
 }) {
   var title;
   if (selection?.actor) {
@@ -54,7 +57,20 @@ export default function Selection({
       );
     }
   } else if (selection?.number) {
-    title = <div>Orbit {selection.number}</div>;
+    title = (
+      <button
+        onClick={() => setSelection({ name: "Mission" })}
+        className="flex items-center space-x-1"
+      >
+        <OrbitLevelIcon number={selection.number} classes="text-lg" />
+        <span
+          className="font-semibold"
+          style={{ color: c.orbitLevelColorScale(selection.number) }}
+        >
+          {levels[selection.number].name}
+        </span>
+      </button>
+    );
   }
 
   if (entity) {

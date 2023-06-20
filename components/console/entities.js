@@ -1,12 +1,11 @@
 import React from "react";
 import Entity from "components/compact/entity";
 
-export default function Entities({ community, entity, setEntity }) {
-  var entities = community.entities;
+export default function Entities({ entities, entity, setEntity }) {
   return (
     <div className="flex overflow-scroll flex-col space-y-2 w-full">
       <div className="flex flex-wrap py-1 px-4 text-xs">
-        {Object.values(entities).map((anEntity) => (
+        {entities.map((anEntity) => (
           <div key={anEntity.id}>
             <Entity
               entity={anEntity}
@@ -16,9 +15,6 @@ export default function Entities({ community, entity, setEntity }) {
           </div>
         ))}
       </div>
-      {entities.length === 0 && (
-        <div className="px-4 text-indigo-500">No entities.</div>
-      )}
     </div>
   );
 }

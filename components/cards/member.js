@@ -12,16 +12,11 @@ export default function Member({
   community,
   selection,
   setSelection,
-  showNetwork,
-  setShowNetwork,
   connection,
   setConnection,
   entity,
   setEntity,
 }) {
-  const buttonClasses =
-    "flex-1 px-2 py-2 text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 rounded-md select-none outline-none";
-
   const color = c.orbitLevelColorScale(member.level);
 
   // entities could also be returned in the member graph query
@@ -53,7 +48,6 @@ export default function Member({
           />
         </div>
       </div>
-      <div className="border-b border-indigo-900" />
       <div className="flex flex-col space-y-[-2px]">
         <div className="flex items-center">
           <div className="w-16 font-semibold text-indigo-400">Love</div>
@@ -72,29 +66,6 @@ export default function Member({
           ></Meter>
         </div>
       </div>
-      {member.connectionCount > 0 && (
-        <div className="flex py-2">
-          <button
-            className={buttonClasses}
-            onClick={() => {
-              setShowNetwork(!showNetwork);
-            }}
-          >
-            <FontAwesomeIcon icon="chart-network" className="px-1" />
-            <span>{showNetwork ? ` Hide Graph` : ` Show Graph`}</span>
-          </button>
-        </div>
-      )}
-      <div className="flex flex-col space-y-[-2px]">
-        <div className="flex font-semibold">
-          <span className="w-32 text-indigo-400">Activities</span>
-          <span>{member.activityCount}</span>
-        </div>
-        <div className="flex font-semibold">
-          <span className="w-32 text-indigo-400">Connections</span>
-          <span>{member.connectionCount}</span>
-        </div>
-      </div>
       {entities.length > 0 && (
         <>
           <div className="border-b border-indigo-900" />
@@ -104,7 +75,7 @@ export default function Member({
                 key={anEntity.id}
                 entity={anEntity}
                 setEntity={setEntity}
-                active={entity?.id === anEntity}
+                active={entity?.id === anEntity.id}
               />
             ))}
           </div>
@@ -153,6 +124,17 @@ export default function Member({
           </div>
         </>
       )}
+      <div className="border-b border-indigo-900" />
+      <div className="flex flex-col space-y-[-2px]">
+        <div className="flex font-semibold">
+          <span className="w-32 text-indigo-400">Activities</span>
+          <span>{member.activityCount}</span>
+        </div>
+        <div className="flex font-semibold">
+          <span className="w-32 text-indigo-400">Connections</span>
+          <span>{member.connectionCount}</span>
+        </div>
+      </div>
     </div>
   );
 }

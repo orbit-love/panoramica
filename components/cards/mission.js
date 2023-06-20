@@ -2,7 +2,6 @@ import React from "react";
 
 import CompactMember from "components/compact/member";
 import SortOptions from "components/sort_options";
-import Entity from "components/compact/entity";
 
 export default function Mission({
   community,
@@ -14,18 +13,12 @@ export default function Mission({
   levels,
   setConnection,
   entity,
-  setEntity,
 }) {
   var title;
   var members = community.members;
   if (entity) {
     members = members.filter(
       (member) => entity.members.indexOf(member.globalActor) > -1
-    );
-    title = (
-      <div className="text-xs">
-        <Entity entity={entity} setEntity={setEntity} active={true} />
-      </div>
     );
   }
   return (

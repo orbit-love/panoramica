@@ -9,17 +9,25 @@ import Mission from "components/cards/mission";
 import Info from "components/info";
 import ActivityTabs from "components/project/activityTabs";
 import Selection from "components/compact/selection";
+import Entities from "components/console/entities";
+import EntityGroup from "lib/community/entityGroup";
 
 import Show from "components/project/show";
 import Edit from "components/project/edit";
 
 export default function Widgets(props) {
+  const { showPanel, showInfo, community, selection, entity } = props;
+
   const [editMode, setEditMode] = useState(false);
   const childProps = { editMode, setEditMode };
-  const { showPanel, showInfo, community, selection } = props;
   const width = "w-[32vw]";
   const height = "h-[40vh]";
   const classes = `flex ${height} p-4 mx-1 overflow-y-scroll overflow-x-hidden space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90 pointer-events-auto`;
+
+  if (community) {
+    var entityGroup = new EntityGroup(props);
+    var entities = entityGroup.getFilteredEntities();
+  }
 
   const DControls = () => (
     <div className={`flex absolute top-0 right-0 z-10 p-5 space-x-4`}>
@@ -89,6 +97,16 @@ export default function Widgets(props) {
                 hidden: !showPanel,
               })}
             >
+              {entities.length > 0 && !selection.globalActor && (
+                <div
+                  className={classnames(
+                    classes,
+                    "!h-auto max-h-[150px] !py-2 !px-0"
+                  )}
+                >
+                  <Entities {...props} entities={entities} />
+                </div>
+              )}
               <div className={classnames(classes, "!h-auto !py-2 !px-0")}>
                 <Selection {...props} />
               </div>

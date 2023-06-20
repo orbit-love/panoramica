@@ -11,10 +11,10 @@ const getTweetFields = ({ activity }) => {
   const mentions = (
     tweet.entities.mentions || tweet.entities.user_mentions
   ).map((mention) => mention.username || mention.screen_name);
-  const entities = (tweet.entities.annotations || [])?.map(
-    (annotation) => annotation.normalized_text
-  );
-  const hashtags = c.getHashtags(tweet.text);
+  const entities = (tweet.entities.annotations || [])
+    ?.map((annotation) => annotation.normalized_text)
+    ?.map((text) => text.toLowerCase());
+  const hashtags = c.getHashtags(tweet.text).map((text) => text.toLowerCase());
   // look to see if the tweet is a reply and grab the id
   var sourceParentId = tweet.referenced_tweets?.find(
     (reference) => reference.type === "replied_to"

@@ -27,11 +27,6 @@ export default function OrbitLevel({
     members = members.filter(
       (member) => entity.members.indexOf(member.globalActor) > -1
     );
-    title = (
-      <div className="text-xs">
-        <Entity entity={entity} setEntity={setEntity} active={true} />
-      </div>
-    );
   }
 
   return (
