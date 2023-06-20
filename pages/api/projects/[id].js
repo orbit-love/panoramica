@@ -130,13 +130,15 @@ const getEntities = async ({ projectId, graphConnection, from, to }) => {
   );
   var result = {};
   for (let record of records) {
-    let id = record.get("e").properties.id;
-    result[id] = {
-      id,
-      members: record.get("members"),
-      activities: record.get("activities"),
-      count: record.get("count").low,
-    };
+    let id = record.get("e")?.properties?.id;
+    if (id) {
+      result[id] = {
+        id,
+        members: record.get("members"),
+        activities: record.get("activities"),
+        count: record.get("count").low,
+      };
+    }
   }
   return result;
 };

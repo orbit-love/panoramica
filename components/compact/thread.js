@@ -8,12 +8,14 @@ export default function Thread(props) {
 
   return (
     <div
-      className={classnames(`flex flex-col space-y-3`, {
+      className={classnames(`flex flex-col`, {
         "border-l border-indigo-700": nesting > 0,
         "pl-3": nesting > 0,
       })}
     >
-      <Activity {...props} />
+      <div className="py-2">
+        <Activity {...props} />
+      </div>
       {activity.children.map((id) => {
         // if the child activity is missing, it's because it didn't get
         // brought back in the time slice, so just skip it
