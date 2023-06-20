@@ -51,7 +51,7 @@ export default function Show({
 
       var params = "";
       // if a stats are already loaded, we should use low and high to narrow the query
-      if (stats) {
+      if (stats && low && high) {
         const { minDate } = stats.getActivityDayRange();
         const from = c.addDays(minDate, low).toISOString();
         const to = c.addDays(minDate, high).toISOString();
@@ -107,7 +107,7 @@ export default function Show({
 
   const importProject = async () => {
     setLoading(true);
-    fetch(`/api/projects/${project.id}/import`, {
+    return fetch(`/api/projects/${project.id}/import`, {
       method: "PUT",
       headers: {
         Accept: "application/json",
@@ -125,9 +125,22 @@ export default function Show({
       });
   };
 
+  const fetchStats = useCallback(async () => {
+    return fetch(`/api/projects/${project.id}/stats`)
+      .then((res) => res.json())
+      .then(({ result, message }) => {
+        if (message) {
+          console.log("Error fetching stats", message);
+        } else {
+          var stats = new Stats({ result });
+          setStats(stats);
+        }
+      });
+  }, [project.id, setStats]);
+
   const processProject = async () => {
     setLoading(true);
-    fetch(`/api/projects/${project.id}/process`, {
+    return fetch(`/api/projects/${project.id}/process`, {
       method: "PUT",
       headers: {
         Accept: "application/json",
@@ -135,13 +148,16 @@ export default function Show({
       },
     })
       .then((res) => res.json())
-      .then(({ message }) => {
+      .then(async ({ message }) => {
         if (message) {
           console.log(message);
         } else {
           // set community to null so everything is reset
+          setLow(0);
+          setHigh(0);
           setCommunity(null);
-          fetchProject({ low: 0, high: 0 });
+          await fetchStats();
+          await fetchProject({});
         }
         setLoading(false);
       });
@@ -169,8 +185,8 @@ export default function Show({
         </div>
       )}
       <div className="flex flex-col space-y-1">
-        {community && !imported && (
-          <div className="text-semibold py-3 text-green-500">
+        {!imported && (
+          <div className="text-green-500">
             The project has been created. Now, press the Import button to fetch
             data into the project.
           </div>
@@ -180,6 +196,7 @@ export default function Show({
           community={community}
           stats={stats}
           setStats={setStats}
+          fetchStats={fetchStats}
         />
       </div>
       <div className="flex-grow my-auto" />

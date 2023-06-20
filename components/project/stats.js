@@ -3,25 +3,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import c from "lib/common";
 import Stats from "lib/community/stats";
 
-export default function StatsComponent({
-  project,
-  community,
-  stats,
-  setStats,
-}) {
-  const fetchStats = useCallback(async () => {
-    fetch(`/api/projects/${project.id}/stats`)
-      .then((res) => res.json())
-      .then(({ result, message }) => {
-        if (message) {
-          console.log("Error fetching stats", message);
-        } else {
-          var stats = new Stats({ result });
-          setStats(stats);
-        }
-      });
-  }, [project.id, setStats]);
-
+export default function StatsComponent({ community, stats, fetchStats }) {
   // do only on mount
   useEffect(() => {
     fetchStats();

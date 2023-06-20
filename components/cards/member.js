@@ -30,15 +30,6 @@ export default function Member({
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex overflow-hidden items-baseline space-x-1 text-ellipsis whitespace-nowrap">
-        <button
-          className="flex items-center"
-          onClick={() => {
-            setSelection({ name: "Mission" });
-            setConnection(null);
-          }}
-        >
-          <FontAwesomeIcon icon="chevron-left" className="" style={{ color }} />
-        </button>
         <div className="text-lg font-bold">
           <NameAndIcon
             member={member}
