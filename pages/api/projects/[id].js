@@ -1,5 +1,6 @@
 import GraphConnection from "lib/graphConnection";
 import { check, redirect, authorizeProject } from "lib/auth";
+import c from "lib/common";
 
 const toProperties = (records, extra = () => {}) => {
   // filter out the weird empty single record when a query returns nothing
@@ -13,8 +14,10 @@ const toProperties = (records, extra = () => {}) => {
 
 // return members active in the time period, not those inactive but mentioned
 // can deal with this corner case later
+// if a conversation has an activity out of the window and the member has no other
+// activities, they would be missing
 const getMembers = async ({ projectId, graphConnection, from, to }) => {
-  const { records } = await graphConnection.run(
+  const { records } = await graphConnection.runInNewSession(
     `MATCH (p:Project { id: $projectId })
        WITH p
      MATCH (p)-[:OWNS]->(m:Member)-[r:DID]-(a:Activity)
@@ -64,7 +67,7 @@ const mapifyConnections = (records) => {
 
 // get connections derived from mentions and from replies
 const getConnections = async ({ projectId, graphConnection, from, to }) => {
-  const { records } = await graphConnection.run(
+  const { records } = await graphConnection.runInNewSession(
     `MATCH (p:Project { id: $projectId })
        WITH p
     MATCH (p)-[:OWNS]->(m:Member)
@@ -95,7 +98,7 @@ const getConnections = async ({ projectId, graphConnection, from, to }) => {
 };
 
 const getActivities = async ({ projectId, graphConnection, from, to }) => {
-  const { records } = await graphConnection.run(
+  const { records } = await graphConnection.runInNewSession(
     `MATCH (p:Project { id: $projectId })
     WITH p
     MATCH (p)-[:OWNS]->(a:Activity)
@@ -114,7 +117,7 @@ const getActivities = async ({ projectId, graphConnection, from, to }) => {
 };
 
 const getEntities = async ({ projectId, graphConnection, from, to }) => {
-  const { records } = await graphConnection.run(
+  const { records } = await graphConnection.runInNewSession(
     `MATCH (p:Project { id: $projectId })
     WITH p
     MATCH (p)-[:OWNS]->(e:Entity)-[:RELATES]-(a:Activity)-[:DID]-(m:Member)
@@ -125,121 +128,95 @@ const getEntities = async ({ projectId, graphConnection, from, to }) => {
     `,
     { projectId, from, to }
   );
-  return toProperties(records, (record) => ({
-    members: record.get("members"),
-    activities: record.get("activities"),
-    count: record.get("count").low,
-  }));
-};
-
-// count the number of mention connections or reply connections
-const getConnectionCount = async ({ projectId, graphConnection }) => {
-  const { records } = await graphConnection.run(
-    `MATCH (p:Project { id: $projectId }) WITH p
-      MATCH (p)-[:OWNS]->(m1:Member)-[:DID]->(a1:Activity)-[r1:REPLIES_TO]->(a2:Activity)<-[:DID]-(m2:Member)
-      WHERE m1 <> m2
-      RETURN m1.globalActor, m2.globalActor
-    UNION
-      MATCH (p:Project { id: $projectId }) WITH p
-      MATCH (p)-[:OWNS]->(m1:Member)-[:DID]->(a:Activity)-[r2:MENTIONS]->(m2:Member)
-      WHERE m1 <> m2
-      RETURN m1.globalActor, m2.globalActor`,
-    { projectId }
-  );
-  // mentions can be in two directions, so we use a set to ensure only 1 per pair of members
-  const set = new Set();
+  var result = {};
   for (let record of records) {
-    set.add([record.get(0), record.get(1)].sort().join("---"));
-  }
-  return set.size;
-};
-
-// count the number of activities that have replies but no parent -
-// i.e. the thread starters
-// filter out activities that have a parent on the source platform but not
-// in telescope - these will be treated at (partial) islands
-const getThreadCount = async ({ projectId, graphConnection }) => {
-  const { records } = await graphConnection.run(
-    `MATCH (p:Project { id: $projectId })
-    WITH p
-    MATCH (p)-[:OWNS]->(a:Activity)<-[:REPLIES_TO]-(b:Activity)
-      WHERE NOT EXISTS((a)-[:REPLIES_TO]->())
-      AND a.sourceParentId IS NULL
-     WITH count(DISTINCT a) as count
-     RETURN count
-    `,
-    { projectId }
-  );
-  const record = records[0];
-  return record.get("count").low;
-};
-
-// count the number of activities that have a parent, includes leafs and branches
-const getReplyCount = async ({ projectId, graphConnection }) => {
-  const { records } = await graphConnection.run(
-    `MATCH (p:Project { id: $projectId })
-    WITH p
-    MATCH (p)-[:OWNS]->(a:Activity)-[:REPLIES_TO]->(b:Activity)
-     WITH count(DISTINCT a) as count
-     RETURN count
-    `,
-    { projectId }
-  );
-  const record = records[0];
-  return record.get("count").low;
-};
-
-const getIslandCount = async ({ projectId, graphConnection }) => {
-  const { records } = await graphConnection.run(
-    `MATCH (p:Project { id: $projectId })
-    WITH p
-    MATCH (p)-[:OWNS]->(a:Activity)
-      WHERE NOT EXISTS((a)-[:REPLIES_TO]->())
-      AND NOT EXISTS(()-[:REPLIES_TO]->(a))
-     WITH count(DISTINCT a) as count
-     RETURN count
-    `,
-    { projectId }
-  );
-  const record = records[0];
-  return record.get("count").low;
-};
-
-const getStats = async ({ projectId, graphConnection }) => {
-  const { records } = await graphConnection.run(
-    `MATCH (p:Project { id: $projectId })
-    WITH p
-    MATCH (p)-[:OWNS]->(a:Activity)<-[:DID]-(m:Member)
-     WITH MIN(a.timestamp) AS first,
-     MAX(a.timestamp) AS last,
-     COUNT(a) AS count,
-     COUNT(DISTINCT m) AS memberCount
-     RETURN first, last, count, memberCount;`,
-    { projectId }
-  );
-  const record = records[0];
-  const props = {
-    projectId,
-    graphConnection,
-  };
-  return {
-    activities: {
-      first: record.get("first"),
-      last: record.get("last"),
+    let id = record.get("e").properties.id;
+    result[id] = {
+      id,
+      members: record.get("members"),
+      activities: record.get("activities"),
       count: record.get("count").low,
-    },
-    threads: {
-      threadCount: await getThreadCount(props),
-      replyCount: await getReplyCount(props),
-      islandCount: await getIslandCount(props),
-    },
-    members: {
-      count: record.get("memberCount").low,
-      connections: {
-        count: await getConnectionCount(props),
-      },
-    },
+    };
+  }
+  return result;
+};
+
+// return activities that represent thread parents, along with the members
+// and entities that exist throughout the thread
+// if the conversation started in the timeframe, we grab it, otherwise not
+// this will definitely not be the right solution forever
+// a workaround may be to leave out to/from for now, the UI will handle it
+const getThreads = async function ({ projectId, graphConnection, from, to }) {
+  var result = {};
+
+  const updateResult = function (activity, members, entities) {
+    let item = result[activity];
+    if (item) {
+      item.members = [...item.members, ...members].filter(c.onlyUnique);
+      item.entities = [...item.entities, ...entities].filter(c.onlyUnique);
+    } else {
+      result[activity] = { members: [...members], entities: [...entities] };
+    }
   };
+
+  // actually we could filter replies out here...
+  // come back to it
+  // WHERE NOT EXISTS((a)-[:REPLIES_TO]->())
+  //   AND a.sourceParentId IS NULL
+  const matchThread = `
+    MATCH (p:Project { id: $projectId })
+    WITH p
+    MATCH (p)-[:OWNS]->(a:Activity)<-[:REPLIES_TO*0..]-(child:Activity)
+      WITH DISTINCT a
+      MATCH path = (a)<-[:REPLIES_TO*0..]-(reply)
+      WITH a, path
+      UNWIND nodes(path) as node
+  `;
+
+  const addRepliers = async () => {
+    const { records } = await graphConnection.runInNewSession(
+      `${matchThread}
+      MATCH (node)<-[:DID]-(m:Member)
+      RETURN a.id as activity, COLLECT(DISTINCT m.globalActor) as members`,
+      { projectId, from, to }
+    );
+
+    for (let record of records) {
+      updateResult(record.get("activity"), record.get("members"), []);
+    }
+  };
+
+  const addMentioners = async () => {
+    const { records } = await graphConnection.runInNewSession(
+      `${matchThread}
+      MATCH (node)-[:MENTIONS]-(m:Member)
+      RETURN a.id as activity, COLLECT(DISTINCT m.globalActor) as members`,
+      { projectId, from, to }
+    );
+
+    for (let record of records) {
+      updateResult(record.get("activity"), record.get("members"), []);
+    }
+  };
+
+  const addEntities = async () => {
+    const { records } = await graphConnection.runInNewSession(
+      `${matchThread}
+      MATCH (node)-[:RELATES]-(e:Entity)
+      RETURN a.id as activity, COLLECT(DISTINCT e.id) as entities`,
+      { projectId, from, to }
+    );
+
+    for (let record of records) {
+      updateResult(record.get("activity"), [], record.get("entities"));
+    }
+  };
+
+  await addRepliers();
+  await addMentioners();
+  await addEntities();
+
+  return result;
 };
 
 export default async function handler(req, res) {
@@ -264,12 +241,24 @@ export default async function handler(req, res) {
   try {
     const props = { projectId, graphConnection, from, to };
 
+    console.time("Fetching graph data");
+    // these can all go async to be much faster, they don't depend on each other
+    let [threads, entities, members, activities, connections] =
+      await Promise.all([
+        getThreads(props),
+        getEntities(props),
+        getMembers(props),
+        getActivities(props),
+        getConnections(props),
+      ]);
+    console.timeEnd("Fetching graph data");
+
     const result = {
-      stats: await getStats(props),
-      entities: await getEntities(props),
-      members: await getMembers(props),
-      activities: await getActivities(props),
-      connections: await getConnections(props),
+      threads,
+      entities,
+      members,
+      activities,
+      connections,
     };
     res.status(200).json({ result });
   } catch (err) {

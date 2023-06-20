@@ -19,7 +19,7 @@ export default function Widgets(props) {
   const { showPanel, showInfo, community, selection } = props;
   const width = "w-[32vw]";
   const height = "h-[40vh]";
-  const classes = `flex ${height} px-4 py-4 overflow-y-scroll overflow-x-hidden space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90 pointer-events-auto`;
+  const classes = `flex ${height} p-4 mx-1 overflow-y-scroll overflow-x-hidden space-x-3 rounded-lg text-[${c.whiteColor}] bg-[${c.backgroundColor}] border border-indigo-800 bg-opacity-90 pointer-events-auto`;
 
   const DControls = () => (
     <div className={`flex absolute top-0 right-0 z-10 p-5 space-x-4`}>
@@ -33,7 +33,7 @@ export default function Widgets(props) {
     <>
       <DControls />
       <div
-        className={`w-[100vw] flex absolute bottom-0 left-0 z-10 justify-between items-end p-5 space-x-3 pointer-events-none`}
+        className={`w-[100vw] flex absolute bottom-0 left-0 z-10 items-end p-4 pointer-events-none`}
       >
         <div
           className={classnames(classes, width, {

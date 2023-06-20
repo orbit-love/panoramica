@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 
 import c from "lib/common";
 import Community from "lib/community";
+import Stats from "lib/community/stats";
+import StatsComponent from "components/project/stats";
 import ActivitiesSlider from "components/activitiesSlider";
 
 export default function Show({
@@ -20,6 +22,7 @@ export default function Show({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [cycle, setCycle] = useState(false);
+  const [stats, setStats] = useState(null);
 
   const { cycleDelay, firstCycleDelay } = c.visualization;
 
@@ -34,9 +37,7 @@ export default function Show({
         }
       }
     };
-    const cycleInterval = setInterval(eachCycle, cycleDelay);
-    // wait a little bit (but not 2 seconds) so the user can see the cycling
-    // is happening on page load or when they manually enable cycling
+    const cycleInterval = setInterval(eachCycle, cycleDelay); // wait a little bit (but not 2 seconds) so the user can see the cycling // is happening on page load or when they manually enable cycling
     const timeout = setTimeout(eachCycle, firstCycleDelay);
     return () => {
       clearInterval(cycleInterval);
@@ -47,10 +48,11 @@ export default function Show({
   const fetchProject = useCallback(
     async ({ low, high }) => {
       console.log(`Project fetch started low=${low} high=${high}`);
+
       var params = "";
-      // if a community is already loaded, we should use low and high to narrow the query
-      if (community) {
-        const { minDate } = community.getActivityDayRange();
+      // if a stats are already loaded, we should use low and high to narrow the query
+      if (stats) {
+        const { minDate } = stats.getActivityDayRange();
         const from = c.addDays(minDate, low).toISOString();
         const to = c.addDays(minDate, high).toISOString();
         params = new URLSearchParams({
@@ -62,7 +64,6 @@ export default function Show({
       // show loading always since it takes a while in prod right now
       setLoading(true);
 
-      // only needed when high was not chosen, otherwise it will be the same
       // send low and high
       fetch(`/api/projects/${project.id}?` + params)
         .then((res) => res.json())
@@ -83,18 +84,25 @@ export default function Show({
           }
         });
     },
-    [project.id, community, sort, setCommunity, levels]
+    [project.id, stats, sort, setCommunity, levels]
   );
 
   // fetch initially
   useEffect(() => {
-    console.log("Use effect");
-    fetchProject({ low: 0, high: 0 });
+    console.log("Fetching project from use effect");
+    // fetchProject({ low: 0, high: 0 });
   }, []);
 
+  // refetch when the slider changes
   const onSliderChange = async ({ low, high }) => {
-    console.log("Slider changing");
-    fetchProject({ low, high });
+    // if high is 0 it means we're still initiatlizing, so don't
+    // do anything; onSliderChange will fire only the proper max value is
+    // set due to the fetchStats call
+    if (high !== 0) {
+      fetchProject({ low, high });
+      setLow(low);
+      setHigh(high);
+    }
   };
 
   const importProject = async () => {
@@ -139,7 +147,7 @@ export default function Show({
       });
   };
 
-  const imported = community?.stats.activities.count > 0;
+  const imported = stats?.activities?.count > 0;
   return (
     <>
       <div className="flex items-baseline space-x-2">
@@ -153,69 +161,26 @@ export default function Show({
         <div className="pb-6">
           <ActivitiesSlider
             community={community}
-            onSliderChange={onSliderChange}
             low={low}
-            setLow={setLow}
             high={high}
-            setHigh={setHigh}
+            stats={stats}
+            onSliderChange={onSliderChange}
           />
         </div>
       )}
-      <div className="flex flex-col space-y-2">
+      <div className="flex flex-col space-y-1">
         {community && !imported && (
           <div className="text-semibold py-3 text-green-500">
             The project has been created. Now, press the Import button to fetch
             data into the project.
           </div>
         )}
-        {community && imported && (
-          <table className="table border-separate [border-spacing:0] text-sm">
-            <thead>
-              <tr>
-                <td className="w-1/2 font-semibold"></td>
-                <td className="w-24 font-semibold">In View</td>
-                <td className="font-semibold">Total</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="w-1/3">Activities</td>
-                <td>{community.activities.length}</td>
-                <td>{community.stats.activities.count}</td>
-              </tr>
-              <tr>
-                <td className="">Members</td>
-                <td>{community.members.length}</td>
-                <td>{community.stats.members.count}</td>
-              </tr>
-              <tr>
-                <td className="">Connections</td>
-                <td>{community.getConnectionCount()}</td>
-                <td>{community.stats.members.connections.count}</td>
-              </tr>
-              <tr>
-                <td className="">Density</td>
-                <td>
-                  {community.members.length > 0 &&
-                    String(
-                      c.round(
-                        community.getConnectionCount() /
-                          community.members.length
-                      )
-                    )}
-                </td>
-                <td>
-                  {String(
-                    c.round(
-                      community.stats.members.connections.count /
-                        community.stats.members.count
-                    )
-                  )}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        )}
+        <StatsComponent
+          project={project}
+          community={community}
+          stats={stats}
+          setStats={setStats}
+        />
       </div>
       <div className="flex-grow my-auto" />
       <div className="flex py-2 space-x-2 text-xs">

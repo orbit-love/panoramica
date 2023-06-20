@@ -35,7 +35,7 @@ export default function Feed(props) {
   let { activities } = props;
 
   // filter out replies which do not get put top-level in the feed
-  activities = activities.filter((activity) => !isReply(activity));
+  // activities = activities.filter((activity) => !isReply(activity));
 
   // only show the first 100 for performance reasons
   activities = activities.slice(0, 100);

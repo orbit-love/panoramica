@@ -24,8 +24,9 @@ export default function Member({
 
   const color = c.orbitLevelColorScale(member.level);
 
+  // entities could also be returned in the member graph query
   let entities = [];
-  for (let entity of community.entities) {
+  for (let [_, entity] of Object.entries(community.entities)) {
     if (entity.members.indexOf(member.globalActor) > -1) {
       entities.push(entity);
     }

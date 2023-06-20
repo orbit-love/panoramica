@@ -3,8 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Info({ setShowInfo }) {
   return (
-    <>
-      <div className="flex relative flex-col space-y-4">
+    <div className="relative">
+      <button
+        className="absolute top-0 right-2 text-lg"
+        onClick={() => setShowInfo(false)}
+      >
+        <FontAwesomeIcon icon="xmark" />
+      </button>
+      <div className="flex flex-col space-y-4">
         <div>
           <h3 className="text-lg font-bold">Keyboard Shortcuts</h3>
           <table className="table border-separate [border-spacing:0] text-sm">
@@ -47,11 +53,11 @@ export default function Info({ setShowInfo }) {
               </tr>
               <tr>
                 <td>i</td>
-                <td>Information view</td>
+                <td>Show help</td>
               </tr>
               <tr>
                 <td>o</td>
-                <td>Project panel</td>
+                <td>Show/hide panels</td>
               </tr>
             </tbody>
           </table>
@@ -63,13 +69,7 @@ export default function Info({ setShowInfo }) {
             immersive experience.
           </p>
         </div>
-        <button
-          className="absolute top-0 right-6 text-lg"
-          onClick={() => setShowInfo(false)}
-        >
-          <FontAwesomeIcon icon="xmark" />
-        </button>
       </div>
-    </>
+    </div>
   );
 }

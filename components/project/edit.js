@@ -9,7 +9,7 @@ export default function Edit({ project, setProject, setEditMode }) {
 
   const [name, setName] = useState(project.name);
   const [url, setUrl] = useState(project.url);
-  const [apiKey, setApiKey] = useState(null);
+  const [apiKey, setApiKey] = useState("");
 
   const deleteProject = () => {
     const url = `/api/projects/${project.id}/delete`;

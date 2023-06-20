@@ -4,21 +4,14 @@ import c from "lib/common";
 
 // low and high come in as strings - these are the current values
 // the minimum and maximum are taken from activities
-const ActivitiesSlider = ({
-  low,
-  high,
-  setLow,
-  setHigh,
-  community,
-  onSliderChange,
-}) => {
+const ActivitiesSlider = ({ low, high, stats, onSliderChange }) => {
   // the min and max date in all the activities
-  let { minDate, maxDate } = community.getActivityDayRange();
+  let { minDate, maxDate } = stats.getActivityDayRange();
 
   // the number of days between the min and max dates
   const daysInRange = c.diffDays(minDate, maxDate);
 
-  // if the high value is 0, max it out
+  // if the high value is 0, set it to the highest range
   if (high === 0) {
     high = daysInRange;
   }

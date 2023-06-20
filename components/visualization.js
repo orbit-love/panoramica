@@ -42,7 +42,7 @@ export default function Visualization({
   const [selection, setSelection] = useState(null);
   const [connection, setConnection] = useState(null);
   const [entity, setEntity] = useState(null);
-  const [showNetwork, setShowNetwork] = useState(false);
+  const [showNetwork, setShowNetwork] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
   const [showPanel, setShowPanel] = useState(true);
   const [revolution, setRevolution] = useState(defaultRevolution);
