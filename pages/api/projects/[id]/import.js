@@ -34,7 +34,7 @@ const getTweetFields = ({ activity }) => {
 };
 
 const getDiscordFields = ({ activity, member, included }) => {
-  let { key, body, referenced_activities } = activity.attributes;
+  let { key, body, body_html, referenced_activities } = activity.attributes;
   let sourceId = key;
   let source = "discord";
   let sourceParentId = referenced_activities?.find(
@@ -63,13 +63,15 @@ const getDiscordFields = ({ activity, member, included }) => {
     actorName = name || username;
   }
 
-  let text = body;
+  let text = body || "";
+  let textHtml = body_html || "";
 
   return {
     sourceId,
     sourceParentId,
     source,
     text,
+    textHtml,
     actor,
     actorName,
     mentions,

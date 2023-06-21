@@ -28,7 +28,8 @@ export default function Activity({
   setSelection,
   setConnection,
 }) {
-  const member = community.findMemberByActivity(activity);
+  var member = community.findMemberByActivity(activity);
+  var renderHtml = activity.textHtml?.length > 0;
   return (
     <div key={activity.id} className="flex flex-col">
       <div className="flex items-center space-x-2 text-sm">
@@ -59,17 +60,17 @@ export default function Activity({
           )}
         </div>
       </div>
-      {activity.text && !activity.textHtml && (
-        <div className="flex space-x-2 text-xs text-indigo-300">
-          {activity.text}
-        </div>
-      )}
-      {activity.textHtml && (
+      {renderHtml && (
         <div className="flex space-x-2 text-xs text-indigo-300">
           <div
             className="tweet"
             dangerouslySetInnerHTML={{ __html: activity.textHtml }}
           ></div>
+        </div>
+      )}
+      {!renderHtml && (
+        <div className="flex space-x-2 text-xs text-indigo-300">
+          {activity.text}
         </div>
       )}
     </div>
