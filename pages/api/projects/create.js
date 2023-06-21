@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
   // Guard clause checks for first and last name,
   // and returns early if they are not found
-  if (!body.name || !body.url || !body.apiKey) {
+  if (!body.name || !body.workspace || !body.apiKey) {
     // Sends a HTTP bad request error code
     return res.status(400).json({ data: "Name or URL not found" });
   }
@@ -21,6 +21,7 @@ export default async function handler(req, res) {
     var project = await prisma.project.create({
       data: {
         name: body.name,
+        workspace: body.workspace,
         url: body.url,
         apiKey: body.apiKey,
         user: {

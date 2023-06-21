@@ -14,9 +14,9 @@ export default async function handler(req, res) {
 
   // Guard clause checks for first and last name,
   // and returns early if they are not found
-  if (!body.name || !body.url) {
+  if (!body.name || !body.workspace) {
     // Sends a HTTP bad request error code
-    return res.status(400).json({ data: "Name or URL not found" });
+    return res.status(400).json({ data: "Name or workspace not provided" });
   }
 
   var project = await authorizeProject({ id, user, res });
@@ -31,6 +31,7 @@ export default async function handler(req, res) {
       },
       data: {
         name: body.name,
+        workspace: body.workspace,
         url: body.url,
         apiKey: body.apiKey || project.apiKey,
       },

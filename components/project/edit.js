@@ -9,6 +9,7 @@ export default function Edit({ project, setProject, setEditMode }) {
 
   const [name, setName] = useState(project.name);
   const [url, setUrl] = useState(project.url);
+  const [workspace, setWorkspace] = useState(project.workspace);
   const [apiKey, setApiKey] = useState("");
 
   const deleteProject = () => {
@@ -35,6 +36,7 @@ export default function Edit({ project, setProject, setEditMode }) {
     const data = {
       url,
       name,
+      workspace,
       apiKey,
     };
     fetch(`/api/projects/${project.id}/update`, {
@@ -77,14 +79,14 @@ export default function Edit({ project, setProject, setEditMode }) {
           ></input>
         </div>
         <div className="flex flex-col space-y-1">
-          <div className="">Orbit Activities Page URL</div>
+          <div className="">Orbit Workspace</div>
           <input
             type="text"
             required
             className={c.inputClasses}
-            placeholder="https://app.orbit.love/<w>/activities.json?..."
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
+            placeholder="my-workspace"
+            value={workspace}
+            onChange={({ target }) => setWorkspace(target.value)}
           ></input>
         </div>
         <div className="flex flex-col space-y-1">
@@ -95,6 +97,16 @@ export default function Edit({ project, setProject, setEditMode }) {
             placeholder="*********************************"
             value={apiKey}
             onChange={({ target }) => setApiKey(target.value)}
+          ></input>
+        </div>
+        <div className="flex flex-col space-y-1">
+          <div className="">API URL (Optional/Advanced)</div>
+          <input
+            type="text"
+            className={c.inputClasses}
+            placeholder="https://app.orbit.love/<w>/activities.json?..."
+            value={url}
+            onChange={({ target }) => setUrl(target.value)}
           ></input>
         </div>
         <div className="flex-grow my-auto" />

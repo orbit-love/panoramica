@@ -7,12 +7,15 @@ export default async function handler(req, res) {
     return redirect(res);
   }
 
+  let where = {};
+  if (!user.admin) {
+    where.user = {
+      email: user.email,
+    };
+  }
+
   var projects = await prisma.project.findMany({
-    where: {
-      user: {
-        email: user.email,
-      },
-    },
+    where,
   });
   // don't return any api keys
   for (let project of projects) {

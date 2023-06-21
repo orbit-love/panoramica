@@ -34,6 +34,8 @@ export default function Index({ csrfToken, _projects }) {
     }
   }, []);
 
+  const user = session?.user;
+
   return (
     <>
       <Head />
@@ -48,16 +50,16 @@ export default function Index({ csrfToken, _projects }) {
       >
         <div className="flex flex-col items-center space-y-2 w-full font-thin">
           <h1 className="text-3xl">welcome to telescope</h1>
-          {session && (
+          {user && (
             <>
               <div className="flex space-x-4 text-sm">
-                <span>Signed in as {session.user.email}</span>
+                <span>Signed in as {user.email}</span>
                 <button className="underline" onClick={() => signOut()}>
                   Sign out
                 </button>
               </div>
               <div className="h-6"></div>
-              <Panel className="px-8 py-8 w-1/4">
+              <Panel className="px-8 py-8 w-1/3">
                 <div className="flex flex-col space-y-6 w-full">
                   <div className="flex flex-col items-baseline space-y-2">
                     <div className="flex items-baseline space-x-2">
@@ -68,14 +70,18 @@ export default function Index({ csrfToken, _projects }) {
                     </div>
                     {projects?.length === 0 && <div>None</div>}
                     {projects?.map((project) => (
-                      <div className="flex space-x-4" key={project.id}>
+                      <div
+                        className="flex justify-between w-full"
+                        key={project.id}
+                      >
                         <Link
                           prefetch={false}
                           className="underline"
                           href={`/projects/${project.id}`}
                         >
-                          {project.name}
+                          <span>{project.name}</span>
                         </Link>
+                        {user.admin && <span>{`${project.user.email}`}</span>}
                       </div>
                     ))}
                   </div>
@@ -85,7 +91,7 @@ export default function Index({ csrfToken, _projects }) {
               </Panel>
             </>
           )}
-          {!session && (
+          {!user && (
             <div className="py-2">
               <form
                 className="flex justify-center space-x-2 w-72"
@@ -124,10 +130,19 @@ export async function getServerSideProps(context) {
   const user = session?.user;
   var _projects = [];
   if (user) {
+    let where = {};
+    if (!user.admin) {
+      where.user = {
+        email: user.email,
+      };
+    }
     _projects = await prisma.project.findMany({
-      where: {
+      where,
+      include: {
         user: {
-          email: user.email,
+          select: {
+            email: true,
+          },
         },
       },
     });

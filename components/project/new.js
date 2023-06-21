@@ -8,6 +8,7 @@ export default function New({}) {
   const nameRef = useRef(null);
   const urlRef = useRef(null);
   const apiKeyRef = useRef(null);
+  const workspaceRef = useRef(null);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -16,6 +17,7 @@ export default function New({}) {
       url: urlRef.current.value,
       name: nameRef.current.value,
       apiKey: apiKeyRef.current.value,
+      workspace: workspaceRef.current.value,
     };
     fetch(url, {
       body: JSON.stringify(data),
@@ -38,6 +40,11 @@ export default function New({}) {
   return (
     <div className="flex flex-col space-y-2 w-full">
       <div className="text-lg font-semibold">Create a New Project</div>
+      <div className="text-sm">
+        A container for analyzing data from an Orbit workspace.
+      </div>
+      <div></div>
+      <div></div>
       <form
         action="/api/projects/create"
         method="post"
@@ -55,13 +62,13 @@ export default function New({}) {
           ></input>
         </div>
         <div className="flex flex-col space-y-1">
-          <div className="">Orbit Activities Page URL</div>
+          <div className="">Orbit Workspace Id (find in URL)</div>
           <input
-            ref={urlRef}
+            ref={workspaceRef}
             type="text"
             required
             className={c.inputClasses}
-            placeholder="https://app.orbit.love/<w>/activities?..."
+            placeholder="my-workspace"
           ></input>
         </div>
         <div className="flex flex-col space-y-1">
@@ -71,7 +78,16 @@ export default function New({}) {
             type="text"
             required
             className={c.inputClasses}
-            placeholder=""
+            placeholder="obw_abcdefabcdefabcdefabcdef"
+          ></input>
+        </div>
+        <div className="flex flex-col space-y-1">
+          <div className="">API URL (Optional/Advanced)</div>
+          <input
+            ref={urlRef}
+            type="text"
+            className={c.inputClasses}
+            placeholder="https://app.orbit.love/<w>/activities?..."
           ></input>
         </div>
         <div className="pt-2">

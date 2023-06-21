@@ -44,6 +44,7 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
+  admin         Boolean   @default(false)
   image         String?
   accounts      Account[]
   sessions      Session[]
@@ -63,6 +64,7 @@ model Project {
   userId        String
   user   User   @relation(fields: [userId], references: [id])
   name          String       @unique
+  workspace     String?
   url           String
   apiKey           String
   activities    Activity[]

@@ -6,6 +6,15 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    // add the admin flag on the session user object
+    async session({ session, user }) {
+      if (user) {
+        session.user.admin = user.admin;
+      }
+      return session;
+    },
+  },
   providers: [
     EmailProvider({
       server: {

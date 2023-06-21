@@ -7,30 +7,6 @@ import Head from "components/head";
 import Header from "components/header";
 import Vizualization from "components/visualization";
 
-export async function getServerSideProps(context) {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  var _project = null;
-  if (session && session.user) {
-    const { id } = context.query;
-    const user = session.user;
-    _project = await prisma.project.findFirst({
-      where: { id: id, user: { email: user.email } },
-    });
-  }
-  if (_project) {
-    return {
-      props: {
-        session,
-        _project,
-      },
-    };
-  } else {
-    return {
-      redirect: { destination: "/" },
-    };
-  }
-}
-
 export default function Page({ _project }) {
   const containerRef = useRef();
   const [project, setProject] = useState(_project);
@@ -97,4 +73,35 @@ export default function Page({ _project }) {
       </div>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  var _project = null;
+  if (session?.user) {
+    const { id } = context.query;
+    const user = session.user;
+    // check if the user has access
+    let where = { id };
+    if (!user.admin) {
+      where.user = {
+        email: user.email,
+      };
+    }
+    _project = await prisma.project.findFirst({
+      where,
+    });
+  }
+  if (_project) {
+    return {
+      props: {
+        session,
+        _project,
+      },
+    };
+  } else {
+    return {
+      redirect: { destination: "/" },
+    };
+  }
 }

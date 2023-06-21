@@ -250,7 +250,8 @@ const getAPIData = async ({
       // This assumes that the API returns a JSON object with a 'nextPage' property
       // that's null when there are no more pages.
       var nextUrl = response.data.links?.next;
-      if (nextUrl) {
+      // limit the pages to 10 or 2000 activities
+      if (nextUrl && page < 20) {
         resolve(
           getAPIData({
             url: nextUrl,
@@ -284,9 +285,17 @@ export default async function handler(req, res) {
       return;
     }
 
-    const apiKey = project.apiKey;
-    const url = project.url;
     const allData = [];
+
+    let { url, apiKey, workspace } = project;
+
+    // if a url is not provided, use the default
+    if (!url) {
+      // only conversational activity types with referenced tweets, 180 days default
+      let timeframe = `relative=this_90_days`;
+      let queryString = `activity_type=discord%3Amessage%3Asent%2Cdiscord%3Amessage%3Areplied%2Cdiscord%3Athread%3Areplied%2Cissue_comment%3Acreated%2Cissues%3Aopened%2Cpull_requests%3Aopened%2Ctweet%3Asent&include_referenced_activities=true&${timeframe}`;
+      url = `https://app.orbit.love/${workspace}/activities.json?${queryString}`;
+    }
 
     // delete existing activities for the project
     await prisma.activity.deleteMany({
@@ -308,8 +317,10 @@ export default async function handler(req, res) {
     const activities = await prisma.activity.findMany({
       where: {
         projectId: project.id,
+        sourceParentId: { not: null },
       },
     });
+
     for (let activity of activities) {
       if (activity.sourceParentId) {
         const parent = await prisma.activity.findFirst({
