@@ -40,6 +40,11 @@ const getDiscordFields = ({ activity, member, included }) => {
   let sourceParentId = referenced_activities?.find(
     (refActivity) => !!refActivity.key
   )?.key;
+  // if the parent is the same as the activity, skip it; this seems
+  // to be an odd case related to forum channels
+  if (sourceId === sourceParentId) {
+    sourceParentId = null;
+  }
 
   // once we have the text, we can update this
   let mentions = [];
