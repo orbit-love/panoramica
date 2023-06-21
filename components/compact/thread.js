@@ -8,7 +8,7 @@ export default function Thread(props) {
 
   return (
     <div
-      className={classnames(`flex flex-col`, {
+      className={classnames("flex flex-col", {
         "border-l border-indigo-700": nesting > 0,
         "pl-3": nesting > 0,
       })}
