@@ -41,7 +41,7 @@ export default function Widgets(props) {
     <>
       <DControls />
       <div
-        className={`w-[100vw] flex absolute bottom-0 left-0 z-10 items-end p-4 pointer-events-none`}
+        className={`w-[100vw] flex absolute bottom-0 left-0 z-10 justify-between items-end p-4 pointer-events-none`}
       >
         <div
           className={classnames(classes, width, {
@@ -110,7 +110,7 @@ export default function Widgets(props) {
               <div className={classnames(classes, "!h-auto !py-2 !px-0")}>
                 <Selection {...props} />
               </div>
-              <div className={classnames(classes, width, "!p-0")}>
+              <div className={classnames(classes, "!p-0")}>
                 <ActivityTabs {...props} />
               </div>
             </div>
