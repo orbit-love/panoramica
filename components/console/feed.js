@@ -4,17 +4,14 @@ import classnames from "classnames";
 import Activity from "components/compact/activity";
 import Thread from "components/compact/thread";
 
-const isThread = (activity) =>
-  !activity.parent && activity.children?.length > 0 && !activity.sourceParentId;
-
-const isReply = (activity) => Boolean(activity.parent);
-
-const isIsland = (activity) =>
-  !activity.parent && activity.children?.length === 0;
+const isThread = (thread) => thread.type === "thread";
+const isIsland = (thread) => thread.type === "island";
 
 // if an activity is a thread starter, render it as a thread
 // otherwise just render as a single activity
-const ActivityOrThread = ({ activity, index, ...props }) => {
+const ActivityOrThread = ({ activity, community, index, ...props }) => {
+  var thread = community.threads[activity.id];
+
   return (
     <div
       key={activity.id}
@@ -23,19 +20,24 @@ const ActivityOrThread = ({ activity, index, ...props }) => {
         "bg-opacity-60": index % 2 === 1,
       })}
     >
-      {isThread(activity) && (
-        <Thread activity={activity} nesting={0} {...props} />
+      {isThread(thread) && (
+        <Thread
+          activity={activity}
+          community={community}
+          thread={thread}
+          nesting={0}
+          {...props}
+        />
       )}
-      {!isThread(activity) && <Activity activity={activity} {...props} />}
+      {isIsland(thread) && (
+        <Activity activity={activity} community={community} {...props} />
+      )}
     </div>
   );
 };
 
 export default function Feed(props) {
-  let { activities } = props;
-
-  // filter out replies which do not get put top-level in the feed
-  // activities = activities.filter((activity) => !isReply(activity));
+  let { activities, community } = props;
 
   // only show the first 100 for performance reasons
   activities = activities.slice(0, 100);
@@ -48,6 +50,7 @@ export default function Feed(props) {
             <ActivityOrThread
               key={activity.id}
               activity={activity}
+              community={community}
               index={index}
               {...props}
             />

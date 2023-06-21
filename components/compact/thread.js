@@ -4,7 +4,7 @@ import classnames from "classnames";
 import Activity from "components/compact/activity";
 
 export default function Thread(props) {
-  let { activity, community, nesting } = props;
+  let { thread, community, nesting } = props;
 
   return (
     <div
@@ -16,16 +16,19 @@ export default function Thread(props) {
       <div className="py-2">
         <Activity {...props} />
       </div>
-      {activity.children.map((id) => {
+      {thread.children?.map((id) => {
         // if the child activity is missing, it's because it didn't get
         // brought back in the time slice, so just skip it
         var childActivity = community.activities.find((a) => a.id === id);
+        var childThread = community.threads[id];
         if (childActivity) {
           return (
             <Thread
               {...props}
-              key={childActivity.id}
+              key={id}
               activity={childActivity}
+              thread={childThread}
+              community={community}
               nesting={nesting + 1}
             />
           );

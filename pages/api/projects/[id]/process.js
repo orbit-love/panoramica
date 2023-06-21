@@ -57,8 +57,6 @@ export default async function handler(req, res) {
     await graphConnection.run(`CREATE INDEX ON :Project(id)`);
     await graphConnection.run(`CREATE INDEX ON :Member(globalActor)`);
     await graphConnection.run(`CREATE INDEX ON :Activity(id)`);
-    await graphConnection.run(`CREATE INDEX ON :Activity(low)`);
-    await graphConnection.run(`CREATE INDEX ON :Activity(high)`);
     await graphConnection.run(`CREATE INDEX ON :Activity(timestamp)`);
 
     console.log("Memgraph: Created uniqueness constraint");

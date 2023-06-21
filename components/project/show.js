@@ -98,7 +98,7 @@ export default function Show({
     // if high is 0 it means we're still initiatlizing, so don't
     // do anything; onSliderChange will fire only the proper max value is
     // set due to the fetchStats call
-    if (high !== 0) {
+    if (!community || high !== 0) {
       fetchProject({ low, high });
       setLow(low);
       setHigh(high);
@@ -126,6 +126,7 @@ export default function Show({
   };
 
   const fetchStats = useCallback(async () => {
+    setLoading(true);
     return fetch(`/api/projects/${project.id}/stats`)
       .then((res) => res.json())
       .then(({ result, message }) => {
@@ -135,6 +136,7 @@ export default function Show({
           var stats = new Stats({ result });
           setStats(stats);
         }
+        setLoading(false);
       });
   }, [project.id, setStats]);
 
@@ -163,7 +165,7 @@ export default function Show({
       });
   };
 
-  const imported = stats?.activities?.count > 0;
+  const empty = stats?.activities?.count === 0;
   return (
     <>
       <div className="flex items-baseline space-x-2">
@@ -173,7 +175,7 @@ export default function Show({
         <span className="text-md">{project.name}</span>
       </div>
       <div className="border-b border-indigo-900" />
-      {imported && (
+      {stats && !empty && (
         <div className="pb-6">
           <ActivitiesSlider
             community={community}
@@ -185,7 +187,7 @@ export default function Show({
         </div>
       )}
       <div className="flex flex-col space-y-1">
-        {!imported && (
+        {empty && !loading && (
           <div className="text-green-500">
             The project has been created. Now, press the Import button to fetch
             data into the project.
