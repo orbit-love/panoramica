@@ -51,7 +51,7 @@ export default function Show({
 
       var params = "";
       // if a stats are already loaded, we should use low and high to narrow the query
-      if (stats && low && high) {
+      if (stats && (low || high)) {
         const { minDate } = stats.getActivityDayRange();
         const from = c.addDays(minDate, low).toISOString();
         const to = c.addDays(minDate, high).toISOString();
