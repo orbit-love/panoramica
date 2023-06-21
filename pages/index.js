@@ -4,6 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { getCsrfToken } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "pages/api/auth/[...nextauth]";
+import { prisma } from "lib/db";
 import c from "lib/common";
 
 import Head from "components/head";
@@ -12,10 +13,10 @@ import Button from "components/button";
 import Panel from "components/panel";
 import New from "components/project/new";
 
-export default function Index({ csrfToken }) {
+export default function Index({ csrfToken, _projects }) {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState(_projects);
 
   useEffect(() => {
     const loadProjects = () => {
@@ -28,7 +29,7 @@ export default function Index({ csrfToken }) {
           setLoading(false);
         });
     };
-    if (session) {
+    if (session && projects.length === 0) {
       loadProjects();
     }
   }, []);
@@ -120,8 +121,23 @@ export default function Index({ csrfToken }) {
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);
+  const user = session?.user;
+  var _projects = [];
+  if (user) {
+    _projects = await prisma.project.findMany({
+      where: {
+        user: {
+          email: user.email,
+        },
+      },
+    });
+    // don't return any api keys
+    for (let project of _projects) {
+      delete project.apiKey;
+    }
+  }
   const csrfToken = (await getCsrfToken(context)) || "";
   return {
-    props: { session, csrfToken },
+    props: { session, csrfToken, _projects },
   };
 }
