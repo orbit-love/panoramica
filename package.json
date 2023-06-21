@@ -24,7 +24,7 @@
     "@mdx-js/react": "^2.1.1",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@next/mdx": "^12.1.4",
-    "@prisma/client": "^4.15.0",
+    "@prisma/client": "^4.16.0",
     "axios": "^1.4.0",
     "classnames": "^2.3.2",
     "compromise": "^14.9.0",
@@ -33,7 +33,6 @@
     "next": "^13.4.5",
     "next-auth": "^4.22.1",
     "nodemailer": "^6.9.3",
-    "prisma": "^4.15.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hotkeys-hook": "^4.4.0",
@@ -41,11 +40,12 @@
     "react-tabs": "^6.0.1"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.24",
     "@tailwindcss/typography": "^0.5.2",
+    "autoprefixer": "^10.4.14",
     "eslint": "8.11.0",
     "eslint-config-next": "^13.4.5",
+    "postcss": "^8.4.24",
+    "prisma": "^4.16.0",
     "tailwindcss": "^3.0.23",
     "tsx": "^3.12.7"
   }
