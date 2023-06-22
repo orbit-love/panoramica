@@ -16,11 +16,6 @@ export default function Visualization({
 }) {
   const [_, forceUpdate] = useReducer((x) => x + 1, 0);
 
-  // does the browser user prefer reduced motion?
-  const isReduced =
-    window.matchMedia(`(prefers-reduced-motion: reduce)`) === true ||
-    window.matchMedia(`(prefers-reduced-motion: reduce)`).matches === true;
-
   // the default RPM of the orbits
   const { defaultRevolution, cycleDelay, firstCycleDelay } = c.visualization;
 
@@ -37,7 +32,7 @@ export default function Visualization({
   const [high, setHigh] = useState(0);
   const [sort, setSort] = useState("gravity");
 
-  const [animate, setAnimate] = useState(!isReduced);
+  const [animate, setAnimate] = useState(false);
   const [cycle, setCycle] = useState(false);
   const [selection, setSelection] = useState(null);
   const [connection, setConnection] = useState(null);
