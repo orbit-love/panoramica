@@ -2,7 +2,7 @@ import React from "react";
 import CompactMember from "components/compact/member";
 import { Frame, Scroll, Header, Member } from "components/skydeck";
 
-export default function MemberList(props) {
+export default function Members(props) {
   let { community, widgets, setWidgets } = props;
   let { members } = community;
   let onClickFor = (member) => {

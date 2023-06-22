@@ -7,7 +7,7 @@ import levelsData from "data/levels";
 import { authOptions } from "pages/api/auth/[...nextauth]";
 
 import Head from "components/head";
-import { Source, MemberList } from "components/skydeck";
+import { Source, Members, Entities } from "components/skydeck";
 
 function removeItem(array, item) {
   const index = array.indexOf(item);
@@ -57,7 +57,8 @@ export default function Page({ _project }) {
   let Twitter = (props) => (
     <Source source="twitter" title="Twitter" {...props} />
   );
-  let Members = (props) => <MemberList {...props} />;
+  let MembersWidget = (props) => <Members {...props} />;
+  let EntitiesWidget = (props) => <Entities {...props} />;
 
   useEffect(() => {
     if (widgets.length === 0) {
@@ -72,7 +73,13 @@ export default function Page({ _project }) {
             const newCommunity = new Community({ result, levels });
             setCommunity(newCommunity);
             setLoading(false);
-            setWidgets([Members, Discord, GitHub, Twitter]);
+            setWidgets([
+              MembersWidget,
+              EntitiesWidget,
+              Discord,
+              GitHub,
+              Twitter,
+            ]);
           }
         });
     }

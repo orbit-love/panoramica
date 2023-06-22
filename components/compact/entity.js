@@ -1,14 +1,16 @@
 import React from "react";
 import classnames from "classnames";
 
-export default function CompactEntity({ entity, setEntity, active }) {
-  const onClick = () => {
-    if (active) {
-      setEntity(null);
-    } else {
-      setEntity(entity);
-    }
-  };
+export default function CompactEntity({ entity, setEntity, active, onClick }) {
+  if (!onClick) {
+    onClick = () => {
+      if (active) {
+        setEntity(null);
+      } else {
+        setEntity(entity);
+      }
+    };
+  }
   return (
     <button onClick={onClick} key={entity.id} className="px-1 py-1">
       <div

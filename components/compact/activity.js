@@ -44,7 +44,7 @@ export default function Activity({
         </div>
       </div>
       {renderHtml && (
-        <div className="flex space-x-2 text-xs text-indigo-300">
+        <div className="text-sm text-indigo-300">
           <div
             className="tweet overflow-hidden break-words"
             dangerouslySetInnerHTML={{ __html: activity.textHtml }}
@@ -52,7 +52,7 @@ export default function Activity({
         </div>
       )}
       {!renderHtml && (
-        <div className="flex space-x-2 text-xs text-indigo-300 break-words">
+        <div className="overflow-hidden text-sm text-indigo-300 break-words">
           {activity.text}
         </div>
       )}

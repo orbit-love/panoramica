@@ -8,11 +8,11 @@ export default function Entity(props) {
   var feed = new Feed({ entity, ...props });
   var activities = feed.getFilteredActivities();
 
-  var title = <span>{entity.id}</span>;
-
   return (
     <Frame>
-      <Header title={title} length={activities.length} />
+      <Header length={activities.length} {...props}>
+        <span>{entity.id}</span>
+      </Header>
       <Scroll>
         <Activities activities={activities} {...props} />
       </Scroll>
