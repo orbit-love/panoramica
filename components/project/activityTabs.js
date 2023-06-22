@@ -10,8 +10,20 @@ export default function ActivityTabs(props) {
   var [source, setSource] = useState(null);
 
   var feed = new Feed(props);
-  var sources = feed.getSources();
-  var activities = feed.getFilteredActivities({ source });
+  var activities = feed.getFilteredActivities();
+  var sources = feed.getSources({ activities });
+
+  // if a source is active but there are no activities to match it
+  // clear it out - this can happen e.g. when a member's connection
+  // if selected
+  if (source && sources.indexOf(source) === -1) {
+    setSource(null);
+  }
+
+  // filter by source
+  activities = activities.filter(
+    (activity) => !source || source === activity.source
+  );
 
   return (
     <div className="flex flex-col space-y-2 w-full">
