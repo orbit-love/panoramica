@@ -8,12 +8,12 @@ export default function Thread(props) {
 
   return (
     <div
-      className={classnames("flex flex-col", {
+      className={classnames("flex flex-col pt-1", {
         "border-l border-indigo-700": nesting > 0,
         "pl-3": nesting > 0,
       })}
     >
-      <div className="py-2">
+      <div className="pb-1">
         <Activity {...props} />
       </div>
       {thread.children?.map((id) => {

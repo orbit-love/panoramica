@@ -18,6 +18,7 @@ export default function Show({
   setLow,
   high,
   setHigh,
+  setSelection,
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -90,6 +91,7 @@ export default function Show({
   // fetch initially
   useEffect(() => {
     console.log("Fetching project from use effect");
+    setSelection({ name: "Mission" });
     // fetchProject({ low: 0, high: 0 });
   }, []);
 

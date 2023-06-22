@@ -15,7 +15,7 @@ const ActivityOrThread = ({ activity, community, index, ...props }) => {
   return (
     <div
       key={activity.id}
-      className={classnames("flex flex-col space-y-0 px-4 py-2", {
+      className={classnames("flex flex-col pt-1 pb-2 px-4", {
         "bg-indigo-900": index % 2 === 1,
         "bg-opacity-60": index % 2 === 1,
       })}

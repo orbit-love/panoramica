@@ -1,27 +1,8 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
 import NameAndIcon from "components/compact/name_and_icon";
-
-const SourceIcon = function ({ activity }) {
-  let { source } = activity;
-  switch (source) {
-    case "twitter":
-      return <FontAwesomeIcon icon="fa-brands fa-twitter" />;
-    case "discord":
-      return <FontAwesomeIcon icon="fa-brands fa-discord" />;
-    case "github":
-      return <FontAwesomeIcon icon="fa-brands fa-github" />;
-    case "discourse":
-      return <FontAwesomeIcon icon="fa-brands fa-discourse" />;
-    default:
-      let cleanedSourceType = activity.sourceType
-        ?.replace(/_/g, " ")
-        .replace(/activity/, "");
-      return <span title={cleanedSourceType}>{activity.sourceType}</span>;
-  }
-};
+import SourceIcon from "components/compact/source_icon";
 
 export default function Activity({
   activity,
@@ -33,7 +14,7 @@ export default function Activity({
   var member = community.findMemberByActivity(activity);
   var renderHtml = activity.textHtml?.length > 0;
   return (
-    <div key={activity.id} className="flex flex-col space-y-1">
+    <div key={activity.id} className="flex flex-col pb-1">
       <div className="flex items-center space-x-2 text-sm">
         <NameAndIcon
           member={member}

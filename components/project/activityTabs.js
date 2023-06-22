@@ -1,38 +1,49 @@
-import React from "react";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import React, { useState } from "react";
+import classnames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import c from "lib/common";
 import Feed from "lib/community/feed";
 import FeedComponent from "components/console/feed";
+import SourceIcon from "components/compact/source_icon";
 
 export default function ActivityTabs(props) {
-  var feed = new Feed(props);
-  var activities = feed.getFilteredActivities();
+  var [source, setSource] = useState(null);
 
-  var tabProps = {
-    selectedClassName: "!text-indigo-100",
-    className:
-      "cursor-pointer text-indigo-500 px-4 font-semibold flex space-x-2 items-baseline",
-  };
+  var feed = new Feed(props);
+  var sources = feed.getSources();
+  var activities = feed.getFilteredActivities({ source });
 
   return (
-    <Tabs className="w-full">
-      <TabList
-        className={`flex fixed w-[calc(32vw-10px)] items-baseline pt-4 pb-2 bg-[${c.backgroundColor}] rounded-t-lg`}
-      >
-        <Tab {...tabProps}>
-          <span className="text-lg">Activities</span>
-          <span className="font-normal text-indigo-500">
-            {activities.length}
-          </span>
-        </Tab>
-      </TabList>
-      <div className="pt-1 px-4 mb-1 mt-12 w-full border-b border-indigo-900" />
-      <div className="">
-        <TabPanel>
-          <FeedComponent {...props} activities={activities} />
-        </TabPanel>
+    <div className="flex flex-col space-y-2 w-full">
+      <div className="flex items-baseline px-4 pt-4 space-x-1">
+        <span className="text-lg font-bold">Activities</span>
+        <span className="px-1 font-normal text-indigo-500">
+          {activities.length}
+        </span>
+        <span className="flex-grow !mx-auto"></span>
+        <div className="flex items-baseline space-x-3">
+          {sources.map((_source) => (
+            <button
+              key={_source}
+              onClick={() =>
+                _source === source ? setSource(null) : setSource(_source)
+              }
+              title={_source}
+            >
+              <div
+                className={classnames({
+                  "text-indigo-700": source !== _source,
+                  "text-indigo-400": source === _source,
+                })}
+              >
+                <SourceIcon activity={{ source: _source }} />
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
-    </Tabs>
+      <div className="border-b border-indigo-900 !mb-0" />
+      <FeedComponent {...props} activities={activities} />
+    </div>
   );
 }
