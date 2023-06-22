@@ -48,7 +48,7 @@ const getDiscordFields = ({ activity, member, included }) => {
 
   // once we have the text, we can update this
   // we need body_html as body does not have the mentions substituted
-  let mentions = g.getMentions(body_html);
+  let mentions = c.getMentions(body_html);
   let entities = [];
   let actor;
   let actorName;
