@@ -15,11 +15,12 @@ export default function Source(props) {
   }
 
   // for performance
+  var length = activities.length;
   activities = activities.slice(0, 50);
 
   return (
     <Frame>
-      <Header length={activities.length} {...props}>
+      <Header length={length} {...props}>
         <SourceIcon activity={{ source }} />
         <span>{title}</span>
       </Header>

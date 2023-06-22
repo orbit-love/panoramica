@@ -1,7 +1,5 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import c from "lib/common";
 import NameAndIcon from "components/compact/name_and_icon";
 import CompactConnections from "components/compact/connections";
 import Meter from "components/meter";
@@ -17,8 +15,6 @@ export default function Member({
   entity,
   setEntity,
 }) {
-  const color = c.orbitLevelColorScale(member.level);
-
   // entities could also be returned in the member graph query
   let entities = [];
   for (let [_, entity] of Object.entries(community.entities)) {

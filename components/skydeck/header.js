@@ -8,7 +8,7 @@ export default function Header({ children, length, remove }) {
         <span className="flex-inline items-baseline space-x-2 text-lg font-semibold">
           {children}
         </span>
-        <span className="text-md px-1 text-indigo-500">{length}</span>
+        {length && <span className="px-1 text-indigo-500">{length}</span>}
         <span className="!mx-auto" />
         <button className="absolute top-3 right-4 text-lg" onClick={remove}>
           <FontAwesomeIcon icon="xmark" />
