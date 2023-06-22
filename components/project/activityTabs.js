@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import classnames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Feed from "lib/community/feed";
 import FeedComponent from "components/console/feed";
@@ -44,7 +43,7 @@ export default function ActivityTabs(props) {
             >
               <div
                 className={classnames({
-                  "text-indigo-700": source !== _source,
+                  "text-indigo-700 hover:text-indigo-600": source !== _source,
                   "text-indigo-400": source === _source,
                 })}
               >
