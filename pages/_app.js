@@ -35,6 +35,7 @@ import {
   faTwitter,
   faDiscord,
   faGithub,
+  faDiscourse,
 } from "@fortawesome/free-brands-svg-icons";
 
 import {
@@ -117,7 +118,8 @@ library.add(
   faTelescope,
   faTwitter,
   faDiscord,
-  faGithub
+  faGithub,
+  faDiscourse
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";

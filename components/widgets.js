@@ -110,7 +110,7 @@ export default function Widgets(props) {
               <div className={classnames(classes, "!h-auto !py-2 !px-0")}>
                 <Selection {...props} />
               </div>
-              <div className={classnames(classes, "!p-0")}>
+              <div className={classnames(classes, "!h-auto !p-0")}>
                 <ActivityTabs {...props} />
               </div>
             </div>

@@ -3,13 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function NumberStats({ member }) {
   return (
-    <div className="flex justify-between space-x-2">
-      <div className="flex items-center space-x-1 w-12 text-indigo-500">
-        <FontAwesomeIcon icon="heart" />
+    <div className="flex space-x-2">
+      <div className="flex justify-end items-center space-x-1 w-12 text-indigo-500">
+        <FontAwesomeIcon icon="heart" className="text-xs" />
         <span title={member.love}>{member.activityCount}</span>
       </div>
-      <div className="flex items-center space-x-1 w-12 text-indigo-500">
-        <FontAwesomeIcon icon="signal-stream" />
+      <div className="flex justify-end items-center space-x-1 w-12 text-indigo-500">
+        <FontAwesomeIcon icon="signal-stream" className="text-xs" />
         <span title={member.reach}>{member.connectionCount}</span>
       </div>
     </div>

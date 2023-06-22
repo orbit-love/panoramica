@@ -43,7 +43,7 @@ export default function Feed(props) {
   activities = activities.slice(0, 100);
 
   return (
-    <div className="flex overflow-x-hidden overflow-y-scroll flex-col space-y-2 w-full">
+    <div className="flex overflow-x-hidden overflow-y-scroll h-[calc(40vh-59px)] flex-col space-y-2 w-full">
       {activities.length > 0 && (
         <>
           {activities.map((activity, index) => (

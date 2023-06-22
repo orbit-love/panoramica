@@ -47,7 +47,8 @@ const getDiscordFields = ({ activity, member, included }) => {
   }
 
   // once we have the text, we can update this
-  let mentions = [];
+  // we need body_html as body does not have the mentions substituted
+  let mentions = g.getMentions(body_html);
   let entities = [];
   let actor;
   let actorName;
@@ -59,6 +60,61 @@ const getDiscordFields = ({ activity, member, included }) => {
   });
   if (discordIdentity) {
     let { username, name } = discordIdentity.attributes;
+    actor = username;
+    actorName = name || username;
+  }
+
+  let text = body || "";
+  let textHtml = body_html || "";
+
+  return {
+    sourceId,
+    sourceParentId,
+    source,
+    text,
+    textHtml,
+    actor,
+    actorName,
+    mentions,
+    entities,
+  };
+};
+
+const getDiscourseFields = ({ activity, sourceType, member, included }) => {
+  let { key, body, body_html, properties, activity_link, d_title } =
+    activity.attributes;
+  let { discourse_host } = properties;
+  let sourceId = key;
+  let source = "discourse";
+
+  // only posts have a potential parent, not topics
+  // for now a post's parent is the topic
+  // ultimately better to use referenced_activities
+  let sourceParentId;
+  if (sourceType === "discourse_post_activity") {
+    let topicNumber = activity_link.split("/").slice(-2, -1);
+    // restore the dots in the discourse host name
+    discourse_host = discourse_host.replaceAll("-", ".");
+    sourceParentId = `${discourse_host}/topic/#${topicNumber}`;
+  }
+  if (sourceType === "discourse_topic_activity") {
+    body = d_title;
+    body_html = d_title;
+  }
+
+  // parse out mentions
+  let mentions = c.getMentions(body);
+  let entities = [];
+  let actor;
+  let actorName;
+
+  let discourseIdentity = getIdentity({
+    type: "discourse_identity",
+    member,
+    included,
+  });
+  if (discourseIdentity) {
+    let { username, name } = discourseIdentity.attributes;
     actor = username;
     actorName = name || username;
   }
@@ -129,10 +185,9 @@ const getGitHubFields = ({ activity, member, included }) => {
   };
 };
 
-const getTypeFields = ({ activity, member, included }) => {
-  // the goal though is to pull the actor id from the platform
-  const props = { activity, member, included };
-  switch (activity.type) {
+const getTypeFields = (props) => {
+  const { sourceType } = props;
+  switch (sourceType) {
     // set actor and actor_name to the local version where possible
     // actor should be the username or equivalent
     case "tweet_activity":
@@ -141,6 +196,9 @@ const getTypeFields = ({ activity, member, included }) => {
     case "discord_thread_replied_activity":
     case "discord_message_replied_activity":
       return getDiscordFields(props);
+    case "discourse_post_activity":
+    case "discourse_topic_activity":
+      return getDiscourseFields(props);
     case "issue_activity":
     case "pull_request_activity":
     case "issue_comment_activity":
@@ -179,7 +237,7 @@ const getFields = ({ project, activity, included }) => {
   var { name, slug } = member.attributes;
 
   const { activity_link, properties } = activity.attributes;
-  var typeFields = getTypeFields({ activity, member, included });
+  var typeFields = getTypeFields({ activity, sourceType, member, included });
 
   // if no actor was found, use the global member information
   if (!typeFields.actor) {
