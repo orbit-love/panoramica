@@ -14,7 +14,6 @@ export default function Mission({
   setConnection,
   entity,
 }) {
-  var title;
   var members = community.members;
   if (entity) {
     members = members.filter(
@@ -27,9 +26,6 @@ export default function Mission({
         <span className="text-lg font-bold">Members</span>
         <span className="text-md px-1 text-indigo-500">{members.length}</span>
         <span className="!mx-auto" />
-        <div className="flex overflow-hidden items-baseline space-x-2 text-sm">
-          {title}
-        </div>
       </div>
       <div className="border-b border-indigo-900" />
       <div className="pb-1 text-sm text-indigo-300">

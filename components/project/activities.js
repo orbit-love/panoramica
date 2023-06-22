@@ -5,7 +5,7 @@ import Feed from "lib/community/feed";
 import FeedComponent from "components/console/feed";
 import SourceIcon from "components/compact/source_icon";
 
-export default function ActivityTabs(props) {
+export default function Activities(props) {
   var [source, setSource] = useState(null);
 
   var feed = new Feed(props);

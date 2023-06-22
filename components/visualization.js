@@ -4,7 +4,6 @@ import c from "lib/common";
 import Shortcuts from "components/shortcuts";
 import helper from "lib/visualization/helper";
 import Widgets from "components/widgets";
-import MemberGraph from "components/memberGraph";
 
 export default function Visualization({
   width,
@@ -41,8 +40,6 @@ export default function Visualization({
   const [showInfo, setShowInfo] = useState(false);
   const [showPanel, setShowPanel] = useState(true);
   const [revolution, setRevolution] = useState(defaultRevolution);
-  const [data, setData] = useState();
-  const [graph, setGraph] = useState();
 
   // the activities for the running project and the focused range
   const prevShowNetwork = c.usePrevious(showNetwork);
@@ -186,28 +183,6 @@ export default function Visualization({
           }}
         ></svg>
       </div>
-      {/* {community && (
-        <MemberGraph
-          width={width}
-          height={height}
-          community={community}
-          selection={selection}
-          setSelection={setSelection}
-          graph={graph}
-          setGraph={setGraph}
-          showNetwork={showNetwork}
-          setShowNetwork={setShowNetwork}
-          data={data}
-          setData={setData}
-          levels={levels}
-          low={low}
-          setLow={setLow}
-          high={high}
-          setHigh={setHigh}
-          connection={connection}
-          setConnection={setConnection}
-        />
-      )} */}
       <div className="hidden bg-[#0F0A25] bg-[#150D33] text-[#eef2ff] text-[#1D1640]" />
       <Widgets
         svgRef={svgRef}
@@ -228,8 +203,6 @@ export default function Visualization({
         sort={sort}
         setSort={setSort}
         forceUpdate={forceUpdate}
-        data={data}
-        setData={setData}
         levels={levels}
         project={project}
         setProject={setProject}

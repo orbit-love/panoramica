@@ -91,7 +91,9 @@ export default function Show({
   // fetch initially
   useEffect(() => {
     console.log("Fetching project from use effect");
-    setSelection({ name: "Mission" });
+    if (setSelection) {
+      setSelection({ name: "Mission" });
+    }
     // fetchProject({ low: 0, high: 0 });
   }, []);
 

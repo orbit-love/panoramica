@@ -9,11 +9,14 @@ export default function CompactMember({
   setSelection,
   metrics,
   setConnection,
+  onClick,
 }) {
-  const onClick = () => {
-    setConnection(null);
-    setSelection(member);
-  };
+  if (!onClick) {
+    onClick = () => {
+      setConnection(null);
+      setSelection(member);
+    };
+  }
   return (
     <button
       onClick={onClick}
