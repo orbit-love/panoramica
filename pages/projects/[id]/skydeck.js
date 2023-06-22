@@ -105,11 +105,11 @@ export default function Page({ _project }) {
         id="container"
         className="space-gradient p-4"
         style={{
-          width: "200vw",
+          width: "100vw",
           height: "100vh",
         }}
       >
-        <div className="flex space-x-4">
+        <div className="flex overflow-x-scroll space-x-4">
           {widgets.map((Widget) => (
             <Widget
               key={Widget}
