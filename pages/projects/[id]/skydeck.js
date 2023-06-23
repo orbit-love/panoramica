@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import Link from "next/link";
 import { getServerSession } from "next-auth/next";
 import { prisma } from "lib/db";
 
@@ -7,7 +9,8 @@ import levelsData from "data/levels";
 import { authOptions } from "pages/api/auth/[...nextauth]";
 
 import Head from "components/head";
-import { Source, Members, Entities } from "components/skydeck";
+import { Home } from "components/skydeck";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function removeItem(array, item) {
   const index = array.indexOf(item);
@@ -23,11 +26,23 @@ export default function Page({ _project }) {
   const containerRef = useRef();
   const [project, _] = useState(_project);
 
-  const [__, setLoading] = useState(false);
+  let HomeWidget = (props) => <Home {...props} />;
+  let defaultWidgets = [HomeWidget];
+
   const [community, setCommunity] = useState(null);
   const [low, setLow] = useState(0);
   const [high, setHigh] = useState(0);
-  const [widgets, setWidgets] = useState([]);
+  const [widgets, setWidgets] = useState(defaultWidgets);
+
+  let removeWidget = useCallback(
+    (widget) => {
+      setWidgets(removeItem(widgets, widget));
+    },
+    [widgets]
+  );
+  let resetWidgets = () => {
+    setWidgets(defaultWidgets);
+  };
 
   // transform levels into a map
   const levels = {};
@@ -38,7 +53,7 @@ export default function Page({ _project }) {
   });
 
   const props = {
-    project: _project,
+    project,
     community,
     setCommunity,
     low,
@@ -48,54 +63,38 @@ export default function Page({ _project }) {
     levels,
     widgets,
     setWidgets,
+    removeWidget,
+    resetWidgets,
   };
 
-  let Discord = (props) => (
-    <Source source="discord" title="Discord" {...props} />
-  );
-  let GitHub = (props) => <Source source="github" title="GitHub" {...props} />;
-  let Twitter = (props) => (
-    <Source source="twitter" title="Twitter" {...props} />
-  );
-  let MembersWidget = (props) => <Members {...props} />;
-  let EntitiesWidget = (props) => <Entities {...props} />;
+  useHotkeys("escape", () => resetWidgets(), [resetWidgets]);
+  useHotkeys("backspace", () => setWidgets(widgets.slice(0, -1)), [
+    widgets,
+    setWidgets,
+  ]);
 
-  useEffect(() => {
-    if (widgets.length === 0) {
-      setLoading(true);
-      fetch(`/api/projects/${project.id}?`)
-        .then((res) => res.json())
-        .then(({ result, message }) => {
-          console.log("Project fetch: finished");
-          if (message) {
-            console.log("Error fetching project", message);
-          } else {
-            const newCommunity = new Community({ result, levels });
-            setCommunity(newCommunity);
-            setLoading(false);
-            setWidgets([
-              MembersWidget,
-              EntitiesWidget,
-              Discord,
-              GitHub,
-              Twitter,
-            ]);
-          }
-        });
-    }
-  }, []);
+  var Logo = (
+    <div className="flex flex-col space-y-1 text-2xl font-thin">
+      <span className="opacity-90">s</span>
+      <span className="opacity-80">k</span>
+      <span className="opacity-80">y</span>
+      <span className="opacity-70">d</span>
+      <span className="opacity-60">e</span>
+      <span className="opacity-50">c</span>
+      <span className="opacity-40">k</span>
+    </div>
+  );
 
-  // var Logo = (
-  //   <div className="flex px-2 text-3xl font-thin">
-  //     <span className="opacity-90 px-[3px]">s</span>
-  //     <span className="opacity-80 px-[3px]">k</span>
-  //     <span className="opacity-80 px-[3px]">y</span>
-  //     <span className="opacity-70 px-[3px]">d</span>
-  //     <span className="opacity-60 px-[3px]">e</span>
-  //     <span className="opacity-50 px-[3px]">c</span>
-  //     <span className="opacity-40 px-[3px]">k</span>
-  //   </div>
-  // );
+  let addWidget = useCallback(
+    (widget, index) => {
+      setWidgets([
+        ...widgets.slice(0, index),
+        widget,
+        ...widgets.slice(index, widgets.length),
+      ]);
+    },
+    [widgets]
+  );
 
   return (
     <>
@@ -109,11 +108,23 @@ export default function Page({ _project }) {
           height: "100vh",
         }}
       >
-        <div className="flex overflow-x-scroll space-x-4">
-          {widgets.map((Widget) => (
+        <div className="flex overflow-x-scroll space-x-3">
+          <div className="flex flex-col py-3 pr-3 space-y-2 h-full text-indigo-600">
+            <Link
+              prefetch={false}
+              className="underline hover:text-indigo-400"
+              href={`/`}
+            >
+              <FontAwesomeIcon icon="arrow-left" />
+            </Link>
+            <div>{Logo}</div>
+          </div>
+          {widgets.map((Widget, index) => (
             <Widget
               key={Widget}
-              remove={() => setWidgets(removeItem(widgets, Widget))}
+              index={index}
+              remove={() => removeWidget(Widget)}
+              addWidget={(widget) => addWidget(widget, index + 1)}
               {...props}
             />
           ))}

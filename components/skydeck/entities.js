@@ -22,8 +22,9 @@ export default function Entities(props) {
 
   return (
     <Frame>
-      <Header length={entities.length} {...props}>
-        Entities
+      <Header {...props}>
+        <div>Entities</div>
+        <div className="text-indigo-500">{entities.length}</div>
       </Header>
       <Scroll>
         <div className="flex flex-col px-4">

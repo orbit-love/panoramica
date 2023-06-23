@@ -71,6 +71,7 @@ export default function Member(props) {
                   setConnection={null}
                 />
               </div>
+              <div className="border-b border-indigo-900" />
             </>
           )}
           <Activities activities={activities} {...props} />

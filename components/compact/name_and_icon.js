@@ -14,7 +14,7 @@ export default function NameAndIcon({
     return <div>No member!</div>;
   }
   if (!onClick) {
-    onClick = () => {
+    onClick = (member) => {
       setConnection(null);
       if (selection?.id === member.id) {
         setSelection({ name: "Mission" });
@@ -25,7 +25,7 @@ export default function NameAndIcon({
   }
   return (
     <div
-      onClick={onClick}
+      onClick={() => onClick(member)}
       className="flex items-center space-x-1 cursor-pointer"
     >
       <OrbitLevelIcon number={member.level} />

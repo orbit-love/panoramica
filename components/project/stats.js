@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect } from "react";
 
 import c from "lib/common";
-import Stats from "lib/community/stats";
 
 export default function StatsComponent({ community, stats, fetchStats }) {
   // do only on mount
@@ -10,13 +9,13 @@ export default function StatsComponent({ community, stats, fetchStats }) {
   }, []);
 
   return (
-    <div className="flex items-baseline space-x-2">
+    <div className="flex items-baseline space-x-2 w-full">
       {stats && community && (
-        <table className="table border-separate [border-spacing:0] text-sm w-full">
+        <table className="table border-separate [border-spacing:0] text-sm w-full whitespace-nowrap">
           <thead>
             <tr>
-              <td className="w-1/3 font-semibold"></td>
-              <td className="w-24 font-semibold">In View</td>
+              <td className="w-2/3 font-semibold"></td>
+              <td className="w-1/3 font-semibold">Filtered</td>
               <td className="font-semibold">Total</td>
             </tr>
           </thead>

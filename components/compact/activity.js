@@ -10,17 +10,19 @@ export default function Activity({
   selection,
   setSelection,
   setConnection,
+  onClickMember,
 }) {
   var member = community.findMemberByActivity(activity);
   var renderHtml = activity.textHtml?.length > 0;
   return (
     <div key={activity.id} className="flex flex-col pb-2">
-      <div className="flex items-center pb-1 space-x-2 text-sm">
+      <div className="flex items-center pb-1 space-x-2">
         <NameAndIcon
           member={member}
           selection={selection}
           setConnection={setConnection}
           setSelection={setSelection}
+          onClick={onClickMember}
         />
         <div className="overflow-hidden flex-1 text-xs text-right text-indigo-700 text-ellipsis">
           <SourceIcon activity={activity} />

@@ -1,30 +1,21 @@
 import React from "react";
 import CompactMember from "components/compact/member";
-import { Frame, Scroll, Header, Member } from "components/skydeck";
+import { Frame, Scroll, Header, addMemberWidget } from "components/skydeck";
 
 export default function Members(props) {
-  let { community, widgets, setWidgets } = props;
+  let { community, addWidget } = props;
   let { members } = community;
-  let onClickFor = (member) => {
+  let onClickMember = (member) => {
     return () => {
-      setWidgets([
-        ...widgets.slice(0, 1),
-        (props) => (
-          <Member
-            key={member.globalActor}
-            title={member.globalActorName}
-            member={member}
-            {...props}
-          />
-        ),
-        ...widgets.slice(1, widgets.length),
-      ]);
+      addMemberWidget(member, addWidget);
     };
   };
+
   return (
     <Frame>
-      <Header length={members.length} {...props}>
-        Members
+      <Header {...props}>
+        <div>Members</div>
+        <div className="text-indigo-500">{members.length}</div>
       </Header>
       <Scroll>
         <div className="flex flex-col px-4">
@@ -38,7 +29,7 @@ export default function Members(props) {
                     member={member}
                     community={community}
                     metrics={true}
-                    onClick={onClickFor(member)}
+                    onClick={onClickMember(member)}
                   />
                 ))}
             </div>

@@ -74,13 +74,22 @@ export default function Index({ csrfToken, _projects }) {
                         className="flex justify-between w-full"
                         key={project.id}
                       >
-                        <Link
-                          prefetch={false}
-                          className="underline"
-                          href={`/projects/${project.id}`}
-                        >
-                          <span>{project.name}</span>
-                        </Link>
+                        <div className="flex space-x-2">
+                          <Link
+                            prefetch={false}
+                            className="underline"
+                            href={`/projects/${project.id}`}
+                          >
+                            <span>{project.name}</span>
+                          </Link>
+                          <Link
+                            prefetch={false}
+                            className=""
+                            href={`/projects/${project.id}/skydeck`}
+                          >
+                            <span>🔭</span>
+                          </Link>
+                        </div>
                         {user.admin && <span>{`${project.user.email}`}</span>}
                       </div>
                     ))}
