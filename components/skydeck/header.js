@@ -5,7 +5,7 @@ export default function Header({ children, remove }) {
   return (
     <>
       <div className="flex items-center pb-2 pt-3 px-4 space-x-1">
-        <div className="flex items-center space-x-2 text-lg font-semibold whitespace-nowrap">
+        <div className="flex items-center space-x-2 font-semibold whitespace-nowrap">
           {children}
         </div>
         <div className="!mx-auto" />

@@ -21,8 +21,8 @@ export default function ActivityOrThread({
     <div
       key={activity.id}
       className={classnames("flex flex-col pt-1 pb-2 px-4", {
-        "bg-indigo-900": index % 2 === 1,
-        "bg-opacity-60": index % 2 === 1,
+        "bg-blue-900": index % 2 === 1,
+        "bg-opacity-20": index % 2 === 1,
       })}
     >
       {isThread(thread) && (

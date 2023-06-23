@@ -10,6 +10,7 @@ export { default as Entities } from "components/skydeck/entities";
 export { default as Source } from "components/skydeck/source";
 export { default as Activities } from "components/skydeck/activities";
 export { default as Scroll } from "components/skydeck/scroll";
+export { default as Connection } from "components/skydeck/connection";
 
 import Member from "components/skydeck/member";
 

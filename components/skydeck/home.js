@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { Frame, Scroll, Header } from "components/skydeck";
 import c from "lib/common";
 

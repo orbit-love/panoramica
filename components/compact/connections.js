@@ -8,6 +8,7 @@ export default function CompactConnections({
   setSelection,
   connection,
   setConnection,
+  onClick,
 }) {
   // if the connection doesn't exist, right now it could
   // be because the time slider reducer and some members aren't there
@@ -61,7 +62,7 @@ export default function CompactConnections({
     .filter((a) => a)
     .sort(sortByFields);
 
-  const Connections = ({ name, connections }) => {
+  const Connections = ({ name, connections, onClickConnection }) => {
     return (
       <>
         {connections.length > 0 && (
@@ -79,6 +80,7 @@ export default function CompactConnections({
                     connection={connection}
                     setConnection={setConnection}
                     directions={member.connections[connectedMember.globalActor]}
+                    onClick={() => onClick(connectedMember)}
                   />
                 ))}
               </div>

@@ -2,13 +2,19 @@ import React from "react";
 
 import Feed from "lib/community/feed";
 import NameAndIcon from "components/compact/name_and_icon";
-import { Frame, Scroll, Header, Activities } from "components/skydeck";
+import {
+  Frame,
+  Scroll,
+  Header,
+  Activities,
+  Connection,
+} from "components/skydeck";
 import Meter from "components/meter";
 import Entity from "components/compact/entity";
 import CompactConnections from "components/compact/connections";
 
 export default function Member(props) {
-  var { member, community } = props;
+  var { member, community, addWidget } = props;
   var feed = new Feed({ selection: member, ...props });
   var activities = feed.getFilteredActivities();
 
@@ -18,6 +24,12 @@ export default function Member(props) {
       entities.push(entity);
     }
   }
+
+  let onClickConnection = (connection) => {
+    addWidget((props) => (
+      <Connection member={member} connection={connection} {...props} />
+    ));
+  };
 
   return (
     <Frame>
@@ -66,9 +78,7 @@ export default function Member(props) {
                 <CompactConnections
                   member={member}
                   community={community}
-                  setSelection={null}
-                  connection={null}
-                  setConnection={null}
+                  onClick={onClickConnection}
                 />
               </div>
               <div className="border-b border-indigo-900" />

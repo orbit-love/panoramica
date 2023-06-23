@@ -1,15 +1,14 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import Link from "next/link";
 import { getServerSession } from "next-auth/next";
 import { prisma } from "lib/db";
 
-import Community from "lib/community";
 import levelsData from "data/levels";
 import { authOptions } from "pages/api/auth/[...nextauth]";
 
 import Head from "components/head";
-import { Home } from "components/skydeck";
+import { Home, Source } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function removeItem(array, item) {
@@ -27,7 +26,10 @@ export default function Page({ _project }) {
   const [project, _] = useState(_project);
 
   let HomeWidget = (props) => <Home {...props} />;
-  let defaultWidgets = [HomeWidget];
+  let ActivitiesWidget = (props) => (
+    <Source source={null} title="All Activities" {...props} />
+  );
+  let defaultWidgets = [HomeWidget, ActivitiesWidget];
 
   const [community, setCommunity] = useState(null);
   const [low, setLow] = useState(0);

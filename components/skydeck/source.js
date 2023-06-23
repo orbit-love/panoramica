@@ -5,7 +5,12 @@ import SourceIcon from "components/compact/source_icon";
 import { Frame, Scroll, Header, Activities } from "components/skydeck";
 
 export default function Source(props) {
-  var { source, title } = props;
+  var { source, community, title } = props;
+
+  if (!community?.activities) {
+    return <></>;
+  }
+
   var feed = new Feed(props);
   var activities = feed.getFilteredActivities();
   if (source) {
@@ -21,7 +26,7 @@ export default function Source(props) {
   return (
     <Frame>
       <Header {...props}>
-        <SourceIcon activity={{ source }} />
+        {source && <SourceIcon activity={{ source }} />}
         <div>{title}</div>
         <div className="text-indigo-500">{length}</div>
       </Header>

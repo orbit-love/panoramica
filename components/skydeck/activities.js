@@ -13,8 +13,9 @@ export default function Activities({
   let onClickMember = (member) => {
     addMemberWidget(member, addWidget);
   };
+  // there is a widget index prop at index, so make sure to put this index after
   return (
-    <div className="min-w-[375px]">
+    <div className="w-[425px]">
       {activities?.length > 0 && (
         <>
           {activities.map((activity, index) => (
@@ -22,9 +23,9 @@ export default function Activities({
               key={activity.id}
               activity={activity}
               community={community}
-              index={index}
               onClickMember={onClickMember}
               {...props}
+              index={index}
             />
           ))}
         </>
