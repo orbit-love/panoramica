@@ -80,7 +80,7 @@ export default function CompactConnections({
                     connection={connection}
                     setConnection={setConnection}
                     directions={member.connections[connectedMember.globalActor]}
-                    onClick={() => onClick(connectedMember)}
+                    onClick={onClick}
                   />
                 ))}
               </div>

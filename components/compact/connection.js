@@ -18,8 +18,11 @@ export default function CompactConnection({
   }
   const isConnection = connection?.id === connectedMember.id;
   const [outgoing, incoming] = directions;
-  if (!onClick) {
-    onClick = (event) => {
+  var wrappedOnClick;
+  if (onClick) {
+    wrappedOnClick = () => onClick(connectedMember);
+  } else {
+    wrappedOnClick = (event) => {
       if (event.detail === 2) {
         setConnection(null);
         setSelection(connectedMember);
@@ -38,7 +41,7 @@ export default function CompactConnection({
           "hover:bg-opacity-30": !isConnection,
         }
       )}
-      onClick={onClick}
+      onClick={wrappedOnClick}
     >
       {outgoing > 0 && (
         <div className="w-8 text-xs text-indigo-400">
@@ -48,7 +51,7 @@ export default function CompactConnection({
       )}
       <NameAndIcon
         member={connectedMember}
-        onClick={onClick}
+        onClick={() => {}}
         setConnection={setConnection}
         selection={selection}
         setSelection={setSelection}
