@@ -350,7 +350,7 @@ export default async function handler(req, res) {
     // if a url is not provided, use the default
     if (!url) {
       // only conversational activity types with referenced tweets, 180 days default
-      let timeframe = `relative=this_180_days`;
+      let timeframe = `relative=this_90_days`;
       let queryString = `activity_type=discord%3Amessage%3Asent%2Cdiscord%3Amessage%3Areplied%2Cdiscord%3Athread%3Areplied%2Cissue_comment%3Acreated%2Cissues%3Aopened%2Cpull_requests%3Aopened%2Ctweet%3Asent&include_referenced_activities=true&${timeframe}`;
       url = `https://app.orbit.love/${workspace}/activities.json?${queryString}`;
     }
