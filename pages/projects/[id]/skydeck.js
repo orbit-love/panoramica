@@ -21,15 +21,15 @@ function removeItem(array, item) {
   return array; // return the original array if item was not found
 }
 
+let HomeWidget = (props) => <Home {...props} />;
+let ActivitiesWidget = (props) => (
+  <Source source={null} title="All Activities" {...props} />
+);
+let defaultWidgets = [HomeWidget, ActivitiesWidget];
+
 export default function Page({ _project }) {
   const containerRef = useRef();
   const [project, _] = useState(_project);
-
-  let HomeWidget = (props) => <Home {...props} />;
-  let ActivitiesWidget = (props) => (
-    <Source source={null} title="All Activities" {...props} />
-  );
-  let defaultWidgets = [HomeWidget, ActivitiesWidget];
 
   const [community, setCommunity] = useState(null);
   const [low, setLow] = useState(0);
@@ -40,11 +40,11 @@ export default function Page({ _project }) {
     (widget) => {
       setWidgets(removeItem(widgets, widget));
     },
-    [widgets]
+    [widgets, setWidgets]
   );
-  let resetWidgets = () => {
+  let resetWidgets = useCallback(() => {
     setWidgets(defaultWidgets);
-  };
+  }, [setWidgets]);
 
   // transform levels into a map
   const levels = {};

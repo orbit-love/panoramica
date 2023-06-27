@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Frame, Scroll, Header } from "components/skydeck";
 import c from "lib/common";
 
@@ -7,7 +7,6 @@ import Stats from "lib/community/stats";
 import Community from "lib/community";
 import { Source, Entities, Members } from "components/skydeck";
 import SourceIcon from "components/compact/source_icon";
-import StatsComponent from "components/project/stats";
 import ActivitiesSlider from "components/activitiesSlider";
 
 export default function Home(props) {
@@ -86,6 +85,11 @@ export default function Home(props) {
     }
   };
 
+  // do only on mount
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
   var sources = [];
   if (community) {
     var feed = new Feed(props);
@@ -102,8 +106,8 @@ export default function Home(props) {
       <Scroll>
         <div className="flex flex-col px-4 w-[300px]">
           <div className="flex flex-col items-start space-y-1">
-            {stats && !empty && (
-              <div className="relative pb-12 w-full">
+            <div className="relative pb-12 w-full">
+              {stats && !empty && (
                 <ActivitiesSlider
                   community={community}
                   low={low}
@@ -111,8 +115,8 @@ export default function Home(props) {
                   stats={stats}
                   onSliderChange={onSliderChange}
                 />
-              </div>
-            )}
+              )}
+            </div>
           </div>
           <div className="flex flex-col items-start space-y-1">
             <div className="text-lg font-semibold">Add Columns</div>
@@ -156,24 +160,9 @@ export default function Home(props) {
                 <div>{c.titleize(source)}</div>
               </button>
             ))}
-          </div>
-          <div className="py-3" />
-          <div className="flex flex-col items-start space-y-1">
-            <div className="text-lg font-semibold">Miscellaneous</div>
-            <button className="" onClick={resetWidgets}>
+            <button className="text-red-500" onClick={resetWidgets}>
               Reset
             </button>
-          </div>
-          <div className="py-3" />
-          <div className="flex flex-col items-start space-y-1">
-            <div className="text-lg font-semibold">Stats</div>
-            <StatsComponent
-              project={project}
-              community={community}
-              stats={stats}
-              setStats={setStats}
-              fetchStats={fetchStats}
-            />
           </div>
           <div></div>
         </div>

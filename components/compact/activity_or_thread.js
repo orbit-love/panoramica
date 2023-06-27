@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import classnames from "classnames";
 
 import Activity from "components/compact/activity";
@@ -6,6 +6,31 @@ import Thread from "components/compact/thread";
 
 const isThread = (thread) => thread.type === "thread";
 const isIsland = (thread) => thread.type === "island";
+
+const TopThread = ({ thread, community, ...props }) => {
+  // get the activity for the last activity
+  var latestDescendant = community.threads[thread.descendants?.slice(-1)];
+  var latestDescendantParent = community.activities.find(
+    (a) => a.id === latestDescendant.parent
+  );
+
+  // try to show the parent of the last reply if it exists
+  // ideally this would not show the other replies though
+  var [showAfter, setShowAfter] = useState(
+    latestDescendantParent?.timestamp || thread.last_timestamp
+  );
+  return (
+    <Thread
+      thread={thread}
+      topThread={thread}
+      nesting={0}
+      showAfter={showAfter}
+      setShowAfter={setShowAfter}
+      community={community}
+      {...props}
+    />
+  );
+};
 
 // if an activity is a thread starter, render it as a thread
 // otherwise just render as a single activity
@@ -26,11 +51,10 @@ export default function ActivityOrThread({
       })}
     >
       {isThread(thread) && (
-        <Thread
+        <TopThread
+          thread={thread}
           activity={activity}
           community={community}
-          thread={thread}
-          nesting={0}
           {...props}
         />
       )}
