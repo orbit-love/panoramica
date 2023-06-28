@@ -29,6 +29,7 @@ import {
   faSort,
   faKeyboard,
   faRightLeft,
+  faGear,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -119,7 +120,8 @@ library.add(
   faTwitter,
   faDiscord,
   faGithub,
-  faDiscourse
+  faDiscourse,
+  faGear
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";

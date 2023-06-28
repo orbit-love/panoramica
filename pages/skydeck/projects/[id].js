@@ -29,7 +29,7 @@ let defaultWidgets = [HomeWidget, ActivitiesWidget];
 
 export default function Page({ _project }) {
   const containerRef = useRef();
-  const [project, _] = useState(_project);
+  const [project, setProject] = useState(_project);
 
   const [community, setCommunity] = useState(null);
   const [low, setLow] = useState(0);
@@ -56,6 +56,7 @@ export default function Page({ _project }) {
 
   const props = {
     project,
+    setProject,
     community,
     setCommunity,
     low,
@@ -100,7 +101,7 @@ export default function Page({ _project }) {
 
   return (
     <>
-      <Head />
+      <Head title={`${project.name} — Skydeck`} />
       <div
         ref={containerRef}
         id="container"
@@ -115,7 +116,7 @@ export default function Page({ _project }) {
             <Link
               prefetch={false}
               className="underline hover:text-indigo-400"
-              href={`/`}
+              href={`/skydeck`}
             >
               <FontAwesomeIcon icon="arrow-left" />
             </Link>
@@ -123,7 +124,7 @@ export default function Page({ _project }) {
           </div>
           {widgets.map((Widget, index) => (
             <Widget
-              key={Widget}
+              key={index}
               index={index}
               remove={() => removeWidget(Widget)}
               addWidget={(widget) => addWidget(widget, index + 1)}

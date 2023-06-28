@@ -11,7 +11,6 @@ import Head from "components/head";
 import Header from "components/header";
 import Button from "components/button";
 import Panel from "components/panel";
-import New from "components/project/new";
 
 export default function Index({ csrfToken, _projects }) {
   const { data: session } = useSession();
@@ -49,7 +48,7 @@ export default function Index({ csrfToken, _projects }) {
         }}
       >
         <div className="flex flex-col items-center space-y-2 w-full font-thin">
-          <h1 className="text-3xl">welcome to telescope</h1>
+          <h1 className="text-3xl">preview orbit projects</h1>
           {user && (
             <>
               <div className="flex space-x-4 text-sm">
@@ -62,40 +61,13 @@ export default function Index({ csrfToken, _projects }) {
               <Panel className="px-8 py-8 w-1/3">
                 <div className="flex flex-col space-y-6 w-full">
                   <div className="flex flex-col items-baseline space-y-2">
-                    <div className="flex items-baseline space-x-2">
-                      <div className="text-lg font-bold">Choose a Project</div>
-                      {loading && (
-                        <div className="text-indigo-700">Loading...</div>
-                      )}
+                    <div className="text-lg font-bold">Available Previews</div>
+                    <div className="text-lg">
+                      <Link className="underline" href={`/skydeck`}>
+                        <span>Skydeck</span>
+                      </Link>
                     </div>
-                    {projects?.length === 0 && <div>None</div>}
-                    {projects?.map((project) => (
-                      <div
-                        className="flex justify-between w-full"
-                        key={project.id}
-                      >
-                        <div className="flex space-x-2">
-                          <Link
-                            prefetch={false}
-                            className="underline"
-                            href={`/projects/${project.id}`}
-                          >
-                            <span>{project.name}</span>
-                          </Link>
-                          <Link
-                            prefetch={false}
-                            className=""
-                            href={`/projects/${project.id}/skydeck`}
-                          >
-                            <span>🔭</span>
-                          </Link>
-                        </div>
-                        {user.admin && <span>{`${project.user.email}`}</span>}
-                      </div>
-                    ))}
                   </div>
-                  <div className="border-b border-indigo-900" />
-                  <New />
                 </div>
               </Panel>
             </>

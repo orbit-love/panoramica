@@ -63,9 +63,9 @@ model Project {
    id                 String    @id @default(cuid())
   userId        String
   user   User   @relation(fields: [userId], references: [id])
-  name          String       @unique
+  name          String
   workspace     String?
-  url           String
+  url           String?
   apiKey           String
   activities    Activity[]
 }

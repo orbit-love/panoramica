@@ -1,6 +1,6 @@
-# Contributing to the Telescope
+# Contributing to the Preview
 
-:wave: First off, thank you so much for stopping by and visiting the Telescope contributing guide - we're so happy to see you!
+:wave: First off, thank you so much for stopping by and visiting the Preview contributing guide - we're so happy to see you!
 
 We understand that it may not always be very straightforward when making contributions to open source projects, so we're here to help you out!
 
@@ -8,7 +8,7 @@ If you're new to the world of making open source contributions, we recommend mak
 
 As you get more and more comfortable with those small changes, you'll find that you start building your contributing skills over time. :tada:
 
-### How to contribute to the Telescope:
+### How to contribute to the Preview:
 
 In addition to taking a look at our open issues, you'll also find a list of contribution ideas below that we encourage you to try your hand at!
 

@@ -15,24 +15,11 @@ export default function Thread(props) {
     lastChild,
   } = props;
 
-  var [showAllChildren, setShowAllChildren] = useState(false);
-
-  var parent = community?.activities.find((a) => a.id === thread.parent);
   // if the child activity is missing, it's because it didn't get
   // brought back in the time slice, so just skip it
   var childActivities = thread.children
     ?.map((id) => community.activities.find((a) => a.id === id))
     .filter((a) => a);
-
-  // filter out activities we don't need to show right now
-  // we need to find the child activity with descendants we
-  // need to show - e.g. the latest
-  // childActivities = childActivities.filter((childActivity) => {
-  //   var { id } = childActivity;
-  //   var childThread = community.threads[id];
-  //   console.log(showAfter, childThread.last_timestamp);
-  //   return showAllChildren || lastChild;
-  // });
 
   return (
     <>
@@ -42,7 +29,7 @@ export default function Thread(props) {
           "pl-3": nesting > 0,
         })}
       >
-        {parent?.timestamp < showAfter && lastChild && (
+        {/* {parent?.timestamp < showAfter && lastChild && (
           <button
             onClick={() => {
               setShowAfter(parent.timestamp);
@@ -50,10 +37,10 @@ export default function Thread(props) {
           >
             Expand
           </button>
-        )}
+        )} */}
         <div
           className={classnames("pb-1", {
-            hidden: activity.timestamp < showAfter,
+            hidden: false,
           })}
         >
           <Activity {...props} />

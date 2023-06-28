@@ -10,7 +10,7 @@ import {
   Connection,
 } from "components/skydeck";
 import Meter from "components/meter";
-import Entity from "components/compact/entity";
+import CompactEntity from "components/compact/entity";
 import CompactConnections from "components/compact/connections";
 
 export default function Member(props) {
@@ -30,6 +30,11 @@ export default function Member(props) {
       <Connection member={member} connection={connection} {...props} />
     ));
   };
+
+  let onClickEntity = (entity) =>
+    addWidget((props) => (
+      <CompactEntity key={entity.id} entity={entity} {...props} />
+    ));
 
   return (
     <Frame>
@@ -61,11 +66,11 @@ export default function Member(props) {
             <>
               <div className="flex flex-wrap py-1 px-4 text-xs">
                 {entities.map((entity) => (
-                  <Entity
+                  <CompactEntity
                     key={entity.id}
                     entity={entity}
                     active={false}
-                    onClick={() => {}}
+                    onClick={onClickEntity(entity)}
                   />
                 ))}
               </div>

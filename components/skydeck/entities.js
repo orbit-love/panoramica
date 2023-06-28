@@ -5,20 +5,13 @@ import CompactEntity from "components/compact/entity";
 import EntityGroup from "lib/community/entityGroup";
 
 export default function Entities(props) {
-  let { widgets, setWidgets } = props;
+  let { addWidget } = props;
 
   var entityGroup = new EntityGroup(props);
   var entities = entityGroup.getFilteredEntities();
 
-  let onClickFor = (entity) => {
-    return () => {
-      setWidgets([
-        ...widgets.slice(0, 2),
-        (props) => <Entity key={entity.id} entity={entity} {...props} />,
-        ...widgets.slice(2, widgets.length),
-      ]);
-    };
-  };
+  let onClick = (entity) => () =>
+    addWidget((props) => <Entity key={entity.id} entity={entity} {...props} />);
 
   return (
     <Frame>
@@ -30,12 +23,13 @@ export default function Entities(props) {
         <div className="flex flex-col px-4">
           <div className="flex flex-wrap w-56 text-xs">
             {entities.map((entity) => (
-              <CompactEntity
-                key={entity.id}
-                entity={entity}
-                active={false}
-                onClick={onClickFor(entity)}
-              />
+              <div key={entity.id} className="px-1 py-1">
+                <CompactEntity
+                  entity={entity}
+                  active={false}
+                  onClick={onClick(entity)}
+                />
+              </div>
             ))}
           </div>
         </div>

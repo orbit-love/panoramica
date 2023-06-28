@@ -1,6 +1,7 @@
 import React from "react";
 
 import Feed from "lib/community/feed";
+import CompactEntity from "components/compact/entity";
 import { Frame, Scroll, Header, Activities } from "components/skydeck";
 
 export default function Entity(props) {
@@ -11,7 +12,9 @@ export default function Entity(props) {
   return (
     <Frame>
       <Header length={activities.length} {...props}>
-        <span>{entity.id}</span>
+        <div className="text-sm">
+          <CompactEntity entity={entity} active={false} onClick={() => {}} />
+        </div>
       </Header>
       <Scroll>
         <Activities activities={activities} {...props} />

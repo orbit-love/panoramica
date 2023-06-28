@@ -1,6 +1,7 @@
 import React from "react";
 
 export { default as Home } from "components/skydeck/home";
+export { default as Project } from "components/skydeck/project";
 export { default as Frame } from "components/skydeck/frame";
 export { default as Header } from "components/skydeck/header";
 export { default as Entity } from "components/skydeck/entity";

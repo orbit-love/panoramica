@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import c from "lib/common";
 
-export default function New({}) {
+export default function New({ redirectUrl }) {
   const router = useRouter();
   const nameRef = useRef(null);
   const urlRef = useRef(null);
@@ -14,7 +14,7 @@ export default function New({}) {
     e.preventDefault();
     const url = "/api/projects/create";
     const data = {
-      url: urlRef.current.value,
+      url: urlRef.current?.value,
       name: nameRef.current.value,
       apiKey: apiKeyRef.current.value,
       workspace: workspaceRef.current.value,
@@ -30,7 +30,7 @@ export default function New({}) {
       .then((res) => res.json())
       .then(({ result, message }) => {
         if (result?.project) {
-          router.push(`/projects/${result.project.id}`);
+          router.push(redirectUrl(result.project.id));
         } else {
           alert(message);
         }
@@ -41,7 +41,7 @@ export default function New({}) {
     <div className="flex flex-col space-y-2 w-full">
       <div className="text-lg font-semibold">Create a New Project</div>
       <div className="text-sm">
-        A container for analyzing data from an Orbit workspace.
+        Provide a name, Orbit workspace, and API key.
       </div>
       <div></div>
       <div></div>
@@ -52,17 +52,17 @@ export default function New({}) {
         onSubmit={onSubmit}
       >
         <div className="flex flex-col space-y-1">
-          <div className="">Name</div>
+          <div className="">Project Name</div>
           <input
             ref={nameRef}
             type="text"
             required
             className={c.inputClasses}
-            placeholder="Project Name"
+            placeholder="My Project"
           ></input>
         </div>
         <div className="flex flex-col space-y-1">
-          <div className="">Orbit Workspace Id (find in URL)</div>
+          <div className="">Orbit Workspace</div>
           <input
             ref={workspaceRef}
             type="text"
@@ -81,7 +81,7 @@ export default function New({}) {
             placeholder="obw_abcdefabcdefabcdefabcdef"
           ></input>
         </div>
-        <div className="flex flex-col space-y-1">
+        {/* <div className="flex flex-col space-y-1">
           <div className="">API URL (Optional/Advanced)</div>
           <input
             ref={urlRef}
@@ -89,7 +89,7 @@ export default function New({}) {
             className={c.inputClasses}
             placeholder="https://app.orbit.love/<w>/activities?..."
           ></input>
-        </div>
+        </div> */}
         <div className="pt-2">
           <button type="submit" className={c.buttonClasses}>
             Create

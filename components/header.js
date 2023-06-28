@@ -35,24 +35,14 @@ export default function Header({ fix }) {
         <div className="pointer-events-auto">
           <Link href="/" passHref>
             <div className="flex items-center p-1 space-x-3 text-3xl text-indigo-500">
-              <FontAwesomeIcon
-                icon={["fad", "telescope"]}
-                className="text-2xl"
-                style={{
-                  "--fa-primary-color": c.colors.indigo[500],
-                  "--fa-secondary-color": c.colors.indigo[600],
-                }}
-              />
               <div className="flex font-thin">
-                <span className="opacity-90 px-[2px]">t</span>
+                <span className="opacity-90 px-[2px]">p</span>
+                <span className="opacity-80 px-[2px]">r</span>
                 <span className="opacity-80 px-[2px]">e</span>
-                <span className="opacity-80 px-[2px]">l</span>
-                <span className="opacity-70 px-[2px]">e</span>
-                <span className="opacity-70 px-[2px]">s</span>
-                <span className="opacity-60 px-[2px]">c</span>
-                <span className="opacity-60 px-[2px]">o</span>
-                <span className="opacity-50 px-[2px]">p</span>
-                <span className="opacity-50 px-[2px]">e</span>
+                <span className="opacity-70 px-[2px]">v</span>
+                <span className="opacity-70 px-[2px]">i</span>
+                <span className="opacity-60 px-[2px]">e</span>
+                <span className="opacity-60 px-[2px]">w</span>
               </div>
             </div>
           </Link>

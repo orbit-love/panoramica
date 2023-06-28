@@ -5,9 +5,10 @@ import c from "lib/common";
 import Feed from "lib/community/feed";
 import Stats from "lib/community/stats";
 import Community from "lib/community";
-import { Source, Entities, Members } from "components/skydeck";
+import { Source, Entities, Members, Project } from "components/skydeck";
 import SourceIcon from "components/compact/source_icon";
 import ActivitiesSlider from "components/activitiesSlider";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Home(props) {
   let { project, community, setCommunity, levels, addWidget, resetWidgets } =
@@ -17,6 +18,10 @@ export default function Home(props) {
   const [stats, setStats] = useState(null);
   const [low, setLow] = useState(0);
   const [high, setHigh] = useState(0);
+
+  const editProject = useCallback(() => {
+    addWidget((props) => <Project {...props} />);
+  }, [addWidget]);
 
   // the sequence is
   // stats component fetches stats
@@ -28,7 +33,7 @@ export default function Home(props) {
       .then((res) => res.json())
       .then(({ result, message }) => {
         if (message) {
-          console.log("Error fetching stats", message);
+          alert(message);
         } else {
           var stats = new Stats({ result });
           setStats(stats);
@@ -62,7 +67,7 @@ export default function Home(props) {
         .then(({ result, message }) => {
           console.log("Project fetch: finished");
           if (message) {
-            console.log("Error fetching project", message);
+            alert(message);
           } else {
             const newCommunity = new Community({ result, levels });
             setCommunity(newCommunity);
@@ -96,75 +101,148 @@ export default function Home(props) {
     sources = feed.getSources({ activities: community.activities });
   }
 
+  const importProject = async () => {
+    setLoading(true);
+    return fetch(`/api/projects/${project.id}/import`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then(({ message }) => {
+        if (message) {
+          console.log(message);
+          setLoading(false);
+        } else {
+          processProject();
+        }
+      });
+  };
+
+  const processProject = async () => {
+    setLoading(true);
+    return fetch(`/api/projects/${project.id}/process`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then(async ({ message }) => {
+        if (message) {
+          console.log(message);
+        } else {
+          // set community to null so everything is reset
+          setLow(0);
+          setHigh(0);
+          setCommunity(null);
+          await fetchStats();
+          await fetchProject({});
+        }
+        setLoading(false);
+      });
+  };
+
   const empty = stats?.activities?.count === 0;
 
   return (
     <Frame>
-      <Header {...props}>
-        <div>{project.name}</div>
+      <Header {...props} remove={null}>
+        <div className="flex w-full">
+          <div>{project.name}</div>
+          <div className="mx-auto" />
+          <button className="" onClick={editProject}>
+            <FontAwesomeIcon icon="gear" />
+          </button>
+        </div>
       </Header>
       <Scroll>
-        <div className="flex flex-col px-4 w-[300px]">
-          <div className="flex flex-col items-start space-y-1">
-            <div className="relative pb-12 w-full">
-              {stats && !empty && (
-                <ActivitiesSlider
-                  community={community}
-                  low={low}
-                  high={high}
-                  stats={stats}
-                  onSliderChange={onSliderChange}
-                />
-              )}
-            </div>
-          </div>
-          <div className="flex flex-col items-start space-y-1">
-            <div className="text-lg font-semibold">Add Columns</div>
-            <button
-              className=""
-              onClick={() => addWidget((props) => <Members {...props} />)}
-            >
-              Member List
-            </button>
-            <button
-              className=""
-              onClick={() => addWidget((props) => <Entities {...props} />)}
-            >
-              Entities
-            </button>
-            <button
-              className=""
-              onClick={() =>
-                addWidget((props) => (
-                  <Source source={null} title="All Activities" {...props} />
-                ))
-              }
-            >
-              All Activities
-            </button>
-            {sources.map((source) => (
+        <div className="flex flex-col px-4 w-[300px] h-full">
+          {loading && <div className="pb-3 text-indigo-600">Loading...</div>}
+          {!loading && empty && (
+            <div className="flex flex-col space-y-6">
+              <p className="">
+                The project has been created. Click the button to fetch data
+                from Orbit. This is a one-time operation and takes up to 60
+                seconds.
+              </p>
               <button
-                key={source}
-                className="flex items-center space-x-1"
-                onClick={() =>
-                  addWidget((props) => (
-                    <Source
-                      source={source}
-                      title={c.titleize(source)}
-                      {...props}
-                    />
-                  ))
-                }
+                onClick={() => importProject()}
+                className={c.buttonClasses}
               >
-                <SourceIcon activity={{ source }} />
-                <div>{c.titleize(source)}</div>
+                Import
               </button>
-            ))}
-            <button className="text-red-500" onClick={resetWidgets}>
-              Reset
-            </button>
+            </div>
+          )}
+          {stats && !empty && (
+            <>
+              <div className="flex flex-col items-start space-y-1">
+                <div className="relative pb-12 w-full">
+                  <ActivitiesSlider
+                    community={community}
+                    low={low}
+                    high={high}
+                    stats={stats}
+                    onSliderChange={onSliderChange}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col items-start space-y-1">
+                <div className="text-lg font-semibold">Add Columns</div>
+                <button
+                  className=""
+                  onClick={() => addWidget((props) => <Members {...props} />)}
+                >
+                  Member List
+                </button>
+                <button
+                  className=""
+                  onClick={() => addWidget((props) => <Entities {...props} />)}
+                >
+                  Entities
+                </button>
+                <button
+                  className=""
+                  onClick={() =>
+                    addWidget((props) => (
+                      <Source source={null} title="All Activities" {...props} />
+                    ))
+                  }
+                >
+                  All Activities
+                </button>
+                {sources.map((source) => (
+                  <button
+                    key={source}
+                    className="flex items-center space-x-1"
+                    onClick={() =>
+                      addWidget((props) => (
+                        <Source
+                          source={source}
+                          title={c.titleize(source)}
+                          {...props}
+                        />
+                      ))
+                    }
+                  >
+                    <SourceIcon activity={{ source }} />
+                    <div>{c.titleize(source)}</div>
+                  </button>
+                ))}
+                <button className="text-red-500" onClick={resetWidgets}>
+                  Reset
+                </button>
+              </div>
+            </>
+          )}
+          <div className="!my-auto"></div>
+          <div className="flex flex-col py-6 space-y-1 text-sm text-indigo-300">
+            <span>Backspace: Remove last column</span>
+            <span>Escape: Reset columns</span>
           </div>
-          <div></div>
         </div>
       </Scroll>
     </Frame>
