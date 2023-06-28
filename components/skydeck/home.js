@@ -273,6 +273,8 @@ export default function Home(props) {
           )}
           <div className="!my-auto"></div>
           <div className="flex flex-col py-6 space-y-1 text-sm text-indigo-300">
+            <span className="font-bold">Shortcuts</span>
+            <span>/: Search</span>
             <span>Backspace: Remove last column</span>
             <span>Escape: Reset columns</span>
           </div>
