@@ -132,6 +132,15 @@ export default function Home(props) {
       });
   };
 
+  const onDataAvailable = async () => {
+    // set community to null so everything is reset
+    setLow(0);
+    setHigh(0);
+    setCommunity(null);
+    await fetchStats();
+    await fetchProject({});
+  };
+
   const processProject = async () => {
     setLoading(true);
     return fetch(`/api/projects/${project.id}/process`, {
@@ -144,18 +153,33 @@ export default function Home(props) {
       .then((res) => res.json())
       .then(async ({ message }) => {
         if (message) {
-          console.log(message);
+          alert(message);
         } else {
-          // set community to null so everything is reset
-          setLow(0);
-          setHigh(0);
-          setCommunity(null);
-          await fetchStats();
-          await fetchProject({});
+          await onDataAvailable();
         }
         setLoading(false);
       });
   };
+
+  // const refreshProject = async () => {
+  //   setLoading(true);
+  //   return fetch(`/api/projects/${project.id}/refresh`, {
+  //     method: "PUT",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((res) => res.json())
+  //     .then(async ({ message }) => {
+  //       if (message) {
+  //         alert(message);
+  //       } else {
+  //         onDataAvailable();
+  //       }
+  //       setLoading(false);
+  //     });
+  // };
 
   let onSearchSubmit = (e) => {
     e.preventDefault();
@@ -272,6 +296,12 @@ export default function Home(props) {
             </>
           )}
           <div className="!my-auto"></div>
+          <div className="flex flex-col items-start space-y-1 text-sm text-indigo-300">
+            <span className="font-bold">Actions</span>
+            <button className="" onClick={importProject}>
+              Refresh Data
+            </button>
+          </div>
           <div className="flex flex-col py-6 space-y-1 text-sm text-indigo-300">
             <span className="font-bold">Shortcuts</span>
             <span>/: Search</span>
