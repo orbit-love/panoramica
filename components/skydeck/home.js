@@ -1,16 +1,18 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Frame, Scroll, Header } from "components/skydeck";
+import { useHotkeys } from "react-hotkeys-hook";
 import c from "lib/common";
 
 import Feed from "lib/community/feed";
 import Stats from "lib/community/stats";
 import Community from "lib/community";
-import { Source, Entities, Members, Project } from "components/skydeck";
+import { Source, Search, Entities, Members, Project } from "components/skydeck";
 import SourceIcon from "components/compact/source_icon";
 import ActivitiesSlider from "components/activitiesSlider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Home(props) {
+  let searchRef = useRef();
   let { project, community, setCommunity, levels, addWidget, resetWidgets } =
     props;
 
@@ -18,6 +20,15 @@ export default function Home(props) {
   const [stats, setStats] = useState(null);
   const [low, setLow] = useState(0);
   const [high, setHigh] = useState(0);
+
+  useHotkeys(
+    "/",
+    (e) => {
+      e.preventDefault();
+      searchRef.current.focus();
+    },
+    []
+  );
 
   const editProject = useCallback(() => {
     addWidget((props) => <Project {...props} />);
@@ -146,6 +157,14 @@ export default function Home(props) {
       });
   };
 
+  let onSearchSubmit = (e) => {
+    e.preventDefault();
+    var term = searchRef.current.value;
+    addWidget((props) => <Search term={term} {...props} />);
+    searchRef.current.value = "";
+    searchRef.current.blur();
+  };
+
   const empty = stats?.activities?.count === 0;
 
   return (
@@ -235,6 +254,20 @@ export default function Home(props) {
                 <button className="text-red-500" onClick={resetWidgets}>
                   Reset
                 </button>
+              </div>
+              <div className="h-4" />
+              <div className="flex flex-col items-start space-y-2">
+                <div className="font-semibold">Add a Search</div>
+                <form onSubmit={onSearchSubmit} className="flex space-x-2">
+                  <input
+                    className={c.inputClasses}
+                    type="search"
+                    ref={searchRef}
+                  />
+                  <button type="submit" className={c.buttonClasses}>
+                    Submit
+                  </button>
+                </form>
               </div>
             </>
           )}

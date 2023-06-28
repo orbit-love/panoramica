@@ -38,6 +38,7 @@ export default function ActivityOrThread({
   activity,
   community,
   index,
+  showReplies,
   ...props
 }) {
   var thread = community.threads[activity.id];
@@ -58,7 +59,7 @@ export default function ActivityOrThread({
           {...props}
         />
       )}
-      {isIsland(thread) && (
+      {(isIsland(thread) || showReplies) && (
         <Activity activity={activity} community={community} {...props} />
       )}
     </div>
