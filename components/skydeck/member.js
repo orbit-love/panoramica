@@ -8,6 +8,7 @@ import {
   Header,
   Activities,
   Connection,
+  Entity,
 } from "components/skydeck";
 import Meter from "components/meter";
 import CompactEntity from "components/compact/entity";
@@ -31,10 +32,8 @@ export default function Member(props) {
     ));
   };
 
-  let onClickEntity = (entity) =>
-    addWidget((props) => (
-      <CompactEntity key={entity.id} entity={entity} {...props} />
-    ));
+  let onClickEntity = (entity) => () =>
+    addWidget((props) => <Entity key={entity.id} entity={entity} {...props} />);
 
   return (
     <Frame>
@@ -64,14 +63,15 @@ export default function Member(props) {
           <div className="h-[1px] bg-indigo-900" />
           {entities.length > 0 && (
             <>
-              <div className="flex flex-wrap py-1 px-4 text-xs">
+              <div className="flex flex-wrap px-4 text-xs">
                 {entities.map((entity) => (
-                  <CompactEntity
-                    key={entity.id}
-                    entity={entity}
-                    active={false}
-                    onClick={onClickEntity(entity)}
-                  />
+                  <div className="px-1 py-1" key={entity.id}>
+                    <CompactEntity
+                      entity={entity}
+                      active={false}
+                      onClick={onClickEntity(entity)}
+                    />
+                  </div>
                 ))}
               </div>
               <div className="border-b border-indigo-900" />
