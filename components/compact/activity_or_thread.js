@@ -46,7 +46,7 @@ export default function ActivityOrThread({
   return (
     <div
       key={activity.id}
-      className={classnames("flex flex-col pt-1 pb-2 px-4", {
+      className={classnames("flex flex-col py-2 px-4", {
         "bg-blue-900": index % 2 === 1,
         "bg-opacity-20": index % 2 === 1,
       })}
