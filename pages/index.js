@@ -60,11 +60,16 @@ export default function Index({ csrfToken, _projects }) {
               <div className="h-6"></div>
               <Panel className="px-8 py-8 w-1/3">
                 <div className="flex flex-col space-y-6 w-full">
-                  <div className="flex flex-col items-baseline space-y-2">
+                  <div className="flex flex-col items-baseline space-y-1">
                     <div className="text-lg font-bold">Available Previews</div>
                     <div className="text-lg">
                       <Link className="underline" href={`/skydeck`}>
                         <span>Skydeck</span>
+                      </Link>
+                    </div>
+                    <div className="text-lg">
+                      <Link className="underline" href={`/telescope`}>
+                        <span>Telescope</span>
                       </Link>
                     </div>
                   </div>

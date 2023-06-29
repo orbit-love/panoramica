@@ -3,20 +3,14 @@ import classnames from "classnames";
 
 import c from "lib/common";
 import Controls from "components/controls";
-import Member from "components/cards/member";
-import OrbitLevel from "components/cards/orbit_level";
-import Mission from "components/cards/mission";
 import Info from "components/info";
-import Activities from "components/project/activities";
-import Selection from "components/compact/selection";
-import Entities from "components/console/entities";
 import EntityGroup from "lib/community/entityGroup";
 
 import Show from "components/project/show";
 import Edit from "components/project/edit";
 
 export default function Widgets(props) {
-  const { showPanel, showInfo, community, selection } = props;
+  const { showPanel, showInfo, community, setProject } = props;
 
   const [editMode, setEditMode] = useState(false);
   const childProps = { editMode, setEditMode };
@@ -69,53 +63,16 @@ export default function Widgets(props) {
               { hidden: !editMode }
             )}
           >
-            <Edit {...props} {...childProps} />
+            <Edit
+              {...props}
+              {...childProps}
+              onUpdate={(project) => {
+                setProject(project);
+                setEditMode(false);
+              }}
+            />
           </div>
         </div>
-        {community && selection && (
-          <>
-            <div
-              className={classnames(classes, width, "flex relative flex-col", {
-                hidden: !showPanel,
-              })}
-            >
-              {typeof selection.level === "number" && (
-                <Member
-                  member={
-                    community.members.find(
-                      (member) => selection.id === member.id
-                    ) || selection
-                  }
-                  {...props}
-                />
-              )}
-              {selection.number && <OrbitLevel level={selection} {...props} />}
-              {selection.name === "Mission" && <Mission {...props} />}
-            </div>
-            <div
-              className={classnames("flex flex-col space-y-2", width, {
-                hidden: !showPanel,
-              })}
-            >
-              {entities.length > 0 && !selection.globalActor && (
-                <div
-                  className={classnames(
-                    classes,
-                    "!h-auto max-h-[150px] !py-2 !px-0"
-                  )}
-                >
-                  <Entities {...props} entities={entities} />
-                </div>
-              )}
-              <div className={classnames(classes, "!h-auto !py-2 !px-0")}>
-                <Selection {...props} />
-              </div>
-              <div className={classnames(classes, "!p-0")}>
-                <Activities {...props} />
-              </div>
-            </div>
-          </>
-        )}
       </div>
     </>
   );

@@ -173,10 +173,9 @@ export default function Show({
   return (
     <>
       <div className="flex items-baseline space-x-2">
-        <span className="text-lg font-bold">Project</span>
+        <span className="text-lg font-bold">{project.name}</span>
         {loading && <div className="text-indigo-700">Loading...</div>}
         <div className="!mx-auto" />
-        <span className="text-md">{project.name}</span>
       </div>
       <div className="border-b border-indigo-900" />
       {stats && !empty && (
@@ -209,7 +208,7 @@ export default function Show({
       <div className="flex py-2 space-x-2 text-xs">
         <button
           onClick={() => {
-            router.push("/");
+            router.push("/telescope");
           }}
           className={c.buttonClasses}
         >
