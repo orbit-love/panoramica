@@ -25,7 +25,7 @@ body {
 }
 .a-html blockquote {
   @apply pl-2;
-  @apply border-l border-indigo-700;
+  @apply border-l-2 border-slate-700;
 }
 .a-html blockquote > p:before {
   content: "> ";

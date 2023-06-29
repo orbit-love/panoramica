@@ -93,6 +93,8 @@ model Activity {
   sourceId     String
   // the activity type for an additional dimension
   sourceType   String?
+  // the channel on the source platform, e.g. 'announcements'
+  sourceChannel String?
 
   // content fields
   text         String
