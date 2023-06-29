@@ -110,17 +110,13 @@ export default function Home(props) {
 
   // fetch the project the first time and then set up polling
   useEffect(() => {
-    async function setupDataAndPolling() {
-      await fetchProject();
-      var interval = setInterval(() => {
-        refreshProject();
-      }, 60 * 1000);
-      return () => {
-        clearInterval(interval);
-      };
-    }
-
-    setupDataAndPolling();
+    fetchProject();
+    var interval = setInterval(() => {
+      refreshProject();
+    }, 60 * 1000);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const onSearchSubmit = (e) => {
