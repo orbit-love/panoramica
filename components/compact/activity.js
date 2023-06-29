@@ -48,7 +48,7 @@ export default function Activity({
       {renderHtml && (
         <div className="text-sm text-indigo-300">
           <div
-            className="tweet overflow-hidden break-words"
+            className="a-html overflow-hidden break-words"
             dangerouslySetInnerHTML={{ __html: activity.textHtml }}
           ></div>
         </div>

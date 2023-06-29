@@ -37,7 +37,13 @@
     "react-dom": "^18.2.0",
     "react-hotkeys-hook": "^4.4.0",
     "react-modal": "^3.14.4",
-    "react-tabs": "^6.0.1"
+    "react-tabs": "^6.0.1",
+    "rehype-stringify": "^9.0.3",
+    "remark": "^14.0.3",
+    "remark-gfm": "^3.0.1",
+    "remark-github": "^11.2.4",
+    "remark-parse": "^10.0.2",
+    "remark-rehype": "^10.1.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.2",

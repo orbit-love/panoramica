@@ -101,7 +101,8 @@ export default function Home(props) {
       .then((res) => res.json())
       .then(async ({ message }) => {
         if (message) {
-          alert(message);
+          // just log to not be annoying
+          console.log(message);
         } else {
           onDataAvailable();
         }
@@ -244,8 +245,8 @@ export default function Home(props) {
           <div className="!my-auto"></div>
           <div className="flex flex-col items-start space-y-1 text-sm text-indigo-300">
             <span className="font-bold">Actions</span>
-            <button className="" onClick={refreshProject}>
-              Refresh Manually
+            <button className="" onClick={importProject}>
+              Reimport Data
             </button>
           </div>
           <div className="flex flex-col py-6 space-y-1 text-sm text-indigo-300">

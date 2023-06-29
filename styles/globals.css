@@ -14,6 +14,25 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
+.a-html code {
+  @apply text-red-400;
+}
+.a-html a {
+  @apply font-bold text-indigo-500;
+}
+.a-html a:hover {
+  @apply underline;
+}
+.a-html blockquote {
+  @apply pl-2;
+  @apply border-l border-indigo-700;
+}
+.a-html blockquote > p:before {
+  content: "> ";
+}
+.a-html p {
+  @apply my-1;
+}
 
 .space-gradient {
   background: rgb(21, 13, 51, 1);
@@ -136,11 +155,4 @@ svg .clickable {
   margin-top: 4px;
   pointer-events: all;
   position: relative;
-}
-
-.tweet a {
-  @apply font-bold text-indigo-500;
-}
-.tweet a:hover {
-  @apply underline;
 }
