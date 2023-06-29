@@ -1,3 +1,4 @@
+import { prisma } from "lib/db";
 import { check, redirect, authorizeProject } from "lib/auth";
 import { getAPIUrl, getAPIData } from "lib/orbit/api";
 import { deleteActivities } from "lib/mutations";
