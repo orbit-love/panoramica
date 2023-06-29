@@ -1,6 +1,6 @@
 import { check, redirect, authorizeProject } from "lib/auth";
 import { getAPIUrl, getAPIData } from "lib/orbit/api";
-import { deleteActivities, deleteDuplicates } from "lib/mutations";
+import { deleteActivities } from "lib/mutations";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
