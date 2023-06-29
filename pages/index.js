@@ -41,7 +41,7 @@ export default function Index({ csrfToken, _projects }) {
       <Header />
       <div
         id="container"
-        className="space-gradient flex flex-col justify-center items-center text-indigo-100"
+        className="flex flex-col justify-center items-center text-indigo-100"
         style={{
           height: "100vh",
           marginTop: "0",

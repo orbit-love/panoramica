@@ -41,7 +41,10 @@ export default function New({ redirectUrl }) {
     <div className="flex flex-col space-y-2 w-full">
       <div className="text-lg font-semibold">Create a New Project</div>
       <div className="text-sm">
-        Provide a name, Orbit workspace, and API key.
+        Provide a project name, Orbit workspace, and API key. This will be used
+        to fetch data from the Orbit API. To analyze a filtered set of
+        activities, apply filters on the Orbit Activities tab then then copy the
+        URL into the field below.
       </div>
       <div></div>
       <div></div>
@@ -81,7 +84,7 @@ export default function New({ redirectUrl }) {
             placeholder="obw_abcdefabcdefabcdefabcdef"
           ></input>
         </div>
-        {/* <div className="flex flex-col space-y-1">
+        <div className="flex flex-col space-y-1">
           <div className="">API URL (Optional/Advanced)</div>
           <input
             ref={urlRef}
@@ -89,7 +92,7 @@ export default function New({ redirectUrl }) {
             className={c.inputClasses}
             placeholder="https://app.orbit.love/<w>/activities?..."
           ></input>
-        </div> */}
+        </div>
         <div className="pt-2">
           <button type="submit" className={c.buttonClasses}>
             Create

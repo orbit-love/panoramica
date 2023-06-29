@@ -93,16 +93,16 @@ export default function Edit({ project, onUpdate, onDelete }) {
           onChange={({ target }) => setApiKey(target.value)}
         ></input>
       </div>
-      {/* <div className="flex flex-col space-y-1">
-          <div className="">API URL (Optional/Advanced)</div>
-          <input
-            type="text"
-            className={c.inputClasses}
-            placeholder="https://app.orbit.love/<w>/activities.json?..."
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          ></input>
-        </div> */}
+      <div className="flex flex-col space-y-1">
+        <div className="">Activities URL (Optional/Advanced)</div>
+        <input
+          type="text"
+          className={c.inputClasses}
+          placeholder="https://app.orbit.love/<w>/activities?..."
+          value={url}
+          onChange={({ target }) => setUrl(target.value)}
+        ></input>
+      </div>
       <div className="flex-grow my-auto" />
       <div className="flex pt-2 space-x-2">
         <button type="submit" className={c.buttonClasses}>

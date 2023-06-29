@@ -20,11 +20,7 @@ export default function Index({ projects }) {
       <Header />
       <div
         id="container"
-        className="space-gradient flex flex-col justify-center items-center text-indigo-100"
-        style={{
-          height: "100vh",
-          marginTop: "0",
-        }}
+        className="flex overflow-scroll flex-col justify-center items-center py-20 text-indigo-100"
       >
         <div className="flex flex-col items-center space-y-6 w-full font-thin">
           <div className="text-center">

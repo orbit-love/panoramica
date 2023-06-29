@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html>
       <Head />
-      <body className="">
+      <body className="space-gradient">
         <Main />
         <NextScript />
       </body>
