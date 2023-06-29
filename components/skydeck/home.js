@@ -161,25 +161,25 @@ export default function Home(props) {
       });
   };
 
-  // const refreshProject = async () => {
-  //   setLoading(true);
-  //   return fetch(`/api/projects/${project.id}/refresh`, {
-  //     method: "PUT",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //     },
-  //   })
-  //     .then((res) => res.json())
-  //     .then(async ({ message }) => {
-  //       if (message) {
-  //         alert(message);
-  //       } else {
-  //         onDataAvailable();
-  //       }
-  //       setLoading(false);
-  //     });
-  // };
+  const refreshProject = async () => {
+    setLoading(true);
+    return fetch(`/api/projects/${project.id}/refresh`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then(async ({ message }) => {
+        if (message) {
+          alert(message);
+        } else {
+          onDataAvailable();
+        }
+        setLoading(false);
+      });
+  };
 
   let onSearchSubmit = (e) => {
     e.preventDefault();
@@ -196,6 +196,7 @@ export default function Home(props) {
       <Header {...props} remove={null}>
         <div className="flex w-full">
           <div>{project.name}</div>
+          {loading && <div className="pl-2 text-indigo-600">Loading...</div>}
           <div className="mx-auto" />
           <button className="" onClick={editProject}>
             <FontAwesomeIcon icon="gear" />
@@ -204,7 +205,6 @@ export default function Home(props) {
       </Header>
       <Scroll>
         <div className="flex flex-col px-4 w-[300px] h-full">
-          {loading && <div className="pb-3 text-indigo-600">Loading...</div>}
           {!loading && empty && (
             <div className="flex flex-col space-y-6">
               <p className="">
@@ -251,11 +251,11 @@ export default function Home(props) {
                   className=""
                   onClick={() =>
                     addWidget((props) => (
-                      <Source source={null} title="All Activities" {...props} />
+                      <Source source={null} title="All Activity" {...props} />
                     ))
                   }
                 >
-                  All Activities
+                  All Activity
                 </button>
                 {sources.map((source) => (
                   <button
@@ -298,7 +298,7 @@ export default function Home(props) {
           <div className="!my-auto"></div>
           <div className="flex flex-col items-start space-y-1 text-sm text-indigo-300">
             <span className="font-bold">Actions</span>
-            <button className="" onClick={importProject}>
+            <button className="" onClick={refreshProject}>
               Refresh Data
             </button>
           </div>

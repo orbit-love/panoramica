@@ -128,7 +128,6 @@ export default async function handler(req, res) {
 
   try {
     const props = { projectId, graphConnection };
-    console.timeEnd("Fetching stats data");
     const result = {
       stats: await getStats(props),
     };

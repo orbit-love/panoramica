@@ -23,7 +23,7 @@ function removeItem(array, item) {
 
 let HomeWidget = (props) => <Home {...props} />;
 let ActivitiesWidget = (props) => (
-  <Source source={null} title="All Activities" {...props} />
+  <Source source={null} title="All Activity" {...props} />
 );
 let defaultWidgets = [HomeWidget, ActivitiesWidget];
 

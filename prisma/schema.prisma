@@ -78,10 +78,6 @@ model Activity {
   timestamp   DateTime
 
   // activities and and parents
-  // an activity's parent is the activity it replies to
-  parentId String?
-  parent   Activity?    @relation("Parent", fields: [parentId], references: [id])
-  activities    Activity[] @relation("Parent")
   // the source platform id for the parent activity
   sourceParentId String?
 
@@ -94,7 +90,7 @@ model Activity {
   // the name of the source platform, e.g. twitter
   source       String?
   // the id on the source platform, i.e. tweet id
-  sourceId     String? // put back to non-optional later
+  sourceId     String
   // the activity type for an additional dimension
   sourceType   String?
 
@@ -117,5 +113,5 @@ model Activity {
   // don't allow the same activity twice in the same project
   // commented out because the incoming data is not clean and
   // not dealing with that yet
-  // @@unique([sourceId, projectId])
+  @@unique([sourceId, projectId])
 }

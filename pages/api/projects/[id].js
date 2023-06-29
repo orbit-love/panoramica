@@ -5,7 +5,7 @@ import {
   getActivities,
   getThreads,
   toProperties,
-} from "lib/queries";
+} from "lib/graph/queries";
 
 // return members active in the time period, not those inactive but mentioned
 // can deal with this corner case later

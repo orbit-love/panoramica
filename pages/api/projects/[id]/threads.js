@@ -1,6 +1,6 @@
 import GraphConnection from "lib/graphConnection";
 import { check, redirect, authorizeProject } from "lib/auth";
-import { getThreads } from "lib/queries";
+import { getThreads } from "lib/graph/queries";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
