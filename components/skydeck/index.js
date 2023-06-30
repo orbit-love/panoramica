@@ -14,6 +14,7 @@ export { default as Search } from "components/skydeck/search";
 export { default as Activities } from "components/skydeck/activities";
 export { default as Scroll } from "components/skydeck/scroll";
 export { default as Connection } from "components/skydeck/connection";
+export { default as Insights } from "components/skydeck/insights";
 
 import Member from "components/skydeck/member";
 import Channel from "components/skydeck/channel";

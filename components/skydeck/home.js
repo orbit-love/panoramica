@@ -5,7 +5,14 @@ import c from "lib/common";
 
 import Feed from "lib/community/feed";
 import Community from "lib/community";
-import { Source, Search, Entities, Members, Project } from "components/skydeck";
+import {
+  Source,
+  Search,
+  Entities,
+  Members,
+  Project,
+  Insights,
+} from "components/skydeck";
 import { addChannelWidget } from "components/skydeck";
 import SourceIcon from "components/compact/source_icon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -157,7 +164,9 @@ export default function Home(props) {
               className="pl-2 text-sm text-green-600"
             />
           </div>
-          {loading && <div className="pl-2 text-indigo-600">Loading...</div>}
+          {loading && (
+            <div className="pl-2 font-normal text-indigo-600">Loading...</div>
+          )}
           <div className="mx-auto" />
           <button className="" onClick={editProject}>
             <FontAwesomeIcon icon="gear" />
@@ -208,6 +217,14 @@ export default function Home(props) {
                       }
                     >
                       Member List
+                    </button>
+                    <button
+                      className=""
+                      onClick={() =>
+                        addWidget((props) => <Insights {...props} />)
+                      }
+                    >
+                      Insights
                     </button>
                     <button
                       className=""
