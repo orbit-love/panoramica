@@ -132,7 +132,7 @@ export default function Home(props) {
   };
 
   // prepare to render
-  const empty = community?.activities?.count === 0;
+  const empty = community?.activities?.length === 0;
 
   var sources = [];
   var sourceChannels = {};
