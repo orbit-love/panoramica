@@ -110,11 +110,13 @@ export default function Home(props) {
   }, [project, onDataAvailable]);
 
   // fetch the project the first time and then set up polling
+  // also refresh the project right away so new data comes in
   useEffect(() => {
     fetchProject();
     var interval = setInterval(() => {
       refreshProject();
     }, 60 * 1000);
+    refreshProject();
     return () => {
       clearInterval(interval);
     };

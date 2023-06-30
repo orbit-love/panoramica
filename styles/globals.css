@@ -33,6 +33,19 @@ body {
 .a-html p {
   @apply my-1;
 }
+.a-html ol {
+  @apply my-1;
+  @apply list-decimal;
+  @apply list-inside;
+}
+.a-html ul {
+  @apply my-1;
+  @apply list-disc;
+  @apply list-inside;
+}
+.a-html ul li {
+  @apply my-1;
+}
 
 .space-gradient {
   background: rgb(21, 13, 51, 1);
