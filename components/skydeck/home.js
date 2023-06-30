@@ -291,13 +291,13 @@ export default function Home(props) {
             </>
           )}
           <div className="!my-auto"></div>
-          <div className="flex flex-col items-start space-y-1 text-sm text-indigo-300">
+          <div className="flex flex-col py-3 items-start space-y-1 text-sm text-indigo-300">
             <span className="font-bold">Actions</span>
             <button className="" onClick={importProject}>
               Reimport Data
             </button>
           </div>
-          <div className="flex flex-col py-6 space-y-1 text-sm text-indigo-300">
+          <div className="flex flex-col py-3 space-y-1 text-sm text-indigo-300">
             <span className="font-bold">Shortcuts</span>
             <span>/: Search</span>
             <span>Backspace: Remove last column</span>

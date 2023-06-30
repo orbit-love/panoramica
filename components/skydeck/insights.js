@@ -5,7 +5,7 @@ import Activity from "components/compact/activity";
 export default function Insights(props) {
   let { addWidget, project, community } = props;
   let [loading, setLoading] = useState(true);
-  let [data, setData] = useState(null);
+  let [data, setData] = useState({});
 
   const fetchInsights = useCallback(async () => {
     setLoading(true);
@@ -25,28 +25,37 @@ export default function Insights(props) {
     fetchInsights();
   }, []);
 
-  const activityMap = data?.insights?.map(({ parent, child, responseTime }) => {
-    return {
-      parent: community.activities.find((a) => a.id === parent),
-      child: community.activities.find((a) => a.id === child),
-      responseTime,
-    };
-  });
+  const find = (id) => community.activities.find((a) => a.id === id);
 
   return (
     <Frame>
       <Header {...props}>
-        <div>Insights</div>
+        <div className="text-lg">Insights</div>
       </Header>
       <Scroll>
         <div className="flex flex-col px-4">
-          <div className="mb-4 font-semibold">
-            Longest Time Between Messages
+          <div className="mb-4 font-semibold text-blue-500 text-center">
+            Longest Reply Delays
           </div>
-          {activityMap?.map(({ parent, child, responseTime }) => (
-            <div key={responseTime} className="mb-8">
-              <Activity activity={parent} {...props} />
-              <Activity activity={child} {...props} />
+          {data.highestDelays?.map(({ parent, child, responseTime }) => (
+            <div key={responseTime} className="mb-2">
+              <div className="text-blue-500 text-center">
+                {Math.floor(responseTime / (1000 * 60 * 60 * 24))} days
+              </div>
+              <Activity activity={find(parent)} showSourceIcon {...props} />
+              <Activity activity={find(child)} showSourceIcon {...props} />
+            </div>
+          ))}
+          <div className="mt-4 text-center font-semibold text-blue-500">
+            Shortest Reply Delays
+          </div>
+          {data.lowestDelays?.map(({ parent, child, responseTime }) => (
+            <div key={responseTime} className="mb-2">
+              <div className="text-blue-500 text-center">
+                {Math.floor(responseTime / 1000)} seconds
+              </div>
+              <Activity activity={find(parent)} showSourceIcon {...props} />
+              <Activity activity={find(child)} showSourceIcon {...props} />
             </div>
           ))}
         </div>

@@ -19,9 +19,7 @@ export default async function handler(req, res) {
 
   try {
     const props = { projectId, graphConnection };
-    const result = {
-      insights: await getInsights(props),
-    };
+    const result = await getInsights(props);
     res.status(200).json({ result });
   } catch (err) {
     res.status(500).json({ message: "failed to load data" });
