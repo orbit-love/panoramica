@@ -26,11 +26,11 @@ export default function NameAndIcon({
   return (
     <div
       onClick={() => onClick(member)}
-      className="flex items-center space-x-1 cursor-pointer"
+      className="flex overflow-hidden items-center space-x-1 cursor-pointer"
     >
       <OrbitLevelIcon number={member.level} />
       <div
-        className="whitespace-nowrap"
+        className="overflow-hidden text-ellipsis whitespace-nowrap"
         style={{
           color: c.orbitLevelColorScale(member.level),
         }}

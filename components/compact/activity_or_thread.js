@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import classnames from "classnames";
+import c from "lib/common";
 
 import Activity from "components/compact/activity";
 import Thread from "components/compact/thread";
+import SourceIcon from "components/compact/source_icon";
 
 const isThread = (thread) => thread.type === "thread";
 const isIsland = (thread) => thread.type === "island";
 
-const TopThread = ({ thread, community, ...props }) => {
+const TopThread = ({
+  thread,
+  activity,
+  community,
+  onClickChannel,
+  ...props
+}) => {
   // get the activity for the last activity
   var latestDescendant = community.threads[thread.descendants?.slice(-1)];
   var latestDescendantParent = community.activities.find(
@@ -20,15 +28,26 @@ const TopThread = ({ thread, community, ...props }) => {
     latestDescendantParent?.timestamp || thread.last_timestamp
   );
   return (
-    <Thread
-      thread={thread}
-      topThread={thread}
-      nesting={0}
-      showAfter={showAfter}
-      setShowAfter={setShowAfter}
-      community={community}
-      {...props}
-    />
+    <>
+      {activity.sourceChannel && (
+        <div className="flex justify-end items-center space-x-1 text-xs text-indigo-700">
+          <SourceIcon activity={activity} />
+          <button onClick={onClickChannel}>
+            {c.displayChannel(activity.sourceChannel)}
+          </button>
+        </div>
+      )}
+      <Thread
+        thread={thread}
+        topThread={thread}
+        activity={activity}
+        nesting={0}
+        showAfter={showAfter}
+        setShowAfter={setShowAfter}
+        community={community}
+        {...props}
+      />
+    </>
   );
 };
 
@@ -60,7 +79,12 @@ export default function ActivityOrThread({
         />
       )}
       {(isIsland(thread) || showReplies) && (
-        <Activity activity={activity} community={community} {...props} />
+        <Activity
+          activity={activity}
+          community={community}
+          showSourceIcon
+          {...props}
+        />
       )}
     </div>
   );

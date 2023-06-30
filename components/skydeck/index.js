@@ -9,12 +9,14 @@ export { default as Member } from "components/skydeck/member";
 export { default as Members } from "components/skydeck/members";
 export { default as Entities } from "components/skydeck/entities";
 export { default as Source } from "components/skydeck/source";
+export { default as Channel } from "components/skydeck/channel";
 export { default as Search } from "components/skydeck/search";
 export { default as Activities } from "components/skydeck/activities";
 export { default as Scroll } from "components/skydeck/scroll";
 export { default as Connection } from "components/skydeck/connection";
 
 import Member from "components/skydeck/member";
+import Channel from "components/skydeck/channel";
 
 export function addMemberWidget(member, addWidget) {
   addWidget((props) => (
@@ -22,6 +24,17 @@ export function addMemberWidget(member, addWidget) {
       key={member.globalActor}
       title={member.globalActorName}
       member={member}
+      {...props}
+    />
+  ));
+}
+
+export function addChannelWidget(source, sourceChannel, addWidget) {
+  addWidget((props) => (
+    <Channel
+      key={sourceChannel}
+      source={source}
+      sourceChannel={sourceChannel}
       {...props}
     />
   ));

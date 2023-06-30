@@ -6,6 +6,7 @@ import c from "lib/common";
 import Feed from "lib/community/feed";
 import Community from "lib/community";
 import { Source, Search, Entities, Members, Project } from "components/skydeck";
+import { addChannelWidget } from "components/skydeck";
 import SourceIcon from "components/compact/source_icon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -134,12 +135,16 @@ export default function Home(props) {
   const empty = community?.activities?.count === 0;
 
   var sources = [];
+  var sourceChannels = {};
   if (community) {
     var feed = new Feed(props);
-    sources = feed.getSources({ activities: community.activities });
+    sources = feed.getSources({});
+    for (let source of sources) {
+      sourceChannels[source] = feed.getSourceChannels({ source });
+    }
   }
 
-  console.log("Rendering");
+  console.log("Rendering HOME column");
 
   return (
     <Frame>
@@ -178,54 +183,78 @@ export default function Home(props) {
           )}
           {community && !empty && (
             <>
-              <div className="flex flex-col items-start space-y-2">
-                <div className="font-semibold">Add Columns</div>
-                <div className="flex flex-col items-start space-y-1 w-full">
-                  <button
-                    className=""
-                    onClick={() => addWidget((props) => <Members {...props} />)}
-                  >
-                    Member List
-                  </button>
-                  <button
-                    className=""
-                    onClick={() =>
-                      addWidget((props) => <Entities {...props} />)
-                    }
-                  >
-                    Entities
-                  </button>
-                  <button
-                    className=""
-                    onClick={() =>
-                      addWidget((props) => (
-                        <Source source={null} title="All Activity" {...props} />
-                      ))
-                    }
-                  >
-                    All Activity
-                  </button>
-                  {sources.map((source) => (
+              <div className="flex flex-col items-start space-y-4">
+                <div>
+                  <div className="mb-1 font-semibold">Add Columns</div>
+                  <div className="flex flex-col items-start w-full">
                     <button
-                      key={source}
-                      className="flex items-center space-x-1"
+                      className=""
                       onClick={() =>
                         addWidget((props) => (
                           <Source
-                            source={source}
-                            title={c.titleize(source)}
+                            source={null}
+                            title="All Activity"
                             {...props}
                           />
                         ))
                       }
                     >
-                      <SourceIcon activity={{ source }} />
-                      <div>{c.titleize(source)}</div>
+                      All Activity
                     </button>
-                  ))}
-                  <button className="text-red-500" onClick={resetWidgets}>
-                    Reset
-                  </button>
+                    <button
+                      className=""
+                      onClick={() =>
+                        addWidget((props) => <Members {...props} />)
+                      }
+                    >
+                      Member List
+                    </button>
+                    <button
+                      className=""
+                      onClick={() =>
+                        addWidget((props) => <Entities {...props} />)
+                      }
+                    >
+                      Entities
+                    </button>
+                    {sources.map((source) => (
+                      <div className="flex flex-col my-1" key={source}>
+                        <button
+                          className="flex items-center space-x-1"
+                          onClick={() =>
+                            addWidget((props) => (
+                              <Source
+                                source={source}
+                                title={c.titleize(source)}
+                                {...props}
+                              />
+                            ))
+                          }
+                        >
+                          <SourceIcon activity={{ source }} />
+                          <div>{c.titleize(source)}</div>
+                        </button>
+                        <div className="flex flex-col items-start pl-2 text-sm text-indigo-400">
+                          {sourceChannels[source]
+                            .sort(c.sortChannels)
+                            .slice(0, 10)
+                            .map((channel) => (
+                              <button
+                                key={channel}
+                                onClick={() =>
+                                  addChannelWidget(source, channel, addWidget)
+                                }
+                              >
+                                {c.displayChannel(channel)}
+                              </button>
+                            ))}
+                        </div>
+                      </div>
+                    ))}
+                    <button className="text-red-500" onClick={resetWidgets}>
+                      Reset
+                    </button>
+                  </div>
                 </div>
               </div>
               <div className="h-8" />

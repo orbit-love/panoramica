@@ -10,13 +10,14 @@ export default function Activity({
   selection,
   setSelection,
   setConnection,
+  showSourceIcon,
   onClickMember,
 }) {
   var member = community.findMemberByActivity(activity);
   var renderHtml = activity.textHtml?.length > 0;
   return (
     <div key={activity.id} className="flex flex-col pb-2">
-      <div className="flex items-center pb-1 space-x-2">
+      <div className="flex items-center space-x-2">
         <NameAndIcon
           member={member}
           selection={selection}
@@ -24,9 +25,15 @@ export default function Activity({
           setSelection={setSelection}
           onClick={onClickMember}
         />
-        <div className="overflow-hidden flex-1 text-xs text-right text-indigo-700 text-ellipsis">
-          <SourceIcon activity={activity} />
-        </div>
+        <div className="flex-1" />
+        {showSourceIcon && (
+          <div className="flex overflow-hidden items-center space-x-1 text-xs text-right text-indigo-700 text-ellipsis whitespace-nowrap">
+            <SourceIcon activity={activity} />
+            {/* {activity.sourceChannel && (
+              <div dir="ltr">{activity.sourceChannel}</div>
+            )} */}
+          </div>
+        )}
         <div className="text-xs text-right whitespace-nowrap">
           {activity.url && (
             <a
