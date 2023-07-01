@@ -8,11 +8,11 @@ import {
   Header,
   Activities,
   Connection,
-  Entity,
 } from "components/skydeck";
 import Meter from "components/meter";
 import CompactEntity from "components/compact/entity";
 import CompactConnections from "components/compact/connections";
+import { addEntityWidget } from "components/skydeck";
 
 export default function Member(props) {
   var { member, community, addWidget } = props;
@@ -32,8 +32,7 @@ export default function Member(props) {
     ));
   };
 
-  let onClickEntity = (entity) => () =>
-    addWidget((props) => <Entity key={entity.id} entity={entity} {...props} />);
+  let onClickEntity = (entity) => () => addEntityWidget(entity, addWidget);
 
   return (
     <Frame>

@@ -3,6 +3,7 @@ import { Frame, Scroll, Header, Entity } from "components/skydeck";
 
 import CompactEntity from "components/compact/entity";
 import EntityGroup from "lib/community/entityGroup";
+import { addEntityWidget } from "components/skydeck";
 
 export default function Entities(props) {
   let { addWidget } = props;
@@ -10,8 +11,7 @@ export default function Entities(props) {
   var entityGroup = new EntityGroup(props);
   var entities = entityGroup.getFilteredEntities();
 
-  let onClick = (entity) => () =>
-    addWidget((props) => <Entity key={entity.id} entity={entity} {...props} />);
+  let onClick = (entity) => () => addEntityWidget(entity, addWidget);
 
   return (
     <Frame>

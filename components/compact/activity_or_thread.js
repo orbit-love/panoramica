@@ -59,6 +59,7 @@ export default function ActivityOrThread({
   community,
   index,
   showReplies,
+  onClickEntity,
   ...props
 }) {
   var thread = community.threads[activity.id];
@@ -71,6 +72,19 @@ export default function ActivityOrThread({
         "bg-opacity-20": index % 2 === 1,
       })}
     >
+      {thread.entities?.length > 0 && (
+        <div className="flex flex-wrap justify-end items-center space-x-1">
+          {thread.entities?.map((entity) => (
+            <button
+              className="bg-opacity-40 py-1 px-2 my-1 text-xs bg-fuchsia-900 rounded-lg"
+              key={entity}
+              onClick={() => onClickEntity({ id: entity })}
+            >
+              {entity}
+            </button>
+          ))}
+        </div>
+      )}
       {isThread(thread) && (
         <TopThread
           thread={thread}

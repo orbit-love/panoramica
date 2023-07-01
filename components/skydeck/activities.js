@@ -1,6 +1,10 @@
 import React from "react";
 import ActivityOrThread from "components/compact/activity_or_thread";
-import { addMemberWidget, addChannelWidget } from "components/skydeck";
+import {
+  addMemberWidget,
+  addChannelWidget,
+  addEntityWidget,
+} from "components/skydeck";
 
 export default function Activities({
   title,
@@ -16,6 +20,9 @@ export default function Activities({
   let onClickChannel = (source, sourceChannel) => {
     addChannelWidget(source, sourceChannel, addWidget);
   };
+  let onClickEntity = (entity) => {
+    addEntityWidget(entity, addWidget);
+  };
   // there is a widget index prop at index, so make sure to put this index after
   return (
     <div className="w-[425px]">
@@ -28,6 +35,7 @@ export default function Activities({
               community={community}
               onClickMember={onClickMember}
               onClickChannel={onClickChannel}
+              onClickEntity={onClickEntity}
               {...props}
               index={index}
             />

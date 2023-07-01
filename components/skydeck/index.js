@@ -17,6 +17,7 @@ export { default as Connection } from "components/skydeck/connection";
 export { default as Insights } from "components/skydeck/insights";
 
 import Member from "components/skydeck/member";
+import Entity from "components/skydeck/entity";
 import Channel from "components/skydeck/channel";
 
 export function addMemberWidget(member, addWidget) {
@@ -27,6 +28,12 @@ export function addMemberWidget(member, addWidget) {
       member={member}
       {...props}
     />
+  ));
+}
+
+export function addEntityWidget(entity, addWidget) {
+  addWidget((props) => (
+    <Entity key={entity.id} title={entity.id} entity={entity} {...props} />
   ));
 }
 
