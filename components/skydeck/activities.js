@@ -13,8 +13,8 @@ export default function Activities({
   let onClickMember = (member) => {
     addMemberWidget(member, addWidget);
   };
-  let onClickChannel = (channel) => {
-    addChannelWidget(channel, addWidget);
+  let onClickChannel = (source, sourceChannel) => {
+    addChannelWidget(source, sourceChannel, addWidget);
   };
   // there is a widget index prop at index, so make sure to put this index after
   return (

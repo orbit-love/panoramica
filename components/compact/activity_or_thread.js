@@ -16,6 +16,7 @@ const TopThread = ({
   onClickChannel,
   ...props
 }) => {
+  var { source, sourceChannel } = activity;
   // get the activity for the last activity
   var latestDescendant = community.threads[thread.descendants?.slice(-1)];
   var latestDescendantParent = community.activities.find(
@@ -32,8 +33,8 @@ const TopThread = ({
       {activity.sourceChannel && (
         <div className="flex justify-end items-center space-x-1 text-xs text-indigo-700">
           <SourceIcon activity={activity} />
-          <button onClick={onClickChannel}>
-            {c.displayChannel(activity.sourceChannel)}
+          <button onClick={() => onClickChannel(source, sourceChannel)}>
+            {c.displayChannel(sourceChannel)}
           </button>
         </div>
       )}
