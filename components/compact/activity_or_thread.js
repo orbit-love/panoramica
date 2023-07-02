@@ -5,17 +5,31 @@ import c from "lib/common";
 import Activity from "components/compact/activity";
 import Thread from "components/compact/thread";
 import SourceIcon from "components/compact/source_icon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const isThread = (thread) => thread.type === "thread";
 const isIsland = (thread) => thread.type === "island";
 
-const TopThread = ({
-  thread,
-  activity,
-  community,
-  onClickChannel,
-  ...props
-}) => {
+const TopThread = (props) => {
+  const { thread, activity, community, onClickChannel, project } = props;
+
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  var onClickSummary = async () => {
+    setLoading(true);
+    fetch(`/api/projects/${project.id}/${activity.id}/summary`)
+      .then((res) => res.json())
+      .then(({ result, message }) => {
+        if (message) {
+          alert(message);
+        } else {
+          setSummary(result);
+        }
+        setLoading(false);
+      });
+  };
+
   var { source, sourceChannel } = activity;
   // get the activity for the last activity
   var latestDescendant = community.threads[thread.descendants?.slice(-1)];
@@ -28,26 +42,39 @@ const TopThread = ({
   var [showAfter, setShowAfter] = useState(
     latestDescendantParent?.timestamp || thread.last_timestamp
   );
+
   return (
     <>
-      {activity.sourceChannel && (
-        <div className="flex justify-end items-center space-x-1 text-xs text-indigo-700">
-          <SourceIcon activity={activity} />
-          <button onClick={() => onClickChannel(source, sourceChannel)}>
-            {c.displayChannel(sourceChannel)}
+      <div className="flex justify-end items-center space-x-1 w-full text-xs text-indigo-700">
+        {/* {loading && <div className="text-blue-400">Summarizing...</div>} */}
+        {/* <div className="pr-2">
+          <button onClick={onClickSummary}>
+            <FontAwesomeIcon icon="note" className="text-blue-400" />
           </button>
-        </div>
+        </div> */}
+        {activity.sourceChannel && (
+          <>
+            <SourceIcon activity={activity} />
+            <button onClick={() => onClickChannel(source, sourceChannel)}>
+              {c.displayChannel(sourceChannel)}
+            </button>
+          </>
+        )}
+      </div>
+      {summary && (
+        <pre className="py-4 text-xs text-blue-400 whitespace-pre-wrap">
+          {summary.text}
+        </pre>
       )}
-      <Thread
-        thread={thread}
-        topThread={thread}
-        activity={activity}
-        nesting={0}
-        showAfter={showAfter}
-        setShowAfter={setShowAfter}
-        community={community}
-        {...props}
-      />
+      {!summary && (
+        <Thread
+          nesting={0}
+          topThread={thread}
+          showAfter={showAfter}
+          setShowAfter={setShowAfter}
+          {...props}
+        />
+      )}
     </>
   );
 };

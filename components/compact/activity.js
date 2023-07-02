@@ -29,9 +29,6 @@ export default function Activity({
         {showSourceIcon && (
           <div className="flex overflow-hidden items-center space-x-1 text-xs text-right text-indigo-700 text-ellipsis whitespace-nowrap">
             <SourceIcon activity={activity} />
-            {/* {activity.sourceChannel && (
-              <div dir="ltr">{activity.sourceChannel}</div>
-            )} */}
           </div>
         )}
         <div className="text-xs text-right whitespace-nowrap">

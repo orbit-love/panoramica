@@ -4,16 +4,8 @@ import classnames from "classnames";
 import Activity from "components/compact/activity";
 
 export default function Thread(props) {
-  let {
-    thread,
-    topThread,
-    community,
-    activity,
-    nesting,
-    showAfter,
-    setShowAfter,
-    lastChild,
-  } = props;
+  let { thread, topThread, community, nesting, showAfter, setShowAfter } =
+    props;
 
   // if the child activity is missing, it's because it didn't get
   // brought back in the time slice, so just skip it
@@ -29,15 +21,6 @@ export default function Thread(props) {
           "pl-3": nesting > 0,
         })}
       >
-        {/* {parent?.timestamp < showAfter && lastChild && (
-          <button
-            onClick={() => {
-              setShowAfter(parent.timestamp);
-            }}
-          >
-            Expand
-          </button>
-        )} */}
         <div
           className={classnames("pb-1", {
             hidden: false,

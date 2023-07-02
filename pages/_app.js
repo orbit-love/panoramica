@@ -67,6 +67,7 @@ import {
   faSignalStream,
   faCircle,
   faQuestion,
+  faNote,
 } from "@fortawesome/pro-solid-svg-icons";
 
 import { faTelescope } from "@fortawesome/pro-duotone-svg-icons";
@@ -123,7 +124,8 @@ library.add(
   faGithub,
   faDiscourse,
   faGear,
-  faSearch
+  faSearch,
+  faNote
 );
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
