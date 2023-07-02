@@ -12,7 +12,7 @@ import {
 // if a conversation has an activity out of the window and the member has no other
 // activities, they would be missing
 const getMembers = async ({ projectId, graphConnection, from, to }) => {
-  const { records } = await graphConnection.runInNewSession(
+  const { records } = await graphConnection.run(
     `MATCH (p:Project { id: $projectId })
        WITH p
      MATCH (p)-[:OWNS]->(m:Member)-[r:DID]-(a:Activity)
@@ -29,7 +29,7 @@ const getMembers = async ({ projectId, graphConnection, from, to }) => {
 };
 
 const getEntities = async ({ projectId, graphConnection, from, to }) => {
-  const { records } = await graphConnection.runInNewSession(
+  const { records } = await graphConnection.run(
     `MATCH (p:Project { id: $projectId })
     WITH p
     MATCH (p)-[:OWNS]->(e:Entity)-[:RELATES]-(a:Activity)-[:DID]-(m:Member)

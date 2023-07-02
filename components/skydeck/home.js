@@ -12,7 +12,7 @@ import {
   Members,
   Project,
   Insights,
-  Chat,
+  Prompt,
 } from "components/skydeck";
 import { addChannelWidget } from "components/skydeck";
 import SourceIcon from "components/compact/source_icon";
@@ -229,9 +229,11 @@ export default function Home(props) {
                     </button>
                     <button
                       className=""
-                      onClick={() => addWidget((props) => <Chat {...props} />)}
+                      onClick={() =>
+                        addWidget((props) => <Prompt {...props} />)
+                      }
                     >
-                      Chat
+                      Prompt
                     </button>
                     <button
                       className=""

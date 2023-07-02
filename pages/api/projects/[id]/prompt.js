@@ -40,28 +40,44 @@ export default async function handler(req, res) {
     const vectorDocs = await vectorStore.similaritySearch(q, 10, {
       projectId,
     });
-    console.log(vectorDocs);
+    if (vectorDocs.length === 0) {
+      res.status(400).json({ message: "Please modify the query." });
+      return;
+    }
 
-    const model = new OpenAI({ modelName: "gpt-3.5-turbo-0613" });
+    var tokens = [];
+    const model = new OpenAI({
+      modelName: "gpt-3.5-turbo-0613",
+      temperature: 0,
+      streaming: true,
+      callbacks: [
+        {
+          handleLLMNewToken(token) {
+            res.write(token);
+            tokens.push(token);
+          },
+        },
+      ],
+    });
     const chainA = loadQAStuffChain(model, {
       verbose: true,
     });
     const docs = vectorDocs.map((doc) => new Document(doc));
     const question = `
-       You are a helpful assistant to help people answer questions about
-       their community. The context you have been given is a series of messages in an
-       online chat or forum community.
+       The context you have been given is a series of messages in an
+       online chat community. Please format the response with 2 newlines
+       between paragraphs.
 
-       Pleas answer this question in as much detail as possible: ${q}`;
-    const result = await chainA.call({
+       Pleas answer this question about the community: ${q}`;
+    await chainA.call({
       input_documents: docs,
       question,
     });
 
-    // process the project
-    res.status(200).json({ result });
+    console.log(tokens);
+    res.end();
   } catch (err) {
-    console.log("Could not process project", err);
+    console.log("Could not process prompt", err);
     return res.status(500).json({ message: "Could not process project" });
   }
 }

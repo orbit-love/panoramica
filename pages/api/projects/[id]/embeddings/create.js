@@ -34,6 +34,7 @@ export default async function handler(req, res) {
       deleteAll: true,
     });
 
+    // when we need to create an index
     // const pineconeIndex = await pinecone.createIndex({
     //   createRequest: {
     //     name: indexName,
@@ -66,9 +67,9 @@ export default async function handler(req, res) {
 
     ${activity.textHtml}
 
-    The id of this message is ${activity.sourceId} and the application was ${
-      activity.source
-    }. ${
+    The id of this message is ${
+      activity.sourceId
+    } and the chat application was ${activity.source}. ${
       activity.sourceParentId
         ? `It is a reply to the message with the id ${activity.sourceParentId}.`
         : ""
