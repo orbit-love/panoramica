@@ -15,6 +15,7 @@ export { default as Activities } from "components/skydeck/activities";
 export { default as Scroll } from "components/skydeck/scroll";
 export { default as Connection } from "components/skydeck/connection";
 export { default as Insights } from "components/skydeck/insights";
+export { default as Chat } from "components/skydeck/chat";
 
 import Member from "components/skydeck/member";
 import Entity from "components/skydeck/entity";

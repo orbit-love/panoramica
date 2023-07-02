@@ -12,6 +12,7 @@ import {
   Members,
   Project,
   Insights,
+  Chat,
 } from "components/skydeck";
 import { addChannelWidget } from "components/skydeck";
 import SourceIcon from "components/compact/source_icon";
@@ -228,6 +229,12 @@ export default function Home(props) {
                     </button>
                     <button
                       className=""
+                      onClick={() => addWidget((props) => <Chat {...props} />)}
+                    >
+                      Chat
+                    </button>
+                    <button
+                      className=""
                       onClick={() =>
                         addWidget((props) => <Entities {...props} />)
                       }
@@ -291,7 +298,7 @@ export default function Home(props) {
             </>
           )}
           <div className="!my-auto"></div>
-          <div className="flex flex-col py-3 items-start space-y-1 text-sm text-indigo-300">
+          <div className="flex flex-col items-start py-3 space-y-1 text-sm text-indigo-300">
             <span className="font-bold">Actions</span>
             <button className="" onClick={importProject}>
               Reimport Data
