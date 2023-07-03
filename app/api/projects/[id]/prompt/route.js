@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { StreamingTextResponse, LangChainStream } from "ai";
 
-import { check, authorizeProject } from "lib/auth";
+import { checkApp, authorizeProject } from "lib/auth";
 import { OpenAI } from "langchain/llms/openai";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
@@ -10,15 +10,16 @@ import { Document } from "langchain/document";
 import { loadQAStuffChain } from "langchain/chains";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 
-export async function GET(_, context) {
+export async function GET(request, context) {
   const { stream, handlers } = LangChainStream();
 
-  const user = await check();
+  const user = await checkApp();
   if (!user) {
     return redirect("/");
   }
 
-  var { id, q } = context.params;
+  var { id } = context.params;
+  var q = request.nextUrl.searchParams.get("q");
   if (!q) {
     q = "What was the most recent activity in this community?";
   }
