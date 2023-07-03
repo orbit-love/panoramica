@@ -27,11 +27,13 @@ export default async function handler(req, res) {
       environment: process.env.PINECONE_API_ENV,
       apiKey: process.env.PINECONE_API_KEY,
     });
+    var namespace = `project-${projectId}`;
 
     const indexName = process.env.PINECONE_INDEX_NAME;
     const pineconeIndex = pinecone.Index(indexName);
     await pineconeIndex.delete1({
       deleteAll: true,
+      namespace,
     });
 
     const graphConnection = new GraphConnection();
@@ -91,6 +93,7 @@ export default async function handler(req, res) {
 
     await PineconeStore.fromDocuments(docs, new OpenAIEmbeddings(), {
       pineconeIndex,
+      namespace,
     });
 
     // process the project

@@ -28,20 +28,22 @@ export default async function handler(req, res) {
       environment: process.env.PINECONE_API_ENV,
       apiKey: process.env.PINECONE_API_KEY,
     });
+    var namespace = `project-${projectId}`;
 
     const indexName = process.env.PINECONE_INDEX_NAME;
     const pineconeIndex = pinecone.Index(indexName);
 
     const vectorStore = await PineconeStore.fromExistingIndex(
       new OpenAIEmbeddings(),
-      { pineconeIndex }
+      { pineconeIndex, namespace }
     );
 
-    const vectorDocs = await vectorStore.similaritySearch(q, 10, {
-      projectId,
-    });
+    const vectorDocs = await vectorStore.similaritySearch(q, 10);
     if (vectorDocs.length === 0) {
-      res.status(400).json({ message: "Please modify the query." });
+      res.status(400).json({
+        message:
+          "No information exists that could help provide an answer. Please try another query.",
+      });
       return;
     }
 
