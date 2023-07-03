@@ -91,10 +91,30 @@ export default function Home(props) {
       .then(({ message }) => {
         if (message) {
           console.log(message);
-          setLoading(false);
         } else {
           processProject();
         }
+        setLoading(false);
+      });
+  }, [project, processProject, setLoading]);
+
+  const createEmbeddings = useCallback(async () => {
+    setLoading(true);
+    return fetch(`/api/projects/${project.id}/embeddings/create`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then(({ message }) => {
+        if (message) {
+          alert(message);
+        } else {
+          processProject();
+        }
+        setLoading(false);
       });
   }, [project, processProject, setLoading]);
 
@@ -304,6 +324,9 @@ export default function Home(props) {
             <span className="font-bold">Actions</span>
             <button className="" onClick={importProject}>
               Reimport Data
+            </button>
+            <button className="" onClick={createEmbeddings}>
+              Create Embeddings
             </button>
           </div>
           <div className="flex flex-col py-3 space-y-1 text-sm text-indigo-300">

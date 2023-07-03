@@ -48,7 +48,7 @@ export default async function handler(req, res) {
     var tokens = [];
     const model = new OpenAI({
       modelName: "gpt-3.5-turbo-0613",
-      temperature: 0,
+      temperature: 0.5,
       streaming: true,
       callbacks: [
         {

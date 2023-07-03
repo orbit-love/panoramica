@@ -28,19 +28,11 @@ export default async function handler(req, res) {
       apiKey: process.env.PINECONE_API_KEY,
     });
 
-    const indexName = `skydeck-${process.env.NODE_ENV}`;
+    const indexName = process.env.PINECONE_INDEX_NAME;
     const pineconeIndex = pinecone.Index(indexName);
     await pineconeIndex.delete1({
       deleteAll: true,
     });
-
-    // when we need to create an index
-    // const pineconeIndex = await pinecone.createIndex({
-    //   createRequest: {
-    //     name: indexName,
-    //     dimension: 1536,
-    //   },
-    // });
 
     const graphConnection = new GraphConnection();
 
@@ -85,7 +77,6 @@ export default async function handler(req, res) {
           },
         })
     );
-    console.log(docs);
 
     // const docs = messages.map(
     //   (message) =>
