@@ -5,7 +5,6 @@ import { useHotkeys } from "react-hotkeys-hook";
 import Link from "next/link";
 
 import levelsData from "data/levels";
-import Head from "components/head";
 import { Home, Source } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -98,39 +97,36 @@ export default function Page({ _project }) {
   );
 
   return (
-    <>
-      <Head title={`${project.name} — Skydeck`} />
-      <div
-        ref={containerRef}
-        id="container"
-        className="space-gradient p-4"
-        style={{
-          width: "100vw",
-          height: "100vh",
-        }}
-      >
-        <div className="flex overflow-x-scroll space-x-3">
-          <div className="flex flex-col py-3 pr-3 space-y-2 h-full text-indigo-600">
-            <Link
-              prefetch={false}
-              className="underline hover:text-indigo-400"
-              href={`/skydeck`}
-            >
-              <FontAwesomeIcon icon="arrow-left" />
-            </Link>
-            <div>{Logo}</div>
-          </div>
-          {widgets.map((Widget, index) => (
-            <Widget
-              key={index}
-              index={index}
-              remove={() => removeWidget(Widget)}
-              addWidget={(widget) => addWidget(widget, index + 1)}
-              {...props}
-            />
-          ))}
+    <div
+      ref={containerRef}
+      id="container"
+      className="space-gradient p-4"
+      style={{
+        width: "100vw",
+        height: "100vh",
+      }}
+    >
+      <div className="flex overflow-x-scroll space-x-3">
+        <div className="flex flex-col py-3 pr-3 space-y-2 h-full text-indigo-600">
+          <Link
+            prefetch={false}
+            className="underline hover:text-indigo-400"
+            href={`/skydeck`}
+          >
+            <FontAwesomeIcon icon="arrow-left" />
+          </Link>
+          <div>{Logo}</div>
         </div>
+        {widgets.map((Widget, index) => (
+          <Widget
+            key={index}
+            index={index}
+            remove={() => removeWidget(Widget)}
+            addWidget={(widget) => addWidget(widget, index + 1)}
+            {...props}
+          />
+        ))}
       </div>
-    </>
+    </div>
   );
 }

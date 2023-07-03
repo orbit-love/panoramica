@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 
-import Head from "components/head";
 import Header from "components/header";
 import Panel from "components/panel";
 import New from "components/project/new";
@@ -12,7 +11,6 @@ export default function Index({ session, projects }) {
 
   return (
     <>
-      <Head />
       <Header />
       <div
         id="container"

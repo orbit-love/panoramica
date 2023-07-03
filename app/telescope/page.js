@@ -6,6 +6,10 @@ import { prisma } from "lib/db";
 import TelescopePage from "app/telescope/telescope-page";
 import Wrapper from "components/wrapper";
 
+export const metadata = {
+  title: "Telescope",
+};
+
 export default async function Page() {
   const props = await getProps();
   if (!props.session) {

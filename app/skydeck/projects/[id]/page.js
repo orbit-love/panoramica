@@ -6,6 +6,14 @@ import { prisma } from "lib/db";
 import ProjectPage from "app/skydeck/projects/[id]/project-page";
 import Wrapper from "components/wrapper";
 
+export async function generateMetadata({ params }) {
+  const session = await getServerSession(authOptions);
+  var project = await getProject(params.id, session?.user);
+  return {
+    title: project.name,
+  };
+}
+
 export default async function Page({ params }) {
   const props = await getProps(params);
   if (!props.session) {
@@ -26,15 +34,7 @@ export async function getProps(params) {
     const { id } = params;
     const user = session.user;
     // check if the user has access
-    let where = { id };
-    if (!user.admin) {
-      where.user = {
-        email: user.email,
-      };
-    }
-    _project = await prisma.project.findFirst({
-      where,
-    });
+    _project = await getProject(id, user);
   }
   if (_project) {
     return {
@@ -44,3 +44,15 @@ export async function getProps(params) {
   }
   return {};
 }
+
+const getProject = async (id, user) => {
+  let where = { id };
+  if (!user.admin) {
+    where.user = {
+      email: user.email,
+    };
+  }
+  return prisma.project.findFirst({
+    where,
+  });
+};

@@ -1,4 +1,3 @@
-import Head from "components/head";
 import Header from "components/header";
 import Footer from "components/footer";
 import Link from "next/link";
@@ -8,7 +7,6 @@ import ProseSection from "components/prose-section";
 export default function Layout({ children }) {
   return (
     <>
-      <Head />
       <Header fix={true} />
       <div className="mt-24">
         <div className="flex justify-center px-4 pt-10 bg-white md:pl-0 md:pr-28">

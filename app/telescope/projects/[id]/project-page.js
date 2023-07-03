@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import Head from "components/head";
 import Header from "components/header";
 import Vizualization from "components/visualization";
 
@@ -47,7 +46,6 @@ export default function Page({ _project }) {
 
   return (
     <>
-      <Head />
       <Header fullscreen={fullscreen} />
       <div
         ref={containerRef}

@@ -7,6 +7,10 @@ import { prisma } from "lib/db";
 import SkydeckPage from "app/skydeck/skydeck-page";
 import Wrapper from "components/wrapper";
 
+export const metadata = {
+  title: "Skydeck",
+};
+
 export default async function Page() {
   const props = await getProps();
   if (!props.session) {
