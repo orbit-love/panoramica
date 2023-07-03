@@ -23,7 +23,7 @@ export default function Home(props) {
   let { project, community, setCommunity, levels, addWidget, resetWidgets } =
     props;
 
-  const [loading, setLoading] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useHotkeys(
     "/",
@@ -309,6 +309,7 @@ export default function Home(props) {
                 <form onSubmit={onSearchSubmit} className="flex space-x-2">
                   <input
                     className={c.inputClasses}
+                    required
                     type="search"
                     ref={searchRef}
                   />

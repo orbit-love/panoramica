@@ -5,7 +5,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import Link from "next/link";
 
 import levelsData from "data/levels";
-import { Home, Source } from "components/skydeck";
+import { Home, Search, Source } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function removeItem(array, item) {
@@ -22,7 +22,8 @@ let HomeWidget = (props) => <Home {...props} />;
 let ActivitiesWidget = (props) => (
   <Source source={null} title="All Activity" {...props} />
 );
-let defaultWidgets = [HomeWidget, ActivitiesWidget];
+let SearchWidget = (props) => <Search title="Search" {...props} />;
+let defaultWidgets = [HomeWidget, SearchWidget, ActivitiesWidget];
 
 export default function Page({ _project }) {
   const containerRef = useRef();

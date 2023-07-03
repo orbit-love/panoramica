@@ -1,38 +1,79 @@
-import React from "react";
+import React, { useRef, useCallback, useState, useEffect } from "react";
 
-import Feed from "lib/community/feed";
 import { Frame, Scroll, Header, Activities } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import c from "lib/common";
 
 export default function Search(props) {
-  var { term, community } = props;
+  var { term, project, community } = props;
+  let searchRef = useRef();
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
 
-  if (!community?.activities) {
-    return <></>;
-  }
+  const fetchSearch = useCallback(
+    async (term) => {
+      if (term) {
+        setLoading(true);
+        fetch(`/api/projects/${project.id}/search?q=${term}`)
+          .then((res) => res.json())
+          .then(({ result, message }) => {
+            if (message) {
+              alert(message);
+            } else {
+              setData(result);
+            }
+            setLoading(false);
+          });
+      }
+    },
+    [project]
+  );
 
-  var feed = new Feed(props);
+  useEffect(() => {
+    if (term) {
+      fetchSearch(term);
+    }
+  }, []);
+
   // eventually map the activities back to their threads, dedup, add highlighting
-  var activities = feed.activities;
-  // push into feed
-  if (term) {
-    activities = activities.filter(
-      (activity) => activity.text.toLowerCase().indexOf(term.toLowerCase()) > -1
-    );
-  }
+  var activities = data
+    .map((doc) => doc.metadata.activityId)
+    .map((activityId) => community.findActivityById(activityId))
+    .filter((a) => a);
 
-  // for performance
-  var length = activities.length;
+  const onSearchSubmit = (e) => {
+    e.preventDefault();
+    var term = searchRef.current.value;
+    fetchSearch(term);
+  };
+
+  var title = term || "Search";
 
   return (
     <Frame>
       <Header {...props}>
         <FontAwesomeIcon icon="search" />
-        <div>{term}</div>
-        <div className="text-indigo-500">{length}</div>
+        <div>{title}</div>
+        <div className="text-indigo-500">{activities.length}</div>
+        {loading && (
+          <div className="font-normal text-indigo-600">Loading...</div>
+        )}
       </Header>
       <Scroll>
-        <Activities activities={activities} showReplies={true} {...props} />
+        <div className="flex flex-col space-y-2">
+          <form onSubmit={onSearchSubmit} className="flex px-4 mb-2 space-x-2">
+            <input
+              className={c.inputClasses}
+              required
+              type="search"
+              ref={searchRef}
+            />
+            <button type="submit" className={c.buttonClasses}>
+              Submit
+            </button>
+          </form>
+          <Activities activities={activities} showReplies={true} {...props} />
+        </div>
       </Scroll>
     </Frame>
   );
