@@ -6,6 +6,7 @@ var defaultTitle = "Preview";
 var template = "%s — Preview";
 
 export const metadata = {
+  metadataBase: new URL(process.env.NEXTAUTH_URL),
   title: "Preview",
   title: {
     template,

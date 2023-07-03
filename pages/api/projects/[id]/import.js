@@ -32,6 +32,13 @@ export default async function handler(req, res) {
     const page = 1;
     const pageLimit = 10;
     const handleRecords = async (records) => {
+      // this is a quick and dirty way to remove duplicate sourceId from
+      // the same batch - the Orbit API has returned two activities with the same
+      // source id at times
+      var sourceIds = records.map((r) => r.sourceId);
+      records = records.filter((record, index) => {
+        return sourceIds.indexOf(record.sourceId) === index;
+      });
       // do a bulk insert for speed
       await prisma.activity.createMany({
         data: records,
