@@ -5,33 +5,28 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import c from "lib/common";
 
 export default function Search(props) {
-  var { term, project, community } = props;
-  let searchRef = useRef();
+  var { initialTerm, project, community } = props;
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [term, setTerm] = useState(initialTerm);
 
-  const fetchSearch = useCallback(
-    async (term) => {
-      if (term) {
-        setLoading(true);
-        fetch(`/api/projects/${project.id}/search?q=${term}`)
-          .then((res) => res.json())
-          .then(({ result, message }) => {
-            if (message) {
-              alert(message);
-            } else {
-              setData(result);
-            }
-            setLoading(false);
-          });
-      }
-    },
-    [project]
-  );
+  const fetchSearch = useCallback(async () => {
+    setLoading(true);
+    fetch(`/api/projects/${project.id}/search?q=${term}`)
+      .then((res) => res.json())
+      .then(({ result, message }) => {
+        if (message) {
+          alert(message);
+        } else {
+          setData(result);
+        }
+        setLoading(false);
+      });
+  }, [term, project]);
 
   useEffect(() => {
     if (term) {
-      fetchSearch(term);
+      fetchSearch();
     }
   }, []);
 
@@ -43,20 +38,25 @@ export default function Search(props) {
 
   const onSearchSubmit = (e) => {
     e.preventDefault();
-    var term = searchRef.current.value;
-    fetchSearch(term);
+    fetchSearch();
   };
 
-  var title = term || "Search";
+  const onSearchChange = (e) => {
+    setTerm(e.target.value);
+  };
+
+  var title = "Search";
 
   return (
     <Frame>
       <Header {...props}>
         <FontAwesomeIcon icon="search" />
         <div>{title}</div>
-        <div className="text-indigo-500">{activities.length}</div>
+        {activities.length > 0 && (
+          <div className="text-indigo-500">{activities.length}</div>
+        )}
         {loading && (
-          <div className="font-normal text-indigo-600">Loading...</div>
+          <div className="font-normal text-indigo-600">Searching...</div>
         )}
       </Header>
       <Scroll>
@@ -66,7 +66,8 @@ export default function Search(props) {
               className={c.inputClasses}
               required
               type="search"
-              ref={searchRef}
+              value={term}
+              onChange={onSearchChange}
             />
             <button type="submit" className={c.buttonClasses}>
               Submit

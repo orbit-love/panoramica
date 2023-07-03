@@ -151,13 +151,16 @@ export default function Home(props) {
     };
   }, []);
 
-  const onSearchSubmit = (e) => {
-    e.preventDefault();
-    var term = searchRef.current.value;
-    addWidget((props) => <Search term={term} {...props} />);
-    searchRef.current.value = "";
-    searchRef.current.blur();
-  };
+  const onSearchSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      var term = searchRef.current.value;
+      addWidget((props) => <Search initialTerm={term} {...props} />);
+      searchRef.current.value = "";
+      searchRef.current.blur();
+    },
+    [addWidget]
+  );
 
   // prepare to render
   const empty = community?.activities?.length === 0;

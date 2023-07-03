@@ -11,10 +11,12 @@ export default function Activity({
   setSelection,
   setConnection,
   showSourceIcon,
+  showSourceChannel,
   onClickMember,
 }) {
   var member = community.findMemberByActivity(activity);
   var renderHtml = activity.textHtml?.length > 0;
+  var { source, sourceChannel } = activity;
   return (
     <div key={activity.id} className="flex flex-col pb-2">
       <div className="flex items-center space-x-2">
@@ -29,6 +31,14 @@ export default function Activity({
         {showSourceIcon && (
           <div className="flex overflow-hidden items-center space-x-1 text-xs text-right text-indigo-700 text-ellipsis whitespace-nowrap">
             <SourceIcon activity={activity} />
+            {showSourceChannel && sourceChannel && (
+              <button
+                className="hover:underline"
+                onClick={() => onClickChannel(source, sourceChannel)}
+              >
+                {c.displayChannel(sourceChannel)}
+              </button>
+            )}
           </div>
         )}
         <div className="text-xs text-right whitespace-nowrap">

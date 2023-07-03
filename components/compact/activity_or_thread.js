@@ -11,26 +11,8 @@ const isThread = (thread) => thread.type === "thread";
 const isIsland = (thread) => thread.type === "island";
 
 const TopThread = (props) => {
-  const { thread, activity, community, onClickChannel, project } = props;
+  const { thread, community } = props;
 
-  const [summary, setSummary] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  var onClickSummary = async () => {
-    setLoading(true);
-    fetch(`/api/projects/${project.id}/${activity.id}/summary`)
-      .then((res) => res.json())
-      .then(({ result, message }) => {
-        if (message) {
-          alert(message);
-        } else {
-          setSummary(result);
-        }
-        setLoading(false);
-      });
-  };
-
-  var { source, sourceChannel } = activity;
   // get the activity for the last activity
   var latestDescendant = community.threads[thread.descendants?.slice(-1)];
   var latestDescendantParent = community.activities.find(
@@ -44,38 +26,13 @@ const TopThread = (props) => {
   );
 
   return (
-    <>
-      <div className="flex justify-end items-center space-x-1 w-full text-xs text-indigo-700">
-        {/* {loading && <div className="text-blue-400">Summarizing...</div>} */}
-        {/* <div className="pr-2">
-          <button onClick={onClickSummary}>
-            <FontAwesomeIcon icon="note" className="text-blue-400" />
-          </button>
-        </div> */}
-        {activity.sourceChannel && (
-          <>
-            <SourceIcon activity={activity} />
-            <button onClick={() => onClickChannel(source, sourceChannel)}>
-              {c.displayChannel(sourceChannel)}
-            </button>
-          </>
-        )}
-      </div>
-      {summary && (
-        <pre className="py-4 text-xs text-blue-400 whitespace-pre-wrap">
-          {summary.text}
-        </pre>
-      )}
-      {!summary && (
-        <Thread
-          nesting={0}
-          topThread={thread}
-          showAfter={showAfter}
-          setShowAfter={setShowAfter}
-          {...props}
-        />
-      )}
-    </>
+    <Thread
+      nesting={0}
+      topThread={thread}
+      showAfter={showAfter}
+      setShowAfter={setShowAfter}
+      {...props}
+    />
   );
 };
 
@@ -94,12 +51,12 @@ export default function ActivityOrThread({
   return (
     <div
       key={activity.id}
-      className={classnames("flex flex-col py-2 px-4", {
+      className={classnames("flex flex-col py-3 px-4", {
         "bg-blue-900": index % 2 === 1,
         "bg-opacity-20": index % 2 === 1,
       })}
     >
-      {thread.entities?.length > 0 && (
+      {/* {thread.entities?.length > 0 && (
         <div className="flex flex-wrap justify-end items-center space-x-1">
           {thread.entities?.map((entity) => (
             <button
@@ -111,12 +68,13 @@ export default function ActivityOrThread({
             </button>
           ))}
         </div>
-      )}
+      )} */}
       {isThread(thread) && (
         <TopThread
           thread={thread}
           activity={activity}
           community={community}
+          showSourceIcon
           {...props}
         />
       )}
@@ -125,6 +83,7 @@ export default function ActivityOrThread({
           activity={activity}
           community={community}
           showSourceIcon
+          showSourceChannel
           {...props}
         />
       )}

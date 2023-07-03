@@ -26,7 +26,11 @@ export default function Thread(props) {
             hidden: false,
           })}
         >
-          <Activity {...props} />
+          <Activity
+            {...props}
+            showSourceChannel={nesting === 0}
+            showSourceIcon={nesting === 0}
+          />
         </div>
         {childActivities?.map((childActivity, index) => {
           var { id } = childActivity;
