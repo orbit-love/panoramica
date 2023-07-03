@@ -6,11 +6,7 @@ import { Document } from "langchain/document";
 import { loadQAStuffChain } from "langchain/chains";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 
-export const config = {
-  runtime: "edge",
-};
-
-export default async function handler(req, res) {
+export default async function GET(req, res) {
   const user = await check(req, res);
   if (!user) {
     return redirect(res);

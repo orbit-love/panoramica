@@ -1,12 +1,10 @@
+"use client";
+
 import React, { useState, useRef, useCallback } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import Link from "next/link";
-import { getServerSession } from "next-auth/next";
-import { prisma } from "lib/db";
 
 import levelsData from "data/levels";
-import { authOptions } from "pages/api/auth/[...nextauth]";
-
 import Head from "components/head";
 import { Home, Source } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -135,35 +133,4 @@ export default function Page({ _project }) {
       </div>
     </>
   );
-}
-
-export async function getServerSideProps(context) {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  var _project = null;
-  if (session?.user) {
-    const { id } = context.query;
-    const user = session.user;
-    // check if the user has access
-    let where = { id };
-    if (!user.admin) {
-      where.user = {
-        email: user.email,
-      };
-    }
-    _project = await prisma.project.findFirst({
-      where,
-    });
-  }
-  if (_project) {
-    return {
-      props: {
-        session,
-        _project,
-      },
-    };
-  } else {
-    return {
-      redirect: { destination: "/" },
-    };
-  }
 }

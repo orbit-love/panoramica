@@ -1,14 +1,3 @@
-import "styles/globals.css";
-import { MDXProvider } from "@mdx-js/react";
-import Layout from "components/layouts/mdx/default";
-import Placeholder from "components/mdx/placeholder";
-import Graph from "components/graph";
-import Callout from "components/mdx/callout";
-import Blockquote from "components/mdx/blockquote";
-import Code from "components/mdx/code";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { SessionProvider } from "next-auth/react";
-
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faSpinner,
@@ -128,27 +117,6 @@ library.add(
   faNote
 );
 
+export default library;
+
 import "@fortawesome/fontawesome-svg-core/styles.css";
-
-const components = {
-  wrapper: Layout,
-  code: Code,
-  blockquote: Blockquote,
-  FontAwesomeIcon,
-  Blockquote,
-  Callout,
-  Placeholder,
-  Graph,
-};
-
-function MyApp({ Component, pageProps: { session, ...pageProps } }) {
-  return (
-    <SessionProvider session={session}>
-      <MDXProvider components={components}>
-        <Component {...pageProps} />
-      </MDXProvider>
-    </SessionProvider>
-  );
-}
-
-export default MyApp;

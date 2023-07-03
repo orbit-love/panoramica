@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 import c from "lib/common";
 

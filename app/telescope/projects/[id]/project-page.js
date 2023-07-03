@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
-import { prisma } from "lib/db";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "pages/api/auth/[...nextauth]";
+"use client";
 
+import React, { useEffect, useState, useRef } from "react";
 import Head from "components/head";
 import Header from "components/header";
 import Vizualization from "components/visualization";
@@ -73,35 +71,4 @@ export default function Page({ _project }) {
       </div>
     </>
   );
-}
-
-export async function getServerSideProps(context) {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  var _project = null;
-  if (session?.user) {
-    const { id } = context.query;
-    const user = session.user;
-    // check if the user has access
-    let where = { id };
-    if (!user.admin) {
-      where.user = {
-        email: user.email,
-      };
-    }
-    _project = await prisma.project.findFirst({
-      where,
-    });
-  }
-  if (_project) {
-    return {
-      props: {
-        session,
-        _project,
-      },
-    };
-  } else {
-    return {
-      redirect: { destination: "/" },
-    };
-  }
 }

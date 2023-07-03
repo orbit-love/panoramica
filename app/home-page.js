@@ -1,31 +1,24 @@
-import React, { useEffect, useState, useRef } from "react";
-import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
-import { getCsrfToken } from "next-auth/react";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "pages/api/auth/[...nextauth]";
-import { prisma } from "lib/db";
-import c from "lib/common";
+"use client";
 
-import Head from "components/head";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { signOut } from "next-auth/react";
+
+import c from "lib/common";
 import Header from "components/header";
 import Button from "components/button";
 import Panel from "components/panel";
 
-export default function Index({ csrfToken, _projects }) {
-  const { data: session } = useSession();
-  const [loading, setLoading] = useState(false);
+export default function HomePage({ session, csrfToken, _projects }) {
   const [projects, setProjects] = useState(_projects);
 
   useEffect(() => {
     const loadProjects = () => {
-      setLoading(true);
       const url = "/api/projects";
       fetch(url)
         .then((res) => res.json())
         .then(({ result }) => {
           setProjects(result.projects);
-          setLoading(false);
         });
     };
     if (session && projects.length === 0) {
@@ -37,7 +30,6 @@ export default function Index({ csrfToken, _projects }) {
 
   return (
     <>
-      <Head />
       <Header />
       <div
         id="container"
@@ -109,36 +101,4 @@ export default function Index({ csrfToken, _projects }) {
       </div>
     </>
   );
-}
-
-export async function getServerSideProps(context) {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  const user = session?.user;
-  var _projects = [];
-  if (user) {
-    let where = {};
-    if (!user.admin) {
-      where.user = {
-        email: user.email,
-      };
-    }
-    _projects = await prisma.project.findMany({
-      where,
-      include: {
-        user: {
-          select: {
-            email: true,
-          },
-        },
-      },
-    });
-    // don't return any api keys
-    for (let project of _projects) {
-      delete project.apiKey;
-    }
-  }
-  const csrfToken = (await getCsrfToken(context)) || "";
-  return {
-    props: { session, csrfToken, _projects },
-  };
 }

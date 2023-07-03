@@ -25,7 +25,7 @@ export default function Activities({
   };
   // there is a widget index prop at index, so make sure to put this index after
   return (
-    <div className="w-[425px]">
+    <div className="w-[450px]">
       {activities?.length > 0 && (
         <>
           {activities.map((activity, index) => (

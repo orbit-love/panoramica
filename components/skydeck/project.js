@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import { Frame, Scroll, Header } from "components/skydeck";
-import { useRouter } from "next/router";
-import c from "lib/common";
+import { useRouter } from "next/navigation";
 
 import Edit from "components/project/edit";
 

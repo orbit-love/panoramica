@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+"use client";
+
+import React from "react";
 import { useSession } from "next-auth/react";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "pages/api/auth/[...nextauth]";
-import { prisma } from "lib/db";
 
 import Head from "components/head";
 import Header from "components/header";
@@ -12,7 +11,7 @@ import List from "components/project/list";
 
 export default function Index({ projects }) {
   const { data: session } = useSession();
-  const user = session.user;
+  const user = session?.user;
 
   return (
     <>
@@ -42,39 +41,4 @@ export default function Index({ projects }) {
       </div>
     </>
   );
-}
-
-export async function getServerSideProps(context) {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  const user = session?.user;
-  var projects = [];
-  if (user) {
-    let where = {};
-    if (!user.admin) {
-      where.user = {
-        email: user.email,
-      };
-    }
-    projects = await prisma.project.findMany({
-      where,
-      include: {
-        user: {
-          select: {
-            email: true,
-          },
-        },
-      },
-    });
-    // don't return any api keys
-    for (let project of projects) {
-      delete project.apiKey;
-    }
-    return {
-      props: { session, projects },
-    };
-  } else {
-    return {
-      redirect: { destination: "/" },
-    };
-  }
 }
