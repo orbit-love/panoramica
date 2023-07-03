@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       apiKey: process.env.PINECONE_API_KEY,
     });
 
-    const indexName = `skydeck-${process.env.NODE_ENV}`;
+    const indexName = process.env.PINECONE_INDEX_NAME;
     const pineconeIndex = pinecone.Index(indexName);
 
     const vectorStore = await PineconeStore.fromExistingIndex(
