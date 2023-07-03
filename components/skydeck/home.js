@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { Frame, Scroll, Header } from "components/skydeck";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHotkeys } from "react-hotkeys-hook";
 import c from "lib/common";
 
 import Feed from "lib/community/feed";
 import Community from "lib/community";
 import {
+  Frame,
+  Scroll,
+  Header,
   Source,
+  Channels,
   Search,
   Entities,
   Members,
@@ -14,9 +18,6 @@ import {
   Insights,
   Prompt,
 } from "components/skydeck";
-import { addChannelWidget } from "components/skydeck";
-import SourceIcon from "components/compact/source_icon";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Home(props) {
   let searchRef = useRef();
@@ -166,13 +167,9 @@ export default function Home(props) {
   const empty = community?.activities?.length === 0;
 
   var sources = [];
-  var sourceChannels = {};
   if (community) {
     var feed = new Feed(props);
     sources = feed.getSources({});
-    for (let source of sources) {
-      sourceChannels[source] = feed.getSourceChannels({ source });
-    }
   }
 
   console.log("Rendering HOME column");
@@ -218,6 +215,21 @@ export default function Home(props) {
             <>
               <div className="flex flex-col items-start space-y-4">
                 <div>
+                  <div className="flex flex-col items-start space-y-2">
+                    <div className="font-semibold">Search</div>
+                    <form onSubmit={onSearchSubmit} className="flex space-x-2">
+                      <input
+                        className={c.inputClasses}
+                        required
+                        type="search"
+                        ref={searchRef}
+                      />
+                      <button type="submit" className={c.buttonClasses}>
+                        <FontAwesomeIcon icon="search" />
+                      </button>
+                    </form>
+                  </div>
+                  <div className="h-6" />
                   <div className="mb-1 font-semibold">Add Columns</div>
                   <div className="flex flex-col items-start w-full">
                     <button
@@ -266,8 +278,12 @@ export default function Home(props) {
                     >
                       Entities
                     </button>
+                    <button className="text-red-500" onClick={resetWidgets}>
+                      Reset
+                    </button>
+                    <div className="pt-4 font-semibold">Sources</div>
                     {sources.map((source) => (
-                      <div className="flex flex-col my-1" key={source}>
+                      <div className="flex flex-col" key={source}>
                         <button
                           className="flex items-center space-x-1"
                           onClick={() =>
@@ -280,46 +296,12 @@ export default function Home(props) {
                             ))
                           }
                         >
-                          <SourceIcon activity={{ source }} />
                           <div>{c.titleize(source)}</div>
                         </button>
-                        <div className="flex flex-col items-start pl-2 text-sm text-indigo-400">
-                          {sourceChannels[source]
-                            .sort(c.sortChannels)
-                            .slice(0, 10)
-                            .map((channel) => (
-                              <button
-                                key={channel}
-                                onClick={() =>
-                                  addChannelWidget(source, channel, addWidget)
-                                }
-                              >
-                                {c.displayChannel(channel)}
-                              </button>
-                            ))}
-                        </div>
                       </div>
                     ))}
-                    <button className="text-red-500" onClick={resetWidgets}>
-                      Reset
-                    </button>
                   </div>
                 </div>
-              </div>
-              <div className="h-8" />
-              <div className="flex flex-col items-start space-y-2">
-                <div className="font-semibold">Add a Search</div>
-                <form onSubmit={onSearchSubmit} className="flex space-x-2">
-                  <input
-                    className={c.inputClasses}
-                    required
-                    type="search"
-                    ref={searchRef}
-                  />
-                  <button type="submit" className={c.buttonClasses}>
-                    Submit
-                  </button>
-                </form>
               </div>
             </>
           )}

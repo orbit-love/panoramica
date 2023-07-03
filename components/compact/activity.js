@@ -13,6 +13,7 @@ export default function Activity({
   showSourceIcon,
   showSourceChannel,
   onClickMember,
+  onClickChannel,
 }) {
   var member = community.findMemberByActivity(activity);
   var renderHtml = activity.textHtml?.length > 0;

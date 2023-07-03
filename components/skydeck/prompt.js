@@ -55,7 +55,7 @@ export default function Chat(props) {
           </div>
           <div className="flex flex-col pb-8 space-y-1">
             {loading && <div className="text-indigo-600">Loading...</div>}
-            <div className="text-indigo-300 whitespace-pre-wrap">
+            <div className="text-sm text-indigo-300 whitespace-pre-wrap">
               {lastMessage}
             </div>
           </div>

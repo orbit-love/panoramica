@@ -16,6 +16,7 @@ export { default as Scroll } from "components/skydeck/scroll";
 export { default as Connection } from "components/skydeck/connection";
 export { default as Insights } from "components/skydeck/insights";
 export { default as Prompt } from "components/skydeck/prompt";
+export { default as Channels } from "components/skydeck/channels";
 
 import Member from "components/skydeck/member";
 import Entity from "components/skydeck/entity";
