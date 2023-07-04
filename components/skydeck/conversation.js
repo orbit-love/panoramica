@@ -63,6 +63,7 @@ export default function Conversation(props) {
             prompt={prompt}
             setPrompt={setPrompt}
             fetchPrompt={fetchPrompt}
+            placeholder={"Ask a question about this conversation..."}
           />
         </div>
       </div>

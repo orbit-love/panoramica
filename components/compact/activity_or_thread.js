@@ -8,7 +8,7 @@ const isThread = (thread) => thread.type === "thread";
 const isIsland = (thread) => thread.type === "island";
 
 const TopThread = (props) => {
-  const { thread, community } = props;
+  const { thread, activity, community, onClickConversation } = props;
 
   // get the activity for the last activity
   var latestDescendant = community.threads[thread.descendants?.slice(-1)];
@@ -23,13 +23,15 @@ const TopThread = (props) => {
   );
 
   return (
-    <Thread
-      nesting={0}
-      topThread={thread}
-      showAfter={showAfter}
-      setShowAfter={setShowAfter}
-      {...props}
-    />
+    <div onClick={() => onClickConversation(activity)}>
+      <Thread
+        nesting={0}
+        topThread={thread}
+        showAfter={showAfter}
+        setShowAfter={setShowAfter}
+        {...props}
+      />
+    </div>
   );
 };
 
