@@ -41,28 +41,30 @@ export default function Conversation(props) {
       <Header {...props}>
         <div>{title}</div>
       </Header>
-      <div className="flex flex-col px-4 w-[425px] h-full pb-4">
-        <Thread
-          nesting={0}
-          thread={thread}
-          topThread={thread}
-          {...props}
-          onClickConversation={() => {}}
-        />
+      <div className="flex flex-col px-4 w-[425px] h-full overflow-hidden pb-4">
         <Scroll>
+          <Thread
+            nesting={0}
+            thread={thread}
+            topThread={thread}
+            {...props}
+            onClickConversation={() => {}}
+          />
           <div className="flex flex-col py-4 space-y-1">
             {loading && <div className="text-indigo-600">Loading...</div>}
-            <div className="text-sm text-indigo-300 whitespace-pre-wrap">
+            <div className="text-sm text-violet-500 whitespace-pre-wrap">
               {lastMessage}
             </div>
           </div>
         </Scroll>
         <div className="my-auto" />
-        <PromptInput
-          prompt={prompt}
-          setPrompt={setPrompt}
-          fetchPrompt={fetchPrompt}
-        />
+        <div className="pt-4">
+          <PromptInput
+            prompt={prompt}
+            setPrompt={setPrompt}
+            fetchPrompt={fetchPrompt}
+          />
+        </div>
       </div>
     </Frame>
   );
