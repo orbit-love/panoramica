@@ -2,11 +2,11 @@ import React from "react";
 
 import Feed from "lib/community/feed";
 import SourceIcon from "components/compact/source_icon";
-import { Frame, Scroll, Header, addChannelWidget } from "components/skydeck";
+import { Frame, Scroll, Header } from "components/skydeck";
 import c from "lib/common";
 
 export default function Channels(props) {
-  var { source, addWidget } = props;
+  var { source, onClickChannel } = props;
 
   var feed = new Feed(props);
   var sourceChannels = feed.getSourceChannels({ source }).sort(c.sortChannels);
@@ -44,9 +44,7 @@ export default function Channels(props) {
                   <td>
                     <button
                       className="text-indigo-100 hover:underline"
-                      onClick={() =>
-                        addChannelWidget(source, channel, addWidget)
-                      }
+                      onClick={() => onClickChannel(source, channel)}
                     >
                       {c.displayChannel(channel)}
                     </button>

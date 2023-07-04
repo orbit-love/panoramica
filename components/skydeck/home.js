@@ -10,7 +10,6 @@ import {
   Scroll,
   Header,
   Source,
-  Channels,
   Search,
   Entities,
   Members,
@@ -195,7 +194,7 @@ export default function Home(props) {
         </div>
       </Header>
       <Scroll>
-        <div className="flex flex-col px-4 w-[300px] h-full">
+        <div className="flex flex-col px-4 w-[250px] h-full">
           {!loading && empty && (
             <div className="flex flex-col space-y-6">
               <p className="">

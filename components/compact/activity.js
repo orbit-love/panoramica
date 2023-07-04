@@ -4,6 +4,16 @@ import c from "lib/common";
 import NameAndIcon from "components/compact/name_and_icon";
 import SourceIcon from "components/compact/source_icon";
 
+function highlightSearchTerm(string, searchTerm) {
+  if (searchTerm) {
+    const searchWords = searchTerm.split(" ").filter(Boolean); // Split search term into individual words
+    const regex = new RegExp(`\\b(${searchWords.join("|")})\\b`, "gi"); // Create regex with word boundaries
+    return string.replace(regex, "<mark>$&</mark>");
+  } else {
+    return string;
+  }
+}
+
 export default function Activity({
   activity,
   community,
@@ -14,6 +24,7 @@ export default function Activity({
   showSourceChannel,
   onClickMember,
   onClickChannel,
+  term,
 }) {
   var member = community.findMemberByActivity(activity);
   var renderHtml = activity.textHtml?.length > 0;
@@ -64,13 +75,15 @@ export default function Activity({
         <div className="text-sm text-indigo-300">
           <div
             className="a-html overflow-hidden break-words"
-            dangerouslySetInnerHTML={{ __html: activity.textHtml }}
+            dangerouslySetInnerHTML={{
+              __html: highlightSearchTerm(activity.textHtml, term),
+            }}
           ></div>
         </div>
       )}
       {!renderHtml && (
         <div className="overflow-hidden text-sm text-indigo-300 break-words">
-          {activity.text}
+          {highlightSearchTerm(activity.text, term)}
         </div>
       )}
     </div>

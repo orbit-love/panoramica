@@ -5,7 +5,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import Link from "next/link";
 
 import levelsData from "data/levels";
-import { Home, Source } from "components/skydeck";
+import { Home, Source, clickHandlers } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function removeItem(array, item) {
@@ -51,6 +51,17 @@ export default function Page({ _project }) {
     };
   });
 
+  let addWidget = useCallback(
+    (widget, index) => {
+      setWidgets([
+        ...widgets.slice(0, index),
+        widget,
+        ...widgets.slice(index, widgets.length),
+      ]);
+    },
+    [widgets]
+  );
+
   const props = {
     project,
     setProject,
@@ -85,17 +96,6 @@ export default function Page({ _project }) {
     </div>
   );
 
-  let addWidget = useCallback(
-    (widget, index) => {
-      setWidgets([
-        ...widgets.slice(0, index),
-        widget,
-        ...widgets.slice(index, widgets.length),
-      ]);
-    },
-    [widgets]
-  );
-
   return (
     <div
       ref={containerRef}
@@ -123,6 +123,7 @@ export default function Page({ _project }) {
             index={index}
             remove={() => removeWidget(Widget)}
             addWidget={(widget) => addWidget(widget, index + 1)}
+            {...clickHandlers((widget) => addWidget(widget, index + 1))}
             {...props}
           />
         ))}

@@ -2,17 +2,11 @@ import React from "react";
 
 import Feed from "lib/community/feed";
 import SourceIcon from "components/compact/source_icon";
-import {
-  Frame,
-  Scroll,
-  Header,
-  Channels,
-  Activities,
-} from "components/skydeck";
+import { Frame, Scroll, Header, Activities } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Source(props) {
-  var { source, community, title, addWidget } = props;
+  var { source, community, title, onClickChannels } = props;
 
   if (!community?.activities) {
     return <></>;
@@ -26,9 +20,6 @@ export default function Source(props) {
   var length = activities.length;
   activities = activities.slice(0, 50);
 
-  const addChannelsWidget = () =>
-    addWidget((props) => <Channels source={source} {...props} />);
-
   return (
     <Frame>
       <Header {...props}>
@@ -36,7 +27,10 @@ export default function Source(props) {
         <div>{title}</div>
         <div className="text-indigo-500">{length}</div>
         {sourceChannels.length > 0 && (
-          <button className="mr-2 text-indigo-700" onClick={addChannelsWidget}>
+          <button
+            className="mr-2 text-indigo-700"
+            onClick={() => onClickChannels(source)}
+          >
             <FontAwesomeIcon icon="bars" />
           </button>
         )}

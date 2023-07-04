@@ -1,6 +1,14 @@
 import React, { useRef, useCallback, useState, useEffect } from "react";
+import classnames from "classnames";
 
-import { Frame, Scroll, Header, Activities } from "components/skydeck";
+import Activity from "components/compact/activity";
+import {
+  Frame,
+  Scroll,
+  Header,
+  Activities,
+  clickHandlers,
+} from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import c from "lib/common";
 
@@ -9,6 +17,7 @@ export default function Search(props) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [term, setTerm] = useState(initialTerm);
+  const [appliedTerm, setAppliedTerm] = useState(null);
 
   const fetchSearch = useCallback(async () => {
     setLoading(true);
@@ -18,6 +27,7 @@ export default function Search(props) {
         if (message) {
           alert(message);
         } else {
+          setAppliedTerm(term);
           setData(result);
         }
         setLoading(false);
@@ -45,7 +55,7 @@ export default function Search(props) {
     setTerm(e.target.value);
   };
 
-  var title = "Search";
+  var title = appliedTerm || "Search";
 
   return (
     <Frame>
@@ -73,7 +83,24 @@ export default function Search(props) {
               Submit
             </button>
           </form>
-          <Activities activities={activities} showReplies={true} {...props} />
+          {activities.map((activity, index) => (
+            <div
+              key={activity.id}
+              className={classnames("flex flex-col py-3 px-4", {
+                "bg-blue-900": index % 2 === 1,
+                "bg-opacity-20": index % 2 === 1,
+              })}
+            >
+              <Activity
+                key={activity.id}
+                activity={activity}
+                community={community}
+                term={appliedTerm}
+                {...clickHandlers}
+                {...props}
+              />
+            </div>
+          ))}
         </div>
       </Scroll>
     </Frame>

@@ -21,6 +21,7 @@ export { default as Channels } from "components/skydeck/channels";
 import Member from "components/skydeck/member";
 import Entity from "components/skydeck/entity";
 import Channel from "components/skydeck/channel";
+import Channels from "components/skydeck/channels";
 
 export function addMemberWidget(member, addWidget) {
   addWidget((props) => (
@@ -49,3 +50,15 @@ export function addChannelWidget(source, sourceChannel, addWidget) {
     />
   ));
 }
+
+export function addChannelsWidget(source, addWidget) {
+  addWidget((props) => <Channels key={source} source={source} {...props} />);
+}
+
+export const clickHandlers = (addWidget) => ({
+  onClickMember: (member) => addMemberWidget(member, addWidget),
+  onClickChannel: (source, sourceChannel) =>
+    addChannelWidget(source, sourceChannel, addWidget),
+  onClickEntity: (entity) => addEntityWidget(entity, addWidget),
+  onClickChannels: (source) => addChannelsWidget(source, addWidget),
+});

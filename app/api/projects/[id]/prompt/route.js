@@ -61,7 +61,7 @@ export async function GET(request, context) {
       temperature: 0.5,
       streaming: true,
     });
-    const chainA = loadQAStuffChain(model, {});
+    const chainA = loadQAStuffChain(model, { verbose: true });
     const docs = vectorDocs.map((doc) => new Document(doc));
     const question = `
        The context you have been given is a series of messages in an
