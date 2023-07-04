@@ -24,13 +24,18 @@ export default function Activity({
   showSourceChannel,
   onClickMember,
   onClickChannel,
+  onClickConversation,
   term,
 }) {
   var member = community.findMemberByActivity(activity);
   var renderHtml = activity.textHtml?.length > 0;
   var { source, sourceChannel } = activity;
   return (
-    <div key={activity.id} className="flex flex-col pb-2">
+    <div
+      key={activity.id}
+      className="flex flex-col pb-2"
+      onClick={() => onClickConversation(activity)}
+    >
       <div className="flex items-center space-x-2">
         <NameAndIcon
           member={member}

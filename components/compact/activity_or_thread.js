@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import classnames from "classnames";
-import c from "lib/common";
 
 import Activity from "components/compact/activity";
 import Thread from "components/compact/thread";
-import SourceIcon from "components/compact/source_icon";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const isThread = (thread) => thread.type === "thread";
 const isIsland = (thread) => thread.type === "island";
@@ -38,14 +35,9 @@ const TopThread = (props) => {
 
 // if an activity is a thread starter, render it as a thread
 // otherwise just render as a single activity
-export default function ActivityOrThread({
-  activity,
-  community,
-  index,
-  showReplies,
-  onClickEntity,
-  ...props
-}) {
+export default function ActivityOrThread(props) {
+  var { activity, community, index, showReplies } = props;
+
   var thread = community.threads[activity.id];
 
   return (

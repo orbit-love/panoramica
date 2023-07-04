@@ -1,13 +1,16 @@
 import React, { useState, useCallback } from "react";
-import { Frame, Scroll, Header } from "components/skydeck";
-import PromptInput from "components/promptInput";
-import c from "lib/common";
 
-export default function Prompt(props) {
-  let { project } = props;
+import { Frame, Scroll, Header } from "components/skydeck";
+import Thread from "components/compact/thread";
+import PromptInput from "components/promptInput";
+
+export default function Conversation(props) {
+  var { project, community, activity } = props;
   let [prompt, setPrompt] = useState("");
-  let [loading, setLoading] = useState(false);
   let [lastMessage, setLastMessage] = useState("");
+  let [loading, setLoading] = useState(false);
+
+  var thread = community.threads[activity.id];
 
   const fetchPrompt = useCallback(
     async (e) => {
@@ -17,7 +20,7 @@ export default function Prompt(props) {
       setLoading(true);
       var params = new URLSearchParams({ q: prompt });
       var response = await fetch(
-        `/api/projects/${project.id}/prompt?${params}`
+        `/api/projects/${project.id}/${activity.id}/prompt?${params}`
       );
       setLoading(false);
       const reader = response.body.getReader();
@@ -28,29 +31,39 @@ export default function Prompt(props) {
         setLastMessage((prevText) => prevText + text);
       }
     },
-    [project, setLastMessage, prompt]
+    [project, activity, setLastMessage, prompt]
   );
+
+  var title = "";
 
   return (
     <Frame>
       <Header {...props}>
-        <div className="text-lg">Prompt</div>
+        <div>{title}</div>
       </Header>
-      <Scroll>
-        <div className="flex flex-col px-4 w-[450px]">
-          <PromptInput
-            prompt={prompt}
-            setPrompt={setPrompt}
-            fetchPrompt={fetchPrompt}
-          />
-          <div className="flex flex-col pb-8 space-y-1">
+      <div className="flex flex-col px-4 w-[425px] h-full pb-4">
+        <Thread
+          nesting={0}
+          thread={thread}
+          topThread={thread}
+          {...props}
+          onClickConversation={() => {}}
+        />
+        <Scroll>
+          <div className="flex flex-col py-4 space-y-1">
             {loading && <div className="text-indigo-600">Loading...</div>}
             <div className="text-sm text-indigo-300 whitespace-pre-wrap">
               {lastMessage}
             </div>
           </div>
-        </div>
-      </Scroll>
+        </Scroll>
+        <div className="my-auto" />
+        <PromptInput
+          prompt={prompt}
+          setPrompt={setPrompt}
+          fetchPrompt={fetchPrompt}
+        />
+      </div>
     </Frame>
   );
 }

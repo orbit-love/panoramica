@@ -219,7 +219,6 @@ export default function Home(props) {
                     <form onSubmit={onSearchSubmit} className="flex space-x-2">
                       <input
                         className={c.inputClasses}
-                        required
                         type="search"
                         ref={searchRef}
                       />

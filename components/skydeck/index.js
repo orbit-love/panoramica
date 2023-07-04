@@ -17,11 +17,13 @@ export { default as Connection } from "components/skydeck/connection";
 export { default as Insights } from "components/skydeck/insights";
 export { default as Prompt } from "components/skydeck/prompt";
 export { default as Channels } from "components/skydeck/channels";
+export { default as Conversation } from "components/skydeck/conversation";
 
 import Member from "components/skydeck/member";
 import Entity from "components/skydeck/entity";
 import Channel from "components/skydeck/channel";
 import Channels from "components/skydeck/channels";
+import Conversation from "components/skydeck/conversation";
 
 export function addMemberWidget(member, addWidget) {
   addWidget((props) => (
@@ -51,6 +53,12 @@ export function addChannelWidget(source, sourceChannel, addWidget) {
   ));
 }
 
+export function addConversationWidget(activity, addWidget) {
+  addWidget((props) => (
+    <Conversation key={activity.id} activity={activity} {...props} />
+  ));
+}
+
 export function addChannelsWidget(source, addWidget) {
   addWidget((props) => <Channels key={source} source={source} {...props} />);
 }
@@ -61,4 +69,5 @@ export const clickHandlers = (addWidget) => ({
     addChannelWidget(source, sourceChannel, addWidget),
   onClickEntity: (entity) => addEntityWidget(entity, addWidget),
   onClickChannels: (source) => addChannelsWidget(source, addWidget),
+  onClickConversation: (activity) => addConversationWidget(activity, addWidget),
 });

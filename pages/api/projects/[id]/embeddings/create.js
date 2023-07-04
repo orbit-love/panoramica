@@ -61,8 +61,9 @@ export default async function handler(req, res) {
       activity.actor
     }
       Source: ${activity.source}
-      Channel: ${activity.channel}
+      Channel: ${activity.sourceChannel}
       Text: ${stripHtmlTags(activity.textHtml)}
+      Timestamp: ${activity.timestamp}
     `;
 
     const docs = activities.map(

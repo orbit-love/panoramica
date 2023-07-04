@@ -8,10 +8,6 @@ import c from "lib/common";
 export default function Channel(props) {
   var { source, sourceChannel, community } = props;
 
-  if (!community?.activities) {
-    return <></>;
-  }
-
   var feed = new Feed(props);
   var activities = feed.getFilteredActivities();
 

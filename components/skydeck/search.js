@@ -70,7 +70,7 @@ export default function Search(props) {
         )}
       </Header>
       <Scroll>
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-2 w-[450px]">
           <form onSubmit={onSearchSubmit} className="flex px-4 mb-2 space-x-2">
             <input
               className={c.inputClasses}
@@ -80,7 +80,7 @@ export default function Search(props) {
               onChange={onSearchChange}
             />
             <button type="submit" className={c.buttonClasses}>
-              Submit
+              <FontAwesomeIcon icon="search" />
             </button>
           </form>
           {activities.map((activity, index) => (
