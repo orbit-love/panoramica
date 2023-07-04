@@ -2,11 +2,8 @@ import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { StreamingTextResponse, LangChainStream } from "ai";
 import { OpenAI } from "langchain/llms/openai";
-import { PineconeClient } from "@pinecone-database/pinecone";
-import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { Document } from "langchain/document";
 import { loadQAStuffChain } from "langchain/chains";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 
 import { checkApp, authorizeProject } from "lib/auth";
 import { getConversation } from "lib/graph/ai/queries";
@@ -21,40 +18,16 @@ export async function GET(request, context) {
   }
 
   var { id, conversationId } = context.params;
-  var q = request.nextUrl.searchParams.get("q");
-  if (!q) {
-    q = "Please summarize this conversation in 1 sentence or less.";
-  }
+  var q = `Please provide a title for this conversation in 48 characters or less.
+  Provide only the title in the response and no punctuation. The response must be
+  less than 48 characters.`;
+
   try {
     var project = await authorizeProject({ id, user });
     var projectId = project.id;
     if (!project) {
       return;
     }
-
-    const pinecone = new PineconeClient();
-    await pinecone.init({
-      environment: process.env.PINECONE_API_ENV,
-      apiKey: process.env.PINECONE_API_KEY,
-    });
-    var namespace = `project-${projectId}`;
-
-    const indexName = process.env.PINECONE_INDEX_NAME;
-    const pineconeIndex = pinecone.Index(indexName);
-
-    // send the entire conversation to the vector DB PLUS
-    // what the instructions match
-    // const vectorStore = await PineconeStore.fromExistingIndex(
-    //   new OpenAIEmbeddings(),
-    //   { pineconeIndex, namespace }
-    // );
-    // const vectorDocs = await vectorStore.similaritySearch(q, 10);
-    // const docs = vectorDocs.map((doc) => new Document(doc));
-
-    // the prompt looks like
-    // this conversation: conversation messages
-    // general context related to the community: general docs
-    // question
 
     const allDocs = [];
     const graphConnection = new GraphConnection();
@@ -69,7 +42,7 @@ export async function GET(request, context) {
 
     const model = new OpenAI({
       modelName: "gpt-3.5-turbo-0613",
-      temperature: 0,
+      temperature: 0.9,
       streaming: true,
     });
     const chainA = loadQAStuffChain(model, { verbose: true });

@@ -2,20 +2,14 @@ import React, { useRef, useCallback, useState, useEffect } from "react";
 import classnames from "classnames";
 
 import Activity from "components/compact/activity";
-import {
-  Frame,
-  Scroll,
-  Header,
-  Activities,
-  clickHandlers,
-} from "components/skydeck";
+import { Frame, Scroll, Header, clickHandlers } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import c from "lib/common";
 
 export default function Search(props) {
-  var { initialTerm, project, community } = props;
+  var { initialTerm, project, community, onClickConversation } = props;
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [docs, setDocs] = useState([]);
   const [term, setTerm] = useState(initialTerm);
   const [appliedTerm, setAppliedTerm] = useState(null);
 
@@ -28,7 +22,7 @@ export default function Search(props) {
           alert(message);
         } else {
           setAppliedTerm(term);
-          setData(result);
+          setDocs(result);
         }
         setLoading(false);
       });
@@ -39,12 +33,6 @@ export default function Search(props) {
       fetchSearch();
     }
   }, []);
-
-  // eventually map the activities back to their threads, dedup, add highlighting
-  var activities = data
-    .map((doc) => doc.metadata.activityId)
-    .map((activityId) => community.findActivityById(activityId))
-    .filter((a) => a);
 
   const onSearchSubmit = (e) => {
     e.preventDefault();
@@ -57,13 +45,37 @@ export default function Search(props) {
 
   var title = appliedTerm || "Search";
 
+  const Doc = ({ metadata: { activityId, conversationId }, index }) => {
+    var activity = community.findActivityById(activityId);
+    var conversation = community.findActivityById(conversationId);
+    return (
+      <div
+        key={activity.id}
+        onClick={() => onClickConversation(conversation)}
+        className={classnames("flex flex-col py-3 px-4", {
+          "bg-blue-900": index % 2 === 1,
+          "bg-opacity-20": index % 2 === 1,
+        })}
+      >
+        <Activity
+          key={activity.id}
+          activity={activity}
+          community={community}
+          term={appliedTerm}
+          {...clickHandlers}
+          {...props}
+        />
+      </div>
+    );
+  };
+
   return (
     <Frame>
       <Header {...props}>
         <FontAwesomeIcon icon="search" />
         <div>{title}</div>
-        {activities.length > 0 && (
-          <div className="text-indigo-500">{activities.length}</div>
+        {docs.length > 0 && (
+          <div className="text-indigo-500">{docs.length}</div>
         )}
         {loading && (
           <div className="font-normal text-indigo-600">Searching...</div>
@@ -83,23 +95,8 @@ export default function Search(props) {
               <FontAwesomeIcon icon="search" />
             </button>
           </form>
-          {activities.map((activity, index) => (
-            <div
-              key={activity.id}
-              className={classnames("flex flex-col py-3 px-4", {
-                "bg-blue-900": index % 2 === 1,
-                "bg-opacity-20": index % 2 === 1,
-              })}
-            >
-              <Activity
-                key={activity.id}
-                activity={activity}
-                community={community}
-                term={appliedTerm}
-                {...clickHandlers}
-                {...props}
-              />
-            </div>
+          {docs.map((doc, index) => (
+            <Doc key={index} {...doc} index={index} />
           ))}
         </div>
       </Scroll>

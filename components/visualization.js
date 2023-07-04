@@ -5,6 +5,14 @@ import Shortcuts from "components/shortcuts";
 import helper from "lib/visualization/helper";
 import Widgets from "components/widgets";
 
+const usePrevious = function (value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value; //assign the value of ref to the argument
+  }, [value]); //this code will run when the value of 'value' changes
+  return ref.current; //in the end, return the current ref value.
+};
+
 export default function Visualization({
   width,
   height,
@@ -19,8 +27,8 @@ export default function Visualization({
   const { defaultRevolution, cycleDelay, firstCycleDelay } = c.visualization;
 
   // previous values for detecting changes
-  const prevWidth = c.usePrevious(width);
-  const prevHeight = c.usePrevious(height);
+  const prevWidth = usePrevious(width);
+  const prevHeight = usePrevious(height);
 
   const svgRef = useRef();
 
@@ -42,9 +50,9 @@ export default function Visualization({
   const [revolution, setRevolution] = useState(defaultRevolution);
 
   // the activities for the running project and the focused range
-  const prevShowNetwork = c.usePrevious(showNetwork);
-  const prevSort = c.usePrevious(sort);
-  const prevProject = c.usePrevious(project);
+  const prevShowNetwork = usePrevious(showNetwork);
+  const prevSort = usePrevious(sort);
+  const prevProject = usePrevious(project);
 
   // store the selection in a ref so we can access it in useEffect
   // that effect can't have selection as a dependency so we do it this way

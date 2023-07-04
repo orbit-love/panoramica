@@ -15,7 +15,7 @@ export async function GET(request, context) {
   var { id } = context.params;
   var q = request.nextUrl.searchParams.get("q");
   if (!q) {
-    q = "javascript";
+    q = "orbit";
   }
   try {
     var project = await authorizeProject({ id, user });

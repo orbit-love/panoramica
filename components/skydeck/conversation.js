@@ -1,13 +1,15 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 
 import { Frame, Scroll, Header } from "components/skydeck";
 import Thread from "components/compact/thread";
 import PromptInput from "components/promptInput";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Conversation(props) {
   var { project, community, activity } = props;
   let [prompt, setPrompt] = useState("");
   let [lastMessage, setLastMessage] = useState("");
+  let [lastSummary, setLastSummary] = useState("");
   let [loading, setLoading] = useState(false);
 
   var thread = community.threads[activity.id];
@@ -34,12 +36,37 @@ export default function Conversation(props) {
     [project, activity, setLastMessage, prompt]
   );
 
-  var title = "";
+  const fetchSummary = useCallback(async () => {
+    setLastSummary("...");
+    var response = await fetch(
+      `/api/projects/${project.id}/${activity.id}/summary`
+    );
+    setLastSummary("");
+    console.log("FETCHED SUMMARY!");
+    const reader = response.body.getReader();
+    while (true) {
+      const { value, done } = await reader.read();
+      const text = new TextDecoder("utf-8").decode(value);
+      if (done) break;
+      setLastSummary((prevText) => prevText + text);
+    }
+  }, [project, activity, setLastSummary]);
+
+  useEffect(() => {
+    if (!lastSummary) {
+      fetchSummary();
+    }
+  }, []);
+
+  var title = lastSummary;
 
   return (
     <Frame>
       <Header {...props}>
-        <div>{title}</div>
+        <div className="flex overflow-hidden items-center space-x-1">
+          <FontAwesomeIcon icon="messages" />
+          <div className="overflow-hidden text-sm text-ellipsis">{title}</div>
+        </div>
       </Header>
       <div className="flex flex-col px-4 w-[425px] h-full overflow-hidden pb-4">
         <Scroll>
@@ -63,7 +90,7 @@ export default function Conversation(props) {
             prompt={prompt}
             setPrompt={setPrompt}
             fetchPrompt={fetchPrompt}
-            placeholder={"Ask a question about this conversation..."}
+            placeholder={"Please provide a summary of this conversation..."}
           />
         </div>
       </div>

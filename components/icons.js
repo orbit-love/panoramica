@@ -57,6 +57,7 @@ import {
   faCircle,
   faQuestion,
   faNote,
+  faMessages,
 } from "@fortawesome/pro-solid-svg-icons";
 
 import { faTelescope } from "@fortawesome/pro-duotone-svg-icons";
@@ -114,7 +115,8 @@ library.add(
   faDiscourse,
   faGear,
   faSearch,
-  faNote
+  faNote,
+  faMessages
 );
 
 export default library;

@@ -4,7 +4,7 @@ import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { Document } from "langchain/document";
 
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { getActivities } from "lib/graph/queries";
+import { getActivitiesWithConversationId } from "lib/graph/queries";
 import GraphConnection from "lib/graphConnection";
 
 function stripHtmlTags(htmlString) {
@@ -47,23 +47,15 @@ export default async function handler(req, res) {
 
     const graphConnection = new GraphConnection();
 
-    const from = "0000";
-    const to = "9999";
-    const activities = await getActivities({
+    const activities = await getActivitiesWithConversationId({
       graphConnection,
       projectId,
-      from,
-      to,
     });
 
     const content = (activity) => `
-      Author Names: ${activity.globalActorName} ${activity.actorName} ${
-      activity.actor
-    }
-      Source: ${activity.source}
-      Channel: ${activity.sourceChannel}
-      Text: ${stripHtmlTags(activity.textHtml)}
-      Timestamp: ${activity.timestamp}
+      ${activity.globalActorName} ${activity.actorName} ${activity.actor}
+      ${activity.source} ${activity.sourceChannel}
+      ${stripHtmlTags(activity.textHtml)}
     `;
 
     const docs = activities.map(
@@ -72,6 +64,7 @@ export default async function handler(req, res) {
           pageContent: content(activity),
           metadata: {
             activityId: activity.id,
+            conversationId: activity.conversationId,
             timestamp: truncateDateToDay(activity.timestamp),
           },
         })

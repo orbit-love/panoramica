@@ -5,7 +5,7 @@ export default function Header({ children, remove }) {
   return (
     <>
       <div className="flex items-center pb-2 pt-3 px-4 space-x-1">
-        <div className="flex items-center space-x-2 w-full font-semibold whitespace-nowrap">
+        <div className="flex overflow-hidden items-center space-x-2 w-full font-semibold whitespace-nowrap">
           {children}
         </div>
         {remove && (
