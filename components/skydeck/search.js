@@ -64,6 +64,8 @@ export default function Search(props) {
           activity={activity}
           community={community}
           term={appliedTerm}
+          showSourceIcon
+          showSourceChannel
           {...clickHandlers}
           {...props}
         />

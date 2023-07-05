@@ -39,7 +39,7 @@ export async function GET(request, context) {
       { pineconeIndex, namespace }
     );
 
-    const vectorDocs = await vectorStore.similaritySearch(q, 10);
+    const vectorDocs = await vectorStore.similaritySearch(q, 25);
     return NextResponse.json({
       result: vectorDocs,
     });
