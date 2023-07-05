@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { Frame, Scroll, Header } from "components/skydeck";
 import PromptInput from "components/promptInput";
 
 export default function Prompt(props) {
+  var messageRef = useRef();
   let { project } = props;
   let [prompt, setPrompt] = useState("");
   let [loading, setLoading] = useState(false);
@@ -14,6 +15,7 @@ export default function Prompt(props) {
       // clear the last result
       setLastMessage("");
       setLoading(true);
+      messageRef.current.scrollIntoView({});
       var params = new URLSearchParams({ q: prompt });
       var response = await fetch(
         `/api/projects/${project.id}/prompt?${params}`
@@ -25,6 +27,7 @@ export default function Prompt(props) {
         const text = new TextDecoder("utf-8").decode(value);
         if (done) break;
         setLastMessage((prevText) => prevText + text);
+        messageRef.current.scrollIntoView({});
       }
     },
     [project, setLastMessage, prompt]
@@ -41,6 +44,7 @@ export default function Prompt(props) {
             <div className="text-indigo-200 whitespace-pre-wrap">
               {lastMessage}
             </div>
+            <div ref={messageRef} />
           </div>
         </Scroll>
         <div className="my-auto" />

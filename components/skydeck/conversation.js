@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 
 import { Frame, Scroll, Header } from "components/skydeck";
 import Thread from "components/compact/thread";
@@ -6,6 +6,7 @@ import PromptInput from "components/promptInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Conversation(props) {
+  var messageRef = useRef();
   var { project, community, activity } = props;
   let [prompt, setPrompt] = useState("");
   let [lastMessage, setLastMessage] = useState("");
@@ -20,6 +21,7 @@ export default function Conversation(props) {
       // clear the last result
       setLastMessage("");
       setLoading(true);
+      messageRef.current.scrollIntoView({});
       var params = new URLSearchParams({ q: prompt });
       var response = await fetch(
         `/api/projects/${project.id}/${activity.id}/prompt?${params}`
@@ -31,6 +33,7 @@ export default function Conversation(props) {
         const text = new TextDecoder("utf-8").decode(value);
         if (done) break;
         setLastMessage((prevText) => prevText + text);
+        messageRef.current.scrollIntoView({});
       }
     },
     [project, activity, setLastMessage, prompt]
@@ -82,6 +85,7 @@ export default function Conversation(props) {
             <div className="text-indigo-200 whitespace-pre-wrap">
               {lastMessage}
             </div>
+            <div ref={messageRef} />
           </div>
         </Scroll>
         <div className="my-auto" />
