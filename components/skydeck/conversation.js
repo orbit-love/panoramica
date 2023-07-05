@@ -79,7 +79,7 @@ export default function Conversation(props) {
           />
           <div className="flex flex-col py-4 space-y-1">
             {loading && <div className="text-indigo-600">Loading...</div>}
-            <div className="text-sm text-violet-500 whitespace-pre-wrap">
+            <div className="text-indigo-200 whitespace-pre-wrap">
               {lastMessage}
             </div>
           </div>

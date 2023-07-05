@@ -1,16 +1,21 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import c from "lib/common";
 
 export default function PromptInput(props) {
   let { prompt, fetchPrompt, setPrompt, placeholder } = props;
+  let textareaRef = useRef();
+
+  // useEffect(() => {
+  //   textareaRef.current.focus();
+  // }, []);
 
   return (
     <form onSubmit={fetchPrompt} className="flex flex-col space-y-3">
       <textarea
+        ref={textareaRef}
         className={c.inputClasses}
         value={prompt}
         rows={3}
-        required
         placeholder={placeholder}
         onChange={(e) => setPrompt(e.target.value)}
       />

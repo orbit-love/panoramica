@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Frame, Scroll, Header } from "components/skydeck";
 import PromptInput from "components/promptInput";
-import c from "lib/common";
 
 export default function Prompt(props) {
   let { project } = props;
@@ -30,27 +29,29 @@ export default function Prompt(props) {
     },
     [project, setLastMessage, prompt]
   );
-
   return (
     <Frame>
       <Header {...props}>
         <div className="text-lg">Prompt</div>
       </Header>
-      <Scroll>
-        <div className="flex flex-col px-4 w-[450px]">
+      <div className="flex flex-col px-4 w-[425px] h-full pb-4 overflow-hidden">
+        <Scroll>
+          <div className="flex flex-col pb-8 space-y-1">
+            {loading && <div className="text-indigo-600">Loading...</div>}
+            <div className="text-indigo-200 whitespace-pre-wrap">
+              {lastMessage}
+            </div>
+          </div>
+        </Scroll>
+        <div className="my-auto" />
+        <div className="pt-4">
           <PromptInput
             prompt={prompt}
             setPrompt={setPrompt}
             fetchPrompt={fetchPrompt}
           />
-          <div className="flex flex-col pb-8 space-y-1">
-            {loading && <div className="text-indigo-600">Loading...</div>}
-            <div className="text-sm text-indigo-300 whitespace-pre-wrap">
-              {lastMessage}
-            </div>
-          </div>
         </div>
-      </Scroll>
+      </div>
     </Frame>
   );
 }

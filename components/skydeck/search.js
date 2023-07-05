@@ -12,6 +12,7 @@ export default function Search(props) {
   const [docs, setDocs] = useState([]);
   const [term, setTerm] = useState(initialTerm);
   const [appliedTerm, setAppliedTerm] = useState(null);
+  var searchRef = useRef();
 
   const fetchSearch = useCallback(async () => {
     setLoading(true);
@@ -29,6 +30,7 @@ export default function Search(props) {
   }, [term, project]);
 
   useEffect(() => {
+    searchRef.current.focus();
     if (term) {
       fetchSearch();
     }
@@ -85,6 +87,7 @@ export default function Search(props) {
         <div className="flex flex-col space-y-2 w-[450px]">
           <form onSubmit={onSearchSubmit} className="flex px-4 mb-2 space-x-2">
             <input
+              ref={searchRef}
               className={c.inputClasses}
               required
               type="search"
