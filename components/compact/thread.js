@@ -10,13 +10,14 @@ export default function Thread(props) {
   let { activity, community, depth = 0, maxDepth = -1 } = props;
 
   // get the thread from the activity, eventually merge these
+  // if there is no thread, it's a bug somewhere but protect for now
   var thread = community.threads[activity.id];
 
   // if the child activity is missing, it's because it didn't get
   // brought back in the time slice, so just skip it
-  var childActivities = thread.children
+  var childActivities = thread?.children
     ?.map((id) => community.activities.find((a) => a.id === id))
-    .filter((a) => a);
+    ?.filter((a) => a);
 
   // render the children if no maxDepth was supplied or we are less than maxDepth
   var renderChildren = maxDepth === -1 || depth < maxDepth;
@@ -25,7 +26,7 @@ export default function Thread(props) {
   // that we are rendering individual activities, not only thread tops
   // in this case, add context and make it clear where clicking the activity
   // will go by showing the conversation id
-  var showConversation = depth === 0 && thread.type === "reply";
+  var showConversation = depth === 0 && thread?.type === "reply";
   var conversation = community.findActivityById(activity.conversationId);
 
   return (
@@ -50,6 +51,7 @@ export default function Thread(props) {
         />
       </div>
       {renderChildren &&
+        thread &&
         childActivities?.map((childActivity, index) => {
           var { id } = childActivity;
           return (
