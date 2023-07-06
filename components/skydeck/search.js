@@ -62,9 +62,6 @@ export default function Search(props) {
       <Header {...props}>
         <FontAwesomeIcon icon="search" />
         <div>{title}</div>
-        {docs.length > 0 && (
-          <div className="text-indigo-500">{docs.length}</div>
-        )}
         {loading && (
           <div className="font-normal text-indigo-600">
             <FontAwesomeIcon icon="circle-notch" spin />
@@ -93,6 +90,7 @@ export default function Search(props) {
               {...props}
               onClickActivity={onClickActivity}
               maxDepth={0}
+              hideNoActivities
             />
           </div>
         </div>

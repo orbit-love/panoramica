@@ -23,7 +23,6 @@ export default function Channel(props) {
       <Header {...props}>
         {<SourceIcon activity={{ source }} />}
         <div>{title}</div>
-        <div className="text-indigo-500">{length}</div>
       </Header>
       <Scroll>
         <Activities activities={activities} {...props} />

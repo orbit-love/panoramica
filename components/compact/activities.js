@@ -4,7 +4,7 @@ import classnames from "classnames";
 import Thread from "components/compact/thread";
 
 export default function Activities(props) {
-  const { activities, onClickActivity } = props;
+  const { activities, onClickActivity, hideNoActivities } = props;
   return (
     <>
       {activities.map((activity, index) => (
@@ -23,7 +23,7 @@ export default function Activities(props) {
           <Thread key={activity.id} activity={activity} {...props} />
         </div>
       ))}
-      {activities.length === 0 && (
+      {!hideNoActivities && activities.length === 0 && (
         <div className="px-4 text-indigo-700 w-[450px]">No activities.</div>
       )}
     </>

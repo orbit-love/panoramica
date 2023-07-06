@@ -26,7 +26,6 @@ export default function Source(props) {
       <Header {...props}>
         {source && <SourceIcon activity={{ source }} />}
         <div>{title}</div>
-        <div className="text-indigo-500">{length}</div>
         {sourceChannels.length > 0 && (
           <button
             className="mr-2 text-indigo-700"

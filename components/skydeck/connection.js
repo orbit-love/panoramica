@@ -21,7 +21,6 @@ export default function Connection(props) {
           className="text-xs text-indigo-600"
         />
         <NameAndIcon member={connection} onClick={() => {}} />
-        <div className="text-indigo-500">{activities.length}</div>
       </Header>
       <Scroll>
         <Activities activities={activities} {...props} />
