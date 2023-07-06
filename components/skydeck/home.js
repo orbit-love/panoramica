@@ -199,7 +199,7 @@ export default function Home(props) {
         <div className="flex flex-col px-4 w-[250px] h-full">
           {!loading && empty && (
             <div className="flex flex-col space-y-6">
-              <p className="">
+              <p className="text-sm">
                 The project has been created. Click the button to fetch data
                 from Orbit. This is a one-time operation and takes up to 60
                 seconds.

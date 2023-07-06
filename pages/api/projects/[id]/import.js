@@ -55,11 +55,6 @@ export default async function handler(req, res) {
       handleRecords,
     });
 
-    // todo - filter out any duplicate source ids above, we need to have the constraint
-    // for some reason the orbit API returned duplicate tweets, so we delete any
-    // duplicates here before sending to graph-db
-    // await deleteDuplicates(project);
-
     res.status(200).json({ result: { count: allData.length } });
     console.log("Successfully imported activities");
   } catch (err) {

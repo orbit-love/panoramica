@@ -23,6 +23,9 @@ export default function Activities(props) {
           <Thread key={activity.id} activity={activity} {...props} />
         </div>
       ))}
+      {activities.length === 0 && (
+        <div className="px-4 text-indigo-700 w-[450px]">No activities.</div>
+      )}
     </>
   );
 }
