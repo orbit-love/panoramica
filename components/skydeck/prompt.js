@@ -1,4 +1,6 @@
 import React, { useState, useCallback, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { Frame, Scroll, Header } from "components/skydeck";
 import PromptInput from "components/promptInput";
 
@@ -40,7 +42,11 @@ export default function Prompt(props) {
       <div className="flex flex-col px-4 w-[425px] h-full pb-4 overflow-hidden">
         <Scroll>
           <div className="flex flex-col pb-8 space-y-1">
-            {loading && <div className="text-indigo-600">Loading...</div>}
+            {loading && (
+              <div className="text-indigo-600">
+                <FontAwesomeIcon icon="circle-notch" spin />
+              </div>
+            )}
             <div className="text-indigo-200 whitespace-pre-wrap">
               {lastMessage}
             </div>

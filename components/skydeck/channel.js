@@ -2,7 +2,8 @@ import React from "react";
 
 import Feed from "lib/community/feed";
 import SourceIcon from "components/compact/source_icon";
-import { Frame, Scroll, Header, Activities } from "components/skydeck";
+import Activities from "components/compact/activities";
+import { Frame, Scroll, Header } from "components/skydeck";
 import c from "lib/common";
 
 export default function Channel(props) {

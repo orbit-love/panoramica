@@ -11,7 +11,6 @@ export { default as Entities } from "components/skydeck/entities";
 export { default as Source } from "components/skydeck/source";
 export { default as Channel } from "components/skydeck/channel";
 export { default as Search } from "components/skydeck/search";
-export { default as Activities } from "components/skydeck/activities";
 export { default as Scroll } from "components/skydeck/scroll";
 export { default as Connection } from "components/skydeck/connection";
 export { default as Insights } from "components/skydeck/insights";
@@ -64,10 +63,24 @@ export function addChannelsWidget(source, addWidget) {
 }
 
 export const clickHandlers = (addWidget) => ({
-  onClickMember: (member) => addMemberWidget(member, addWidget),
-  onClickChannel: (source, sourceChannel) =>
-    addChannelWidget(source, sourceChannel, addWidget),
-  onClickEntity: (entity) => addEntityWidget(entity, addWidget),
-  onClickChannels: (source) => addChannelsWidget(source, addWidget),
-  onClickConversation: (activity) => addConversationWidget(activity, addWidget),
+  onClickMember: (e, member) => {
+    e.stopPropagation();
+    addMemberWidget(member, addWidget);
+  },
+  onClickChannel: (e, source, sourceChannel) => {
+    e.stopPropagation();
+    addChannelWidget(source, sourceChannel, addWidget);
+  },
+  onClickEntity: (e, entity) => {
+    e.stopPropagation();
+    addEntityWidget(entity, addWidget);
+  },
+  onClickChannels: (e, source) => {
+    e.stopPropagation();
+    addChannelsWidget(source, addWidget);
+  },
+  onClickActivity: (e, activity) => {
+    e.stopPropagation();
+    addConversationWidget(activity, addWidget);
+  },
 });

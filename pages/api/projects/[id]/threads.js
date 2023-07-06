@@ -13,6 +13,7 @@ export default async function handler(req, res) {
 
   var project = await authorizeProject({ id, user, res });
   if (!project) {
+    res.status(401).json({ message: "Not authorized" });
     return;
   }
   const projectId = project.id;

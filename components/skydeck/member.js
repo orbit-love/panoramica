@@ -2,15 +2,10 @@ import React from "react";
 
 import Feed from "lib/community/feed";
 import NameAndIcon from "components/compact/name_and_icon";
-import {
-  Frame,
-  Scroll,
-  Header,
-  Activities,
-  Connection,
-} from "components/skydeck";
+import { Frame, Scroll, Header, Connection } from "components/skydeck";
 import Meter from "components/meter";
 import CompactEntity from "components/compact/entity";
+import Activities from "components/compact/activities";
 import CompactConnections from "components/compact/connections";
 import { addEntityWidget } from "components/skydeck";
 

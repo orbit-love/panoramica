@@ -1,6 +1,5 @@
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
-  faSpinner,
   faYinYang,
   faHeartCircleCheck,
   faBuildingColumns,
@@ -20,6 +19,8 @@ import {
   faRightLeft,
   faGear,
   faSearch,
+  faCircleNotch,
+  faReply,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -66,7 +67,6 @@ import { faTelescope } from "@fortawesome/pro-duotone-svg-icons";
 library.add(
   faBars,
   faXmark,
-  faSpinner,
   faYinYang,
   faSolarSystem,
   faPlanetRinged,
@@ -116,7 +116,9 @@ library.add(
   faGear,
   faSearch,
   faNote,
-  faMessages
+  faMessages,
+  faCircleNotch,
+  faReply
 );
 
 export default library;

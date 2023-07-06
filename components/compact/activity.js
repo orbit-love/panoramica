@@ -46,7 +46,7 @@ export default function Activity({
             {showSourceChannel && sourceChannel && (
               <button
                 className="hover:underline"
-                onClick={() => onClickChannel(source, sourceChannel)}
+                onClick={(e) => onClickChannel(e, source, sourceChannel)}
               >
                 {c.displayChannel(sourceChannel)}
               </button>

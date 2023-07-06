@@ -6,7 +6,8 @@ export default function Members(props) {
   let { community, addWidget } = props;
   let { members } = community;
   let onClickMember = (member) => {
-    return () => {
+    return (e) => {
+      e.stopPropagation();
       addMemberWidget(member, addWidget);
     };
   };

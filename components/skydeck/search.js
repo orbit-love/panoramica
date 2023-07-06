@@ -1,13 +1,12 @@
 import React, { useRef, useCallback, useState, useEffect } from "react";
-import classnames from "classnames";
 
-import Activity from "components/compact/activity";
-import { Frame, Scroll, Header, clickHandlers } from "components/skydeck";
+import Activities from "components/compact/activities";
+import { Frame, Scroll, Header } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import c from "lib/common";
 
 export default function Search(props) {
-  var { initialTerm, project, community, onClickConversation } = props;
+  var { initialTerm, project, community } = props;
   const [loading, setLoading] = useState(false);
   const [docs, setDocs] = useState([]);
   const [term, setTerm] = useState(initialTerm);
@@ -47,30 +46,15 @@ export default function Search(props) {
 
   var title = appliedTerm || "Search";
 
-  const Doc = ({ metadata: { activityId, conversationId }, index }) => {
+  var activities = docs.map(({ metadata: { activityId, conversationId } }) => {
     var activity = community.findActivityById(activityId);
-    var conversation = community.findActivityById(conversationId);
-    return (
-      <div
-        key={activity.id}
-        onClick={() => onClickConversation(conversation)}
-        className={classnames("flex flex-col py-3 px-4", {
-          "bg-blue-900": index % 2 === 1,
-          "bg-opacity-20": index % 2 === 1,
-        })}
-      >
-        <Activity
-          key={activity.id}
-          activity={activity}
-          community={community}
-          term={appliedTerm}
-          showSourceIcon
-          showSourceChannel
-          {...clickHandlers}
-          {...props}
-        />
-      </div>
-    );
+    activity.conversationId = conversationId;
+    return activity;
+  });
+
+  var onClickActivity = (e, activity) => {
+    var conversation = community.findActivityById(activity.conversationId);
+    props.onClickActivity(e, conversation);
   };
 
   return (
@@ -82,7 +66,9 @@ export default function Search(props) {
           <div className="text-indigo-500">{docs.length}</div>
         )}
         {loading && (
-          <div className="font-normal text-indigo-600">Searching...</div>
+          <div className="font-normal text-indigo-600">
+            <FontAwesomeIcon icon="circle-notch" spin />
+          </div>
         )}
       </Header>
       <Scroll>
@@ -100,9 +86,13 @@ export default function Search(props) {
               <FontAwesomeIcon icon="search" />
             </button>
           </form>
-          {docs.map((doc, index) => (
-            <Doc key={index} {...doc} index={index} />
-          ))}
+          <Activities
+            activities={activities}
+            term={appliedTerm}
+            {...props}
+            onClickActivity={onClickActivity}
+            maxDepth={0}
+          />
         </div>
       </Scroll>
     </Frame>

@@ -2,7 +2,8 @@ import React from "react";
 
 import Feed from "lib/community/feed";
 import SourceIcon from "components/compact/source_icon";
-import { Frame, Scroll, Header, Activities } from "components/skydeck";
+import Activities from "components/compact/activities";
+import { Frame, Scroll, Header } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Source(props) {
@@ -29,7 +30,7 @@ export default function Source(props) {
         {sourceChannels.length > 0 && (
           <button
             className="mr-2 text-indigo-700"
-            onClick={() => onClickChannels(source)}
+            onClick={(e) => onClickChannels(e, source)}
           >
             <FontAwesomeIcon icon="bars" />
           </button>

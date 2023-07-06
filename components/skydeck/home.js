@@ -185,7 +185,9 @@ export default function Home(props) {
             />
           </div>
           {loading && (
-            <div className="pl-2 font-normal text-indigo-600">Loading...</div>
+            <div className="pl-2 font-normal text-indigo-600">
+              <FontAwesomeIcon icon="circle-notch" spin />
+            </div>
           )}
           <div className="mx-auto" />
           <button className="" onClick={editProject}>

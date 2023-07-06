@@ -14,7 +14,8 @@ export default function NameAndIcon({
     return <div>No member!</div>;
   }
   if (!onClick) {
-    onClick = (member) => {
+    onClick = (e, member) => {
+      e.stopPropagation();
       setConnection(null);
       if (selection?.id === member.id) {
         setSelection({ name: "Mission" });
@@ -25,12 +26,12 @@ export default function NameAndIcon({
   }
   return (
     <div
-      onClick={() => onClick(member)}
+      onClick={(e) => onClick(e, member)}
       className="flex overflow-hidden items-center space-x-1 cursor-pointer"
     >
       <OrbitLevelIcon number={member.level} />
       <div
-        className="overflow-hidden text-ellipsis whitespace-nowrap"
+        className="overflow-hidden text-ellipsis whitespace-nowrap hover:underline"
         style={{
           color: c.orbitLevelColorScale(member.level),
         }}

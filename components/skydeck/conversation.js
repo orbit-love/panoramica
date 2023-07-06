@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Frame, Scroll, Header } from "components/skydeck";
 import Thread from "components/compact/thread";
 import PromptInput from "components/promptInput";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Conversation(props) {
   var messageRef = useRef();
@@ -71,17 +71,15 @@ export default function Conversation(props) {
           <div className="overflow-hidden text-sm text-ellipsis">{title}</div>
         </div>
       </Header>
-      <div className="flex flex-col px-4 w-[425px] h-full overflow-hidden pb-4">
+      <div className="flex flex-col px-4 w-[450px] h-full overflow-hidden pb-4">
         <Scroll>
-          <Thread
-            nesting={0}
-            thread={thread}
-            topThread={thread}
-            {...props}
-            onClickConversation={() => {}}
-          />
+          <Thread thread={thread} {...props} onClickActivity={() => {}} />
           <div className="flex flex-col py-4 space-y-1">
-            {loading && <div className="text-indigo-600">Loading...</div>}
+            {loading && (
+              <div className="text-indigo-600">
+                <FontAwesomeIcon icon="circle-notch" spin />
+              </div>
+            )}
             <div className="text-indigo-200 whitespace-pre-wrap">
               {lastMessage}
             </div>

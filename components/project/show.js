@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import c from "lib/common";
 import Community from "lib/community";
@@ -174,7 +175,11 @@ export default function Show({
     <>
       <div className="flex items-baseline space-x-2">
         <span className="text-lg font-bold">{project.name}</span>
-        {loading && <div className="text-indigo-700">Loading...</div>}
+        {loading && (
+          <div className="text-indigo-700">
+            <FontAwesomeIcon icon="circle-notch" spin />
+          </div>
+        )}
         <div className="!mx-auto" />
       </div>
       <div className="border-b border-indigo-900" />

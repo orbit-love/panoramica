@@ -3,7 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Feed from "lib/community/feed";
 import NameAndIcon from "components/compact/name_and_icon";
-import { Frame, Scroll, Header, Activities } from "components/skydeck";
+import Activities from "components/compact/activities";
+import { Frame, Scroll, Header } from "components/skydeck";
 
 export default function Connection(props) {
   var { member, connection } = props;

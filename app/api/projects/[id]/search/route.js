@@ -39,7 +39,14 @@ export async function GET(request, context) {
       { pineconeIndex, namespace }
     );
 
-    const vectorDocs = await vectorStore.similaritySearch(q, 25);
+    // the client will not use the text in the vector store for rendering, it
+    // will just use the metadata to find the activity locally; so save bytes and don't include values
+    // but not seeming to work yet...
+    const vectorDocs = await vectorStore.similaritySearch(q, 25, {
+      // includeData: true,
+      // includeMetadata: true,
+    });
+    console.log(vectorDocs);
     return NextResponse.json({
       result: vectorDocs,
     });

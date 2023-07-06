@@ -44,7 +44,7 @@ export default function Channels(props) {
                   <td>
                     <button
                       className="text-indigo-100 hover:underline"
-                      onClick={() => onClickChannel(source, channel)}
+                      onClick={(e) => onClickChannel(e, source, channel)}
                     >
                       {c.displayChannel(channel)}
                     </button>
