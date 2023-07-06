@@ -86,13 +86,15 @@ export default function Search(props) {
               <FontAwesomeIcon icon="search" />
             </button>
           </form>
-          <Activities
-            activities={activities}
-            term={appliedTerm}
-            {...props}
-            onClickActivity={onClickActivity}
-            maxDepth={0}
-          />
+          <div>
+            <Activities
+              activities={activities}
+              term={appliedTerm}
+              {...props}
+              onClickActivity={onClickActivity}
+              maxDepth={0}
+            />
+          </div>
         </div>
       </Scroll>
     </Frame>
