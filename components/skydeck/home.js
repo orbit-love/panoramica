@@ -1,29 +1,54 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import c from "lib/common";
 
-import Feed from "lib/community/feed";
+import { Frame, Header } from "components/skydeck";
+import c from "lib/common";
 import Community from "lib/community";
-import {
-  Frame,
-  Scroll,
-  Header,
-  Source,
-  Search,
-  Entities,
-  Members,
-  Project,
-  Insights,
-  Prompt,
-} from "components/skydeck";
+import Feed from "lib/community/feed";
 
 export default function Home(props) {
   let searchRef = useRef();
-  let { project, community, setCommunity, levels, addWidget, resetWidgets } =
-    props;
+  const {
+    project,
+    community,
+    levels,
+    dispatch,
+    api,
+    containerApi,
+    addWidget,
+    resetWidgets,
+    handlers,
+  } = props;
 
-  const [loading, setLoading] = useState(false);
+  let { onClickSource } = handlers;
+  let [loading, setLoading] = useState(false);
+
+  let setCommunity = useCallback(
+    (result) => {
+      const community = new Community({ result, levels });
+      dispatch({ type: "updated", community });
+    },
+    [dispatch, levels]
+  );
+
+  useEffect(() => {
+    if (!containerApi) {
+      return;
+    }
+    const disposable = containerApi.onDidLayoutChange(() => {
+      const layout = containerApi.toJSON();
+      localStorage.setItem(
+        "dockview_persistance_layout_2",
+        JSON.stringify(layout)
+      );
+      console.log("Layout saved...");
+    });
+
+    return () => {
+      disposable.dispose();
+    };
+  }, [containerApi]);
 
   useHotkeys(
     "/",
@@ -34,9 +59,9 @@ export default function Home(props) {
     []
   );
 
-  const editProject = useCallback(() => {
-    addWidget((props) => <Project {...props} />);
-  }, [addWidget]);
+  const editProject = () => {
+    addWidget("edit-project", "editProject");
+  };
 
   const fetchProject = useCallback(async () => {
     setLoading(true);
@@ -138,36 +163,31 @@ export default function Home(props) {
       });
   }, [project, onDataAvailable]);
 
-  // fetch the project the first time and then set up polling
-  // also refresh the project right away so new data comes in
+  // refresh the project right away so new data comes in
   useEffect(() => {
-    fetchProject();
     var interval = setInterval(() => {
       refreshProject();
     }, 60 * 1000);
-    refreshProject();
+    // refreshProject();
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [refreshProject]);
 
-  const onSearchSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      var term = searchRef.current.value;
-      addWidget((props) => <Search initialTerm={term} {...props} />);
-      searchRef.current.value = "";
-      searchRef.current.blur();
-    },
-    [addWidget]
-  );
+  const onSearchSubmit = (e) => {
+    e.preventDefault();
+    var term = searchRef.current.value;
+    addWidget("search", "Search", { initialTerm: term });
+    searchRef.current.value = "";
+    searchRef.current.blur();
+  };
 
   // prepare to render
   const empty = community?.activities?.length === 0;
 
   var sources = [];
   if (community) {
-    var feed = new Feed(props);
+    var feed = new Feed({ community });
     sources = feed.getSources({});
   }
 
@@ -175,7 +195,7 @@ export default function Home(props) {
 
   return (
     <Frame>
-      <Header {...props} remove={null}>
+      <Header api={api} remove={null}>
         <div className="flex items-center w-full">
           <div className="text-lg">{project.name}</div>
           <div title="Auto update every 60s">
@@ -195,134 +215,94 @@ export default function Home(props) {
           </button>
         </div>
       </Header>
-      <Scroll>
-        <div className="flex flex-col px-4 w-[250px] h-full">
-          {!loading && empty && (
-            <div className="flex flex-col space-y-6">
-              <p className="text-sm">
-                The project has been created. Click the button to fetch data
-                from Orbit. This is a one-time operation and takes up to 60
-                seconds.
-              </p>
-              <button
-                onClick={() => importProject()}
-                className={c.buttonClasses}
-              >
-                Import
-              </button>
-            </div>
-          )}
-          {community && !empty && (
-            <>
-              <div className="flex flex-col items-start space-y-4">
-                <div>
-                  <div className="flex flex-col items-start space-y-2">
-                    <div className="font-semibold">Search</div>
-                    <form onSubmit={onSearchSubmit} className="flex space-x-2">
-                      <input
-                        className={c.inputClasses}
-                        type="search"
-                        ref={searchRef}
-                      />
-                      <button type="submit" className={c.buttonClasses}>
-                        <FontAwesomeIcon icon="search" />
-                      </button>
-                    </form>
-                  </div>
-                  <div className="h-6" />
-                  <div className="mb-1 font-semibold">Add Columns</div>
-                  <div className="flex flex-col items-start w-full">
-                    <button
-                      className=""
-                      onClick={() =>
-                        addWidget((props) => (
-                          <Source
-                            source={null}
-                            title="All Activity"
-                            {...props}
-                          />
-                        ))
-                      }
-                    >
-                      All Activity
+      <div className="flex flex-col px-4">
+        {!loading && empty && (
+          <div className="flex flex-col space-y-6">
+            <p className="text-sm">
+              The project has been created. Click the button to fetch data from
+              Orbit. This is a one-time operation and takes up to 60 seconds.
+            </p>
+            <button onClick={() => importProject()} className={c.buttonClasses}>
+              Import
+            </button>
+          </div>
+        )}
+        {community && !empty && (
+          <>
+            <div className="flex flex-col items-start space-y-4">
+              <div>
+                <div className="flex flex-col items-start space-y-2">
+                  <div className="font-semibold">Search</div>
+                  <form onSubmit={onSearchSubmit} className="flex space-x-2">
+                    <input
+                      className={c.inputClasses}
+                      type="search"
+                      ref={searchRef}
+                    />
+                    <button type="submit" className={c.buttonClasses}>
+                      <FontAwesomeIcon icon="search" />
                     </button>
-                    <button
-                      className=""
-                      onClick={() =>
-                        addWidget((props) => <Members {...props} />)
-                      }
-                    >
-                      Member List
-                    </button>
-                    <button
+                  </form>
+                </div>
+                <div className="h-6" />
+                <div className="mb-1 font-semibold">Add Columns</div>
+                <div className="flex flex-col items-start w-full">
+                  <button onClick={(e) => onClickSource(e, null)}>
+                    All Activity
+                  </button>
+                  <button onClick={() => addWidget("members", "Members")}>
+                    Member List
+                  </button>
+                  {/* <button
                       className=""
                       onClick={() =>
                         addWidget((props) => <Insights {...props} />)
                       }
                     >
                       Insights
-                    </button>
-                    <button
-                      className=""
-                      onClick={() =>
-                        addWidget((props) => <Prompt {...props} />)
-                      }
-                    >
-                      Prompt
-                    </button>
-                    <button
-                      className=""
-                      onClick={() =>
-                        addWidget((props) => <Entities {...props} />)
-                      }
-                    >
-                      Entities
-                    </button>
-                    <button className="text-red-500" onClick={resetWidgets}>
-                      Reset
-                    </button>
-                    <div className="pt-4 font-semibold">Sources</div>
-                    {sources.map((source) => (
-                      <div className="flex flex-col" key={source}>
-                        <button
-                          className="flex items-center space-x-1"
-                          onClick={() =>
-                            addWidget((props) => (
-                              <Source
-                                source={source}
-                                title={c.titleize(source)}
-                                {...props}
-                              />
-                            ))
-                          }
-                        >
-                          <div>{c.titleize(source)}</div>
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                    </button> */}
+                  <button onClick={() => addWidget("prompt", "Prompt")}>
+                    Prompt
+                  </button>
+                  <button onClick={() => addWidget("entities", "Entities")}>
+                    Entities
+                  </button>
+                  <button className="text-red-500" onClick={resetWidgets}>
+                    Reset
+                  </button>
+                  <div className="pt-4 font-semibold">Sources</div>
+                  {sources.map((source) => (
+                    <div className="flex flex-col" key={source}>
+                      <button
+                        className="flex items-center space-x-1"
+                        onClick={(e) => onClickSource(e, source)}
+                      >
+                        <div>{c.titleize(source)}</div>
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </>
-          )}
-          <div className="!my-auto"></div>
-          <div className="flex flex-col items-start py-3 space-y-1 text-sm text-indigo-300">
-            <span className="font-bold">Actions</span>
-            <button className="" onClick={importProject}>
-              Reimport Data
-            </button>
-            <button className="" onClick={createEmbeddings}>
-              Create Embeddings
-            </button>
-          </div>
-          <div className="flex flex-col py-3 space-y-1 text-sm text-indigo-300">
-            <span className="font-bold">Shortcuts</span>
-            <span>/: Search</span>
-            <span>Backspace: Remove last column</span>
-            <span>Escape: Reset columns</span>
-          </div>
+            </div>
+          </>
+        )}
+        <div className="!my-auto"></div>
+        <div className="flex flex-col items-start py-3 space-y-1 text-sm text-indigo-300">
+          <span className="font-bold">Actions</span>
+          <button className="" onClick={importProject}>
+            Reimport Data
+          </button>
+          <button className="" onClick={createEmbeddings}>
+            Create Embeddings
+          </button>
         </div>
-      </Scroll>
+        <div className="flex flex-col py-3 space-y-1 text-sm text-indigo-300">
+          <span className="font-bold">Shortcuts</span>
+          <span>/: Search</span>
+          <span>Backspace: Remove last column</span>
+          <span>Escape: Reset columns</span>
+        </div>
+      </div>
     </Frame>
   );
 }

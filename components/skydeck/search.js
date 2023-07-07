@@ -59,42 +59,32 @@ export default function Search(props) {
 
   return (
     <Frame>
-      <Header {...props}>
-        <FontAwesomeIcon icon="search" />
-        <div>{title}</div>
-        {loading && (
-          <div className="font-normal text-indigo-600">
-            <FontAwesomeIcon icon="circle-notch" spin />
-          </div>
-        )}
-      </Header>
-      <Scroll>
-        <div className="flex flex-col space-y-2 w-[450px]">
-          <form onSubmit={onSearchSubmit} className="flex px-4 mb-2 space-x-2">
-            <input
-              ref={searchRef}
-              className={c.inputClasses}
-              required
-              type="search"
-              value={term}
-              onChange={onSearchChange}
-            />
-            <button type="submit" className={c.buttonClasses}>
-              <FontAwesomeIcon icon="search" />
-            </button>
-          </form>
-          <div>
-            <Activities
-              activities={activities}
-              term={appliedTerm}
-              {...props}
-              onClickActivity={onClickActivity}
-              maxDepth={0}
-              hideNoActivities
-            />
-          </div>
-        </div>
-      </Scroll>
+      <div className="flex flex-col mt-6 space-y-2">
+        <form onSubmit={onSearchSubmit} className="flex px-4 mb-2 space-x-2">
+          <input
+            ref={searchRef}
+            className={c.inputClasses}
+            required
+            type="search"
+            value={term}
+            onChange={onSearchChange}
+          />
+          <button type="submit" className={c.buttonClasses}>
+            {loading && <FontAwesomeIcon icon="circle-notch" spin />}
+            {!loading && <FontAwesomeIcon icon="search" />}
+          </button>
+        </form>
+        <Scroll>
+          <Activities
+            activities={activities}
+            term={appliedTerm}
+            {...props}
+            onClickActivity={onClickActivity}
+            maxDepth={0}
+            hideNoActivities
+          />
+        </Scroll>
+      </div>
     </Frame>
   );
 }

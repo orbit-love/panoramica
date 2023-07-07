@@ -36,10 +36,7 @@ export default function Prompt(props) {
   );
   return (
     <Frame>
-      <Header {...props}>
-        <div className="text-lg">Prompt</div>
-      </Header>
-      <div className="flex flex-col px-4 w-[425px] h-full pb-4 overflow-hidden">
+      <div className="flex overflow-hidden flex-col px-4 pb-4 h-full">
         <Scroll>
           <div className="flex flex-col pb-8 space-y-1">
             {loading && (

@@ -1835,6 +1835,18 @@ dlv@^1.1.3:
   resolved "https://registry.npmjs.org/dlv/-/dlv-1.1.3.tgz"
   integrity sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==
 
+dockview-core@^1.7.6:
+  version "1.7.6"
+  resolved "https://registry.yarnpkg.com/dockview-core/-/dockview-core-1.7.6.tgz#fea65164f714046dcfcb6530cf6f700c33e3d713"
+  integrity sha512-9gerjq1tP9Cd7lZ8/mBV1LGlbApqTLUmUjmP8A6EPQIc8GzKGX3nJZxb14n1IcKtGYs0iwZOp864Ay6H+WafXQ==
+
+dockview@^1.7.6:
+  version "1.7.6"
+  resolved "https://registry.yarnpkg.com/dockview/-/dockview-1.7.6.tgz#1f18de3de119d3b2753cd5d8ceb51c505b3e519f"
+  integrity sha512-hcH6y/Sq4fLwf1WdT3vC9tz9aGaK1S2GOB3WBicTEn7WsRBqsHfvQzojcSPWoVA9BDAnZeYd5oRat6jjJvswhw==
+  dependencies:
+    dockview-core "^1.7.6"
+
 doctrine@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/doctrine/-/doctrine-2.1.0.tgz"

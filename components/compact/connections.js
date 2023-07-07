@@ -62,7 +62,7 @@ export default function CompactConnections({
     .filter((a) => a)
     .sort(sortByFields);
 
-  const Connections = ({ name, connections, onClickConnection }) => {
+  const Connections = ({ name, connections }) => {
     return (
       <>
         {connections.length > 0 && (

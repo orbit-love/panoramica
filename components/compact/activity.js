@@ -17,28 +17,19 @@ function highlightSearchTerm(string, searchTerm) {
 export default function Activity({
   activity,
   community,
-  selection,
-  setSelection,
-  setConnection,
   showSourceIcon,
   showSourceChannel,
-  onClickMember,
-  onClickChannel,
+  handlers,
   term,
 }) {
+  var { onClickMember, onClickChannel } = handlers;
   var member = community.findMemberByActivity(activity);
   var renderHtml = activity.textHtml?.length > 0;
   var { source, sourceChannel } = activity;
   return (
     <div key={activity.id} className="flex flex-col pb-2">
       <div className="flex items-center space-x-2">
-        <NameAndIcon
-          member={member}
-          selection={selection}
-          setConnection={setConnection}
-          setSelection={setSelection}
-          onClick={onClickMember}
-        />
+        <NameAndIcon member={member} onClick={onClickMember} />
         <div className="flex-1" />
         {showSourceIcon && (
           <div className="flex overflow-hidden items-center space-x-1 text-xs text-right text-indigo-700 text-ellipsis whitespace-nowrap">

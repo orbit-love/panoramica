@@ -6,26 +6,28 @@ import Activities from "components/compact/activities";
 import { Frame, Scroll, Header } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function Source(props) {
-  var { source, community, title, onClickChannels } = props;
+export default function Source({ community, params, api, handlers }) {
+  var { source } = params;
+  var { onClickChannels } = handlers;
 
   if (!community?.activities) {
     return <></>;
   }
 
-  var feed = new Feed(props);
+  var feed = new Feed({ community, source });
   var activities = feed.getFilteredActivities();
   var sourceChannels = feed.getSourceChannels({ source });
 
   // for performance
-  var length = activities.length;
   activities = activities.slice(0, 50);
+
+  console.log("Rendered source column");
 
   return (
     <Frame>
-      <Header {...props}>
+      <Header api={api}>
         {source && <SourceIcon activity={{ source }} />}
-        <div>{title}</div>
+        <div>{source ? source : "All Activity"}</div>
         {sourceChannels.length > 0 && (
           <button
             className="mr-2 text-indigo-700"
@@ -36,7 +38,11 @@ export default function Source(props) {
         )}
       </Header>
       <Scroll>
-        <Activities activities={activities} {...props} />
+        <Activities
+          activities={activities}
+          community={community}
+          handlers={handlers}
+        />
       </Scroll>
     </Frame>
   );

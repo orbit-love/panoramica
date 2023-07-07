@@ -3,25 +3,13 @@ import React from "react";
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
 
-export default function NameAndIcon({
-  member,
-  setConnection,
-  selection,
-  setSelection,
-  onClick,
-}) {
+export default function NameAndIcon({ member, onClick }) {
   if (!member) {
     return <div>No member!</div>;
   }
   if (!onClick) {
-    onClick = (e, member) => {
+    onClick = (e) => {
       e.stopPropagation();
-      setConnection(null);
-      if (selection?.id === member.id) {
-        setSelection({ name: "Mission" });
-      } else {
-        setSelection(member);
-      }
     };
   }
   return (

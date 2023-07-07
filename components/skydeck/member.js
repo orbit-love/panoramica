@@ -9,8 +9,9 @@ import Activities from "components/compact/activities";
 import CompactConnections from "components/compact/connections";
 import { addEntityWidget } from "components/skydeck";
 
-export default function Member(props) {
-  var { member, community, addWidget } = props;
+export default function Member({ community, params, handlers }) {
+  var { member } = params;
+  var { onClickConnection, onClickEntity } = handlers;
   var feed = new Feed({ selection: member, ...props });
   var activities = feed.getFilteredActivities();
 
@@ -21,17 +22,9 @@ export default function Member(props) {
     }
   }
 
-  let onClickConnection = (connection) => {
-    addWidget((props) => (
-      <Connection member={member} connection={connection} {...props} />
-    ));
-  };
-
-  let onClickEntity = (entity) => () => addEntityWidget(entity, addWidget);
-
   return (
     <Frame>
-      <Header {...props}>
+      <Header>
         <NameAndIcon member={member} onClick={() => {}} />
       </Header>
       <Scroll>
@@ -77,13 +70,17 @@ export default function Member(props) {
                 <CompactConnections
                   member={member}
                   community={community}
-                  onClick={onClickConnection}
+                  onClick={(e) => onClickConnection(e, member)}
                 />
               </div>
               <div className="border-b border-indigo-900" />
             </>
           )}
-          <Activities activities={activities} {...props} />
+          <Activities
+            activities={activities}
+            community={community}
+            handlers={handlers}
+          />
         </div>
       </Scroll>
     </Frame>

@@ -1,31 +1,26 @@
 import React from "react";
 
 import Feed from "lib/community/feed";
-import SourceIcon from "components/compact/source_icon";
 import Activities from "components/compact/activities";
-import { Frame, Scroll, Header } from "components/skydeck";
-import c from "lib/common";
+import { Frame, Scroll } from "components/skydeck";
 
-export default function Channel(props) {
-  var { source, sourceChannel, community } = props;
+export default function Channel({ community, params, handlers }) {
+  var { source, sourceChannel } = params;
 
-  var feed = new Feed(props);
+  var feed = new Feed({ community, source, sourceChannel });
   var activities = feed.getFilteredActivities();
 
   // for performance
-  var length = activities.length;
   activities = activities.slice(0, 50);
-
-  var title = c.displayChannel(sourceChannel);
 
   return (
     <Frame>
-      <Header {...props}>
-        {<SourceIcon activity={{ source }} />}
-        <div>{title}</div>
-      </Header>
       <Scroll>
-        <Activities activities={activities} {...props} />
+        <Activities
+          activities={activities}
+          community={community}
+          handlers={handlers}
+        />
       </Scroll>
     </Frame>
   );

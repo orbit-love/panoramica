@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default function Thread(props) {
   // depth defaults to 0 - top of the thread
   // maxDepth defaults to -1 - no limit
-  let { activity, community, depth = 0, maxDepth = -1 } = props;
+  let { activity, community, depth = 0, maxDepth = -1, handlers } = props;
 
   // get the thread from the activity, eventually merge these
   // if there is no thread, it's a bug somewhere but protect for now
@@ -45,7 +45,9 @@ export default function Thread(props) {
       )}
       <div className={classnames("pb-1")}>
         <Activity
-          {...props}
+          activity={activity}
+          community={community}
+          handlers={handlers}
           showSourceChannel={depth === 0}
           showSourceIcon={depth === 0}
         />
@@ -56,11 +58,12 @@ export default function Thread(props) {
           var { id } = childActivity;
           return (
             <Thread
-              {...props}
               key={id}
               activity={childActivity}
+              community={community}
               depth={depth + 1}
               maxDepth={maxDepth}
+              handlers={handlers}
               lastChild={index === childActivities.length - 1}
             />
           );

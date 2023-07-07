@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind utilities;
 @tailwind components;
+@import "../node_modules/dockview/dist/styles/dockview.css";
 
 /* other classes applied in _document.js */
 html,

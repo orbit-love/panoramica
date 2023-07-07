@@ -1,19 +1,23 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Frame, Scroll, Header } from "components/skydeck";
+import { Frame, Scroll } from "components/skydeck";
 import Thread from "components/compact/thread";
 import PromptInput from "components/promptInput";
 
-export default function Conversation(props) {
+export default function Conversation({
+  project,
+  community,
+  api,
+  params,
+  handlers,
+}) {
   var messageRef = useRef();
-  var { project, community, activity } = props;
+  var { activity } = params;
   let [prompt, setPrompt] = useState("");
   let [lastMessage, setLastMessage] = useState("");
   let [lastSummary, setLastSummary] = useState("");
   let [loading, setLoading] = useState(false);
-
-  var thread = community.threads[activity.id];
 
   const fetchPrompt = useCallback(
     async (e) => {
@@ -39,6 +43,10 @@ export default function Conversation(props) {
     [project, activity, setLastMessage, prompt]
   );
 
+  useEffect(() => {
+    api.setTitle(lastSummary);
+  }, [api, lastSummary]);
+
   const fetchSummary = useCallback(async () => {
     setLastSummary("...");
     var response = await fetch(
@@ -61,19 +69,16 @@ export default function Conversation(props) {
     }
   }, []);
 
-  var title = lastSummary;
-
   return (
     <Frame>
-      <Header {...props}>
-        <div className="flex overflow-hidden items-center space-x-1">
-          <FontAwesomeIcon icon="messages" />
-          <div className="overflow-hidden text-sm text-ellipsis">{title}</div>
-        </div>
-      </Header>
-      <div className="flex flex-col px-4 w-[450px] h-full overflow-hidden pb-4">
+      <div className="flex flex-col px-4 pt-4 pb-4 h-full">
         <Scroll>
-          <Thread thread={thread} {...props} onClickActivity={() => {}} />
+          <Thread
+            activity={activity}
+            community={community}
+            handlers={handlers}
+            onClickActivity={() => {}}
+          />
           <div className="flex flex-col py-4 space-y-1">
             {loading && (
               <div className="text-indigo-600">
