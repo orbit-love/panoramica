@@ -1,5 +1,3 @@
-import React from "react";
-
 const headers = {
   Accept: "application/json",
   "Content-Type": "application/json",
