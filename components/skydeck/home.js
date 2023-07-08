@@ -65,7 +65,7 @@ export default function Home(props) {
   // these avoid the home bar getting very wide when othen panels are
   // opened and closed
   useEffect(() => {
-    api.group.api.setConstraints({ minimumWidth: 200, maximumWidth: 350 });
+    api.group.api.setConstraints({ minimumWidth: 175, maximumWidth: 250 });
   }, [api]);
 
   useHotkeys(

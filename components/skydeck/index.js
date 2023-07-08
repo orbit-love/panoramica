@@ -66,7 +66,7 @@ export const loadDefaultLayout = (api) => {
 
   // set the size of the home panel, give it constraints, and lock it
   homePanel.api.setSize({ width: 275 });
-  homePanel.group.api.setConstraints({ minimumWidth: 200, maximumWidth: 350 });
+  homePanel.group.api.setConstraints({ minimumWidth: 200, maximumWidth: 300 });
   homePanel.group.locked = true;
 };
 

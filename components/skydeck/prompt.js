@@ -4,9 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Frame, Scroll, Header } from "components/skydeck";
 import PromptInput from "components/promptInput";
 
-export default function Prompt(props) {
+export default function Prompt({ project, api }) {
   var messageRef = useRef();
-  let { project } = props;
   let [prompt, setPrompt] = useState("");
   let [loading, setLoading] = useState(false);
   let [lastMessage, setLastMessage] = useState("");
@@ -35,10 +34,10 @@ export default function Prompt(props) {
     [project, setLastMessage, prompt]
   );
   return (
-    <Frame>
-      <div className="flex overflow-hidden flex-col px-4 pb-4 h-full">
+    <Frame api={api}>
+      <div className="flex flex-col px-4 h-[98%]">
         <Scroll>
-          <div className="flex flex-col pb-8 space-y-1">
+          <div className="flex flex-col mt-4 space-y-1 h-[90%]">
             {loading && (
               <div className="text-indigo-600">
                 <FontAwesomeIcon icon="circle-notch" spin />
@@ -51,7 +50,7 @@ export default function Prompt(props) {
           </div>
         </Scroll>
         <div className="my-auto" />
-        <div className="pt-4">
+        <div className="py-4">
           <PromptInput
             prompt={prompt}
             setPrompt={setPrompt}
