@@ -8,6 +8,8 @@ export default function New({ redirectUrl }) {
   const nameRef = useRef(null);
   const urlRef = useRef(null);
   const apiKeyRef = useRef(null);
+  const modelNameRef = useRef(null);
+  const modelApiKeyRef = useRef(null);
   const workspaceRef = useRef(null);
 
   const onSubmit = async (e) => {
@@ -18,6 +20,8 @@ export default function New({ redirectUrl }) {
       name: nameRef.current.value,
       apiKey: apiKeyRef.current.value,
       workspace: workspaceRef.current.value,
+      modelName: modelNameRef.current.value,
+      modelApiKey: modelApiKeyRef.current.value,
     };
     fetch(url, {
       body: JSON.stringify(data),
@@ -85,12 +89,30 @@ export default function New({ redirectUrl }) {
           ></input>
         </div>
         <div className="flex flex-col space-y-1">
-          <div className="">API URL (Optional/Advanced)</div>
+          <div className="">Orbit API URL (Optional/Advanced)</div>
           <input
             ref={urlRef}
             type="text"
             className={c.inputClasses}
             placeholder="https://app.orbit.love/<w>/activities?..."
+          ></input>
+        </div>
+        <div className="flex flex-col space-y-1">
+          <div className="">Model Name</div>
+          <input
+            ref={modelNameRef}
+            type="text"
+            className={c.inputClasses}
+            placeholder="gpt-3.5-turbo-0613"
+          ></input>
+        </div>
+        <div className="flex flex-col space-y-1">
+          <div className="">Model API Key</div>
+          <input
+            ref={modelApiKeyRef}
+            type="text"
+            className={c.inputClasses}
+            placeholder="*********************************"
           ></input>
         </div>
         <div className="pt-2">

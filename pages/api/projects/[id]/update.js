@@ -33,7 +33,9 @@ export default async function handler(req, res) {
         name: body.name,
         workspace: body.workspace,
         url: body.url,
+        modelName: body.modelName,
         apiKey: body.apiKey || project.apiKey,
+        modelApiKey: body.modelApiKey || project.modelApiKey,
       },
     });
 

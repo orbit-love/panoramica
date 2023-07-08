@@ -67,6 +67,8 @@ model Project {
   workspace     String?
   url           String?
   apiKey           String
+  modelName     String?
+  modelApiKey   String?
   activities    Activity[]
 }
 

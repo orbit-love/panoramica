@@ -68,7 +68,8 @@ export async function GET(request, context) {
     }
 
     const model = new OpenAI({
-      modelName: "gpt-3.5-turbo-0613",
+      modelName: project.modelName,
+      openAIApiKey: project.modelApiKey,
       temperature: 0,
       streaming: true,
     });

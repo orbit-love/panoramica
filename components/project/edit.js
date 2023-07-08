@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import classnames from "classnames";
 
 import c from "lib/common";
@@ -8,6 +8,8 @@ export default function Edit({ project, onUpdate, onDelete }) {
   const [url, setUrl] = useState(project.url);
   const [workspace, setWorkspace] = useState(project.workspace);
   const [apiKey, setApiKey] = useState("");
+  const [modelName, setModelName] = useState("");
+  const [modelApiKey, setModelApiKey] = useState("");
 
   const deleteProject = () => {
     const url = `/api/projects/${project.id}/delete`;
@@ -35,6 +37,8 @@ export default function Edit({ project, onUpdate, onDelete }) {
       name,
       workspace,
       apiKey,
+      modelName,
+      modelApiKey,
     };
     fetch(`/api/projects/${project.id}/update`, {
       body: JSON.stringify(data),
@@ -101,6 +105,26 @@ export default function Edit({ project, onUpdate, onDelete }) {
           placeholder="https://app.orbit.love/<w>/activities?..."
           value={url}
           onChange={({ target }) => setUrl(target.value)}
+        ></input>
+      </div>
+      <div className="flex flex-col space-y-1">
+        <div className="">Model Name</div>
+        <input
+          type="text"
+          className={c.inputClasses}
+          placeholder="*********************************"
+          value={modelName}
+          onChange={({ target }) => setModelName(target.value)}
+        ></input>
+      </div>
+      <div className="flex flex-col space-y-1">
+        <div className="">Model API Key (provide to change)</div>
+        <input
+          type="text"
+          className={c.inputClasses}
+          placeholder="*********************************"
+          value={modelApiKey}
+          onChange={({ target }) => setModelApiKey(target.value)}
         ></input>
       </div>
       <div className="flex-grow my-auto" />

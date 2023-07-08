@@ -24,6 +24,8 @@ export default async function handler(req, res) {
         workspace: body.workspace,
         url: body.url,
         apiKey: body.apiKey,
+        modelName: body.modelName,
+        modelApiKey: body.modelApiKey,
         user: {
           connect: { email: user.email },
         },

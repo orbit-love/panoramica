@@ -9,7 +9,7 @@ import { checkApp, authorizeProject } from "lib/auth";
 import { getConversation } from "lib/graph/ai/queries";
 import GraphConnection from "lib/graphConnection";
 
-export async function GET(request, context) {
+export async function GET(_, context) {
   const { stream, handlers } = LangChainStream();
 
   const user = await checkApp();
@@ -41,7 +41,8 @@ export async function GET(request, context) {
     }
 
     const model = new OpenAI({
-      modelName: "gpt-3.5-turbo-0613",
+      modelName: project.modelName,
+      openAIApiKey: project.modelApiKey,
       temperature: 0.9,
       streaming: true,
     });

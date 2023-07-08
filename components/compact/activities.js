@@ -28,7 +28,7 @@ export default function Activities(props) {
         </div>
       ))}
       {!hideNoActivities && activities.length === 0 && (
-        <div className="px-4 text-indigo-700 w-[450px]">No activities.</div>
+        <div className="p-4 text-indigo-700 w-[450px]">No activities.</div>
       )}
     </>
   );
