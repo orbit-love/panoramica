@@ -4,7 +4,7 @@ import Feed from "lib/community/feed";
 import Activities from "components/compact/activities";
 import { Frame, Scroll } from "components/skydeck";
 
-export default function Channel({ community, params, handlers }) {
+export default function Channel({ api, community, params, handlers }) {
   var { source, sourceChannel } = params;
 
   var feed = new Feed({ community, source, sourceChannel });
@@ -14,7 +14,7 @@ export default function Channel({ community, params, handlers }) {
   activities = activities.slice(0, 50);
 
   return (
-    <Frame>
+    <Frame api={api}>
       <Scroll>
         <Activities
           activities={activities}

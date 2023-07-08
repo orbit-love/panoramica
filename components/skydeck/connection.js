@@ -13,8 +13,8 @@ export default function Connection({ api, params, community, handlers }) {
   var activities = feed.getFilteredActivities();
 
   return (
-    <Frame>
-      <Header api={api}>
+    <Frame api={api}>
+      <Header>
         <NameAndIcon member={member} onClick={() => {}} />
         <FontAwesomeIcon
           icon="right-left"

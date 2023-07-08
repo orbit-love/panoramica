@@ -28,7 +28,7 @@ export default function Insights(props) {
   const find = (id) => community.activities.find((a) => a.id === id);
 
   return (
-    <Frame>
+    <Frame api={api}>
       <Header {...props}>
         <div className="text-lg">Insights</div>
       </Header>

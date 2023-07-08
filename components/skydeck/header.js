@@ -1,19 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 
-export default function Header({ children, api, remove }) {
-  const [active, setActive] = useState(api.isActive);
-
-  useEffect(() => {
-    const disposable = api.onDidActiveChange(({ isActive }) => {
-      setActive(isActive);
-    });
-    return () => {
-      disposable.dispose();
-    };
-  }, [api]);
-
+export default function Header({ children, remove }) {
   return (
     <>
       <div

@@ -5,9 +5,8 @@ import { Frame, Scroll, Header } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import c from "lib/common";
 
-export default function Search(props) {
+export default function Search({ project, community, api, params, handlers }) {
   var searchRef = useRef();
-  var { project, community, api, params, handlers } = props;
   var { initialTerm } = params;
 
   const [loading, setLoading] = useState(false);
@@ -60,7 +59,7 @@ export default function Search(props) {
   };
 
   return (
-    <Frame>
+    <Frame api={api}>
       <div className="flex flex-col mt-6 space-y-2">
         <form onSubmit={onSearchSubmit} className="flex px-4 mb-2 space-x-2">
           <input
@@ -79,8 +78,8 @@ export default function Search(props) {
         <Scroll>
           <Activities
             activities={activities}
+            community={community}
             term={appliedTerm}
-            {...props}
             handlers={{ ...handlers, onClickActivity }}
             maxDepth={0}
             hideNoActivities

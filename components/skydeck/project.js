@@ -13,9 +13,8 @@ import {
 import Community from "lib/community";
 import Edit from "components/project/edit";
 
-export default function Project(props) {
+export default function Project({ project, dispatch, levels, api }) {
   const router = useRouter();
-  let { project, dispatch, levels } = props;
   let [status, setStatus] = useState();
   let [loading, setLoading] = useState(false);
 
@@ -54,7 +53,7 @@ export default function Project(props) {
   }, [project, dispatch, setLoading, levels]);
 
   return (
-    <Frame>
+    <Frame api={api}>
       <Scroll>
         <div className="px-4 mt-4">
           {status && <div className="pb-4 text-green-500">{status}</div>}

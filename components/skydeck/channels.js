@@ -4,7 +4,7 @@ import Feed from "lib/community/feed";
 import { Frame, Scroll } from "components/skydeck";
 import c from "lib/common";
 
-export default function Channels({ community, params, handlers }) {
+export default function Channels({ api, community, params, handlers }) {
   var { source } = params;
   var { onClickChannel } = handlers;
 
@@ -25,7 +25,7 @@ export default function Channels({ community, params, handlers }) {
     });
 
   return (
-    <Frame>
+    <Frame api={api}>
       <Scroll>
         <div className="flex flex-col items-start pl-2 px-4 mt-4 text-indigo-400">
           <table className="border-spacing-x-2 table w-full whitespace-nowrap border-separate">

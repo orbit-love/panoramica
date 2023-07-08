@@ -22,9 +22,9 @@ export default function Source({ community, params, api, handlers }) {
   activities = activities.slice(0, 50);
 
   return (
-    <Frame>
+    <Frame api={api}>
       {source && (
-        <Header api={api}>
+        <Header>
           {source && <SourceIcon activity={{ source }} />}
           <div>{api.title}</div>
           {sourceChannels.length > 0 && (

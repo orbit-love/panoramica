@@ -2,8 +2,7 @@ import React from "react";
 import CompactMember from "components/compact/member";
 import { Frame, Scroll, Header, addMemberWidget } from "components/skydeck";
 
-export default function Members(props) {
-  let { community, addWidget } = props;
+export default function Members({ community, addWidget, api }) {
   let { members } = community;
   let onClickMember = (member) => {
     return (e) => {
@@ -13,8 +12,8 @@ export default function Members(props) {
   };
 
   return (
-    <Frame>
-      <Header {...props}>
+    <Frame api={api}>
+      <Header>
         <div>Members</div>
         <div className="text-indigo-500">{members.length}</div>
       </Header>

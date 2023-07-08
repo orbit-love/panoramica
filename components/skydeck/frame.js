@@ -8,7 +8,7 @@ export default function Frame({ api, children }) {
   useHotkeys(
     "escape",
     () => {
-      if (api) {
+      if (api && api.isActive) {
         api.close();
       }
     },

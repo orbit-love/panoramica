@@ -142,8 +142,8 @@ export default function Home(props) {
   }
 
   return (
-    <Frame>
-      <Header api={api} remove={null}>
+    <Frame api={api}>
+      <Header remove={null}>
         <div className="flex items-center w-full">
           <div className="text-lg">{project.name}</div>
           <div title="Auto update every 60s">

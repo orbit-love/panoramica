@@ -70,7 +70,7 @@ export default function Conversation({
   }, []);
 
   return (
-    <Frame>
+    <Frame api={api}>
       <div className="flex flex-col px-4 pt-4 pb-4 h-full">
         <Scroll>
           <Thread

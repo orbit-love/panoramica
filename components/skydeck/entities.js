@@ -5,22 +5,16 @@ import CompactEntity from "components/compact/entity";
 import EntityGroup from "lib/community/entityGroup";
 import { addEntityWidget } from "components/skydeck";
 
-export default function Entities(props) {
-  let { addWidget } = props;
-
-  var entityGroup = new EntityGroup(props);
+export default function Entities({ addWidget, community, api }) {
+  var entityGroup = new EntityGroup({ community });
   var entities = entityGroup.getFilteredEntities();
 
   let onClick = (entity) => () => addEntityWidget(entity, addWidget);
 
   return (
-    <Frame>
-      <Header {...props}>
-        <div>Entities</div>
-        <div className="text-indigo-500">{entities.length}</div>
-      </Header>
+    <Frame api={api}>
       <Scroll>
-        <div className="flex flex-col px-4">
+        <div className="flex flex-col px-4 mt-4">
           <div className="flex flex-wrap text-xs">
             {entities.map((entity) => (
               <div key={entity.id} className="px-1 py-1">
