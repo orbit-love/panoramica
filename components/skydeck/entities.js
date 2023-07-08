@@ -21,7 +21,7 @@ export default function Entities(props) {
       </Header>
       <Scroll>
         <div className="flex flex-col px-4">
-          <div className="flex flex-wrap w-56 text-xs">
+          <div className="flex flex-wrap text-xs">
             {entities.map((entity) => (
               <div key={entity.id} className="px-1 py-1">
                 <CompactEntity

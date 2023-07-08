@@ -13,7 +13,7 @@ export default function Activities(props) {
           key={activity.id}
           onClick={(e) => onClickActivity(e, activity)}
           className={classnames("flex flex-col py-3 px-4 cursor-pointer", {
-            "bg-indigo-800 bg-opacity-20 hover:bg-indigo-800 hover:bg-opacity-50":
+            "bg-indigo-800 bg-opacity-20 hover:bg-blue-900 hover:bg-opacity-30":
               index % 2 === 0,
             "bg-blue-900 bg-opacity-20 hover:bg-opacity-30": index % 2 === 1,
           })}

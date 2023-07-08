@@ -21,6 +21,7 @@ import {
   faSearch,
   faCircleNotch,
   faReply,
+  faTag,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -118,7 +119,8 @@ library.add(
   faNote,
   faMessages,
   faCircleNotch,
-  faReply
+  faReply,
+  faTag
 );
 
 export default library;

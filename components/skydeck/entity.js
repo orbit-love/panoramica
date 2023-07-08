@@ -5,20 +5,24 @@ import CompactEntity from "components/compact/entity";
 import Activities from "components/compact/activities";
 import { Frame, Scroll, Header } from "components/skydeck";
 
-export default function Entity(props) {
-  var { entity } = props;
-  var feed = new Feed({ entity, ...props });
+export default function Entity({ api, community, handlers, params }) {
+  var { entity } = params;
+  var feed = new Feed({ entity, community });
   var activities = feed.getFilteredActivities();
 
   return (
     <Frame>
-      <Header length={activities.length} {...props}>
+      <Header api={api} length={activities.length}>
         <div className="text-sm">
           <CompactEntity entity={entity} active={false} onClick={() => {}} />
         </div>
       </Header>
       <Scroll>
-        <Activities activities={activities} {...props} />
+        <Activities
+          activities={activities}
+          community={community}
+          handlers={handlers}
+        />
       </Scroll>
     </Frame>
   );

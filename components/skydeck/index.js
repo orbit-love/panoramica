@@ -42,7 +42,7 @@ import {
   ProjectDispatchContext,
 } from "components/ProjectContext";
 
-export const storageKey = "dockview_persistance_layout_2";
+export const storageKey = (project) => `dockview-${project.id}`;
 export const loadDefaultLayout = (api) => {
   var homePanel = api.addPanel({
     id: "home",
@@ -151,6 +151,14 @@ export const tabComponents = {
   },
   Search: ({ api }) => {
     var icon = <FontAwesomeIcon icon="search" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
+  Entities: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="tag" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
+  Entity: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="tag" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
 };

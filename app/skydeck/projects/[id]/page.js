@@ -1,18 +1,15 @@
 import React from "react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
-import { prisma } from "lib/db";
 
-import ProjectPage from "app/skydeck/projects/[id]/project-page";
 import Wrapper from "components/wrapper";
+import GraphConnection from "lib/graphConnection";
+import DockviewPage from "app/skydeck/projects/[id]/dockview-page";
+import { getEverything } from "lib/graph/queries";
 
-export async function generateMetadata({ params }) {
-  const session = await getServerSession(authOptions);
-  var project = await getProject(params.id, session?.user);
-  return {
-    title: project.name,
-  };
-}
+export const metadata = {
+  title: "Dockview",
+};
 
 export default async function Page({ params }) {
   const props = await getProps(params);
@@ -22,25 +19,37 @@ export default async function Page({ params }) {
 
   return (
     <Wrapper session={props.session}>
-      <ProjectPage {...props} />
+      <DockviewPage {...props} />
     </Wrapper>
   );
 }
 
 export async function getProps(params) {
   const session = await getServerSession(authOptions);
-  var _project = null;
   if (session?.user) {
     const { id } = params;
     const user = session.user;
-    // check if the user has access
-    _project = await getProject(id, user);
-  }
-  if (_project) {
-    return {
-      session,
-      _project,
-    };
+    // get project and check if the user has access
+    var project = await getProject(id, user);
+    if (project) {
+      var projectId = project.id;
+      var from = "1900-01-01";
+      var to = "2100-01-01";
+      const graphConnection = new GraphConnection();
+      let [threads, entities, members, activities, connections] =
+        await getEverything({ projectId, graphConnection, from, to });
+      return {
+        session,
+        project,
+        data: {
+          threads,
+          entities,
+          members,
+          activities,
+          connections,
+        },
+      };
+    }
   }
   return {};
 }

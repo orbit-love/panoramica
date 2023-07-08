@@ -23,18 +23,20 @@ export default function Source({ community, params, api, handlers }) {
 
   return (
     <Frame>
-      <Header api={api}>
-        {source && <SourceIcon activity={{ source }} />}
-        <div>{api.title}</div>
-        {sourceChannels.length > 0 && (
-          <button
-            className="mr-2 text-indigo-700"
-            onClick={(e) => onClickChannels(e, source)}
-          >
-            <FontAwesomeIcon icon="bars" />
-          </button>
-        )}
-      </Header>
+      {source && (
+        <Header api={api}>
+          {source && <SourceIcon activity={{ source }} />}
+          <div>{api.title}</div>
+          {sourceChannels.length > 0 && (
+            <button
+              className="mr-2 text-indigo-700"
+              onClick={(e) => onClickChannels(e, source)}
+            >
+              <FontAwesomeIcon icon="bars" />
+            </button>
+          )}
+        </Header>
+      )}
       <Scroll>
         <Activities
           activities={activities}

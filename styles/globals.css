@@ -10,6 +10,7 @@
   --dv-activegroup-visiblepanel-tab-background-color: var(--main-bg-color);
   --dv-activegroup-hiddenpanel-tab-background-color: var(--main-bg-color);
   --dv-inactivegroup-visiblepanel-tab-background-color: var(--main-bg-color);
+  --dv-inactivegroup-hiddenpanel-tab-background-color: var(--main-bg-color);
 }
 
 @import "../node_modules/dockview/dist/styles/dockview.css";

@@ -32,19 +32,7 @@ export default function Home(props) {
 
   let { onClickSource } = handlers;
   let [loading, setLoading] = useState(false);
-
-  // put panels in a new group to the right or the leftmost
-  // existing group
-  let position;
-  if (containerApi.groups.length > 1) {
-    let referenceGroup = containerApi.groups[1];
-    position = {
-      referenceGroup,
-      direction: "with",
-    };
-  } else {
-    position = { direction: "right" };
-  }
+  let [position, setPosition] = useState();
 
   useEffect(() => {
     if (!containerApi) {
@@ -52,14 +40,33 @@ export default function Home(props) {
     }
     const disposable = containerApi.onDidLayoutChange(() => {
       const layout = containerApi.toJSON();
-      localStorage.setItem(storageKey, JSON.stringify(layout));
+      localStorage.setItem(storageKey(project), JSON.stringify(layout));
       console.log("Layout saved...");
+
+      // set position to be where tabs should be opened, either
+      // inside the group to the right or in a new group if none exists
+      if (containerApi.groups.length > 1) {
+        let referenceGroup = containerApi.groups[1];
+        setPosition({
+          referenceGroup,
+          direction: "within",
+        });
+      } else {
+        setPosition({ direction: "right" });
+      }
     });
 
     return () => {
       disposable.dispose();
     };
-  }, [containerApi]);
+  }, [project, containerApi]);
+
+  // constraints don't seem to be serialized so reapply them
+  // these avoid the home bar getting very wide when othen panels are
+  // opened and closed
+  useEffect(() => {
+    api.group.api.setConstraints({ minimumWidth: 200, maximumWidth: 350 });
+  }, [api]);
 
   useHotkeys(
     "/",
@@ -71,10 +78,10 @@ export default function Home(props) {
   );
 
   const resetWidgets = useCallback(() => {
-    localStorage.removeItem(storageKey);
+    localStorage.removeItem(storageKey(project));
     containerApi.clear();
     loadDefaultLayout(containerApi);
-  }, [containerApi]);
+  }, [project, containerApi]);
 
   const fetchProject = useCallback(async () => {
     getProject({
