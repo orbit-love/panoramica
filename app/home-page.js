@@ -1,31 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 
-import c from "lib/common";
 import Header from "components/header";
-import Button from "components/button";
 import Panel from "components/panel";
+import Login from "components/login";
 
-export default function HomePage({ session, csrfToken, _projects }) {
-  const [projects, setProjects] = useState(_projects);
-
-  useEffect(() => {
-    const loadProjects = () => {
-      const url = "/api/projects";
-      fetch(url)
-        .then((res) => res.json())
-        .then(({ result }) => {
-          setProjects(result.projects);
-        });
-    };
-    if (session && projects.length === 0) {
-      loadProjects();
-    }
-  }, []);
-
+export default function HomePage({ session, csrfToken }) {
   const user = session?.user;
 
   return (
@@ -41,6 +24,7 @@ export default function HomePage({ session, csrfToken, _projects }) {
       >
         <div className="flex flex-col items-center space-y-2 w-full font-thin">
           <h1 className="text-3xl">preview orbit projects</h1>
+          {!user && <Login csrfToken={csrfToken} />}
           {user && (
             <>
               <div className="flex space-x-4 text-sm">
@@ -68,34 +52,6 @@ export default function HomePage({ session, csrfToken, _projects }) {
                 </div>
               </Panel>
             </>
-          )}
-          {!user && (
-            <div className="py-2">
-              <form
-                className="flex justify-center space-x-2 w-72"
-                method="post"
-                action="/api/auth/signin/email"
-              >
-                <input
-                  name="csrfToken"
-                  type="hidden"
-                  defaultValue={csrfToken}
-                />
-                <label>
-                  <input
-                    placeholder="foo@foo.com"
-                    className={c.inputClasses + " !w-56"}
-                    type="email"
-                    id="email"
-                    name="email"
-                  />
-                </label>
-                <Button type="submit">Sign in with Email</Button>
-              </form>
-              <div className="my-4 text-sm text-center">
-                Enter your email to receive a secure sign in link.
-              </div>
-            </div>
           )}
         </div>
       </div>
