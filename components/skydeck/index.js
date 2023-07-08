@@ -70,7 +70,7 @@ export const loadDefaultLayout = (api) => {
   homePanel.group.locked = true;
 };
 
-var Component = (Component, props) => {
+var Wrap = (Component, props) => {
   const context = useContext(ProjectContext);
   const dispatch = useContext(ProjectDispatchContext);
   var addWidgetFunc = addWidget(props);
@@ -85,26 +85,21 @@ var Component = (Component, props) => {
   );
 };
 
-// put panels in here
-var imports = [
-  Channel,
-  Channels,
-  Connection,
-  Conversation,
-  Entities,
-  Entity,
-  Home,
-  Member,
-  Members,
-  Project,
-  Prompt,
-  Search,
-  Source,
-];
-export const components = imports.reduce((memo, component) => {
-  memo[component.name] = (props) => Component(component, props);
-  return memo;
-}, {});
+export const components = {
+  Channel: (props) => Wrap(Channel, props),
+  Channels: (props) => Wrap(Channels, props),
+  Conversation: (props) => Wrap(Conversation, props),
+  Connection: (props) => Wrap(Connection, props),
+  Entities: (props) => Wrap(Entities, props),
+  Entity: (props) => Wrap(Entity, props),
+  Home: (props) => Wrap(Home, props),
+  Member: (props) => Wrap(Member, props),
+  Members: (props) => Wrap(Members, props),
+  Project: (props) => Wrap(Project, props),
+  Prompt: (props) => Wrap(Prompt, props),
+  Search: (props) => Wrap(Search, props),
+  Source: (props) => Wrap(Source, props),
+};
 
 import SourceIcon from "components/compact/source_icon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
