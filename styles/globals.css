@@ -1,6 +1,17 @@
 @tailwind base;
 @tailwind utilities;
 @tailwind components;
+
+.dockview-theme-abyss {
+  --main-bg-color: rgb(21, 13, 51, 1);
+  --dv-background-color: var(--main-bg-color);
+  --dv-group-view-background-color: var(--main-bg-color);
+  --dv-tabs-and-actions-container-background-color: var(--main-bg-color);
+  --dv-activegroup-visiblepanel-tab-background-color: var(--main-bg-color);
+  --dv-activegroup-hiddenpanel-tab-background-color: var(--main-bg-color);
+  --dv-inactivegroup-visiblepanel-tab-background-color: var(--main-bg-color);
+}
+
 @import "../node_modules/dockview/dist/styles/dockview.css";
 
 /* other classes applied in _document.js */
@@ -169,4 +180,8 @@ svg .clickable {
   margin-top: 4px;
   pointer-events: all;
   position: relative;
+}
+
+.groupview.locked-groupview .tabs-and-actions-container {
+  display: none;
 }

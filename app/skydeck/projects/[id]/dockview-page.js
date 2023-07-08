@@ -3,7 +3,12 @@
 import React, { useReducer } from "react";
 import { Orientation, DockviewReact } from "dockview";
 
-import { components, tabComponents } from "components/skydeck";
+import {
+  components,
+  tabComponents,
+  storageKey,
+  loadDefaultLayout,
+} from "components/skydeck";
 import {
   ProjectContext,
   ProjectDispatchContext,
@@ -18,23 +23,26 @@ levelsData.forEach((levelData) => {
   };
 });
 
-const projectReducer = (object, { type, community }) => {
+const projectReducer = (object, { type, community, project }) => {
   switch (type) {
     case "updated": {
       return { ...object, community };
+    }
+    case "updateProject": {
+      return { ...object, project };
     }
   }
 };
 
 const onReady = (event) => {
-  // delete localStorage["dockview_persistance_layout_2"];
-  const layoutString = localStorage.getItem("dockview_persistance_layout_2");
+  const { api } = event;
+  const layoutString = localStorage.getItem(storageKey);
 
   let success = false;
   if (layoutString) {
     try {
       const layout = JSON.parse(layoutString);
-      event.api.fromJSON(layout);
+      api.fromJSON(layout);
       success = true;
     } catch (err) {
       console.log("Could not load layout", err);
@@ -42,21 +50,7 @@ const onReady = (event) => {
   }
 
   if (!success) {
-    event.api.addPanel({
-      id: "home",
-      component: "Home",
-      tabComponent: "Home",
-      title: "Home",
-    });
-    event.api.addPanel({
-      id: "all-activity",
-      component: "Source",
-      tabComponent: "Source",
-      title: "All Activity",
-      params: {
-        source: null,
-      },
-    });
+    loadDefaultLayout(api);
   }
 };
 

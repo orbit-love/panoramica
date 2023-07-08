@@ -104,7 +104,7 @@ export default function Edit({ project, onUpdate, onDelete }) {
         ></input>
       </div>
       <div className="flex-grow my-auto" />
-      <div className="flex pt-2 space-x-2">
+      <div className="flex space-x-2">
         <button type="submit" className={c.buttonClasses}>
           Update
         </button>

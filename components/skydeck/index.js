@@ -19,6 +19,8 @@ export { default as Prompt } from "components/skydeck/prompt";
 export { default as Search } from "components/skydeck/search";
 export { default as Source } from "components/skydeck/source";
 
+export * from "components/skydeck/fetches";
+
 import Channel from "components/skydeck/channel";
 import Channels from "components/skydeck/channels";
 import Connection from "components/skydeck/connection";
@@ -39,6 +41,34 @@ import {
   ProjectContext,
   ProjectDispatchContext,
 } from "components/ProjectContext";
+
+export const storageKey = "dockview_persistance_layout_2";
+export const loadDefaultLayout = (api) => {
+  var homePanel = api.addPanel({
+    id: "home",
+    component: "Home",
+    tabComponent: "Home",
+    title: "Home",
+  });
+
+  api.addPanel({
+    id: "all-activity",
+    component: "Source",
+    tabComponent: "Source",
+    title: "All Activity",
+    position: {
+      direction: "right",
+    },
+    params: {
+      source: null,
+    },
+  });
+
+  // set the size of the home panel, give it constraints, and lock it
+  homePanel.api.setSize({ width: 275 });
+  homePanel.group.api.setConstraints({ minimumWidth: 200, maximumWidth: 350 });
+  homePanel.group.locked = true;
+};
 
 var Component = (Component, props) => {
   const context = useContext(ProjectContext);
@@ -78,6 +108,31 @@ export const components = imports.reduce((memo, component) => {
 
 import SourceIcon from "components/compact/source_icon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+const TabComponentWithIcon = ({ api, icon }) => {
+  var { title } = api;
+  const onClose = useCallback(
+    (event) => {
+      event.stopPropagation();
+      api.close();
+    },
+    [api]
+  );
+
+  return (
+    <div className="dockview-react-tab" title={title}>
+      <div className="dockview-react-tab-title max-w-[200px] overflow-x-hidden text-ellipsis whitespace-nowrap">
+        {icon}
+        <span className="pl-1 pr-4">{title}</span>
+      </div>
+      {title !== "Home" && (
+        <div className="" onClick={onClose}>
+          <FontAwesomeIcon icon="xmark" />
+        </div>
+      )}
+    </div>
+  );
+};
 export const tabComponents = {
   Home: ({ title }) => {
     return (
@@ -87,28 +142,16 @@ export const tabComponents = {
     );
   },
   Source: ({ api, params: { source } }) => {
-    var { title } = api;
-    const onClose = useCallback(
-      (event) => {
-        event.stopPropagation();
-        api.close();
-      },
-      [api]
-    );
-
-    return (
-      <div className="dockview-react-tab">
-        <div className="dockview-react-tab-title">
-          {source && <SourceIcon activity={{ source, title }} />}
-          <span className="pl-1 pr-4">{title}</span>
-        </div>
-        {title !== "Home" && (
-          <div className="" onClick={onClose}>
-            <FontAwesomeIcon icon="xmark" />
-          </div>
-        )}
-      </div>
-    );
+    var icon = source && <SourceIcon activity={{ source }} />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
+  Conversation: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="messages" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
+  Search: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="search" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
   },
 };
 
@@ -119,92 +162,108 @@ export const addWidget =
     if (panel) {
       panel.api.setActive();
     } else {
-      // lift title out for now
+      // lift title and position, tabComponent out for now
       var title = params.title || component.name;
+      var tabComponent = params.tabComponent || component;
+      var position = params.position;
       containerApi.addPanel({
         id,
         component,
-        tabComponent: component,
+        tabComponent,
+        position,
         params,
         title,
       });
     }
   };
 
-export function addMemberWidget(member, addWidget) {
+export function addMemberWidget(member, addWidget, options = {}) {
   addWidget(`member-${member.globalActor}`, "Member", {
     member,
     title: member.globalActorName,
+    ...options,
   });
 }
 
-export function addSourceWidget(source, addWidget) {
+export function addSourceWidget(source, addWidget, options = {}) {
   addWidget(`source-${source}`, "Source", {
     source,
     title: source ? c.titleize(source) : "All Activity",
+    ...options,
   });
 }
 
-export function addEntityWidget(entity, addWidget) {
+export function addEntityWidget(entity, addWidget, options = {}) {
   addWidget(`entity-${entity.globalActor}`, "Entity", {
     entity,
     title: entity.id,
+    ...options,
   });
 }
 
-export function addChannelWidget(source, sourceChannel, addWidget) {
+export function addChannelWidget(
+  source,
+  sourceChannel,
+  addWidget,
+  options = {}
+) {
   addWidget(`channel-${source}-${sourceChannel}`, "Channel", {
     source,
     sourceChannel,
     title: c.displayChannel(sourceChannel),
+    tabComponent: "Source",
+    ...options,
   });
 }
 
-export function addChannelsWidget(source, addWidget) {
+export function addChannelsWidget(source, addWidget, options = {}) {
   addWidget(`channels-${source}`, "Channels", {
     source,
-    title: `${c.titleize(source)} channels`,
+    title: "Channels",
+    tabComponent: "Source",
+    ...options,
   });
 }
 
-export function addActivityWidget(activity, addWidget) {
+export function addActivityWidget(activity, addWidget, options = {}) {
   addWidget(`activity-${activity.id}`, "Conversation", {
     activity,
     title: "...",
+    ...options,
   });
 }
 
 export const clickHandlers = (addWidget) => ({
-  onClickMember: (e, member) => {
+  onClickMember: (e, member, options) => {
     e.stopPropagation();
-    addMemberWidget(member, addWidget);
+    addMemberWidget(member, addWidget, options);
   },
-  onClickSource: (e, source) => {
+  onClickSource: (e, source, options) => {
     e.stopPropagation();
-    addSourceWidget(source, addWidget);
+    addSourceWidget(source, addWidget, options);
   },
-  onClickChannel: (e, source, sourceChannel) => {
+  onClickChannel: (e, source, sourceChannel, options) => {
     e.stopPropagation();
-    addChannelWidget(source, sourceChannel, addWidget);
+    addChannelWidget(source, sourceChannel, addWidget, options);
   },
-  onClickEntity: (e, entity) => {
+  onClickEntity: (e, entity, options) => {
     e.stopPropagation();
-    addEntityWidget(entity, addWidget);
+    addEntityWidget(entity, addWidget, options);
   },
-  onClickChannels: (e, source) => {
+  onClickChannels: (e, source, options) => {
     e.stopPropagation();
-    addChannelsWidget(source, addWidget);
+    addChannelsWidget(source, addWidget, options);
   },
-  onClickConnection: (e, member, connection) => {
+  onClickConnection: (e, member, connection, options) => {
     e.stopPropagation();
-    addConnectionWidget(member, connection);
+    addConnectionWidget(member, connection, options);
   },
-  onClickActivity: (e, activity) => {
+  onClickActivity: (e, activity, options) => {
     e.stopPropagation();
-    addActivityWidget(activity, addWidget);
+    addActivityWidget(activity, addWidget, options);
   },
-  onClickEntity: (e, entity) => {
+  onClickEntity: (e, entity, options) => {
     e.stopPropagation();
-    addEntityWidget(entity, addWidget);
+    addEntityWidget(entity, addWidget, options);
   },
 });

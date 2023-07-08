@@ -6,15 +6,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import c from "lib/common";
 
 export default function Search(props) {
-  var { initialTerm, project, community } = props;
+  var searchRef = useRef();
+  var { project, community, api, params, handlers } = props;
+  var { initialTerm } = params;
+
   const [loading, setLoading] = useState(false);
   const [docs, setDocs] = useState([]);
   const [term, setTerm] = useState(initialTerm);
   const [appliedTerm, setAppliedTerm] = useState(null);
-  var searchRef = useRef();
 
   const fetchSearch = useCallback(async () => {
     setLoading(true);
+    api.setTitle(term + "...");
     fetch(`/api/projects/${project.id}/search?q=${term}`)
       .then((res) => res.json())
       .then(({ result, message }) => {
@@ -22,11 +25,12 @@ export default function Search(props) {
           alert(message);
         } else {
           setAppliedTerm(term);
+          api.setTitle(term);
           setDocs(result);
         }
         setLoading(false);
       });
-  }, [term, project]);
+  }, [api, term, project]);
 
   useEffect(() => {
     searchRef.current.focus();
@@ -44,8 +48,6 @@ export default function Search(props) {
     setTerm(e.target.value);
   };
 
-  var title = appliedTerm || "Search";
-
   var activities = docs.map(({ metadata: { activityId, conversationId } }) => {
     var activity = community.findActivityById(activityId);
     activity.conversationId = conversationId;
@@ -54,7 +56,7 @@ export default function Search(props) {
 
   var onClickActivity = (e, activity) => {
     var conversation = community.findActivityById(activity.conversationId);
-    props.onClickActivity(e, conversation);
+    handlers.onClickActivity(e, conversation);
   };
 
   return (
@@ -79,7 +81,7 @@ export default function Search(props) {
             activities={activities}
             term={appliedTerm}
             {...props}
-            onClickActivity={onClickActivity}
+            handlers={{ ...handlers, onClickActivity }}
             maxDepth={0}
             hideNoActivities
           />

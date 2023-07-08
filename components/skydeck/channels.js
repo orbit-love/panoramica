@@ -9,44 +9,52 @@ export default function Channels({ community, params, handlers }) {
   var { onClickChannel } = handlers;
 
   var feed = new Feed({ community });
-  var sourceChannels = feed.getSourceChannels({ source }).sort(c.sortChannels);
+  var sourceChannels = feed.getSourceChannels({ source });
 
-  var channelMetadatas = sourceChannels.map((sourceChannel) => {
-    var channelFeed = new Feed({ community, sourceChannel });
-    var activities = channelFeed.getFilteredActivities();
-    var lastActivity = activities[0]?.timestamp;
-    return { count: activities.length, lastActivity };
-  });
+  var channelMetadatas = sourceChannels
+    .map((sourceChannel) => {
+      var channelFeed = new Feed({ community, sourceChannel });
+      var activities = channelFeed.getFilteredActivities();
+      var lastActivity = activities[0]?.timestamp;
+      return { count: activities.length, source, sourceChannel, lastActivity };
+    })
+    .sort((a, b) => {
+      var aa = new Date(a.lastActivity);
+      var bb = new Date(b.lastActivity);
+      return bb - aa;
+    });
 
   return (
     <Frame>
       <Scroll>
-        <div className="flex flex-col items-start pl-2 px-4 mt-4 text-sm text-indigo-400">
-          <table className="border-spacing-x-2 border-spacing-y-1 table w-full whitespace-nowrap border-separate">
+        <div className="flex flex-col items-start pl-2 px-4 mt-4 text-indigo-400">
+          <table className="border-spacing-x-2 table w-full whitespace-nowrap border-separate">
             <tbody>
               <tr className="font-bold">
-                <td className="text-right">#</td>
+                <td className="text-right" title="Number of conversations">
+                  #
+                </td>
                 <td>Channel</td>
                 <td>Last Active</td>
               </tr>
-              {sourceChannels.map((channel, index) => (
-                <tr key={channel}>
-                  <td className="text-right">
-                    {channelMetadatas[index].count}
-                  </td>
-                  <td>
-                    <button
-                      className="text-indigo-100 hover:underline"
-                      onClick={(e) => onClickChannel(e, source, channel)}
-                    >
-                      {c.displayChannel(channel)}
-                    </button>
-                  </td>
-                  <td>
-                    {c.formatDateShort(channelMetadatas[index].lastActivity)}
-                  </td>
-                </tr>
-              ))}
+              {channelMetadatas.map(
+                ({ count, source, sourceChannel, lastActivity }, index) => (
+                  <tr key={sourceChannel}>
+                    <td className="text-right">{count}</td>
+                    <td>
+                      <button
+                        className="text-indigo-100 hover:underline"
+                        onClick={(e) =>
+                          onClickChannel(e, source, sourceChannel)
+                        }
+                      >
+                        {c.displayChannel(sourceChannel)}
+                      </button>
+                    </td>
+                    <td>{c.formatDateShort(lastActivity)}</td>
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
         </div>

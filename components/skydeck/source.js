@@ -21,13 +21,11 @@ export default function Source({ community, params, api, handlers }) {
   // for performance
   activities = activities.slice(0, 50);
 
-  console.log("Rendered source column");
-
   return (
     <Frame>
       <Header api={api}>
         {source && <SourceIcon activity={{ source }} />}
-        <div>{source ? source : "All Activity"}</div>
+        <div>{api.title}</div>
         {sourceChannels.length > 0 && (
           <button
             className="mr-2 text-indigo-700"
