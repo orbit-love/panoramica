@@ -35,7 +35,7 @@ export default function Thread(props) {
         "border-l border-indigo-700 pl-3": depth > 0,
       })}
     >
-      {showConversation && (
+      {showConversation && conversation && (
         <div className="flex overflow-hidden items-center mb-2 space-x-1 text-xs text-indigo-300 text-ellipsis whitespace-nowrap">
           <FontAwesomeIcon icon="reply" />
           <div className="overflow-hidden text-ellipsis">

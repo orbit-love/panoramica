@@ -109,7 +109,7 @@ export const components = imports.reduce((memo, component) => {
 import SourceIcon from "components/compact/source_icon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const TabComponentWithIcon = ({ api, icon }) => {
+const TabComponentWithIcon = ({ api, icon, children }) => {
   var { title } = api;
   const onClose = useCallback(
     (event) => {
@@ -122,8 +122,13 @@ const TabComponentWithIcon = ({ api, icon }) => {
   return (
     <div className="dockview-react-tab" title={title}>
       <div className="dockview-react-tab-title max-w-[200px] overflow-x-hidden text-ellipsis whitespace-nowrap">
-        {icon}
-        <span className="pl-1 pr-4">{title}</span>
+        {children}
+        {!children && (
+          <>
+            {icon}
+            <span className="pl-1 pr-4">{title}</span>
+          </>
+        )}
       </div>
       {title !== "Home" && (
         <div className="" onClick={onClose}>
@@ -161,6 +166,25 @@ export const tabComponents = {
     var icon = <FontAwesomeIcon icon="tag" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
+  Member: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="user-astronaut" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
+  Members: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="list" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
+  Connection: ({ api, title, params: { member, connection } }) => {
+    return (
+      <TabComponentWithIcon api={api}>
+        <div title={title} className="flex items-center space-x-1">
+          <span>{member.globalActorName.split(" ")[0]}</span>
+          <FontAwesomeIcon icon="right-left" className="text-[10px]" />
+          <span>{connection.globalActorName.split(" ")[0]}</span>
+        </div>
+      </TabComponentWithIcon>
+    );
+  },
 };
 
 export const addWidget =
@@ -191,6 +215,25 @@ export function addMemberWidget(member, addWidget, options = {}) {
     title: member.globalActorName,
     ...options,
   });
+}
+
+export function addConnectionWidget(
+  member,
+  connection,
+  addWidget,
+  options = {}
+) {
+  var title = `${member.globalActorName} - ${connection.globalActorName}`;
+  addWidget(
+    `connection-${member.globalActor}-${connection.globalActor}`,
+    "Connection",
+    {
+      member,
+      connection,
+      title,
+      ...options,
+    }
+  );
 }
 
 export function addSourceWidget(source, addWidget, options = {}) {
@@ -264,7 +307,7 @@ export const clickHandlers = (addWidget) => ({
   },
   onClickConnection: (e, member, connection, options) => {
     e.stopPropagation();
-    addConnectionWidget(member, connection, options);
+    addConnectionWidget(member, connection, addWidget, options);
   },
   onClickActivity: (e, activity, options) => {
     e.stopPropagation();

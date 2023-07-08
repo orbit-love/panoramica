@@ -4,44 +4,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NameAndIcon from "components/compact/name_and_icon";
 
 export default function CompactConnection({
-  connectedMember,
-  directions,
+  member,
   connection,
-  setConnection,
-  selection,
-  setSelection,
+  directions,
   onClick,
 }) {
-  // safety check to remove later
-  if (!directions) {
-    return <div />;
-  }
-  const isConnection = connection?.id === connectedMember.id;
   const [outgoing, incoming] = directions;
-  var wrappedOnClick;
-  if (onClick) {
-    wrappedOnClick = () => onClick(connectedMember);
-  } else {
-    wrappedOnClick = (event) => {
-      if (event.detail === 2) {
-        setConnection(null);
-        setSelection(connectedMember);
-      } else {
-        setConnection(isConnection ? null : connectedMember);
-      }
-    };
-  }
   return (
     <button
-      key={connectedMember.id}
+      key={connection.id}
       className={classnames(
-        "bg-opacity-0 flex overflow-hidden items-center space-x-1 whitespace-nowrap bg-indigo-900",
-        {
-          "bg-opacity-50": isConnection,
-          "hover:bg-opacity-30": !isConnection,
-        }
+        "bg-opacity-0 flex overflow-hidden items-center space-x-1 whitespace-nowrap bg-indigo-900"
       )}
-      onClick={wrappedOnClick}
+      onClick={(e) => onClick(e, member, connection)}
     >
       {outgoing > 0 && (
         <div className="w-8 text-xs text-indigo-400">
@@ -49,13 +24,7 @@ export default function CompactConnection({
           {" " + outgoing}
         </div>
       )}
-      <NameAndIcon
-        member={connectedMember}
-        onClick={() => {}}
-        setConnection={setConnection}
-        selection={selection}
-        setSelection={setSelection}
-      />
+      <NameAndIcon member={connection} onClick={() => {}} />
       {incoming > 0 && (
         <div className="w-8 text-xs text-indigo-400">
           {incoming + " "}

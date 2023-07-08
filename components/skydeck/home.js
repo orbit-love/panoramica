@@ -210,7 +210,7 @@ export default function Home(props) {
                 <button
                   onClick={() =>
                     addWidget("members", "Members", {
-                      title: "Member List",
+                      title: "Members",
                       position,
                     })
                   }

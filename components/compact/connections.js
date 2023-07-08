@@ -1,15 +1,7 @@
 import React from "react";
 import CompactConnection from "components/compact/connection";
 
-export default function CompactConnections({
-  member,
-  community,
-  selection,
-  setSelection,
-  connection,
-  setConnection,
-  onClick,
-}) {
+export default function CompactConnections({ member, community, onClick }) {
   // if the connection doesn't exist, right now it could
   // be because the time slider reducer and some members aren't there
   // that's bad though, so this is a protection for now
@@ -70,16 +62,12 @@ export default function CompactConnections({
             <div className="flex flex-col pb-2">
               <div className="pb-1 font-semibold text-indigo-400">{name}</div>
               <div className="flex flex-col">
-                {connections.map((connectedMember) => (
+                {connections.map((connection) => (
                   <CompactConnection
-                    key={connectedMember.id}
+                    key={connection.id}
                     member={member}
-                    connectedMember={connectedMember}
-                    selection={selection}
-                    setSelection={setSelection}
                     connection={connection}
-                    setConnection={setConnection}
-                    directions={member.connections[connectedMember.globalActor]}
+                    directions={member.connections[connection.globalActor]}
                     onClick={onClick}
                   />
                 ))}

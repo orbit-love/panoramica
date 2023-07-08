@@ -2,18 +2,21 @@ import React from "react";
 
 import Feed from "lib/community/feed";
 import NameAndIcon from "components/compact/name_and_icon";
-import { Frame, Scroll, Header, Connection } from "components/skydeck";
+import { Frame, Scroll, Header } from "components/skydeck";
 import Meter from "components/meter";
 import CompactEntity from "components/compact/entity";
 import Activities from "components/compact/activities";
 import CompactConnections from "components/compact/connections";
-import { addEntityWidget } from "components/skydeck";
 
-export default function Member({ community, params, handlers }) {
+export default function Member({ community, api, params, handlers }) {
   var { member } = params;
   var { onClickConnection, onClickEntity } = handlers;
-  var feed = new Feed({ selection: member, ...props });
+  var feed = new Feed({ member, community });
   var activities = feed.getFilteredActivities();
+
+  // an alternative would be only showing their activities and linking to conversations
+  // or showing a conversation summary view; what is nice is to see the members / topics
+  // var activities = community.activities.filter(activity => activity.globalActor === member.globalActor);
 
   let entities = [];
   for (let [_, entity] of Object.entries(community.entities)) {
@@ -24,7 +27,7 @@ export default function Member({ community, params, handlers }) {
 
   return (
     <Frame>
-      <Header>
+      <Header api={api}>
         <NameAndIcon member={member} onClick={() => {}} />
       </Header>
       <Scroll>
@@ -56,7 +59,7 @@ export default function Member({ community, params, handlers }) {
                     <CompactEntity
                       entity={entity}
                       active={false}
-                      onClick={onClickEntity(entity)}
+                      onClick={(e) => onClickEntity(e, entity)}
                     />
                   </div>
                 ))}
@@ -70,17 +73,21 @@ export default function Member({ community, params, handlers }) {
                 <CompactConnections
                   member={member}
                   community={community}
-                  onClick={(e) => onClickConnection(e, member)}
+                  onClick={(e, member, connection) =>
+                    onClickConnection(e, member, connection)
+                  }
                 />
               </div>
               <div className="border-b border-indigo-900" />
             </>
           )}
-          <Activities
-            activities={activities}
-            community={community}
-            handlers={handlers}
-          />
+          <div>
+            <Activities
+              activities={activities}
+              community={community}
+              handlers={handlers}
+            />
+          </div>
         </div>
       </Scroll>
     </Frame>
