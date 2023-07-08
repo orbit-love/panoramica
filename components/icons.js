@@ -62,6 +62,7 @@ import {
   faQuestion,
   faNote,
   faMessages,
+  faListTree,
 } from "@fortawesome/pro-solid-svg-icons";
 
 import { faTelescope } from "@fortawesome/pro-duotone-svg-icons";
@@ -124,7 +125,8 @@ library.add(
   faReply,
   faTag,
   faUser,
-  faList
+  faList,
+  faListTree
 );
 
 export default library;

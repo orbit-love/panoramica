@@ -147,7 +147,11 @@ export const tabComponents = {
     );
   },
   Source: ({ api, params: { source } }) => {
-    var icon = source && <SourceIcon activity={{ source }} />;
+    var icon = source ? (
+      <SourceIcon activity={{ source }} />
+    ) : (
+      <FontAwesomeIcon icon="list-tree" />
+    );
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
   Conversation: ({ api }) => {
