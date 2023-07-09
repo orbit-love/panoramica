@@ -43,11 +43,6 @@ export default function HomePage({ session, csrfToken }) {
                         <span>Skydeck</span>
                       </Link>
                     </div>
-                    <div className="text-lg">
-                      <Link className="underline" href={`/telescope`}>
-                        <span>Telescope</span>
-                      </Link>
-                    </div>
                   </div>
                 </div>
               </Panel>

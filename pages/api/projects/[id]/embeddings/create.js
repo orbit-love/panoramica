@@ -1,21 +1,7 @@
-import { check, redirect, authorizeProject } from "lib/auth";
-import { PineconeClient } from "@pinecone-database/pinecone";
-import { PineconeStore } from "langchain/vectorstores/pinecone";
-import { Document } from "langchain/document";
-
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { check, redirect, authorizeProject, aiReady } from "lib/auth";
 import { getActivitiesWithConversationId } from "lib/graph/queries";
 import GraphConnection from "lib/graphConnection";
-
-function stripHtmlTags(htmlString) {
-  return htmlString.replace(/<[^>]*>/g, "");
-}
-
-function truncateDateToDay(isoDatetime) {
-  const date = new Date(isoDatetime);
-  date.setHours(0, 0, 0, 0); // Truncate time to midnight
-  return date.getTime(); // Get the timestamp in milliseconds
-}
+import { createEmbeddings, deleteEmbeddings } from "lib/vector/mutations";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
@@ -31,51 +17,24 @@ export default async function handler(req, res) {
       return;
     }
 
-    const { pineconeApiEnv, pineconeApiKey, pineconeIndexName } = project;
-    const pinecone = new PineconeClient();
-    await pinecone.init({
-      environment: pineconeApiEnv,
-      apiKey: pineconeApiKey,
-    });
-    const pineconeIndex = pinecone.Index(pineconeIndexName);
+    if (!aiReady(project)) {
+      res.status(400).json({
+        message: "Please set model and vector store API keys on the project",
+      });
+      return;
+    }
 
-    var namespace = `project-${projectId}`;
-    await pineconeIndex.delete1({
-      deleteAll: true,
-      namespace,
-    });
+    // delete existing embeddings
+    await deleteEmbeddings({ project });
 
+    // create embeddings for all activities
     const graphConnection = new GraphConnection();
-
     const activities = await getActivitiesWithConversationId({
       graphConnection,
       projectId,
     });
 
-    const content = (activity) => `
-      ${activity.globalActorName} ${activity.actorName} ${activity.actor}
-      ${activity.source} ${activity.sourceChannel}
-      ${stripHtmlTags(activity.textHtml)}
-    `;
-
-    const docs = activities.map(
-      (activity) =>
-        new Document({
-          pageContent: content(activity),
-          metadata: {
-            activityId: activity.id,
-            conversationId: activity.conversationId,
-            timestamp: truncateDateToDay(activity.timestamp),
-          },
-        })
-    );
-
-    await PineconeStore.fromDocuments(docs, new OpenAIEmbeddings(), {
-      pineconeIndex,
-      namespace,
-    });
-
-    // process the project
+    await createEmbeddings({ project, activities });
     res.status(200).json({ result: "success" });
   } catch (err) {
     console.log("Could not process project", err);

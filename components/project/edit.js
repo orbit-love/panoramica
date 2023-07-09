@@ -11,15 +11,17 @@ export default function Edit({
   setStatus,
 }) {
   const [name, setName] = useState(project.name);
-  const [url, setUrl] = useState(project.url);
+  const [url, setUrl] = useState(project.url || "");
   const [workspace, setWorkspace] = useState(project.workspace);
   const [apiKey, setApiKey] = useState("");
-  const [modelName, setModelName] = useState(project.modelName);
+  const [modelName, setModelName] = useState(project.modelName || "");
   const [modelApiKey, setModelApiKey] = useState("");
   const [pineconeApiKey, setPineconeApiKey] = useState("");
-  const [pineconeApiEnv, setPineconeApiEnv] = useState(project.pineconeApiEnv);
+  const [pineconeApiEnv, setPineconeApiEnv] = useState(
+    project.pineconeApiEnv || ""
+  );
   const [pineconeIndexName, setPineconeIndexName] = useState(
-    project.pineconeIndexName
+    project.pineconeIndexName || ""
   );
 
   const deleteProject = useCallback(() => {

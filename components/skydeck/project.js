@@ -19,6 +19,7 @@ export default function Project({ project, dispatch, levels, api }) {
   let [loading, setLoading] = useState(false);
 
   const createEmbeddings = useCallback(async () => {
+    setStatus("");
     postEmbeddings({
       project,
       setLoading,
@@ -29,6 +30,7 @@ export default function Project({ project, dispatch, levels, api }) {
   }, [project, setLoading]);
 
   const importProject = useCallback(async () => {
+    setStatus("");
     putProjectImport({
       project,
       setLoading,

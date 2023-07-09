@@ -110,7 +110,8 @@ export default function Home(props) {
 
   // don't set loading since this happens in the background
   const refreshProject = useCallback(async () => {
-    putProjectRefresh({ project, onSuccess: fetchProject });
+    await putProjectRefresh({ project, onSuccess: fetchProject });
+    console.log("Project refreshed");
   }, [project, fetchProject]);
 
   // refresh the project right away so new data comes in
@@ -118,7 +119,7 @@ export default function Home(props) {
     var interval = setInterval(() => {
       refreshProject();
     }, 60 * 1000);
-    // refreshProject();
+    refreshProject();
     return () => {
       clearInterval(interval);
     };

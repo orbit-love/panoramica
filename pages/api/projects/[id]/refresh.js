@@ -1,6 +1,7 @@
 import { prisma } from "lib/db";
-import { check, redirect, authorizeProject } from "lib/auth";
+import { check, redirect, authorizeProject, aiReady } from "lib/auth";
 import { syncActivities } from "lib/graph/mutations";
+import { createEmbeddings } from "lib/vector/mutations";
 import { getAPIUrl, getAPIData } from "lib/orbit/api";
 
 export default async function handler(req, res) {
@@ -67,8 +68,13 @@ export default async function handler(req, res) {
       take: 100,
     });
 
-    // process the project
+    // sync activities to the graph db
     let count = await syncActivities({ project, activities });
+    // create embeddings if the project supports it
+    if (aiReady(project)) {
+      await createEmbeddings({ project, activities });
+    }
+
     res.status(200).json({ result: { count } });
   } catch (err) {
     console.log("Could not process project", err);
