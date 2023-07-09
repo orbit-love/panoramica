@@ -1,7 +1,7 @@
 import React from "react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
-import { prisma } from "lib/db";
+import { prisma, safeProjectSelectFields } from "lib/db";
 
 import Wrapper from "components/wrapper";
 import GraphConnection from "lib/graphConnection";
@@ -62,7 +62,9 @@ const getProject = async (id, user) => {
       email: user.email,
     };
   }
+  // use an allowlist of fields to avoid sending back any API keys
   return prisma.project.findFirst({
     where,
+    select: safeProjectSelectFields(),
   });
 };

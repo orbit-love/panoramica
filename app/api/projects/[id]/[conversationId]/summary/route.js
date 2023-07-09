@@ -66,7 +66,7 @@ export async function GET(_, context) {
     return new StreamingTextResponse(stream);
   } catch (err) {
     console.log(err);
-    return new NextResponse("Drat. Could not process request.", {
+    return new NextResponse("Summary Failed", {
       status: 500,
     });
   }

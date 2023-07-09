@@ -31,15 +31,15 @@ export default async function handler(req, res) {
       return;
     }
 
+    const { pineconeApiEnv, pineconeApiKey, pineconeIndexName } = project;
     const pinecone = new PineconeClient();
     await pinecone.init({
-      environment: process.env.PINECONE_API_ENV,
-      apiKey: process.env.PINECONE_API_KEY,
+      environment: pineconeApiEnv,
+      apiKey: pineconeApiKey,
     });
-    var namespace = `project-${projectId}`;
+    const pineconeIndex = pinecone.Index(pineconeIndexName);
 
-    const indexName = process.env.PINECONE_INDEX_NAME;
-    const pineconeIndex = pinecone.Index(indexName);
+    var namespace = `project-${projectId}`;
     await pineconeIndex.delete1({
       deleteAll: true,
       namespace,

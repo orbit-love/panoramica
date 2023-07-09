@@ -33,9 +33,12 @@ export default async function handler(req, res) {
         name: body.name,
         workspace: body.workspace,
         url: body.url,
-        modelName: body.modelName,
         apiKey: body.apiKey || project.apiKey,
+        modelName: body.modelName,
         modelApiKey: body.modelApiKey || project.modelApiKey,
+        pineconeApiKey: body.pineconeApiKey || project.pineconeApiKey,
+        pineconeApiEnv: body.pineconeApiEnv,
+        pineconeIndexName: body.pineconeIndexName,
       },
     });
 

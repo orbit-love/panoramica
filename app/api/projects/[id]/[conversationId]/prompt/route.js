@@ -32,15 +32,14 @@ export async function GET(request, context) {
       return;
     }
 
+    const { pineconeApiEnv, pineconeApiKey, pineconeIndexName } = project;
     const pinecone = new PineconeClient();
     await pinecone.init({
-      environment: process.env.PINECONE_API_ENV,
-      apiKey: process.env.PINECONE_API_KEY,
+      environment: pineconeApiEnv,
+      apiKey: pineconeApiKey,
     });
+    const pineconeIndex = pinecone.Index(pineconeIndexName);
     var namespace = `project-${projectId}`;
-
-    const indexName = process.env.PINECONE_INDEX_NAME;
-    const pineconeIndex = pinecone.Index(indexName);
 
     // send the entire conversation to the vector DB PLUS
     // what the instructions match

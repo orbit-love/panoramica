@@ -57,8 +57,15 @@ export default function Project({ project, dispatch, levels, api }) {
       <Scroll>
         <div className="px-4 mt-4">
           {status && <div className="pb-4 text-green-500">{status}</div>}
+          {loading && (
+            <div className="pb-4 font-normal text-indigo-600">
+              <FontAwesomeIcon icon="circle-notch" spin />
+            </div>
+          )}
           <Edit
             project={project}
+            setLoading={setLoading}
+            setStatus={setStatus}
             onUpdate={(project) => {
               dispatch({ type: "updateProject", project });
               setStatus("Update successful.");
@@ -66,17 +73,12 @@ export default function Project({ project, dispatch, levels, api }) {
             onDelete={() => router.push("/skydeck")}
           />
           <div className="flex flex-col items-start py-6 space-y-1 text-indigo-300">
-            {loading && (
-              <div className="py-4 font-normal text-indigo-600">
-                <FontAwesomeIcon icon="circle-notch" spin />
-              </div>
-            )}
-            <span className="text-lg font-thin">Actions</span>
+            <div className="my-2 text-lg font-thin">Actions</div>
             <button className="hover:underline" onClick={importProject}>
-              Reimport Data
+              Reimport data from Orbit
             </button>
             <button className="hover:underline" onClick={createEmbeddings}>
-              Create Embeddings
+              Load embeddings into vector store
             </button>
           </div>
         </div>

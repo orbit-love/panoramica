@@ -22,10 +22,7 @@ export default async function handler(req, res) {
       data: {
         name: body.name,
         workspace: body.workspace,
-        url: body.url,
         apiKey: body.apiKey,
-        modelName: body.modelName,
-        modelApiKey: body.modelApiKey,
         user: {
           connect: { email: user.email },
         },

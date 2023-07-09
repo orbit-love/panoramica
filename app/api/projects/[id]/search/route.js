@@ -24,18 +24,19 @@ export async function GET(request, context) {
       return;
     }
 
+    const { pineconeApiEnv, pineconeApiKey, pineconeIndexName } = project;
     const pinecone = new PineconeClient();
     await pinecone.init({
-      environment: process.env.PINECONE_API_ENV,
-      apiKey: process.env.PINECONE_API_KEY,
+      environment: pineconeApiEnv,
+      apiKey: pineconeApiKey,
     });
+    const pineconeIndex = pinecone.Index(pineconeIndexName);
     var namespace = `project-${projectId}`;
 
-    const indexName = process.env.PINECONE_INDEX_NAME;
-    const pineconeIndex = pinecone.Index(indexName);
-
     const vectorStore = await PineconeStore.fromExistingIndex(
-      new OpenAIEmbeddings(),
+      new OpenAIEmbeddings({
+        openAIApiKey: project.modelApiKey,
+      }),
       { pineconeIndex, namespace }
     );
 
@@ -46,11 +47,11 @@ export async function GET(request, context) {
       // includeData: true,
       // includeMetadata: true,
     });
-    console.log(vectorDocs);
     return NextResponse.json({
       result: vectorDocs,
     });
   } catch (err) {
+    console.log(err);
     return NextResponse.json(
       {
         message: "Could not perform search",

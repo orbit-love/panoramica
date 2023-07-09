@@ -69,6 +69,9 @@ model Project {
   apiKey           String
   modelName     String?
   modelApiKey   String?
+  pineconeApiKey     String?
+  pineconeApiEnv     String?
+  pineconeIndexName     String?
   activities    Activity[]
 }
 

@@ -30,18 +30,19 @@ export async function GET(request, context) {
       return;
     }
 
+    const { pineconeApiEnv, pineconeApiKey, pineconeIndexName } = project;
     const pinecone = new PineconeClient();
     await pinecone.init({
-      environment: process.env.PINECONE_API_ENV,
-      apiKey: process.env.PINECONE_API_KEY,
+      environment: pineconeApiEnv,
+      apiKey: pineconeApiKey,
     });
+    const pineconeIndex = pinecone.Index(pineconeIndexName);
     var namespace = `project-${projectId}`;
 
-    const indexName = process.env.PINECONE_INDEX_NAME;
-    const pineconeIndex = pinecone.Index(indexName);
-
     const vectorStore = await PineconeStore.fromExistingIndex(
-      new OpenAIEmbeddings(),
+      new OpenAIEmbeddings({
+        openAIApiKey: project.modelApiKey,
+      }),
       { pineconeIndex, namespace }
     );
 
@@ -80,11 +81,9 @@ export async function GET(request, context) {
 
     return new StreamingTextResponse(stream);
   } catch (err) {
-    return NextResponse.json(
-      {
-        message: "Could not process project",
-      },
-      { status: 500 }
-    );
+    console.log(err);
+    return new NextResponse("Drat. Could not process request.", {
+      status: 500,
+    });
   }
 }

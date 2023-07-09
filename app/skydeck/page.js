@@ -34,9 +34,12 @@ export async function getProps() {
         email: user.email,
       };
     }
+    // only select fields we need & no api keys
     var projects = await prisma.project.findMany({
       where,
-      include: {
+      select: {
+        id: true,
+        name: true,
         user: {
           select: {
             email: true,
@@ -44,10 +47,6 @@ export async function getProps() {
         },
       },
     });
-    // don't return any api keys
-    for (let project of projects) {
-      delete project.apiKey;
-    }
     return {
       session,
       projects,
