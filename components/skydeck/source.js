@@ -22,7 +22,7 @@ export default function Source({ community, params, api, handlers }) {
   activities = activities.slice(0, 50);
 
   return (
-    <Frame api={api}>
+    <Frame>
       {source && (
         <Header>
           {source && <SourceIcon activity={{ source }} />}

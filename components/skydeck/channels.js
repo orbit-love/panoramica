@@ -25,7 +25,7 @@ export default function Channels({ api, community, params, handlers }) {
     });
 
   return (
-    <Frame api={api}>
+    <Frame>
       <Scroll>
         <div className="flex flex-col items-start pl-2 px-4 mt-4 text-indigo-400">
           <table className="border-spacing-x-2 table w-full whitespace-nowrap border-separate">

@@ -34,7 +34,7 @@ export default function Prompt({ project, api }) {
     [project, setLastMessage, prompt]
   );
   return (
-    <Frame api={api}>
+    <Frame>
       <div className="flex flex-col px-4 h-[98%]">
         <Scroll>
           <div className="flex flex-col mt-4 space-y-1 h-[90%]">

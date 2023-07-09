@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useReducer } from "react";
+import React, { useReducer, useState, useCallback } from "react";
 import { Orientation, DockviewReact } from "dockview";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import {
   components,
@@ -38,26 +39,44 @@ export default function Page({ project, data }) {
   const community = new Community({ result: data, levels });
   const initialObject = { project, community, levels };
   const [object, dispatch] = useReducer(projectReducer, initialObject);
+  let [containerApi, setContainerApi] = useState(null);
 
-  const onReady = (event) => {
-    const { api } = event;
-    const layoutString = localStorage.getItem(storageKey(project));
+  const onReady = useCallback(
+    (event) => {
+      const { api } = event;
+      const layoutString = localStorage.getItem(storageKey(project));
 
-    let success = false;
-    if (layoutString) {
-      try {
-        const layout = JSON.parse(layoutString);
-        api.fromJSON(layout);
-        success = true;
-      } catch (err) {
-        console.log("Could not load layout", err);
+      let success = false;
+      if (layoutString) {
+        try {
+          const layout = JSON.parse(layoutString);
+          api.fromJSON(layout);
+          success = true;
+        } catch (err) {
+          console.log("Could not load layout", err);
+        }
       }
-    }
 
-    if (!success) {
-      loadDefaultLayout(api);
-    }
-  };
+      if (!success) {
+        loadDefaultLayout(api);
+      }
+
+      setContainerApi(api);
+    },
+    [project, setContainerApi]
+  );
+
+  // the escape key closes the active panel
+  useHotkeys(
+    "escape",
+    () => {
+      var activePanel = containerApi.activePanel;
+      if (activePanel?.id !== "home") {
+        activePanel.api.close();
+      }
+    },
+    [containerApi]
+  );
 
   return (
     <ProjectContext.Provider value={object}>

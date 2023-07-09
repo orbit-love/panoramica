@@ -26,7 +26,7 @@ export default function Member({ community, api, params, handlers }) {
   }
 
   return (
-    <Frame api={api}>
+    <Frame>
       <Header>
         <NameAndIcon member={member} onClick={() => {}} />
       </Header>
