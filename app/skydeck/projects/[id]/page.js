@@ -8,9 +8,20 @@ import GraphConnection from "lib/graphConnection";
 import DockviewPage from "app/skydeck/projects/[id]/dockview-page";
 import { getEverything } from "lib/graph/queries";
 
-export const metadata = {
-  title: "Dockview",
-};
+export async function generateMetadata({ params }) {
+  // read route params
+  const session = await getServerSession(authOptions);
+  if (session?.user) {
+    const { id } = params;
+    const user = session.user;
+    // get project and check if the user has access
+    var project = await getProject(id, user);
+
+    return {
+      title: project.name,
+    };
+  }
+}
 
 export default async function Page({ params }) {
   const props = await getProps(params);
