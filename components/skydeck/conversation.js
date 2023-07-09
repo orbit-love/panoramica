@@ -97,7 +97,7 @@ export default function Conversation({
             prompt={prompt}
             setPrompt={setPrompt}
             fetchPrompt={fetchPrompt}
-            placeholder={"Please provide a summary of this conversation..."}
+            placeholder={"Ask questions about this conversation..."}
           />
         </div>
       </div>
