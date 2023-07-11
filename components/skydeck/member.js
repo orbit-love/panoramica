@@ -81,13 +81,11 @@ export default function Member({ community, api, params, handlers }) {
               <div className="border-b border-indigo-900" />
             </>
           )}
-          <div>
-            <Activities
-              activities={activities}
-              community={community}
-              handlers={handlers}
-            />
-          </div>
+          <Activities
+            activities={activities}
+            community={community}
+            handlers={handlers}
+          />
         </div>
       </Scroll>
     </Frame>

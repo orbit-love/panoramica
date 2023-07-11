@@ -75,16 +75,14 @@ export default function Search({ project, community, api, params, handlers }) {
             {!loading && <FontAwesomeIcon icon="search" />}
           </button>
         </form>
-        <Scroll>
-          <Activities
-            activities={activities}
-            community={community}
-            term={appliedTerm}
-            handlers={{ ...handlers, onClickActivity }}
-            maxDepth={0}
-            hideNoActivities
-          />
-        </Scroll>
+        <Activities
+          activities={activities}
+          community={community}
+          term={appliedTerm}
+          handlers={{ ...handlers, onClickActivity }}
+          maxDepth={0}
+          hideNoActivities
+        />
       </div>
     </Frame>
   );
