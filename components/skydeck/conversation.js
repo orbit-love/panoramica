@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classnames from "classnames";
 
-import { Frame, Scroll } from "components/skydeck";
+import { Frame } from "components/skydeck";
 import Thread from "components/compact/thread";
 import PromptInput from "components/promptInput";
 
@@ -13,7 +14,7 @@ export default function Conversation({
   handlers,
 }) {
   var messageRef = useRef();
-  var { activity } = params;
+  var { activity, fullscreen } = params;
   let [prompt, setPrompt] = useState("");
   let [lastMessage, setLastMessage] = useState("");
   let [lastSummary, setLastSummary] = useState("");
@@ -71,15 +72,32 @@ export default function Conversation({
 
   return (
     <Frame api={api}>
-      <div className="flex flex-col px-4 pt-4 pb-4 h-full">
-        <Scroll>
+      <div
+        className={classnames("flex h-full", {
+          "flex-row": fullscreen,
+          "flex-col space-y-4": !fullscreen,
+        })}
+      >
+        <div
+          className={classnames("px-4 py-4", {
+            grow: !fullscreen,
+            "overflow-y-scroll w-1/2": fullscreen,
+          })}
+        >
           <Thread
             activity={activity}
             community={community}
             handlers={handlers}
             onClickActivity={() => {}}
           />
-          <div className="flex flex-col py-4 space-y-1">
+        </div>
+        <div
+          className={classnames("flex flex-col p-4", {
+            "bg-opacity-40 w-1/2 bg-indigo-800": fullscreen,
+            "w-full": !fullscreen,
+          })}
+        >
+          <div className="flex flex-col pb-4 space-y-1">
             {loading && (
               <div className="text-indigo-600">
                 <FontAwesomeIcon icon="circle-notch" spin />
@@ -90,9 +108,7 @@ export default function Conversation({
             </div>
             <div ref={messageRef} />
           </div>
-        </Scroll>
-        <div className="my-auto" />
-        <div className="py-4">
+          {fullscreen && <div className="grow" />}
           <PromptInput
             prompt={prompt}
             setPrompt={setPrompt}

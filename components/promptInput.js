@@ -10,7 +10,7 @@ export default function PromptInput(props) {
   // }, []);
 
   return (
-    <form onSubmit={fetchPrompt} className="flex flex-col space-y-3">
+    <form onSubmit={fetchPrompt} className="flex flex-col space-y-3 w-full">
       <textarea
         ref={textareaRef}
         className={c.inputClasses}
