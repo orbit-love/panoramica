@@ -1,4 +1,5 @@
 import React from "react";
+import TimeAgo from "react-timeago";
 
 import c from "lib/common";
 import NameAndIcon from "components/compact/name_and_icon";
@@ -52,12 +53,12 @@ export default function Activity({
               target="_blank"
               rel="noreferrer"
             >
-              {c.formatDateShort(activity.timestamp)}
+              <TimeAgo date={activity.timestamp} />
             </a>
           )}
           {!activity.url && (
             <div className="text-indigo-700">
-              {c.formatDate(activity.timestamp)}
+              <TimeAgo date={activity.timestamp} />
             </div>
           )}
         </div>
