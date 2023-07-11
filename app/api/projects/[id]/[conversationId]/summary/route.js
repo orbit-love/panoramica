@@ -46,7 +46,7 @@ export async function GET(_, context) {
       temperature: 0.9,
       streaming: true,
     });
-    const chainA = loadQAStuffChain(model, { verbose: true });
+    const chainA = loadQAStuffChain(model);
     const docs = allDocs.map((doc) => new Document(doc));
     const question = `The context you have been given is a conversation
     that took place in an online community. Each message is given as

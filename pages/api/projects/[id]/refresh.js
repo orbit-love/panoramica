@@ -1,4 +1,4 @@
-import { prisma } from "lib/db";
+import { prisma, graph } from "lib/db";
 import { check, redirect, authorizeProject, aiReady } from "lib/auth";
 import { syncActivities } from "lib/graph/mutations";
 import { createEmbeddings } from "lib/vector/mutations";
@@ -10,6 +10,7 @@ export default async function handler(req, res) {
     return redirect(res);
   }
 
+  const session = graph.session();
   const { id } = req.query;
   try {
     var project = await authorizeProject({ id, user, res });
@@ -68,8 +69,12 @@ export default async function handler(req, res) {
       take: 100,
     });
 
+    const count = await session.writeTransaction(async (tx) => {
+      let count = await syncActivities({ tx, project, activities });
+      return count;
+    });
+
     // sync activities to the graph db
-    let count = await syncActivities({ project, activities });
     // create embeddings if the project supports it
     if (aiReady(project)) {
       await createEmbeddings({ project, activities });
@@ -77,7 +82,9 @@ export default async function handler(req, res) {
 
     res.status(200).json({ result: { count } });
   } catch (err) {
-    console.log("Could not process project", err);
-    return res.status(500).json({ message: "Could not process project" });
+    console.log("Could not refresh project", err);
+    return res.status(500).json({ message: "Could not refresh project" });
+  } finally {
+    session.close();
   }
 }

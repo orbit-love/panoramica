@@ -10,7 +10,7 @@ const withMDX = nextMdx({
 
 const nextConfig = {
   basePath: process.env.BASE_PATH || "",
-  reactStrictMode: true,
+  reactStrictMode: false,
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
 };
 
