@@ -10,16 +10,9 @@ export default function Source({ community, params, api, handlers }) {
   var { source } = params;
   var { onClickChannels } = handlers;
 
-  if (!community?.activities) {
-    return <></>;
-  }
-
   var feed = new Feed({ community, source });
   var activities = feed.getFilteredActivities();
   var sourceChannels = feed.getSourceChannels({ source });
-
-  // for performance
-  activities = activities.slice(0, 50);
 
   return (
     <Frame>
@@ -37,13 +30,11 @@ export default function Source({ community, params, api, handlers }) {
           )}
         </Header>
       )}
-      <Scroll>
-        <Activities
-          activities={activities}
-          community={community}
-          handlers={handlers}
-        />
-      </Scroll>
+      <Activities
+        activities={activities}
+        community={community}
+        handlers={handlers}
+      />
     </Frame>
   );
 }
