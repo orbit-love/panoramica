@@ -12,7 +12,7 @@ export default function Members({ community, addWidget, api }) {
   };
 
   return (
-    <Frame>
+    <Frame api={api}>
       <Header>
         <div>Members</div>
         <div className="text-indigo-500">{members.length}</div>

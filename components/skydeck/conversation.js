@@ -70,7 +70,7 @@ export default function Conversation({
   }, []);
 
   return (
-    <Frame>
+    <Frame api={api}>
       <div className="flex flex-col px-4 pt-4 pb-4 h-full">
         <Scroll>
           <Thread
@@ -92,7 +92,7 @@ export default function Conversation({
           </div>
         </Scroll>
         <div className="my-auto" />
-        <div className="pt-4">
+        <div className="py-4">
           <PromptInput
             prompt={prompt}
             setPrompt={setPrompt}

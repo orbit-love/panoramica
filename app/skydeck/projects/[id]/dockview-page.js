@@ -72,7 +72,11 @@ export default function Page({ project, data }) {
     () => {
       var activePanel = containerApi.activePanel;
       if (activePanel?.id !== "home") {
-        activePanel.api.close();
+        if (activePanel.params.fullscreen) {
+          activePanel.api.updateParameters({ fullscreen: false });
+        } else {
+          activePanel.api.close();
+        }
       }
     },
     [containerApi]

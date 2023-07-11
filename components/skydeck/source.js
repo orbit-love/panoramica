@@ -15,7 +15,7 @@ export default function Source({ community, params, api, handlers }) {
   var sourceChannels = feed.getSourceChannels({ source });
 
   return (
-    <Frame>
+    <Frame api={api}>
       {source && (
         <Header>
           {source && <SourceIcon activity={{ source }} />}

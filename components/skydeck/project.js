@@ -55,7 +55,7 @@ export default function Project({ project, dispatch, levels, api }) {
   }, [project, dispatch, setLoading, levels]);
 
   return (
-    <Frame>
+    <Frame api={api}>
       <Scroll>
         <div className="px-4 mt-4">
           {status && <div className="pb-4 text-green-500">{status}</div>}

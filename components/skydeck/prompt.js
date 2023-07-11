@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Frame, Scroll, Header } from "components/skydeck";
+import { Frame } from "components/skydeck";
 import PromptInput from "components/promptInput";
 
 export default function Prompt({ project, api }) {
@@ -34,22 +34,19 @@ export default function Prompt({ project, api }) {
     [project, setLastMessage, prompt]
   );
   return (
-    <Frame>
-      <div className="flex flex-col px-4 h-[98%]">
-        <Scroll>
-          <div className="flex flex-col mt-4 space-y-1 h-[90%]">
-            {loading && (
-              <div className="text-indigo-600">
-                <FontAwesomeIcon icon="circle-notch" spin />
-              </div>
-            )}
-            <div className="text-indigo-200 whitespace-pre-wrap">
-              {lastMessage}
+    <Frame api={api}>
+      <div className="flex flex-col px-4 h-full">
+        <div className="flex flex-col flex-1 grow mt-4 space-y-1">
+          {loading && (
+            <div className="text-indigo-600">
+              <FontAwesomeIcon icon="circle-notch" spin />
             </div>
-            <div ref={messageRef} />
+          )}
+          <div className="text-indigo-200 whitespace-pre-wrap">
+            {lastMessage}
           </div>
-        </Scroll>
-        <div className="my-auto" />
+          <div ref={messageRef} />
+        </div>
         <div className="py-4">
           <PromptInput
             prompt={prompt}

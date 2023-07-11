@@ -72,7 +72,9 @@ export default function Activities(props) {
           />
         </div>
       ))}
-      {page - 1 === totalPages && <p className="my-5 text-center">♥</p>}
+      {page - 1 === totalPages && (
+        <p className="my-5 text-center text-indigo-800">♥</p>
+      )}
       {!hideNoActivities && activities.length === 0 && (
         <div className="p-4 text-indigo-700">No activities.</div>
       )}

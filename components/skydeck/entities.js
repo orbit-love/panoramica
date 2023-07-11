@@ -12,7 +12,7 @@ export default function Entities({ addWidget, community, api }) {
   let onClick = (entity) => () => addEntityWidget(entity, addWidget);
 
   return (
-    <Frame>
+    <Frame api={api}>
       <Scroll>
         <div className="flex flex-col px-4 mt-4">
           <div className="flex flex-wrap text-xs">

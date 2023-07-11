@@ -11,7 +11,7 @@ export default function Entity({ api, community, handlers, params }) {
   var activities = feed.getFilteredActivities();
 
   return (
-    <Frame>
+    <Frame api={api}>
       <Header length={activities.length}>
         <div className="text-sm">
           <CompactEntity entity={entity} active={false} onClick={() => {}} />

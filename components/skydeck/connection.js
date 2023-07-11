@@ -14,7 +14,7 @@ export default function Connection({ api, params, community, handlers }) {
   var activities = feed.getFilteredActivities();
 
   return (
-    <Frame>
+    <Frame api={api}>
       <Header>
         <NameAndIcon member={member} onClick={onClickMember} />
         <FontAwesomeIcon

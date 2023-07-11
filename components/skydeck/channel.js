@@ -14,7 +14,7 @@ export default function Channel({ api, community, params, handlers }) {
   activities = activities.slice(0, 50);
 
   return (
-    <Frame>
+    <Frame api={api}>
       <Scroll>
         <Activities
           activities={activities}

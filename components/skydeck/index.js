@@ -114,8 +114,15 @@ const TabComponentWithIcon = ({ api, icon, children }) => {
     [api]
   );
 
+  const onClick = (event) => {
+    if (event.detail == 2) {
+      let fullscreen = api.panel.params.fullscreen;
+      api.updateParameters({ fullscreen: !fullscreen });
+    }
+  };
+
   return (
-    <div className="dockview-react-tab" title={title}>
+    <div className="dockview-react-tab" onClick={onClick} title={title}>
       <div className="dockview-react-tab-title max-w-[200px] overflow-x-hidden text-ellipsis whitespace-nowrap">
         {children}
         {!children && (
@@ -151,6 +158,10 @@ export const tabComponents = {
   },
   Conversation: ({ api }) => {
     var icon = <FontAwesomeIcon icon="messages" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
+  Prompt: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="circle-nodes" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
   Search: ({ api }) => {
