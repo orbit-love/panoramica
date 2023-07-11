@@ -53,12 +53,18 @@ export default function Activity({
               target="_blank"
               rel="noreferrer"
             >
-              <TimeAgo date={activity.timestamp} />
+              <TimeAgo
+                date={activity.timestamp}
+                title={c.formatDate(activity.timestamp)}
+              />
             </a>
           )}
           {!activity.url && (
             <div className="text-indigo-700">
-              <TimeAgo date={activity.timestamp} />
+              <TimeAgo
+                date={activity.timestamp}
+                title={c.formatDate(activity.timestamp)}
+              />
             </div>
           )}
         </div>
