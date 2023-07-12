@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { createPortal } from "react-dom";
 
 import c from "lib/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { WidgetContext } from "components/skydeck/WidgetContext";
 
-export default function Frame({ api, children }) {
+export default function Frame({ children }) {
+  let { api } = useContext(WidgetContext);
   let { fullscreen } = api.panel.params || {};
 
   const exitFullscreen = () => {

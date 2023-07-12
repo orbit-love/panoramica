@@ -35,12 +35,12 @@ import Prompt from "components/skydeck/prompt";
 import Search from "components/skydeck/search";
 import Source from "components/skydeck/source";
 
-import c from "lib/common";
-
+import { WidgetContext } from "components/skydeck/WidgetContext";
 import {
   ProjectContext,
   ProjectDispatchContext,
 } from "components/ProjectContext";
+import c from "lib/common";
 
 export const storageKey = (project) => `dockview-${project.id}`;
 export const loadDefaultLayout = (api) => {
@@ -71,17 +71,24 @@ export const loadDefaultLayout = (api) => {
 };
 
 var Wrap = (Component, props) => {
-  const context = useContext(ProjectContext);
-  const dispatch = useContext(ProjectDispatchContext);
+  // pass the project context down
+  const projectContext = useContext(ProjectContext);
+  const projectDispatch = useContext(ProjectDispatchContext);
+  // pass down a widget context with the dockview api object for the panel
+  // the Component will receive dockview props directly, the context is to
+  // allow child components like Frame to access the properties easily
+  const widgetContext = { api: props.api };
   var addWidgetFunc = addWidget(props);
   return (
-    <Component
-      {...props}
-      addWidget={addWidgetFunc}
-      {...context}
-      dispatch={dispatch}
-      handlers={clickHandlers(addWidgetFunc)}
-    />
+    <WidgetContext.Provider value={widgetContext}>
+      <Component
+        {...props}
+        addWidget={addWidgetFunc}
+        {...projectContext}
+        dispatch={projectDispatch}
+        handlers={clickHandlers(addWidgetFunc)}
+      />
+    </WidgetContext.Provider>
   );
 };
 

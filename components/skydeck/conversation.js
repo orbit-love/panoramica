@@ -71,7 +71,7 @@ export default function Conversation({
   }, []);
 
   return (
-    <Frame api={api}>
+    <Frame>
       <div
         className={classnames("flex h-full", {
           "flex-row": fullscreen,

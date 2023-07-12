@@ -143,7 +143,7 @@ export default function Home(props) {
   }
 
   return (
-    <Frame api={api}>
+    <Frame>
       <Header remove={null}>
         <div className="flex items-center w-full">
           <div className="text-lg">{project.name}</div>

@@ -5,9 +5,9 @@ export default function PromptInput(props) {
   let { prompt, fetchPrompt, setPrompt, placeholder } = props;
   let textareaRef = useRef();
 
-  // useEffect(() => {
-  //   textareaRef.current.focus();
-  // }, []);
+  useEffect(() => {
+    textareaRef.current.focus();
+  }, []);
 
   return (
     <form onSubmit={fetchPrompt} className="flex flex-col space-y-3 w-full">
