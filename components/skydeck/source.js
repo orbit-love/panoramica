@@ -11,8 +11,23 @@ export default function Source({ community, params, api, handlers }) {
   var { onClickChannels } = handlers;
 
   var feed = new Feed({ community, source });
-  var activities = feed.getFilteredActivities();
   var sourceChannels = feed.getSourceChannels({ source });
+
+  var activities = community.activities;
+  if (source) {
+    activities = activities.filter((activity) => activity.source === source);
+  }
+
+  // only show the most recent reply in any conversation
+  var conversationIds = activities.map((a) => a.conversationId);
+  activities = activities.filter((activity, index) => {
+    return conversationIds.indexOf(activity.conversationId) === index;
+  });
+
+  var onClickActivity = (e, activity) => {
+    var conversation = community.findActivityById(activity.conversationId);
+    handlers.onClickActivity(e, conversation);
+  };
 
   return (
     <Frame>
@@ -33,7 +48,9 @@ export default function Source({ community, params, api, handlers }) {
       <Activities
         activities={activities}
         community={community}
-        handlers={handlers}
+        handlers={{ ...handlers, onClickActivity }}
+        hideNoActivities
+        maxDepth={0}
       />
     </Frame>
   );

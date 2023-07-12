@@ -3,11 +3,13 @@ import classnames from "classnames";
 
 import Activity from "components/compact/activity";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import NameAndIcon from "./name_and_icon";
 
 export default function Thread(props) {
   // depth defaults to 0 - top of the thread
   // maxDepth defaults to -1 - no limit
   let { activity, community, depth = 0, maxDepth = -1, handlers } = props;
+  let { onClickMember } = props;
 
   // get the thread from the activity, eventually merge these
   // if there is no thread, it's a bug somewhere but protect for now
@@ -26,8 +28,13 @@ export default function Thread(props) {
   // that we are rendering individual activities, not only thread tops
   // in this case, add context and make it clear where clicking the activity
   // will go by showing the conversation id
-  var showConversation = depth === 0 && thread?.type === "reply";
   var conversation = community.findActivityById(activity.conversationId);
+  var parent = community.findActivityById(activity.parentId);
+
+  var showConversation =
+    conversation && depth === 0 && thread?.type === "reply";
+  var showParent =
+    parent?.id !== conversation.id && depth === 0 && thread.type === "reply";
 
   return (
     <div
@@ -35,15 +42,40 @@ export default function Thread(props) {
         "border-l border-indigo-700 pl-3": depth > 0,
       })}
     >
-      {showConversation && conversation && (
-        <div className="flex overflow-hidden items-center mb-2 space-x-1 text-xs text-indigo-300 text-ellipsis whitespace-nowrap">
-          <FontAwesomeIcon icon="reply" />
-          <div className="overflow-hidden text-ellipsis">
-            {conversation.text}
-          </div>
+      {showConversation && (
+        <div className="flex overflow-hidden flex-col mb-2 space-y-1 text-xs text-indigo-300 text-ellipsis whitespace-nowrap">
+          {conversation && (
+            <div className="flex items-center space-x-1">
+              <FontAwesomeIcon icon="reply" />
+              <NameAndIcon
+                member={community.findMemberByActivity(conversation)}
+                onClick={onClickMember}
+              />
+              :
+              <div className="overflow-hidden text-ellipsis">
+                {conversation.text}
+              </div>
+            </div>
+          )}
+          {showParent && (
+            <div className="flex items-center pl-3 space-x-1">
+              <FontAwesomeIcon icon="reply" />
+              <NameAndIcon
+                member={community.findMemberByActivity(parent)}
+                onClick={onClickMember}
+              />
+              :
+              <div className="overflow-hidden text-ellipsis">{parent.text}</div>
+            </div>
+          )}
         </div>
       )}
-      <div className={classnames("pb-1")}>
+      <div
+        className={classnames("pb-1", {
+          "pl-3": showConversation,
+          "pl-7": showParent,
+        })}
+      >
         <Activity
           activity={activity}
           community={community}
