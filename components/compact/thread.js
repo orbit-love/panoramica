@@ -34,7 +34,7 @@ export default function Thread(props) {
   var showConversation =
     conversation && depth === 0 && thread?.type === "reply";
   var showParent =
-    parent?.id !== conversation.id && depth === 0 && thread.type === "reply";
+    parent?.id !== conversation?.id && depth === 0 && thread.type === "reply";
 
   let Preview = ({ activity, onClickMember }) => {
     var activityThread = community.threads[activity.id];

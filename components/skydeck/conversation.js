@@ -65,8 +65,12 @@ export default function Conversation({
   }, [project, activity, setLastSummary]);
 
   useEffect(() => {
-    if (!lastSummary) {
-      fetchSummary();
+    if (project.modelName) {
+      if (!lastSummary) {
+        fetchSummary();
+      }
+    } else {
+      setLastSummary(activity.text.slice(0, 25));
     }
   }, []);
 
@@ -109,12 +113,20 @@ export default function Conversation({
             <div ref={messageRef} />
           </div>
           {fullscreen && <div className="grow" />}
-          <PromptInput
-            prompt={prompt}
-            setPrompt={setPrompt}
-            fetchPrompt={fetchPrompt}
-            placeholder={"Ask questions about this conversation..."}
-          />
+          {project.modelName && (
+            <PromptInput
+              prompt={prompt}
+              setPrompt={setPrompt}
+              fetchPrompt={fetchPrompt}
+              placeholder={"Ask questions about this conversation..."}
+            />
+          )}
+          {!project.modelName && (
+            <div className="text-yellow-300">
+              LLM and vector store are not configured. Edit the project and add
+              the necessary information to enable AI features.
+            </div>
+          )}
         </div>
       </div>
     </Frame>
