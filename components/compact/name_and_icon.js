@@ -17,11 +17,11 @@ export default function NameAndIcon({ member, onClick }) {
       onClick={(e) => onClick(e, member)}
       className="flex overflow-hidden items-center space-x-1 cursor-pointer"
     >
-      <OrbitLevelIcon number={member.level} />
+      {/* <OrbitLevelIcon number={member.level} /> */}
       <div
-        className="overflow-hidden text-ellipsis whitespace-nowrap hover:underline"
+        className="overflow-hidden font-semibold text-ellipsis whitespace-nowrap hover:underline"
         style={{
-          color: c.orbitLevelColorScale(member.level),
+          color: c.orbitModel.darkColor,
         }}
       >
         {member.globalActorName || member.actorName}

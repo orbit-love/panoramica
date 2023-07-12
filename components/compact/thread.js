@@ -36,6 +36,31 @@ export default function Thread(props) {
   var showParent =
     parent?.id !== conversation.id && depth === 0 && thread.type === "reply";
 
+  let Preview = ({ activity, onClickMember }) => {
+    var activityThread = community.threads[activity.id];
+    return (
+      <div className="flex flex-col space-y-1">
+        <div className="flex items-center space-x-1">
+          <div className="flex shrink-0 space-x-1">
+            <FontAwesomeIcon icon="reply" />
+            <NameAndIcon
+              member={community.findMemberByActivity(activity)}
+              onClick={onClickMember}
+            />
+          </div>
+          <div className="shrink-1 overflow-hidden text-ellipsis">
+            {activity.text}
+          </div>
+        </div>
+        {activityThread.children.length > 1 && (
+          <div className="pl-3 text-indigo-400">
+            {activityThread.children.length} replies
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div
       className={classnames("flex flex-col pt-1", {
@@ -43,29 +68,13 @@ export default function Thread(props) {
       })}
     >
       {showConversation && (
-        <div className="flex overflow-hidden flex-col mb-2 space-y-1 text-xs text-indigo-300 text-ellipsis whitespace-nowrap">
+        <div className="flex flex-col mb-2 space-y-2 text-xs text-indigo-400 whitespace-nowrap">
           {conversation && (
-            <div className="flex items-center space-x-1">
-              <FontAwesomeIcon icon="reply" />
-              <NameAndIcon
-                member={community.findMemberByActivity(conversation)}
-                onClick={onClickMember}
-              />
-              :
-              <div className="overflow-hidden text-ellipsis">
-                {conversation.text}
-              </div>
-            </div>
+            <Preview activity={conversation} onClickMember={onClickMember} />
           )}
           {showParent && (
-            <div className="flex items-center pl-3 space-x-1">
-              <FontAwesomeIcon icon="reply" />
-              <NameAndIcon
-                member={community.findMemberByActivity(parent)}
-                onClick={onClickMember}
-              />
-              :
-              <div className="overflow-hidden text-ellipsis">{parent.text}</div>
+            <div className="pl-3">
+              <Preview activity={parent} onClickMember={onClickMember} />
             </div>
           )}
         </div>

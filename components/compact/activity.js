@@ -70,7 +70,7 @@ export default function Activity({
         </div>
       </div>
       {renderHtml && (
-        <div className="text-sm text-indigo-300">
+        <div className="text-sm text-indigo-200">
           <div
             className="a-html overflow-hidden break-words"
             dangerouslySetInnerHTML={{
@@ -80,7 +80,7 @@ export default function Activity({
         </div>
       )}
       {!renderHtml && (
-        <div className="overflow-hidden text-sm text-indigo-300 break-words">
+        <div className="overflow-hidden text-sm text-indigo-200 break-words">
           {highlightSearchTerm(activity.text, term)}
         </div>
       )}
