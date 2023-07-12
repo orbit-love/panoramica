@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     }
 
     const count = await session.writeTransaction(async (tx) => {
-      let count = await syncProject({ tx, project, activities });
+      let count = await syncProject({ tx, project });
       return count;
     });
 
