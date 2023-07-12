@@ -5,7 +5,7 @@ import classnames from "classnames";
 export default function Header({ children, remove }) {
   return (
     <>
-      <div className={classnames("flex items-center py-3 px-4 space-x-1")}>
+      <div className={classnames("flex items-center py-2 px-4 space-x-1")}>
         <div className="flex overflow-hidden items-center space-x-2 w-full font-semibold whitespace-nowrap">
           {children}
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import classnames from "classnames";
 
 import Activity from "components/compact/activity";
@@ -9,7 +9,7 @@ export default function Thread(props) {
   // depth defaults to 0 - top of the thread
   // maxDepth defaults to -1 - no limit
   let { activity, community, depth = 0, maxDepth = -1, handlers } = props;
-  let { onClickMember } = props;
+  let { onClickMember } = handlers;
 
   // get the thread from the activity, eventually merge these
   // if there is no thread, it's a bug somewhere but protect for now
@@ -92,6 +92,12 @@ export default function Thread(props) {
           showSourceChannel={depth === 0}
           showSourceIcon={depth === 0}
         />
+        {/* if we aren't recursing but there are children, put the number */}
+        {!renderChildren && thread.children?.length > 0 && (
+          <div className="text-xs text-indigo-400">
+            {thread.children.length} replies
+          </div>
+        )}
       </div>
       {renderChildren &&
         thread &&

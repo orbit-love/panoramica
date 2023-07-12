@@ -18,6 +18,7 @@ export { default as Project } from "components/skydeck/project";
 export { default as Prompt } from "components/skydeck/prompt";
 export { default as Search } from "components/skydeck/search";
 export { default as Source } from "components/skydeck/source";
+export { default as ActivityFeed } from "components/skydeck/ActivityFeed";
 
 export * from "components/skydeck/fetches";
 
@@ -98,6 +99,7 @@ var Wrap = (Component, props) => {
   );
 };
 
+// Feeds: Source, Channel, Entity, Connection, Member, Conversation
 export const components = {
   Channel: (props) => Wrap(Channel, props),
   Channels: (props) => Wrap(Channels, props),
@@ -268,7 +270,7 @@ export function addSourceWidget(source, addWidget, options = {}) {
 }
 
 export function addEntityWidget(entity, addWidget, options = {}) {
-  addWidget(`entity-${entity.globalActor}`, "Entity", {
+  addWidget(`entity-${entity.id}`, "Entity", {
     entity,
     title: entity.id,
     ...options,

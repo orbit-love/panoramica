@@ -1,29 +1,27 @@
 import React from "react";
 
-import Feed from "lib/community/feed";
 import CompactEntity from "components/compact/entity";
-import Activities from "components/compact/activities";
-import { Frame, Scroll, Header } from "components/skydeck";
+import { Frame, Header, ActivityFeed } from "components/skydeck";
 
-export default function Entity({ api, community, handlers, params }) {
+export default function Entity({ community, handlers, params }) {
   var { entity } = params;
-  var feed = new Feed({ entity, community });
-  var activities = feed.getFilteredActivities();
+
+  var activities = community.activities.filter(
+    (activity) => activity.entities.indexOf(entity.id) > -1
+  );
 
   return (
     <Frame>
-      <Header length={activities.length}>
-        <div className="text-sm">
+      <Header>
+        <div className="text-xs">
           <CompactEntity entity={entity} active={false} onClick={() => {}} />
         </div>
       </Header>
-      <Scroll>
-        <Activities
-          activities={activities}
-          community={community}
-          handlers={handlers}
-        />
-      </Scroll>
+      <ActivityFeed
+        activities={activities}
+        community={community}
+        handlers={handlers}
+      />
     </Frame>
   );
 }

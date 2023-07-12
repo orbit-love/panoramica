@@ -2,8 +2,7 @@ import React from "react";
 
 import Feed from "lib/community/feed";
 import SourceIcon from "components/compact/source_icon";
-import Activities from "components/compact/activities";
-import { Frame, Scroll, Header } from "components/skydeck";
+import { Frame, Header, ActivityFeed } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Source({ community, params, api, handlers }) {
@@ -17,17 +16,6 @@ export default function Source({ community, params, api, handlers }) {
   if (source) {
     activities = activities.filter((activity) => activity.source === source);
   }
-
-  // only show the most recent reply in any conversation
-  var conversationIds = activities.map((a) => a.conversationId);
-  activities = activities.filter((activity, index) => {
-    return conversationIds.indexOf(activity.conversationId) === index;
-  });
-
-  var onClickActivity = (e, activity) => {
-    var conversation = community.findActivityById(activity.conversationId);
-    handlers.onClickActivity(e, conversation);
-  };
 
   return (
     <Frame>
@@ -45,12 +33,10 @@ export default function Source({ community, params, api, handlers }) {
           )}
         </Header>
       )}
-      <Activities
+      <ActivityFeed
         activities={activities}
         community={community}
-        handlers={{ ...handlers, onClickActivity }}
-        hideNoActivities
-        maxDepth={0}
+        handlers={handlers}
       />
     </Frame>
   );

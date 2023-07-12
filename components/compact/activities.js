@@ -6,7 +6,7 @@ import Thread from "components/compact/thread";
 const pageSize = 10;
 
 export default function Activities(props) {
-  const { activities, community, handlers, hideNoActivities, maxDepth } = props;
+  const { activities, community, handlers, maxDepth } = props;
   const { onClickActivity } = handlers;
   const containerRef = useRef();
 
@@ -74,9 +74,6 @@ export default function Activities(props) {
       ))}
       {page - 1 === totalPages && (
         <p className="my-5 text-center text-indigo-800">♥</p>
-      )}
-      {!hideNoActivities && activities.length === 0 && (
-        <div className="p-4 text-indigo-700">No activities.</div>
       )}
     </div>
   );

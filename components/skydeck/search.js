@@ -94,7 +94,6 @@ export default function Search({
           term={appliedTerm}
           handlers={{ ...handlers, onClickActivity }}
           maxDepth={0}
-          hideNoActivities
         />
       </div>
     </Frame>
