@@ -9,6 +9,7 @@ import {
   putProjectProcess,
   postEmbeddings,
   getProject,
+  putProjectRefresh,
 } from "components/skydeck";
 import Community from "lib/community";
 import Edit from "components/project/edit";
@@ -29,6 +30,18 @@ export default function Project({ project, dispatch, levels, api }) {
     });
   }, [project, setLoading]);
 
+  const fetchProject = useCallback(async () => {
+    getProject({
+      project,
+      setLoading,
+      onSuccess: ({ result }) => {
+        const community = new Community({ result, levels });
+        dispatch({ type: "updated", community });
+        setStatus("Success: data has been updated.");
+      },
+    });
+  }, [project, setLoading, dispatch, levels]);
+
   const importProject = useCallback(async () => {
     setStatus("");
     putProjectImport({
@@ -38,21 +51,23 @@ export default function Project({ project, dispatch, levels, api }) {
         putProjectProcess({
           project,
           setLoading,
-          onSuccess: () => {
-            getProject({
-              project,
-              setLoading,
-              onSuccess: ({ result }) => {
-                const community = new Community({ result, levels });
-                dispatch({ type: "updated", community });
-                setStatus("Data reimported.");
-              },
-            });
-          },
+          onSuccess: fetchProject,
         });
       },
     });
-  }, [project, dispatch, setLoading, levels]);
+  }, [project, setLoading, fetchProject]);
+
+  const refreshProject = useCallback(async () => {
+    setStatus("");
+    setLoading(true);
+    putProjectRefresh({
+      project,
+      setLoading,
+      onSuccess: () => {
+        getProject({ project, setLoading, onSuccess: fetchProject });
+      },
+    });
+  }, [project, setLoading, fetchProject]);
 
   return (
     <Frame>
@@ -75,9 +90,19 @@ export default function Project({ project, dispatch, levels, api }) {
             onDelete={() => router.push("/skydeck")}
           />
           <div className="flex flex-col items-start py-6 space-y-1 text-indigo-300">
-            <div className="my-2 text-lg font-thin">Actions</div>
+            <div className="flex my-2 space-x-2 text-lg font-thin">
+              <div>Actions</div>
+              {loading && (
+                <div className="font-normal text-indigo-600">
+                  <FontAwesomeIcon icon="circle-notch" spin />
+                </div>
+              )}
+            </div>
             <button className="hover:underline" onClick={importProject}>
-              Reimport data from Orbit
+              Reimport all data from Orbit
+            </button>
+            <button className="hover:underline" onClick={refreshProject}>
+              Fetch latest data from Orbit
             </button>
             <button className="hover:underline" onClick={createEmbeddings}>
               Load embeddings into vector store

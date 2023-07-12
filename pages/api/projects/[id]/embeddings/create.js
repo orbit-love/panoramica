@@ -1,5 +1,5 @@
 import { check, redirect, authorizeProject, aiReady } from "lib/auth";
-import { getActivitiesWithConversationId } from "lib/graph/queries";
+import { getActivities } from "lib/graph/queries";
 import GraphConnection from "lib/graphConnection";
 import { createEmbeddings, deleteEmbeddings } from "lib/vector/mutations";
 
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
     // create embeddings for all activities
     const graphConnection = new GraphConnection();
-    const activities = await getActivitiesWithConversationId({
+    const activities = await getActivities({
       graphConnection,
       projectId,
     });

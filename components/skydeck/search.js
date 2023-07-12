@@ -47,11 +47,9 @@ export default function Search({ project, community, api, params, handlers }) {
     setTerm(e.target.value);
   };
 
-  var activities = docs.map(({ metadata: { activityId, conversationId } }) => {
-    var activity = community.findActivityById(activityId);
-    activity.conversationId = conversationId;
-    return activity;
-  });
+  var activities = docs.map(({ metadata: { id } }) =>
+    community.findActivityById(id)
+  );
 
   var onClickActivity = (e, activity) => {
     var conversation = community.findActivityById(activity.conversationId);
