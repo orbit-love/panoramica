@@ -108,6 +108,9 @@ export default function Home(props) {
     });
   }, [project, setLoading, fetchProject]);
 
+  // prepare to render
+  const empty = community?.activities?.length === 0;
+
   // don't set loading since this happens in the background
   const refreshProject = useCallback(async () => {
     await putProjectRefresh({ project, onSuccess: fetchProject });
@@ -116,14 +119,16 @@ export default function Home(props) {
 
   // refresh the project right away so new data comes in
   useEffect(() => {
-    var interval = setInterval(() => {
+    if (!empty) {
+      var interval = setInterval(() => {
+        refreshProject();
+      }, 60 * 1000);
       refreshProject();
-    }, 60 * 1000);
-    refreshProject();
-    return () => {
-      clearInterval(interval);
-    };
-  }, [refreshProject]);
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [empty, refreshProject]);
 
   const onSearchSubmit = (e) => {
     e.preventDefault();
@@ -132,9 +137,6 @@ export default function Home(props) {
     searchRef.current.value = "";
     searchRef.current.blur();
   };
-
-  // prepare to render
-  const empty = community?.activities?.length === 0;
 
   var sources = [];
   if (community) {

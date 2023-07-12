@@ -8,8 +8,6 @@ export default function New({ redirectUrl }) {
   const nameRef = useRef(null);
   const urlRef = useRef(null);
   const apiKeyRef = useRef(null);
-  const modelNameRef = useRef(null);
-  const modelApiKeyRef = useRef(null);
   const workspaceRef = useRef(null);
 
   const onSubmit = async (e) => {
@@ -20,8 +18,6 @@ export default function New({ redirectUrl }) {
       name: nameRef.current.value,
       apiKey: apiKeyRef.current.value,
       workspace: workspaceRef.current.value,
-      modelName: modelNameRef.current.value,
-      modelApiKey: modelApiKeyRef.current.value,
     };
     fetch(url, {
       body: JSON.stringify(data),
