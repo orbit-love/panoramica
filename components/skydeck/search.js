@@ -1,22 +1,26 @@
 import React, { useRef, useCallback, useState, useEffect } from "react";
 
 import Activities from "components/compact/activities";
-import { Frame } from "components/skydeck";
+import { Frame, saveLayout } from "components/skydeck";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import c from "lib/common";
 
-export default function Search({ project, community, api, params, handlers }) {
+export default function Search({
+  project,
+  community,
+  api,
+  containerApi,
+  handlers,
+}) {
   var searchRef = useRef();
-  var { initialTerm } = params;
 
   const [loading, setLoading] = useState(false);
   const [docs, setDocs] = useState([]);
-  const [term, setTerm] = useState(initialTerm);
-  const [appliedTerm, setAppliedTerm] = useState(null);
+  const [term, setTerm] = useState(api.title); // tracks the input box
+  const [appliedTerm, setAppliedTerm] = useState(api.title);
 
   const fetchSearch = useCallback(async () => {
     setLoading(true);
-    api.setTitle(term + "...");
     fetch(`/api/projects/${project.id}/search?q=${term}`)
       .then((res) => res.json())
       .then(({ result, message }) => {
@@ -24,12 +28,23 @@ export default function Search({ project, community, api, params, handlers }) {
           alert(message);
         } else {
           setAppliedTerm(term);
-          api.setTitle(term);
           setDocs(result);
         }
         setLoading(false);
       });
-  }, [api, term, project]);
+  }, [term, project]);
+
+  const updateTitle = useCallback(
+    (appliedTerm) => {
+      api.setTitle(appliedTerm);
+      saveLayout({ project, containerApi });
+    },
+    [project, api, containerApi]
+  );
+
+  useEffect(() => {
+    updateTitle(appliedTerm);
+  }, [appliedTerm, updateTitle]);
 
   useEffect(() => {
     searchRef.current.focus();

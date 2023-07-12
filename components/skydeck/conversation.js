@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 
-import { Frame } from "components/skydeck";
+import { Frame, saveLayout } from "components/skydeck";
 import Thread from "components/compact/thread";
 import PromptInput from "components/promptInput";
 
@@ -10,6 +10,7 @@ export default function Conversation({
   project,
   community,
   api,
+  containerApi,
   params,
   handlers,
 }) {
@@ -17,7 +18,7 @@ export default function Conversation({
   var { activity, fullscreen } = params;
   let [prompt, setPrompt] = useState("");
   let [lastMessage, setLastMessage] = useState("");
-  let [lastSummary, setLastSummary] = useState("");
+  let [lastSummary, setLastSummary] = useState(api.title);
   let [loading, setLoading] = useState(false);
 
   const fetchPrompt = useCallback(
@@ -44,15 +45,23 @@ export default function Conversation({
     [project, activity, setLastMessage, prompt]
   );
 
+  const updateTitle = useCallback(
+    (lastSummary) => {
+      api.setTitle(lastSummary);
+      saveLayout({ project, containerApi });
+    },
+    [project, api, containerApi]
+  );
+
   useEffect(() => {
-    api.setTitle(lastSummary);
-  }, [api, lastSummary]);
+    updateTitle(lastSummary);
+  }, [lastSummary, updateTitle]);
 
   const fetchSummary = useCallback(async () => {
-    setLastSummary("...");
     var response = await fetch(
       `/api/projects/${project.id}/${activity.id}/summary`
     );
+    // clear it to start over
     setLastSummary("");
     console.log("FETCHED SUMMARY!");
     const reader = response.body.getReader();
@@ -66,7 +75,7 @@ export default function Conversation({
 
   useEffect(() => {
     if (project.modelName) {
-      if (!lastSummary) {
+      if (lastSummary === "...") {
         fetchSummary();
       }
     } else {

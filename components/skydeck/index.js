@@ -70,6 +70,12 @@ export const loadDefaultLayout = (api) => {
   homePanel.group.locked = true;
 };
 
+export const saveLayout = ({ project, containerApi }) => {
+  const layout = containerApi.toJSON();
+  localStorage.setItem(storageKey(project), JSON.stringify(layout));
+  console.log("Layout saved...");
+};
+
 var Wrap = (Component, props) => {
   // pass the project context down
   const projectContext = useContext(ProjectContext);
