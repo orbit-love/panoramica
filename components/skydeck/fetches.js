@@ -60,7 +60,7 @@ var handleResult =
   ({ onSuccess, setLoading }) =>
   async ({ result, message }) => {
     if (message) {
-      alert(message);
+      console.log(message);
     } else {
       await onSuccess({ result });
     }
