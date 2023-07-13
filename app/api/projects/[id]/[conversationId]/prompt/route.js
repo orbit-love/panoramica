@@ -78,8 +78,13 @@ export async function GET(request, context) {
     that took place in an online community. Each message is given as
     a JSON object on a newline in chronological order.
     If a message is a reply to another message, the replyToMessageId
-    property will point to the parent message. Given the context, please
-    help with the following question or request: ${q}`;
+    property will point to the parent message. In your reply, always format
+    dates and times in a human-readable fashion such as "June 1 at 10pm" or "2 hours and 5 minutes".
+    Be succinct and don't explain your work unless asked. Do not return messageIds
+    in the response. Now, given the context, please
+    help with the following question or request:
+
+    ${q}`;
 
     chainA.call(
       {

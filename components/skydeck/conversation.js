@@ -5,6 +5,7 @@ import classnames from "classnames";
 import { Frame, saveLayout } from "components/skydeck";
 import Thread from "components/compact/thread";
 import PromptInput from "components/promptInput";
+import { conversationPrompts } from "lib/ai/prompts";
 
 export default function Conversation({
   project,
@@ -83,6 +84,18 @@ export default function Conversation({
     }
   }, []);
 
+  const runPrompt = useCallback(
+    (name) => {
+      setPrompt(conversationPrompts[name]);
+    },
+    [setPrompt]
+  );
+
+  const resetPrompt = useCallback(() => {
+    setPrompt("");
+    setLastMessage(null);
+  }, [setPrompt, setLastMessage]);
+
   return (
     <Frame>
       <div
@@ -92,7 +105,7 @@ export default function Conversation({
         })}
       >
         <div
-          className={classnames("px-4 py-4", {
+          className={classnames("px-4 pt-4", {
             grow: !fullscreen,
             "overflow-y-scroll w-1/2": fullscreen,
           })}
@@ -110,25 +123,78 @@ export default function Conversation({
             "w-full": !fullscreen,
           })}
         >
-          <div className="flex flex-col pb-4 space-y-1">
-            {loading && (
-              <div className="text-indigo-600">
-                <FontAwesomeIcon icon="circle-notch" spin />
-              </div>
-            )}
-            <div className="text-indigo-200 whitespace-pre-wrap">
-              {lastMessage}
-            </div>
-            <div ref={messageRef} />
-          </div>
-          {fullscreen && <div className="grow" />}
           {project.modelName && (
-            <PromptInput
-              prompt={prompt}
-              setPrompt={setPrompt}
-              fetchPrompt={fetchPrompt}
-              placeholder={"Ask questions about this conversation..."}
-            />
+            <>
+              <div className="flex flex-col mb-4 space-y-1">
+                {loading && (
+                  <div className="text-indigo-600">
+                    <FontAwesomeIcon icon="circle-notch" spin />
+                  </div>
+                )}
+                <div className="text-indigo-200 whitespace-pre-wrap">
+                  {lastMessage}
+                </div>
+                <div className="text-indigo-500">
+                  {!lastMessage && !loading && (
+                    <>
+                      <div className="mb-1 font-semibold">
+                        Load an example prompt:
+                      </div>
+                      <ul className="list-disc list-inside">
+                        <li>
+                          <button
+                            className="hover:underline"
+                            onClick={() => runPrompt("Tabularize")}
+                          >
+                            Display the conversation as a table
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            className="hover:underline"
+                            onClick={() => runPrompt("Timing")}
+                          >
+                            Analyze the time between messages
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            className="hover:underline"
+                            onClick={() => runPrompt("NextSteps")}
+                          >
+                            See next steps
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            className="hover:underline"
+                            onClick={() => runPrompt("Entities")}
+                          >
+                            See the key topics discussed
+                          </button>
+                        </li>
+                      </ul>
+                    </>
+                  )}
+                </div>
+                <div ref={messageRef} />
+                {lastMessage && !loading && (
+                  <button
+                    onClick={resetPrompt}
+                    className="text-sm text-right text-indigo-700 hover:underline"
+                  >
+                    reset
+                  </button>
+                )}
+              </div>
+              {fullscreen && <div className="grow" />}
+              <PromptInput
+                prompt={prompt}
+                setPrompt={setPrompt}
+                fetchPrompt={fetchPrompt}
+                placeholder={"Ask questions about this conversation..."}
+              />
+            </>
           )}
           {!project.modelName && (
             <div className="text-yellow-300">
