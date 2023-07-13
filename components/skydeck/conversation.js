@@ -58,21 +58,36 @@ export default function Conversation({
     updateTitle(lastSummary);
   }, [lastSummary, updateTitle]);
 
+  const defaultSummary = activity.text.slice(0, 50);
+
   const fetchSummary = useCallback(async () => {
-    var response = await fetch(
-      `/api/projects/${project.id}/${activity.id}/summary`
-    );
-    // clear it to start over
-    setLastSummary("");
-    console.log("FETCHED SUMMARY!");
-    const reader = response.body.getReader();
-    while (true) {
-      const { value, done } = await reader.read();
-      const text = new TextDecoder("utf-8").decode(value);
-      if (done) break;
-      setLastSummary((prevText) => prevText + text);
+    // try to summarize the conversation
+    try {
+      var response = await fetch(
+        `/api/projects/${project.id}/${activity.id}/summary`
+      );
+      // clear it to start over
+      setLastSummary("");
+      console.log("FETCHED SUMMARY!");
+      const reader = response.body.getReader();
+      // keep track of the response to see if it came back empty
+      // if it did, it means the model failed somewhere and we should
+      // set a default summary
+      let allText = "";
+      while (true) {
+        const { value, done } = await reader.read();
+        const text = new TextDecoder("utf-8").decode(value);
+        if (done) break;
+        allText += text;
+        setLastSummary((prevText) => prevText + text);
+      }
+      if (allText.length === 0) {
+        setLastSummary(defaultSummary);
+      }
+    } catch (e) {
+      setLastSummary(defaultSummary);
     }
-  }, [project, activity, setLastSummary]);
+  }, [project, activity, setLastSummary, defaultSummary]);
 
   useEffect(() => {
     if (project.modelName) {
@@ -80,7 +95,7 @@ export default function Conversation({
         fetchSummary();
       }
     } else {
-      setLastSummary(activity.text.slice(0, 25));
+      setLastSummary(defaultSummary);
     }
   }, []);
 
@@ -119,13 +134,13 @@ export default function Conversation({
         </div>
         <div
           className={classnames("flex flex-col p-4", {
-            "bg-opacity-40 w-1/2 bg-indigo-800": fullscreen,
+            "bg-opacity-40 overflow-y-scroll w-1/2 bg-indigo-800": fullscreen,
             "w-full": !fullscreen,
           })}
         >
           {project.modelName && (
             <>
-              <div className="flex flex-col mb-4 space-y-1">
+              <div className="flex overflow-y-scroll flex-col mb-4 space-y-1">
                 {loading && (
                   <div className="text-indigo-600">
                     <FontAwesomeIcon icon="circle-notch" spin />
@@ -144,9 +159,25 @@ export default function Conversation({
                         <li>
                           <button
                             className="hover:underline"
-                            onClick={() => runPrompt("Tabularize")}
+                            onClick={() => runPrompt("NextSteps")}
                           >
-                            Display the conversation as a table
+                            Determine the next steps
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            className="hover:underline"
+                            onClick={() => runPrompt("Entities")}
+                          >
+                            List the key topics discussed
+                          </button>
+                        </li>
+                        <li>
+                          <button
+                            className="hover:underline"
+                            onClick={() => runPrompt("Translate")}
+                          >
+                            Translate the conversation into French
                           </button>
                         </li>
                         <li>
@@ -160,17 +191,9 @@ export default function Conversation({
                         <li>
                           <button
                             className="hover:underline"
-                            onClick={() => runPrompt("NextSteps")}
+                            onClick={() => runPrompt("Tabularize")}
                           >
-                            See next steps
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            className="hover:underline"
-                            onClick={() => runPrompt("Entities")}
-                          >
-                            See the key topics discussed
+                            Display the conversation as a table
                           </button>
                         </li>
                       </ul>

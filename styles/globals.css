@@ -31,7 +31,7 @@ body {
   @apply text-red-400;
 }
 .a-html a {
-  @apply font-bold text-indigo-500;
+  @apply font-bold text-indigo-400;
 }
 .a-html a:hover {
   @apply underline;

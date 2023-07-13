@@ -37,6 +37,7 @@
     "dockview": "^1.7.6",
     "encoding": "^0.1.13",
     "langchain": "^0.0.101",
+    "luxon": "^3.3.0",
     "neo4j-driver": "^5.9.0",
     "next": "^13.4.7",
     "next-auth": "^4.22.1",

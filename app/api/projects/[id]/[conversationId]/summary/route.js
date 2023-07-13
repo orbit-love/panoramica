@@ -5,7 +5,7 @@ import { OpenAI } from "langchain/llms/openai";
 import { Document } from "langchain/document";
 import { loadQAStuffChain } from "langchain/chains";
 
-import { checkApp, authorizeProject } from "lib/auth";
+import { checkApp, authorizeProject, aiReady } from "lib/auth";
 import { getConversation } from "lib/graph/ai/queries";
 import GraphConnection from "lib/graphConnection";
 
@@ -26,6 +26,12 @@ export async function GET(_, context) {
       return;
     }
 
+    if (!aiReady(project)) {
+      return new NextResponse("AI not configured", {
+        status: 401,
+      });
+    }
+
     const allDocs = [];
     const graphConnection = new GraphConnection();
     const messages = await getConversation({
@@ -33,6 +39,13 @@ export async function GET(_, context) {
       projectId,
       conversationId,
     });
+
+    if (messages.length === 0) {
+      return new NextResponse("No conversation found", {
+        status: 401,
+      });
+    }
+
     for (let message of messages) {
       allDocs.push({ pageContent: JSON.stringify(message) });
     }
@@ -48,8 +61,8 @@ export async function GET(_, context) {
 
     var q = `Please provide a title for this conversation in 48 characters or less.
   Provide only the title in the response and no punctuation. The response must be
-  less than 48 characters. If there isn't enough information to provide a good summary,
-  simply return the first 50 characters of the first message.`;
+  less than 48 characters. If there is no information to provide a summary,
+  simply return the messaged truncated to 50 characters.`;
 
     const question = `The context you have been given is a conversation
     that took place in an online community. Each message is given as
@@ -70,7 +83,7 @@ export async function GET(_, context) {
 
     return new StreamingTextResponse(stream);
   } catch (err) {
-    console.log(err);
+    // note that we don't get here if there is a failure once streaming is started
     return new NextResponse("Summary Failed", {
       status: 500,
     });

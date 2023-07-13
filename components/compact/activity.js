@@ -1,5 +1,6 @@
 import React from "react";
 import TimeAgo from "react-timeago";
+import { DateTime, Interval, Duration } from "luxon";
 
 import c from "lib/common";
 import NameAndIcon from "components/compact/name_and_icon";
@@ -22,11 +23,42 @@ export default function Activity({
   showSourceChannel,
   handlers,
   term,
+  timeDisplay,
 }) {
   var { onClickMember, onClickChannel } = handlers;
   var member = community.findMemberByActivity(activity);
   var renderHtml = activity.textHtml?.length > 0;
   var { source, sourceChannel } = activity;
+
+  var Timestamp = () => {
+    var relativePart;
+    if (Array.isArray(timeDisplay)) {
+      var [parentTimestamp, timestamp] = timeDisplay;
+      const duration = Interval.fromDateTimes(
+        new Date(parentTimestamp),
+        new Date(timestamp)
+      ).toDuration(["weeks", "days", "hours", "minutes", "seconds"]);
+      relativePart = duration
+        .rescale()
+        .toHuman({ milliseconds: false })
+        .split(",")[0];
+    }
+    return (
+      <>
+        {relativePart && (
+          <>
+            <span>+{relativePart}</span>
+            <span className="px-1">·</span>
+          </>
+        )}
+        <TimeAgo
+          date={activity.timestamp}
+          title={c.formatDate(activity.timestamp)}
+          activityId={activity.id}
+        />
+      </>
+    );
+  };
   return (
     <div key={activity.id} className="flex flex-col pb-2">
       <div className="flex items-center space-x-2">
@@ -53,20 +85,12 @@ export default function Activity({
               target="_blank"
               rel="noreferrer"
             >
-              <TimeAgo
-                date={activity.timestamp}
-                title={c.formatDate(activity.timestamp)}
-                activityId={activity.id}
-              />
+              <Timestamp />
             </a>
           )}
           {!activity.url && (
             <div className="text-indigo-700">
-              <TimeAgo
-                date={activity.timestamp}
-                title={c.formatDate(activity.timestamp)}
-                activityId={activity.id}
-              />
+              <Timestamp />
             </div>
           )}
         </div>

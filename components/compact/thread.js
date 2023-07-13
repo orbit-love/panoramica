@@ -45,6 +45,7 @@ export default function Thread(props) {
             <FontAwesomeIcon icon="reply" />
             <NameAndIcon
               member={community.findMemberByActivity(activity)}
+              noColor
               onClick={onClickMember}
             />
           </div>
@@ -91,6 +92,11 @@ export default function Thread(props) {
           handlers={handlers}
           showSourceChannel={depth === 0}
           showSourceIcon={depth === 0}
+          timeDisplay={
+            depth === 0
+              ? activity.timestamp
+              : [parent.timestamp, activity.timestamp]
+          }
         />
         {/* if we aren't recursing but there are children, put the number */}
         {!renderChildren && thread.children?.length > 0 && (

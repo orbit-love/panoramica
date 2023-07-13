@@ -3,7 +3,7 @@ import React from "react";
 import c from "lib/common";
 import OrbitLevelIcon from "components/icons/orbit_level";
 
-export default function NameAndIcon({ member, onClick }) {
+export default function NameAndIcon({ member, onClick, noColor }) {
   if (!member) {
     return <div>No member!</div>;
   }
@@ -21,7 +21,7 @@ export default function NameAndIcon({ member, onClick }) {
       <div
         className="overflow-hidden font-semibold text-ellipsis whitespace-nowrap hover:underline"
         style={{
-          color: c.orbitModel.darkColor,
+          color: noColor ? "auto" : c.orbitModel.darkColor,
         }}
       >
         {member.globalActorName || member.actorName}
