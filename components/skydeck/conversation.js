@@ -6,6 +6,7 @@ import { Frame, saveLayout } from "components/skydeck";
 import Thread from "components/compact/thread";
 import PromptInput from "components/promptInput";
 import { conversationPrompts } from "lib/ai/prompts";
+import { putActivityUpdate } from "components/skydeck/fetches";
 
 export default function Conversation({
   project,
@@ -68,7 +69,6 @@ export default function Conversation({
       );
       // clear it to start over
       setLastSummary("");
-      console.log("FETCHED SUMMARY!");
       const reader = response.body.getReader();
       // keep track of the response to see if it came back empty
       // if it did, it means the model failed somewhere and we should
@@ -83,19 +83,24 @@ export default function Conversation({
       }
       if (allText.length === 0) {
         setLastSummary(defaultSummary);
+      } else {
+        activity.summary = allText;
       }
     } catch (e) {
       setLastSummary(defaultSummary);
     }
   }, [project, activity, setLastSummary, defaultSummary]);
 
+  console.log(activity);
   useEffect(() => {
-    if (project.modelName) {
-      if (lastSummary === "...") {
-        fetchSummary();
+    if (!activity.summary) {
+      if (project.modelName) {
+        if (lastSummary === "...") {
+          fetchSummary();
+        }
+      } else {
+        setLastSummary(defaultSummary);
       }
-    } else {
-      setLastSummary(defaultSummary);
     }
   }, []);
 

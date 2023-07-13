@@ -304,7 +304,7 @@ export function addChannelsWidget(source, addWidget, options = {}) {
 export function addActivityWidget(activity, addWidget, options = {}) {
   addWidget(`activity-${activity.id}`, "Conversation", {
     activity,
-    title: "...",
+    title: activity.summary || "...",
     ...options,
   });
 }

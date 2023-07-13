@@ -5,13 +5,13 @@ import { OpenAI } from "langchain/llms/openai";
 import { Document } from "langchain/document";
 import { loadQAStuffChain } from "langchain/chains";
 
+import { graph } from "lib/db";
 import { checkApp, authorizeProject, aiReady } from "lib/auth";
 import { getConversation } from "lib/graph/ai/queries";
+import { updateActivity } from "lib/graph/mutations";
 import GraphConnection from "lib/graphConnection";
 
 export async function GET(_, context) {
-  const { stream, handlers } = LangChainStream();
-
   const user = await checkApp();
   if (!user) {
     return redirect("/");
@@ -72,6 +72,27 @@ export async function GET(_, context) {
     help with the following question or request.
 
     ${q}`;
+
+    const onCompletion = async (summary) => {
+      const session = graph.session();
+      try {
+        await session.writeTransaction(async (tx) => {
+          await updateActivity({
+            tx,
+            project,
+            activityId: conversationId,
+            summary,
+          });
+        });
+      } catch (e) {
+        console.log("Couldn't save summary", e);
+      } finally {
+        session.close();
+      }
+    };
+    const { stream, handlers } = LangChainStream({
+      onCompletion,
+    });
 
     chainA.call(
       {

@@ -20,6 +20,23 @@ export async function putProjectImport({ project, onSuccess, setLoading }) {
     .then(handleResult({ onSuccess, setLoading }));
 }
 
+export async function putActivityUpdate({
+  project,
+  activity,
+  data,
+  onSuccess,
+  setLoading,
+}) {
+  setLoading(true);
+  return fetch(`/api/projects/${project.id}/${activity.id}`, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(data),
+  })
+    .then((res) => res.json())
+    .then(handleResult({ onSuccess, setLoading }));
+}
+
 export async function putProjectProcess({ project, onSuccess, setLoading }) {
   setLoading(true);
   return fetch(`/api/projects/${project.id}/process`, {
