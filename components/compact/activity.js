@@ -56,6 +56,7 @@ export default function Activity({
               <TimeAgo
                 date={activity.timestamp}
                 title={c.formatDate(activity.timestamp)}
+                activityId={activity.id}
               />
             </a>
           )}
@@ -64,6 +65,7 @@ export default function Activity({
               <TimeAgo
                 date={activity.timestamp}
                 title={c.formatDate(activity.timestamp)}
+                activityId={activity.id}
               />
             </div>
           )}

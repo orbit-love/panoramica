@@ -18,9 +18,6 @@ export async function GET(_, context) {
   }
 
   var { id, conversationId } = context.params;
-  var q = `Please provide a title for this conversation in 48 characters or less.
-  Provide only the title in the response and no punctuation. The response must be
-  less than 48 characters.`;
 
   try {
     var project = await authorizeProject({ id, user });
@@ -43,17 +40,25 @@ export async function GET(_, context) {
     const model = new OpenAI({
       modelName: project.modelName,
       openAIApiKey: project.modelApiKey,
-      temperature: 0.9,
+      temperature: 0.5,
       streaming: true,
     });
     const chainA = loadQAStuffChain(model);
     const docs = allDocs.map((doc) => new Document(doc));
+
+    var q = `Please provide a title for this conversation in 48 characters or less.
+  Provide only the title in the response and no punctuation. The response must be
+  less than 48 characters. If there isn't enough information to provide a good summary,
+  simply return the first 50 characters of the first message.`;
+
     const question = `The context you have been given is a conversation
     that took place in an online community. Each message is given as
     a JSON object on a newline in chronological order.
     If a message is a reply to another message, the replyToMessageId
     property will point to the parent message. Given the context, please
-    help with the following question or request: ${q}`;
+    help with the following question or request.
+
+    ${q}`;
 
     chainA.call(
       {
