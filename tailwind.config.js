@@ -3,12 +3,9 @@ const colors = require("tailwindcss/colors");
 module.exports = {
   darkMode: "class",
   content: [
-    "./app/**/*.{js,ts,jsx,tsx,md,mdx}",
-    "./pages/**/*.{js,ts,jsx,tsx,md,mdx}",
-    "./content/**/*.{js,ts,jsx,tsx,md,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
-    "./data/**/*.{js,ts,jsx,tsx}",
-    "./lib/**/*.{js,ts,jsx,tsx}",
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     // Note: screen sizes ('sm', 'md', etc) need to be wrapped

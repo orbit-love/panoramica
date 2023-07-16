@@ -23,7 +23,7 @@ export default function HomePage({ session, csrfToken }) {
         }}
       >
         <div className="flex flex-col items-center space-y-2 w-full font-thin">
-          <h1 className="text-3xl">preview orbit projects</h1>
+          <h1 className="text-3xl">Panoramica</h1>
           {!user && <Login csrfToken={csrfToken} />}
           {user && (
             <>

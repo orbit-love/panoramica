@@ -1,17 +1,9 @@
 /** @type {import('next').NextConfig} */
-import nextMdx from "@next/mdx";
-
-const withMDX = nextMdx({
-  extension: /\.mdx?$/,
-  options: {
-    providerImportSource: "@mdx-js/react",
-  },
-});
 
 const nextConfig = {
   basePath: process.env.BASE_PATH || "",
   reactStrictMode: false,
-  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
+  pageExtensions: ["ts", "tsx", "js", "jsx"],
 };
 
-export default withMDX(nextConfig);
+export default nextConfig;

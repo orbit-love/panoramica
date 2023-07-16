@@ -2,6 +2,7 @@
 @tailwind utilities;
 @tailwind components;
 
+/* set dockview color CSS variables */
 .dockview-theme-abyss {
   --main-bg-color: rgb(21, 13, 51, 1);
   --dv-background-color: var(--main-bg-color);
@@ -13,9 +14,9 @@
   --dv-inactivegroup-hiddenpanel-tab-background-color: var(--main-bg-color);
 }
 
+/* import dockview styles */
 @import "../node_modules/dockview/dist/styles/dockview.css";
 
-/* other classes applied in _document.js */
 html,
 body {
   overscroll-behavior: none;
@@ -27,6 +28,8 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
+
+/* conversation rendering styles */
 .a-html code {
   @apply text-red-400;
 }
@@ -63,129 +66,7 @@ body {
   @apply my-1;
 }
 
-.space-gradient {
-  background: rgb(21, 13, 51, 1);
-  background: radial-gradient(
-    ellipse at 50% 45%,
-    rgb(30, 20, 68) 0%,
-    rgb(14, 7, 37) 100%
-  );
-}
-
-svg .clickable {
-  cursor: pointer;
-}
-
-.btn {
-  @apply py-1 px-2 text-sm font-semibold rounded;
-}
-
-.slider-container {
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.slider {
-  position: relative;
-  width: 100%;
-}
-
-.slider__track,
-.slider__range,
-.slider__left-value,
-.slider__right-value {
-  position: absolute;
-}
-
-.slider__track,
-.slider__range {
-  border-radius: 3px;
-  height: 5px;
-}
-
-.slider__track {
-  background-color: #ced4da;
-  width: 100%;
-  z-index: 1;
-}
-
-.slider__range {
-  background-color: #4f46e5;
-  z-index: 2;
-}
-
-.slider__left-value,
-.slider__right-value {
-  color: #dee2e6;
-  font-size: 12px;
-  margin-top: 20px;
-}
-
-.slider__left-value {
-  left: 4px;
-}
-
-.slider__right-value {
-  right: 0;
-}
-
-/* Removing the default appearance */
-.thumb,
-.thumb::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.thumb {
-  pointer-events: none;
-  position: absolute;
-  height: 0;
-  width: 100%;
-  outline: none;
-}
-
-.thumb--zindex-3 {
-  z-index: 3;
-}
-
-.thumb--zindex-4 {
-  z-index: 4;
-}
-
-.thumb--zindex-5 {
-  z-index: 5;
-}
-
-/* For Chrome browsers */
-.thumb::-webkit-slider-thumb {
-  background-color: #f1f5f7;
-  border: none;
-  border-radius: 50%;
-  box-shadow: 0 0 1px 1px #ced4da;
-  cursor: pointer;
-  height: 18px;
-  width: 18px;
-  margin-top: 4px;
-  pointer-events: all;
-  position: relative;
-}
-
-/* For Firefox browsers */
-.thumb::-moz-range-thumb {
-  background-color: #f1f5f7;
-  border: none;
-  border-radius: 50%;
-  box-shadow: 0 0 1px 1px #ced4da;
-  cursor: pointer;
-  height: 18px;
-  width: 18px;
-  margin-top: 4px;
-  pointer-events: all;
-  position: relative;
-}
-
+/* Don't show the tab on the home view */
 .groupview.locked-groupview .tabs-and-actions-container {
   display: none;
 }
