@@ -172,7 +172,7 @@ export default function Conversation({
                         <li>
                           <button
                             className="hover:underline"
-                            onClick={() => runPrompt("Entities")}
+                            onClick={() => runPrompt("Topics")}
                           >
                             List the key topics discussed
                           </button>

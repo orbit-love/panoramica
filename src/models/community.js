@@ -13,8 +13,6 @@ export default class Community {
     this.activities = [];
     // internal set for threads
     this.threads = [];
-    // internal set for entities
-    this.entities = [];
     // internal set for the connections between members
     this.connections = [];
     // parse the server result into other objects
@@ -29,7 +27,6 @@ export default class Community {
     this.activities = this.result.activities;
     this.threads = this.result.threads;
     this.connections = this.result.connections;
-    this.entities = this.result.entities;
 
     // set an id on each member before doing any operations
     this.members.forEach((member) => {

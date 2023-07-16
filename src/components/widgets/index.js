@@ -8,8 +8,6 @@ export { default as Channel } from "src/components/channel";
 export { default as Channels } from "src/components/channels";
 export { default as Connection } from "src/components/connection";
 export { default as Conversation } from "src/components/conversation";
-export { default as Entities } from "src/components/entities";
-export { default as Entity } from "src/components/entity";
 export { default as Home } from "src/components/home";
 export { default as Insights } from "src/components/insights";
 export { default as Member } from "src/components/member";
@@ -26,8 +24,6 @@ import Channel from "src/components/channel";
 import Channels from "src/components/channels";
 import Connection from "src/components/connection";
 import Conversation from "src/components/conversation";
-import Entities from "src/components/entities";
-import Entity from "src/components/entity";
 import Home from "src/components/home";
 import Member from "src/components/member";
 import Members from "src/components/members";
@@ -99,14 +95,11 @@ var Wrap = (Component, props) => {
   );
 };
 
-// Feeds: Source, Channel, Entity, Connection, Member, Conversation
 export const components = {
   Channel: (props) => Wrap(Channel, props),
   Channels: (props) => Wrap(Channels, props),
   Conversation: (props) => Wrap(Conversation, props),
   Connection: (props) => Wrap(Connection, props),
-  Entities: (props) => Wrap(Entities, props),
-  Entity: (props) => Wrap(Entity, props),
   Home: (props) => Wrap(Home, props),
   Member: (props) => Wrap(Member, props),
   Members: (props) => Wrap(Members, props),
@@ -181,14 +174,6 @@ export const tabComponents = {
   },
   Search: ({ api }) => {
     var icon = <FontAwesomeIcon icon="search" />;
-    return <TabComponentWithIcon api={api} icon={icon} />;
-  },
-  Entities: ({ api }) => {
-    var icon = <FontAwesomeIcon icon="tag" />;
-    return <TabComponentWithIcon api={api} icon={icon} />;
-  },
-  Entity: ({ api }) => {
-    var icon = <FontAwesomeIcon icon="tag" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
   Member: ({ api }) => {
@@ -269,14 +254,6 @@ export function addSourceWidget(source, addWidget, options = {}) {
   });
 }
 
-export function addEntityWidget(entity, addWidget, options = {}) {
-  addWidget(`entity-${entity.id}`, "Entity", {
-    entity,
-    title: entity.id,
-    ...options,
-  });
-}
-
 export function addChannelWidget(
   source,
   sourceChannel,
@@ -322,10 +299,6 @@ export const clickHandlers = (addWidget) => ({
     e.stopPropagation();
     addChannelWidget(source, sourceChannel, addWidget, options);
   },
-  onClickEntity: (e, entity, options) => {
-    e.stopPropagation();
-    addEntityWidget(entity, addWidget, options);
-  },
   onClickChannels: (e, source, options) => {
     e.stopPropagation();
     addChannelsWidget(source, addWidget, options);
@@ -337,9 +310,5 @@ export const clickHandlers = (addWidget) => ({
   onClickActivity: (e, activity, options) => {
     e.stopPropagation();
     addActivityWidget(activity, addWidget, options);
-  },
-  onClickEntity: (e, entity, options) => {
-    e.stopPropagation();
-    addEntityWidget(entity, addWidget, options);
   },
 });

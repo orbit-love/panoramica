@@ -73,7 +73,6 @@ export async function syncActivities({ tx, project, activities }) {
             url: activity.url,
             tags: activity.tags,
             mentions: activity.mentions,
-            entities: activity.entities,
             source: activity.source,
             sourceType: activity.sourceType,
             sourceChannel: activity.sourceChannel,
@@ -183,44 +182,6 @@ export async function syncActivities({ tx, project, activities }) {
   console.log(
     "Memgraph: Created (:Member)->[:DID]->(:Activity) edges - " +
       activities.length
-  );
-
-  var entities = [];
-  var connections = [];
-
-  // create Entity nodes and :RELATES edges to connect them to activities
-  for (let activity of activities) {
-    for (let entity of activity.entities || []) {
-      entities.push({ id: entity, projectId });
-      connections.push({
-        entityId: entity,
-        activityId: activity.id,
-        projectId,
-      });
-    }
-  }
-  await tx.run(
-    `MATCH (p:Project { id: $projectId })
-        WITH p, $entities AS batch
-          UNWIND batch AS entity
-          MERGE (p)-[:OWNS]->(e:Entity { id: entity.id })
-          SET e += { } RETURN e`,
-    { entities, projectId }
-  );
-  console.log("Memgraph: Created (:Entity) nodes - ", entities.length);
-
-  await tx.run(
-    `MATCH (p:Project { id: $projectId })
-        WITH p, $connections AS batch
-        UNWIND batch AS connection
-        MATCH (p)-[:OWNS]->(e:Entity { id: connection.entityId }),
-              (p)-[:OWNS]->(a:Activity { id: connection.activityId })
-          MERGE (a)-[r:RELATES]-(e)`,
-    { connections, projectId }
-  );
-  console.log(
-    "Memgraph: Created (:Entity)-[:RELATES]-(:Activity) edges - ",
-    connections.length
   );
 
   let mentions = [];

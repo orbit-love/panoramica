@@ -3,7 +3,6 @@ import c from "lib/common";
 export const getEverything = async (props) => {
   return Promise.all([
     getThreads(props),
-    getEntities(props),
     getMembers(props),
     getActivities(props),
     getConnections(props),
@@ -31,35 +30,8 @@ export const getMembers = async ({ projectId, graphConnection, from, to }) => {
   }));
 };
 
-export const getEntities = async ({ projectId, graphConnection, from, to }) => {
-  const { records } = await graphConnection.run(
-    `MATCH (p:Project { id: $projectId })
-    WITH p
-    MATCH (p)-[:OWNS]->(e:Entity)-[:RELATES]-(a:Activity)-[:DID]-(m:Member)
-      WHERE a.timestamp >= $from
-        AND a.timestamp <= $to
-      WITH e, COLLECT(DISTINCT m.globalActor) AS members, COLLECT(DISTINCT a.id) AS activities, count(a) AS count
-      RETURN e, members, activities, count ORDER BY count DESC;
-    `,
-    { projectId, from, to }
-  );
-  var result = {};
-  for (let record of records) {
-    let id = record.get("e")?.properties?.id;
-    if (id) {
-      result[id] = {
-        id,
-        members: record.get("members"),
-        activities: record.get("activities"),
-        count: record.get("count").low,
-      };
-    }
-  }
-  return result;
-};
-
 // return activities that represent thread parents, along with the members
-// and entities that exist throughout the thread
+// that exist throughout the thread
 // if the conversation started in the timeframe, we grab it, otherwise not
 // this will definitely not be the right solution forever
 // a workaround may be to leave out to/from for now, the UI will handle it
@@ -71,13 +43,12 @@ export const getThreads = async function ({
 }) {
   var result = {};
 
-  const updateResult = function (activity, members, entities) {
+  const updateResult = function (activity, members) {
     let item = result[activity];
     if (item) {
       item.members = [...item.members, ...members].filter(c.onlyUnique);
-      item.entities = [...item.entities, ...entities].filter(c.onlyUnique);
     } else {
-      result[activity] = { members: [...members], entities: [...entities] };
+      result[activity] = { members: [...members] };
     }
   };
 
@@ -116,19 +87,6 @@ export const getThreads = async function ({
 
     for (let record of records) {
       updateResult(record.get("activity"), record.get("members"), []);
-    }
-  };
-
-  const addEntities = async () => {
-    const { records } = await graphConnection.run(
-      `${matchThread}
-      MATCH (node)-[:RELATES]-(e:Entity)
-      RETURN a.id as activity, COLLECT(DISTINCT e.id) as entities`,
-      { projectId, from, to }
-    );
-
-    for (let record of records) {
-      updateResult(record.get("activity"), [], record.get("entities"));
     }
   };
 
@@ -200,7 +158,6 @@ export const getThreads = async function ({
   // these have to be done serially for now
   await addRepliers();
   await addMentioners();
-  await addEntities();
   await addParents();
   await addChildren();
   await addTimestamp();

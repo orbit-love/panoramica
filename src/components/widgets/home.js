@@ -238,16 +238,6 @@ export default function Home(props) {
                 >
                   Prompt
                 </button>
-                <button
-                  onClick={() =>
-                    addWidget("entities", "Entities", {
-                      title: "Entities",
-                      position,
-                    })
-                  }
-                >
-                  Entities
-                </button>
                 <div className="pb-1 pt-2 font-thin">Sources</div>
                 {sources.map((source) => (
                   <div className="flex flex-col" key={source}>

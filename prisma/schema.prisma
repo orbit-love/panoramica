@@ -111,8 +111,6 @@ model Activity {
 
   // general properties for filtering
   tags      Json?
-  // entity linking
-  entities      Json?
 
   // debugging - the raw contents
   payload      Json?

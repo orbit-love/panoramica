@@ -3,24 +3,16 @@ import c from "lib/common";
 const isReply = (thread) => thread.type === "reply";
 
 // threads is a metadata object that looks like
-// activity: { members: [], entities [] }
-// members and entities are everyone in the thread
+// activity: { members: [] }
+// members are everyone in the thread
 // this works for single-message threads too
 export default class Feed {
-  constructor({
-    community,
-    member,
-    connection,
-    entity,
-    source,
-    sourceChannel,
-  }) {
+  constructor({ community, member, connection, source, sourceChannel }) {
     this.community = community;
     this.activities = community.activities;
     this.threads = community.threads;
     this.member = member;
     this.connection = connection;
-    this.entity = entity;
     this.source = source;
     this.sourceChannel = sourceChannel;
   }
@@ -55,12 +47,8 @@ export default class Feed {
         return false;
       }
 
-      var { members, entities } = thread;
+      var { members } = thread;
 
-      // filter out the activity if it doesn't have an entity
-      if (self.entity && entities.indexOf(self.entity.id) === -1) {
-        return false;
-      }
       // filter out the activity if it doesn't have either member or connection
       if (self.member && members.indexOf(self.member.globalActor) === -1) {
         return false;

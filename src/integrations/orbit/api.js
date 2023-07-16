@@ -23,10 +23,6 @@ const getTweetFields = ({ activity }) => {
   const mentions = (
     tweet.entities.mentions || tweet.entities.user_mentions
   )?.map((mention) => mention.username || mention.screen_name);
-  const entities = (tweet.entities.annotations || [])
-    ?.map((annotation) => annotation.normalized_text)
-    ?.map((text) => text.toLowerCase());
-  const hashtags = c.getHashtags(tweet.text).map((text) => text.toLowerCase());
   // look to see if the tweet is a reply and grab the id
   var sourceParentId = tweet.referenced_tweets?.find(
     (reference) => reference.type === "replied_to"
@@ -41,7 +37,6 @@ const getTweetFields = ({ activity }) => {
     actor: tweet.user.screen_name,
     actorName: tweet.user.name,
     mentions,
-    entities: [...entities, ...hashtags],
   };
 };
 
@@ -63,7 +58,6 @@ const getDiscordFields = async ({ activity, member, included }) => {
   // once we have the text, we can update this
   // we need body_html as body does not have the mentions substituted
   let mentions = c.getMentions(body_html);
-  let entities = [];
   let actor;
   let actorName;
   let sourceChannel = discord_channel;
@@ -113,7 +107,6 @@ const getDiscordFields = async ({ activity, member, included }) => {
     actor,
     actorName,
     mentions,
-    entities,
   };
 };
 
@@ -141,7 +134,6 @@ const getDiscourseFields = ({ activity, sourceType, member, included }) => {
 
   // parse out mentions
   let mentions = c.getMentions(body);
-  let entities = [];
   let actor;
   let actorName;
   let sourceChannel = discourse_category;
@@ -170,7 +162,6 @@ const getDiscourseFields = ({ activity, sourceType, member, included }) => {
     actor,
     actorName,
     mentions,
-    entities,
   };
 };
 
@@ -194,7 +185,6 @@ const getGitHubFields = async ({ activity, member, included }) => {
 
   // parse out any mentions
   let mentions = c.getMentions(g_body);
-  let entities = [];
   let actor;
   let actorName;
 
@@ -245,7 +235,6 @@ const getGitHubFields = async ({ activity, member, included }) => {
     actor,
     actorName,
     mentions,
-    entities,
   };
 };
 
