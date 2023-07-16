@@ -1,7 +1,7 @@
 import React from "react";
 
 import Feed from "lib/community/feed";
-import { Frame, Scroll } from "components/skydeck";
+import { Frame, Scroll } from "src/components";
 import c from "lib/common";
 
 export default function Channels({ api, community, params, handlers }) {

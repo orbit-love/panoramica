@@ -1,5 +1,5 @@
 import c from "lib/common";
-import { prisma } from "lib/db";
+import { prisma } from "source/data/db";
 
 export async function syncProject({ project, tx }) {
   await setupProject({ project, tx });

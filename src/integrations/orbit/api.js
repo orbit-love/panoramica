@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 
-import { prisma } from "lib/db";
+import { prisma } from "source/data/db";
 import c from "lib/common";
 import axios from "axios";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import CompactConnection from "components/compact/connection";
+import CompactConnection from "src/components/domain/connection";
 
 export default function CompactConnections({ member, community, onClick }) {
   // if the connection doesn't exist, right now it could

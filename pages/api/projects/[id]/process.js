@@ -1,4 +1,4 @@
-import { graph } from "lib/db";
+import { graph } from "source/data/db";
 import { check, redirect, authorizeProject } from "lib/auth";
 import { syncProject } from "lib/graph/mutations";
 

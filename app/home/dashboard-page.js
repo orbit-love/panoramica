@@ -3,10 +3,10 @@
 import React from "react";
 import { useSession } from "next-auth/react";
 
-import Header from "components/header";
-import Panel from "components/panel";
-import New from "components/project/new";
-import List from "components/project/list";
+import Header from "src/components/header";
+import Panel from "src/components/panel";
+import New from "src/components/project/new";
+import List from "src/components/project/list";
 
 export default function Index({ projects }) {
   const { data: session } = useSession();

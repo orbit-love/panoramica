@@ -1,7 +1,7 @@
 import React from "react";
 
 import c from "lib/common";
-import OrbitLevelIcon from "components/icons/orbit_level";
+import OrbitLevelIcon from "src/components/icons/orbit_level";
 
 export default function NameAndIcon({ member, onClick, noColor }) {
   if (!member) {

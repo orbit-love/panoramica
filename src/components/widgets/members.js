@@ -1,6 +1,6 @@
 import React from "react";
-import CompactMember from "components/compact/member";
-import { Frame, Scroll, Header, addMemberWidget } from "components/skydeck";
+import CompactMember from "src/components/domain/member";
+import { Frame, Scroll, Header, addMemberWidget } from "src/components";
 
 export default function Members({ community, addWidget, api }) {
   let { members } = community;

@@ -1,6 +1,6 @@
 import React from "react";
 
-import Activities from "components/compact/activities";
+import Activities from "src/components/domain/activities";
 
 export default function ActivityFeed({ activities, community, handlers }) {
   // only show the most recent reply in any conversation

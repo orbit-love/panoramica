@@ -12,7 +12,7 @@ import {
   putProjectProcess,
   putProjectRefresh,
   getProject,
-} from "components/skydeck";
+} from "src/components";
 import c from "lib/common";
 import Community from "lib/community";
 import Feed from "lib/community/feed";

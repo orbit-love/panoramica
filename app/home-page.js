@@ -4,9 +4,9 @@ import React from "react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 
-import Header from "components/header";
-import Panel from "components/panel";
-import Login from "components/login";
+import Header from "src/components/header";
+import Panel from "src/components/panel";
+import Login from "src/components/login";
 
 export default function HomePage({ session, csrfToken }) {
   const user = session?.user;

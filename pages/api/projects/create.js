@@ -1,4 +1,4 @@
-import { prisma } from "lib/db";
+import { prisma } from "source/data/db";
 import { check, redirect } from "lib/auth";
 
 export default async function handler(req, res) {

@@ -2,11 +2,11 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 
-import { Frame, saveLayout } from "components/skydeck";
-import Thread from "components/compact/thread";
-import PromptInput from "components/promptInput";
+import { Frame, saveLayout } from "src/components";
+import Thread from "src/components/domain/thread";
+import PromptInput from "src/components/promptInput";
 import { conversationPrompts } from "lib/ai/prompts";
-import { putActivityUpdate } from "components/skydeck/fetches";
+import { putActivityUpdate } from "src/components/fetches";
 
 export default function Conversation({
   project,

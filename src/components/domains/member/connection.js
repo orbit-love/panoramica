@@ -1,7 +1,7 @@
 import React from "react";
 import classnames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import NameAndIcon from "components/compact/name_and_icon";
+import NameAndIcon from "src/components/domain/NameAndIcon";
 
 export default function CompactConnection({
   member,

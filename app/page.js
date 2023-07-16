@@ -2,7 +2,7 @@ import { getCsrfToken } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
 
-import Wrapper from "components/wrapper";
+import Wrapper from "src/components/wrapper";
 import HomePage from "app/home-page";
 
 export default async function Page() {

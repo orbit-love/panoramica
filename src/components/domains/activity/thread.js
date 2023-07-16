@@ -1,9 +1,9 @@
 import React from "react";
 import classnames from "classnames";
 
-import Activity from "components/compact/activity";
+import Activity from "src/components/domain/activity";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import NameAndIcon from "./name_and_icon";
+import NameAndIcon from "./NameAndIcon";
 
 export default function Thread(props) {
   // depth defaults to 0 - top of the thread

@@ -1,4 +1,4 @@
-import { prisma } from "lib/db";
+import { prisma } from "source/data/db";
 import GraphConnection from "lib/graphConnection";
 import { check, redirect, authorizeProject } from "lib/auth";
 

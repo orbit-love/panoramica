@@ -1,9 +1,9 @@
 import React from "react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
-import { prisma, safeProjectSelectFields } from "lib/db";
+import { prisma, safeProjectSelectFields } from "source/data/db";
 
-import Wrapper from "components/wrapper";
+import Wrapper from "src/components/wrapper";
 import GraphConnection from "lib/graphConnection";
 import DockviewPage from "app/skydeck/projects/[id]/dockview-page";
 import { getEverything } from "lib/graph/queries";

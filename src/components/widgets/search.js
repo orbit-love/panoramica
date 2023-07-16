@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useState, useEffect } from "react";
 
-import Activities from "components/compact/activities";
-import { Frame, saveLayout } from "components/skydeck";
+import Activities from "src/components/domain/activities";
+import { Frame, saveLayout } from "src/components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import c from "lib/common";
 

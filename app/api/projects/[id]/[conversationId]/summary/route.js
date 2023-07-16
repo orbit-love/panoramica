@@ -5,7 +5,7 @@ import { OpenAI } from "langchain/llms/openai";
 import { Document } from "langchain/document";
 import { loadQAStuffChain } from "langchain/chains";
 
-import { graph } from "lib/db";
+import { graph } from "source/data/db";
 import { checkApp, authorizeProject, aiReady } from "lib/auth";
 import { getConversation } from "lib/graph/ai/queries";
 import { updateActivity } from "lib/graph/mutations";

@@ -1,5 +1,5 @@
 import React from "react";
-import { Frame, ActivityFeed } from "components/skydeck";
+import { Frame, ActivityFeed } from "src/components";
 
 export default function Channel({ community, params, handlers }) {
   var { source, sourceChannel } = params;

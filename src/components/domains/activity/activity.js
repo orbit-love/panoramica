@@ -3,8 +3,8 @@ import TimeAgo from "react-timeago";
 import { DateTime, Interval, Duration } from "luxon";
 
 import c from "lib/common";
-import NameAndIcon from "components/compact/name_and_icon";
-import SourceIcon from "components/compact/source_icon";
+import NameAndIcon from "src/components/domain/NameAndIcon";
+import SourceIcon from "src/components/domain/source_icon";
 
 function highlightSearchTerm(string, searchTerm) {
   if (searchTerm) {

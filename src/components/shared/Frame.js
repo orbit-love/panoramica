@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 
 import c from "lib/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { WidgetContext } from "components/skydeck/WidgetContext";
+import { WidgetContext } from "src/components/WidgetContext";
 
 export default function Frame({ children }) {
   let { api } = useContext(WidgetContext);

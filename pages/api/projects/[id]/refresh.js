@@ -1,4 +1,4 @@
-import { prisma, graph } from "lib/db";
+import { prisma, graph } from "source/data/db";
 import { check, redirect, authorizeProject, aiReady } from "lib/auth";
 import { syncActivities } from "lib/graph/mutations";
 import { createEmbeddings } from "lib/vector/mutations";

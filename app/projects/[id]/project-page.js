@@ -9,11 +9,11 @@ import {
   tabComponents,
   storageKey,
   loadDefaultLayout,
-} from "components/skydeck";
+} from "src/components";
 import {
   ProjectContext,
   ProjectDispatchContext,
-} from "components/ProjectContext";
+} from "src/components/ProjectContext";
 import Community from "lib/community";
 import levelsData from "data/levels";
 

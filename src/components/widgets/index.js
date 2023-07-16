@@ -1,46 +1,46 @@
 import React, { useContext, useCallback } from "react";
 
-export { default as Frame } from "components/skydeck/frame";
-export { default as Header } from "components/skydeck/header";
-export { default as Scroll } from "components/skydeck/scroll";
+export { default as Frame } from "src/components/frame";
+export { default as Header } from "src/components/header";
+export { default as Scroll } from "src/components/scroll";
 
-export { default as Channel } from "components/skydeck/channel";
-export { default as Channels } from "components/skydeck/channels";
-export { default as Connection } from "components/skydeck/connection";
-export { default as Conversation } from "components/skydeck/conversation";
-export { default as Entities } from "components/skydeck/entities";
-export { default as Entity } from "components/skydeck/entity";
-export { default as Home } from "components/skydeck/home";
-export { default as Insights } from "components/skydeck/insights";
-export { default as Member } from "components/skydeck/member";
-export { default as Members } from "components/skydeck/members";
-export { default as Project } from "components/skydeck/project";
-export { default as Prompt } from "components/skydeck/prompt";
-export { default as Search } from "components/skydeck/search";
-export { default as Source } from "components/skydeck/source";
-export { default as ActivityFeed } from "components/skydeck/ActivityFeed";
+export { default as Channel } from "src/components/channel";
+export { default as Channels } from "src/components/channels";
+export { default as Connection } from "src/components/connection";
+export { default as Conversation } from "src/components/conversation";
+export { default as Entities } from "src/components/entities";
+export { default as Entity } from "src/components/entity";
+export { default as Home } from "src/components/home";
+export { default as Insights } from "src/components/insights";
+export { default as Member } from "src/components/member";
+export { default as Members } from "src/components/members";
+export { default as Project } from "src/components/project";
+export { default as Prompt } from "src/components/prompt";
+export { default as Search } from "src/components/search";
+export { default as Source } from "src/components/source";
+export { default as ActivityFeed } from "src/components/ActivityFeed";
 
-export * from "components/skydeck/fetches";
+export * from "src/components/fetches";
 
-import Channel from "components/skydeck/channel";
-import Channels from "components/skydeck/channels";
-import Connection from "components/skydeck/connection";
-import Conversation from "components/skydeck/conversation";
-import Entities from "components/skydeck/entities";
-import Entity from "components/skydeck/entity";
-import Home from "components/skydeck/home";
-import Member from "components/skydeck/member";
-import Members from "components/skydeck/members";
-import Project from "components/skydeck/project";
-import Prompt from "components/skydeck/prompt";
-import Search from "components/skydeck/search";
-import Source from "components/skydeck/source";
+import Channel from "src/components/channel";
+import Channels from "src/components/channels";
+import Connection from "src/components/connection";
+import Conversation from "src/components/conversation";
+import Entities from "src/components/entities";
+import Entity from "src/components/entity";
+import Home from "src/components/home";
+import Member from "src/components/member";
+import Members from "src/components/members";
+import Project from "src/components/project";
+import Prompt from "src/components/prompt";
+import Search from "src/components/search";
+import Source from "src/components/source";
 
-import { WidgetContext } from "components/skydeck/WidgetContext";
+import { WidgetContext } from "src/components/WidgetContext";
 import {
   ProjectContext,
   ProjectDispatchContext,
-} from "components/ProjectContext";
+} from "src/components/ProjectContext";
 import c from "lib/common";
 
 export const storageKey = (project) => `dockview-${project.id}`;
@@ -116,7 +116,7 @@ export const components = {
   Source: (props) => Wrap(Source, props),
 };
 
-import SourceIcon from "components/compact/source_icon";
+import SourceIcon from "src/components/domain/source_icon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const TabComponentWithIcon = ({ api, icon, children }) => {

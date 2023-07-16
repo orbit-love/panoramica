@@ -10,9 +10,9 @@ import {
   postEmbeddings,
   getProject,
   putProjectRefresh,
-} from "components/skydeck";
+} from "src/components";
 import Community from "lib/community";
-import Edit from "components/project/edit";
+import Edit from "src/components/project/edit";
 
 export default function Project({ project, dispatch, levels, api }) {
   const router = useRouter();

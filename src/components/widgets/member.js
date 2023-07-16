@@ -1,10 +1,10 @@
 import React from "react";
 
-import NameAndIcon from "components/compact/name_and_icon";
-import { Frame, Header, ActivityFeed } from "components/skydeck";
-import Meter from "components/meter";
-import CompactEntity from "components/compact/entity";
-import CompactConnections from "components/compact/connections";
+import NameAndIcon from "src/components/domain/NameAndIcon";
+import { Frame, Header, ActivityFeed } from "src/components";
+import Meter from "src/components/meter";
+import CompactEntity from "src/components/domain/entity";
+import CompactConnections from "src/components/domain/connections";
 
 export default function Member({ community, api, params, handlers }) {
   var { member } = params;

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { signIn } from "next-auth/react";
-import Button from "components/button";
+import Button from "src/components/button";
 import c from "lib/common";
 
 export default function Login({ csrfToken }) {

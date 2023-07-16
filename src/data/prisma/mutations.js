@@ -1,4 +1,4 @@
-import { prisma } from "lib/db";
+import { prisma } from "source/data/db";
 
 export async function deleteDuplicates(project) {
   let deletedCount =

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import classnames from "classnames";
 
-import Thread from "components/compact/thread";
+import Thread from "src/components/domain/thread";
 
 const pageSize = 10;
 

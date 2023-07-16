@@ -1,8 +1,8 @@
 import React from "react";
 
 import Feed from "lib/community/feed";
-import SourceIcon from "components/compact/source_icon";
-import { Frame, Header, ActivityFeed } from "components/skydeck";
+import SourceIcon from "src/components/domain/source_icon";
+import { Frame, Header, ActivityFeed } from "src/components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Source({ community, params, api, handlers }) {

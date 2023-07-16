@@ -1,4 +1,4 @@
-import { graph } from "lib/db";
+import { graph } from "source/data/db";
 
 export default class GraphConnection {
   constructor() {
