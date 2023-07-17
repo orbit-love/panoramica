@@ -1,7 +1,7 @@
 import React from "react";
 import classnames from "classnames";
-import NumberStats from "src/components/domain/NumberStats";
-import NameAndIcon from "src/components/domain/NameAndIcon";
+import NumberStats from "src/components/domains/member/NumberStats";
+import NameAndIcon from "src/components/domains/member/NameAndIcon";
 
 export default function CompactMember({
   member,

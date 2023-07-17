@@ -5,11 +5,11 @@ import { OpenAI } from "langchain/llms/openai";
 import { Document } from "langchain/document";
 import { loadQAStuffChain } from "langchain/chains";
 
-import { graph } from "source/data/db";
-import { checkApp, authorizeProject, aiReady } from "lib/auth";
-import { getConversation } from "lib/graph/ai/queries";
-import { updateActivity } from "lib/graph/mutations";
-import GraphConnection from "lib/graphConnection";
+import { graph } from "src/data/db";
+import { checkApp, authorizeProject, aiReady } from "src/auth/auth";
+import { getConversation } from "src/data/graph/queries/getConversation";
+import { updateActivity } from "src/data/graph/mutations";
+import GraphConnection from "src/data/graph/Connection";
 
 export async function GET(_, context) {
   const user = await checkApp();

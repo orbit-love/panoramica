@@ -9,20 +9,12 @@ import {
   tabComponents,
   storageKey,
   loadDefaultLayout,
-} from "src/components";
+} from "src/components/widgets";
 import {
   ProjectContext,
   ProjectDispatchContext,
-} from "src/components/ProjectContext";
-import Community from "lib/community";
-import levelsData from "data/levels";
-
-const levels = {};
-levelsData.forEach((levelData) => {
-  levels[levelData.number] = {
-    ...levelData,
-  };
-});
+} from "src/components/context/ProjectContext";
+import Community from "src/models/Community";
 
 const projectReducer = (object, { type, community, project }) => {
   switch (type) {
@@ -36,8 +28,8 @@ const projectReducer = (object, { type, community, project }) => {
 };
 
 export default function Page({ project, data }) {
-  const community = new Community({ result: data, levels });
-  const initialObject = { project, community, levels };
+  const community = new Community({ result: data });
+  const initialObject = { project, community };
   const [object, dispatch] = useReducer(projectReducer, initialObject);
   let [containerApi, setContainerApi] = useState(null);
 

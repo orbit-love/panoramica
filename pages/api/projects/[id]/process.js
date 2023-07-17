@@ -1,6 +1,6 @@
-import { graph } from "source/data/db";
-import { check, redirect, authorizeProject } from "lib/auth";
-import { syncProject } from "lib/graph/mutations";
+import { graph } from "src/data/db";
+import { check, redirect, authorizeProject } from "src/auth/auth";
+import { syncProject } from "src/data/graph/mutations";
 
 export default async function handler(req, res) {
   const user = await check(req, res);

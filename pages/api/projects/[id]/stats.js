@@ -1,5 +1,5 @@
-import GraphConnection from "lib/graphConnection";
-import { check, redirect, authorizeProject } from "lib/auth";
+import GraphConnection from "src/data/graph/Connection";
+import { check, redirect, authorizeProject } from "src/auth/auth";
 
 // count the number of mention connections or reply connections
 const getConnectionCount = async ({ projectId, graphConnection }) => {

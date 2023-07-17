@@ -1,8 +1,8 @@
 import React from "react";
 
-import Feed from "lib/community/feed";
-import { Frame, Scroll } from "src/components";
-import c from "lib/common";
+import Feed from "src/models/Feed";
+import { Frame } from "src/components/widgets";
+import c from "src/configuration/common";
 
 export default function Channels({ api, community, params, handlers }) {
   var { source } = params;
@@ -26,39 +26,35 @@ export default function Channels({ api, community, params, handlers }) {
 
   return (
     <Frame>
-      <Scroll>
-        <div className="flex flex-col items-start pl-2 px-4 mt-4 text-indigo-400">
-          <table className="border-spacing-x-2 table w-full whitespace-nowrap border-separate">
-            <tbody>
-              <tr className="font-bold">
-                <td className="text-right" title="Number of conversations">
-                  #
-                </td>
-                <td>Channel</td>
-                <td>Last Active</td>
-              </tr>
-              {channelMetadatas.map(
-                ({ count, source, sourceChannel, lastActivity }, index) => (
-                  <tr key={sourceChannel}>
-                    <td className="text-right">{count}</td>
-                    <td>
-                      <button
-                        className="text-indigo-100 hover:underline"
-                        onClick={(e) =>
-                          onClickChannel(e, source, sourceChannel)
-                        }
-                      >
-                        {c.displayChannel(sourceChannel)}
-                      </button>
-                    </td>
-                    <td>{c.formatDateShort(lastActivity)}</td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          </table>
-        </div>
-      </Scroll>
+      <div className="flex flex-col items-start pl-2 px-4 mt-4 text-indigo-400">
+        <table className="border-spacing-x-2 table w-full whitespace-nowrap border-separate">
+          <tbody>
+            <tr className="font-bold">
+              <td className="text-right" title="Number of conversations">
+                #
+              </td>
+              <td>Channel</td>
+              <td>Last Active</td>
+            </tr>
+            {channelMetadatas.map(
+              ({ count, source, sourceChannel, lastActivity }, index) => (
+                <tr key={sourceChannel}>
+                  <td className="text-right">{count}</td>
+                  <td>
+                    <button
+                      className="text-indigo-100 hover:underline"
+                      onClick={(e) => onClickChannel(e, source, sourceChannel)}
+                    >
+                      {c.displayChannel(sourceChannel)}
+                    </button>
+                  </td>
+                  <td>{c.formatDateShort(lastActivity)}</td>
+                </tr>
+              )
+            )}
+          </tbody>
+        </table>
+      </div>
     </Frame>
   );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import CompactConnection from "src/components/domain/connection";
+import CompactConnection from "src/components/domains/member/Connection";
 
 export default function CompactConnections({ member, community, onClick }) {
   // if the connection doesn't exist, right now it could
@@ -12,7 +12,6 @@ export default function CompactConnections({ member, community, onClick }) {
     var [outgoingB, incomingB] = member.connections[b.globalActor];
     var connectionStrengthSort =
       outgoingB + incomingB - (outgoingA + incomingA);
-    var orbitLevelSort = a.level - b.level;
 
     // last resort, sort by name
     var nameSort = 0,
@@ -24,7 +23,7 @@ export default function CompactConnections({ member, community, onClick }) {
     if (nameA > nameB) {
       nameSort = 1;
     }
-    return connectionStrengthSort || orbitLevelSort || nameSort;
+    return connectionStrengthSort || nameSort;
   };
 
   const mutuals = Object.keys(member.connections)

@@ -1,16 +1,22 @@
+import { redirect } from "next/navigation";
 import { getCsrfToken } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
 
-import Wrapper from "src/components/wrapper";
+import SessionContext from "src/components/context/SessionContext";
 import HomePage from "app/home-page";
 
 export default async function Page() {
   const props = await getProps();
+  const { session } = props;
+  // redirect to the dashboard if the user is already logged in
+  if (session?.user) {
+    redirect("/dashboard");
+  }
   return (
-    <Wrapper session={props.session}>
+    <SessionContext session={session}>
       <HomePage {...props} />
-    </Wrapper>
+    </SessionContext>
   );
 }
 

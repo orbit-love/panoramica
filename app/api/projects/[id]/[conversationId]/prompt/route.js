@@ -8,9 +8,9 @@ import { Document } from "langchain/document";
 import { loadQAStuffChain } from "langchain/chains";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 
-import { checkApp, authorizeProject } from "lib/auth";
-import { getConversation } from "lib/graph/ai/queries";
-import GraphConnection from "lib/graphConnection";
+import { checkApp, authorizeProject } from "src/auth/auth";
+import { getConversation } from "src/data/graph/queries/getConversation";
+import GraphConnection from "src/data/graph/Connection";
 
 export async function GET(request, context) {
   const { stream, handlers } = LangChainStream();

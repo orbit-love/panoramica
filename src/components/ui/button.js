@@ -1,5 +1,5 @@
 import React from "react";
-import c from "lib/common";
+import c from "src/configuration/common";
 import classnames from "classnames";
 
 export default function Button({ onClick, children, className }) {

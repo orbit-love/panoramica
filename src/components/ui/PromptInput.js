@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import c from "lib/common";
+import c from "src/configuration/common";
 
 export default function PromptInput(props) {
   let { prompt, fetchPrompt, setPrompt, placeholder } = props;

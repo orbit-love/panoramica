@@ -1,43 +1,43 @@
 import React, { useContext, useCallback } from "react";
 
-export { default as Frame } from "src/components/frame";
-export { default as Header } from "src/components/header";
-export { default as Scroll } from "src/components/scroll";
+// export commonly used components for convenience
+export { default as Frame } from "./base/Frame";
+export { default as Header } from "./base/Header";
+export { default as Channel } from "./Channel";
+export { default as Channels } from "./Channels";
+export { default as Connection } from "./Connection";
+export { default as Conversation } from "./Conversation";
+export { default as Home } from "./Home";
+export { default as Member } from "./Member";
+export { default as Members } from "./Members";
+export { default as Project } from "./Project";
+export { default as Prompt } from "./Prompt";
+export { default as Search } from "./Search";
+export { default as Source } from "./Source";
+export { default as ActivityFeed } from "src/components/domains/activity/ActivityFeed";
 
-export { default as Channel } from "src/components/channel";
-export { default as Channels } from "src/components/channels";
-export { default as Connection } from "src/components/connection";
-export { default as Conversation } from "src/components/conversation";
-export { default as Home } from "src/components/home";
-export { default as Insights } from "src/components/insights";
-export { default as Member } from "src/components/member";
-export { default as Members } from "src/components/members";
-export { default as Project } from "src/components/project";
-export { default as Prompt } from "src/components/prompt";
-export { default as Search } from "src/components/search";
-export { default as Source } from "src/components/source";
-export { default as ActivityFeed } from "src/components/ActivityFeed";
+export * from "src/data/client/fetches";
 
-export * from "src/components/fetches";
+// available widgets
+import Channel from "./Channel";
+import Channels from "./Channels";
+import Connection from "./Connection";
+import Conversation from "./Conversation";
+import Home from "./Home";
+import Member from "./Member";
+import Members from "./Members";
+import Project from "./Project";
+import Prompt from "./Prompt";
+import Search from "./Search";
+import Source from "./Source";
 
-import Channel from "src/components/channel";
-import Channels from "src/components/channels";
-import Connection from "src/components/connection";
-import Conversation from "src/components/conversation";
-import Home from "src/components/home";
-import Member from "src/components/member";
-import Members from "src/components/members";
-import Project from "src/components/project";
-import Prompt from "src/components/prompt";
-import Search from "src/components/search";
-import Source from "src/components/source";
-
-import { WidgetContext } from "src/components/WidgetContext";
+// context for wrapping widgets
+import { WidgetContext } from "src/components/context/WidgetContext";
 import {
   ProjectContext,
   ProjectDispatchContext,
-} from "src/components/ProjectContext";
-import c from "lib/common";
+} from "src/components/context/ProjectContext";
+import c from "src/configuration/common";
 
 export const storageKey = (project) => `dockview-${project.id}`;
 export const loadDefaultLayout = (api) => {
@@ -109,7 +109,7 @@ export const components = {
   Source: (props) => Wrap(Source, props),
 };
 
-import SourceIcon from "src/components/domain/source_icon";
+import SourceIcon from "src/components/domains/activity/SourceIcon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const TabComponentWithIcon = ({ api, icon, children }) => {

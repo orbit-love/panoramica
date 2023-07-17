@@ -1,9 +1,8 @@
 import React from "react";
 
-import NameAndIcon from "src/components/domain/NameAndIcon";
-import { Frame, Header, ActivityFeed } from "src/components";
-import Meter from "src/components/meter";
-import CompactConnections from "src/components/domain/connections";
+import NameAndIcon from "src/components/domains/member/NameAndIcon";
+import { Frame, Header, ActivityFeed } from "src/components/widgets";
+import CompactConnections from "src/components/domains/member/Connections";
 
 export default function Member({ community, api, params, handlers }) {
   var { member } = params;
@@ -26,24 +25,6 @@ export default function Member({ community, api, params, handlers }) {
         <NameAndIcon member={member} onClick={() => {}} />
       </Header>
       <div className="flex flex-col space-y-3">
-        <div className="flex flex-col px-4 space-y-[-2px]">
-          <div className="flex items-center">
-            <div className="w-16 font-semibold text-indigo-400">Love</div>
-            <Meter
-              icon="square"
-              number={member.level}
-              value={member.love}
-            ></Meter>
-          </div>
-          <div className="flex items-center">
-            <div className="w-16 font-semibold text-indigo-400">Reach</div>
-            <Meter
-              icon="square"
-              number={member.level}
-              value={member.reach}
-            ></Meter>
-          </div>
-        </div>
         <div className="h-[1px] bg-indigo-900" />
         {member.connectionCount > 0 && (
           <>

@@ -1,4 +1,4 @@
-import { prisma } from "source/data/db";
+import { prisma } from "src/data/db";
 import NextAuth from "next-auth";
 import EmailProvider from "next-auth/providers/email";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";

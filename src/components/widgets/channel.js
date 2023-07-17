@@ -1,5 +1,5 @@
 import React from "react";
-import { Frame, ActivityFeed } from "src/components";
+import { Frame, ActivityFeed } from "src/components/widgets";
 
 export default function Channel({ community, params, handlers }) {
   var { source, sourceChannel } = params;

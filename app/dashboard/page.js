@@ -2,13 +2,13 @@ import React from "react";
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
-import { prisma } from "source/data/db";
 
-import DashboardPage from "app/skydeck/skydeck-page";
-import Wrapper from "src/components/wrapper";
+import { prisma } from "src/data/db";
+import DashboardPage from "app/dashboard/dashboard-page";
+import SessionContext from "src/components/context/SessionContext";
 
 export const metadata = {
-  title: "Skydeck",
+  title: "Panoramica",
 };
 
 export default async function Page() {
@@ -18,9 +18,9 @@ export default async function Page() {
   }
 
   return (
-    <Wrapper session={props.session}>
+    <SessionContext session={props.session}>
       <DashboardPage {...props} />
-    </Wrapper>
+    </SessionContext>
   );
 }
 

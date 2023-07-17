@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { signIn } from "next-auth/react";
-import Button from "src/components/button";
-import c from "lib/common";
+import Button from "src/components/ui/Button";
+import c from "src/configuration/common";
 
 export default function Login({ csrfToken }) {
   const emailRef = useRef();

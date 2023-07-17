@@ -1,6 +1,6 @@
-import { prisma } from "source/data/db";
-import GraphConnection from "lib/graphConnection";
-import { check, redirect, authorizeProject } from "lib/auth";
+import { prisma } from "src/data/db";
+import GraphConnection from "src/data/graph/Connection";
+import { check, redirect, authorizeProject } from "src/auth/auth";
 
 export default async function handler(req, res) {
   const user = await check(req, res);

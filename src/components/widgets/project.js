@@ -10,11 +10,11 @@ import {
   postEmbeddings,
   getProject,
   putProjectRefresh,
-} from "src/components";
-import Community from "lib/community";
-import Edit from "src/components/project/edit";
+} from "src/components/widgets";
+import Community from "src/models/Community";
+import Edit from "src/components/domains/project/Edit";
 
-export default function Project({ project, dispatch, levels, api }) {
+export default function Project({ project, dispatch }) {
   const router = useRouter();
   let [status, setStatus] = useState();
   let [loading, setLoading] = useState(false);
@@ -35,12 +35,12 @@ export default function Project({ project, dispatch, levels, api }) {
       project,
       setLoading,
       onSuccess: ({ result }) => {
-        const community = new Community({ result, levels });
+        const community = new Community({ result });
         dispatch({ type: "updated", community });
         setStatus("Success: data has been updated.");
       },
     });
-  }, [project, setLoading, dispatch, levels]);
+  }, [project, setLoading, dispatch]);
 
   const importProject = useCallback(async () => {
     setStatus("");
@@ -71,45 +71,43 @@ export default function Project({ project, dispatch, levels, api }) {
 
   return (
     <Frame>
-      <Scroll>
-        <div className="px-4 mt-4">
-          {status && <div className="pb-4 text-green-500">{status}</div>}
-          {loading && (
-            <div className="pb-4 font-normal text-indigo-600">
-              <FontAwesomeIcon icon="circle-notch" spin />
-            </div>
-          )}
-          <Edit
-            project={project}
-            setLoading={setLoading}
-            setStatus={setStatus}
-            onUpdate={(project) => {
-              dispatch({ type: "updateProject", project });
-              setStatus("Update successful.");
-            }}
-            onDelete={() => router.push("/skydeck")}
-          />
-          <div className="flex flex-col items-start py-6 space-y-1 text-indigo-300">
-            <div className="flex my-2 space-x-2 text-lg font-thin">
-              <div>Actions</div>
-              {loading && (
-                <div className="font-normal text-indigo-600">
-                  <FontAwesomeIcon icon="circle-notch" spin />
-                </div>
-              )}
-            </div>
-            <button className="hover:underline" onClick={importProject}>
-              Reimport all data from Orbit
-            </button>
-            <button className="hover:underline" onClick={refreshProject}>
-              Fetch latest data from Orbit
-            </button>
-            <button className="hover:underline" onClick={createEmbeddings}>
-              Load embeddings into vector store
-            </button>
+      <div className="px-4 mt-4">
+        {status && <div className="pb-4 text-green-500">{status}</div>}
+        {loading && (
+          <div className="pb-4 font-normal text-indigo-600">
+            <FontAwesomeIcon icon="circle-notch" spin />
           </div>
+        )}
+        <Edit
+          project={project}
+          setLoading={setLoading}
+          setStatus={setStatus}
+          onUpdate={(project) => {
+            dispatch({ type: "updateProject", project });
+            setStatus("Update successful.");
+          }}
+          onDelete={() => router.push("/")}
+        />
+        <div className="flex flex-col items-start py-6 space-y-1 text-indigo-300">
+          <div className="flex my-2 space-x-2 text-lg font-thin">
+            <div>Actions</div>
+            {loading && (
+              <div className="font-normal text-indigo-600">
+                <FontAwesomeIcon icon="circle-notch" spin />
+              </div>
+            )}
+          </div>
+          <button className="hover:underline" onClick={importProject}>
+            Reimport all data from Orbit
+          </button>
+          <button className="hover:underline" onClick={refreshProject}>
+            Fetch latest data from Orbit
+          </button>
+          <button className="hover:underline" onClick={createEmbeddings}>
+            Load embeddings into vector store
+          </button>
         </div>
-      </Scroll>
+      </div>
     </Frame>
   );
 }

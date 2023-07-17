@@ -1,4 +1,4 @@
-import c from "lib/common";
+import c from "src/configuration/common";
 
 const processRow = (record, index) => {
   var a = record.get("a").properties;

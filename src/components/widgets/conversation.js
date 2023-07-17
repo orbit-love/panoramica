@@ -2,11 +2,10 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 
-import { Frame, saveLayout } from "src/components";
-import Thread from "src/components/domain/thread";
-import PromptInput from "src/components/promptInput";
-import { conversationPrompts } from "lib/ai/prompts";
-import { putActivityUpdate } from "src/components/fetches";
+import { Frame, saveLayout } from "src/components/widgets";
+import Thread from "src/components/domains/activity/Thread";
+import PromptInput from "src/components/ui/PromptInput";
+import { conversationPrompts } from "src/configuration/prompts";
 
 export default function Conversation({
   project,
