@@ -1,8 +1,8 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import NameAndIcon from "src/components/domain/NameAndIcon";
-import { Frame, Header, ActivityFeed } from "src/components";
+import NameAndIcon from "src/components/domains/member/NameAndIcon";
+import { Frame, Header, ActivityFeed } from "src/components/widgets";
 
 export default function Connection({ api, params, community, handlers }) {
   var { member, connection } = params;

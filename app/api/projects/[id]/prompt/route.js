@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { StreamingTextResponse, LangChainStream } from "ai";
 
-import { checkApp, authorizeProject } from "lib/auth";
+import { checkApp, authorizeProject } from "src/auth";
 import { OpenAI } from "langchain/llms/openai";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { PineconeStore } from "langchain/vectorstores/pinecone";

@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useRouter } from "next/navigation";
 
-import c from "lib/common";
+import c from "src/configuration/common";
 
 export default function New({ redirectUrl }) {
   const router = useRouter();

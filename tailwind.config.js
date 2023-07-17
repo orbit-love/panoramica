@@ -1,5 +1,3 @@
-const colors = require("tailwindcss/colors");
-
 module.exports = {
   darkMode: "class",
   content: [
@@ -16,14 +14,6 @@ module.exports = {
       sm: "640px",
       md: "905px",
       lg: "1024px",
-    },
-    extend: {
-      colors: {
-        indigo: {
-          800: "#1A2441",
-          900: "#1A2441",
-        },
-      },
     },
   },
   plugins: [require("@tailwindcss/typography")],

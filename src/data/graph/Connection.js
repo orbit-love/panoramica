@@ -1,6 +1,6 @@
-import { graph } from "source/data/db";
+import { graph } from "src/data/db";
 
-export default class GraphConnection {
+export default class Connection {
   constructor() {
     this.driver = graph;
   }

@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Frame } from "src/components";
-import PromptInput from "src/components/promptInput";
+import { Frame } from "src/components/widgets";
+import PromptInput from "src/components/ui/PromptInput";
 
 export default function Prompt({ project, api }) {
   var messageRef = useRef();

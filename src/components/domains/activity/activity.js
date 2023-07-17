@@ -2,9 +2,9 @@ import React from "react";
 import TimeAgo from "react-timeago";
 import { DateTime, Interval, Duration } from "luxon";
 
-import c from "lib/common";
-import NameAndIcon from "src/components/domain/NameAndIcon";
-import SourceIcon from "src/components/domain/source_icon";
+import c from "src/configuration/common";
+import NameAndIcon from "src/components/domains/member/NameAndIcon";
+import SourceIcon from "src/components/domains/activity/SourceIcon";
 
 function highlightSearchTerm(string, searchTerm) {
   if (searchTerm) {

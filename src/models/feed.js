@@ -1,4 +1,4 @@
-import c from "lib/common";
+import c from "src/configuration/common";
 
 const isReply = (thread) => thread.type === "reply";
 

@@ -1,9 +1,9 @@
 import React, { useRef, useCallback, useState, useEffect } from "react";
-
-import Activities from "src/components/domain/activities";
-import { Frame, saveLayout } from "src/components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import c from "lib/common";
+
+import Activities from "src/components/domains/activity/Activities";
+import { Frame, saveLayout } from "src/components/widgets";
+import c from "src/configuration/common";
 
 export default function Search({
   project,

@@ -27,7 +27,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html>
-      <body className="space-gradient text-indigo-100">{children}</body>
+      <body className="bg-indigo-950 text-indigo-100">{children}</body>
     </html>
   );
 }

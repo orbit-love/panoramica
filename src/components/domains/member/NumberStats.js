@@ -6,11 +6,11 @@ export default function NumberStats({ member }) {
     <div className="flex space-x-2">
       <div className="flex justify-end items-center space-x-1 w-12 text-indigo-500">
         <FontAwesomeIcon icon="heart" className="text-xs" />
-        <span title={member.love}>{member.activityCount}</span>
+        <span>{member.activityCount}</span>
       </div>
       <div className="flex justify-end items-center space-x-1 w-12 text-indigo-500">
         <FontAwesomeIcon icon="signal-stream" className="text-xs" />
-        <span title={member.reach}>{member.connectionCount}</span>
+        <span>{member.connectionCount}</span>
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 
-import Activity from "src/components/domain/activity";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import NameAndIcon from "./NameAndIcon";
+import Activity from "src/components/domains/activity/Activity";
+import NameAndIcon from "src/components/domains/member/NameAndIcon";
 
 export default function Thread(props) {
   // depth defaults to 0 - top of the thread
@@ -45,7 +45,6 @@ export default function Thread(props) {
             <FontAwesomeIcon icon="reply" />
             <NameAndIcon
               member={community.findMemberByActivity(activity)}
-              noColor
               onClick={onClickMember}
             />
           </div>

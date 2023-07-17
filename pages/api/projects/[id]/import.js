@@ -1,7 +1,7 @@
-import { prisma } from "source/data/db";
-import { check, redirect, authorizeProject } from "lib/auth";
-import { getAPIUrl, getAPIData } from "lib/orbit/api";
-import { deleteActivities } from "lib/mutations";
+import { prisma } from "src/data/db";
+import { check, redirect, authorizeProject } from "src/auth";
+import { getAPIUrl, getAPIData } from "src/integrations/orbit/api";
+import { deleteActivities } from "src/data/prisma/mutations";
 
 export default async function handler(req, res) {
   const user = await check(req, res);

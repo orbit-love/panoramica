@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import classnames from "classnames";
 
-import c from "lib/common";
+import c from "src/configuration/common";
 
 export default function Edit({
   project,

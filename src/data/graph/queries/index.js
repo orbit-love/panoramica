@@ -1,4 +1,4 @@
-import c from "lib/common";
+import c from "src/configuration/common";
 
 export const getEverything = async (props) => {
   return Promise.all([
@@ -170,38 +170,6 @@ export const getThreads = async function ({
   }
 
   return result;
-};
-
-// get all the activities within the timeframe
-export const getInsights = async ({ projectId, graphConnection }) => {
-  var getDelays = async ({ projectId, graphConnection, direction }) => {
-    const { records } = await graphConnection.run(
-      `MATCH (p:Project { id: $projectId })
-    WITH p
-    MATCH (p)-[:OWNS]-(parent:Activity)<-[:REPLIES_TO]-(child:Activity)
-      WITH parent, child, abs(parent.timestampInt - child.timestampInt) AS responseTime
-      RETURN parent.id as parent, child.id as child, responseTime
-     ORDER BY responseTime ${direction} LIMIT 5`,
-      { projectId }
-    );
-    return records.map((record) => ({
-      parent: record.get("parent"),
-      child: record.get("child"),
-      responseTime: record.get("responseTime"),
-    }));
-  };
-  return {
-    highestDelays: await getDelays({
-      projectId,
-      graphConnection,
-      direction: "DESC",
-    }),
-    lowestDelays: await getDelays({
-      projectId,
-      graphConnection,
-      direction: "ASC",
-    }),
-  };
 };
 
 // get all the activities within the timeframe

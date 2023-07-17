@@ -1,12 +1,13 @@
 import React from "react";
+import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
-import { prisma, safeProjectSelectFields } from "source/data/db";
+import { prisma, safeProjectSelectFields } from "src/data/db";
 
-import Wrapper from "src/components/wrapper";
-import GraphConnection from "lib/graphConnection";
-import DockviewPage from "app/skydeck/projects/[id]/dockview-page";
-import { getEverything } from "lib/graph/queries";
+import SessionContext from "src/components/context/SessionContext";
+import GraphConnection from "src/data/graph/Connection";
+import ProjectPage from "app/projects/[id]/project-page";
+import { getEverything } from "src/data/graph/queries";
 
 export async function generateMetadata({ params }) {
   // read route params
@@ -30,9 +31,9 @@ export default async function Page({ params }) {
   }
 
   return (
-    <Wrapper session={props.session}>
-      <DockviewPage {...props} />
-    </Wrapper>
+    <SessionContext session={props.session}>
+      <ProjectPage {...props} />
+    </SessionContext>
   );
 }
 

@@ -12,17 +12,16 @@ import {
   putProjectProcess,
   putProjectRefresh,
   getProject,
-} from "src/components";
-import c from "lib/common";
-import Community from "lib/community";
-import Feed from "lib/community/feed";
+} from "src/components/widgets";
+import c from "src/configuration/common";
+import Community from "src/models/Community";
+import Feed from "src/models/Feed";
 
 export default function Home(props) {
   let searchRef = useRef();
   const {
     project,
     community,
-    levels,
     dispatch,
     api,
     containerApi,
@@ -88,11 +87,11 @@ export default function Home(props) {
       project,
       setLoading,
       onSuccess: ({ result }) => {
-        const community = new Community({ result, levels });
+        const community = new Community({ result });
         dispatch({ type: "updated", community });
       },
     });
-  }, [project, levels, dispatch]);
+  }, [project, dispatch]);
 
   const importProject = useCallback(async () => {
     putProjectImport({
@@ -220,14 +219,6 @@ export default function Home(props) {
                 >
                   Member List
                 </button>
-                {/* <button
-                      className=""
-                      onClick={() =>
-                        addWidget((props) => <Insights {...props} />)
-                      }
-                    >
-                      Insights
-                    </button> */}
                 <button
                   onClick={() =>
                     addWidget("prompt", "Prompt", {
@@ -260,7 +251,7 @@ export default function Home(props) {
         <Link
           prefetch={false}
           className="text-indigo-600 hover:underline"
-          href={`/skydeck`}
+          href={`/`}
         >
           <FontAwesomeIcon icon="arrow-left" />
           <span className="px-1">Exit</span>

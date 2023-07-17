@@ -1,7 +1,10 @@
-import { check, redirect, authorizeProject, aiReady } from "lib/auth";
-import { getActivities } from "lib/graph/queries";
-import GraphConnection from "lib/graphConnection";
-import { createEmbeddings, deleteEmbeddings } from "lib/vector/mutations";
+import { check, redirect, authorizeProject, aiReady } from "src/auth";
+import { getActivities } from "src/data/graph/queries";
+import GraphConnection from "src/data/graph/Connection";
+import {
+  createEmbeddings,
+  deleteEmbeddings,
+} from "src/integrations/pinecone/embeddings";
 
 export default async function handler(req, res) {
   const user = await check(req, res);

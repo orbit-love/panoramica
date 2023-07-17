@@ -1,8 +1,8 @@
-import { prisma, graph } from "source/data/db";
-import { check, redirect, authorizeProject, aiReady } from "lib/auth";
-import { syncActivities } from "lib/graph/mutations";
-import { createEmbeddings } from "lib/vector/mutations";
-import { getAPIUrl, getAPIData } from "lib/orbit/api";
+import { prisma, graph } from "src/data/db";
+import { check, redirect, authorizeProject, aiReady } from "src/auth";
+import { syncActivities } from "src/data/graph/mutations";
+import { createEmbeddings } from "src/integrations/pinecone/embeddings";
+import { getAPIUrl, getAPIData } from "src/integrations/orbit/api";
 
 export default async function handler(req, res) {
   const user = await check(req, res);

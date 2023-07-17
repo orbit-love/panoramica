@@ -5,9 +5,22 @@ import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 
-import { prisma } from "source/data/db";
-import c from "lib/common";
+import { prisma } from "src/data/db";
 import axios from "axios";
+
+const getMentions = function (text) {
+  let mentions = text?.match(/@\w+/g);
+  if (mentions) {
+    // Remove the @ character from the mentions and de-duplicate
+    let uniqueMentions = [
+      ...new Set(mentions.map((mention) => mention.substring(1))),
+    ];
+    return uniqueMentions;
+  } else {
+    // Return an empty array if there were no mentions
+    return [];
+  }
+};
 
 export function getAPIUrl({ workspace, timeframe = "" }) {
   // only conversational activity types with referenced tweets, 90 days default
@@ -57,7 +70,7 @@ const getDiscordFields = async ({ activity, member, included }) => {
 
   // once we have the text, we can update this
   // we need body_html as body does not have the mentions substituted
-  let mentions = c.getMentions(body_html);
+  let mentions = getMentions(body_html);
   let actor;
   let actorName;
   let sourceChannel = discord_channel;
@@ -133,7 +146,7 @@ const getDiscourseFields = ({ activity, sourceType, member, included }) => {
   }
 
   // parse out mentions
-  let mentions = c.getMentions(body);
+  let mentions = getMentions(body);
   let actor;
   let actorName;
   let sourceChannel = discourse_category;
@@ -184,7 +197,7 @@ const getGitHubFields = async ({ activity, member, included }) => {
   let sourceChannel = repository;
 
   // parse out any mentions
-  let mentions = c.getMentions(g_body);
+  let mentions = getMentions(g_body);
   let actor;
   let actorName;
 
