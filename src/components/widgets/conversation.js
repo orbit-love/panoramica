@@ -138,7 +138,7 @@ export default function Conversation({
         </div>
         <div
           className={classnames("flex flex-col p-4", {
-            "bg-opacity-40 overflow-y-scroll w-1/2 bg-indigo-800": fullscreen,
+            "bg-indigo-950 bg-opacity-50 overflow-y-scroll w-1/2": fullscreen,
             "w-full": !fullscreen,
           })}
         >

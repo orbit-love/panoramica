@@ -13,6 +13,9 @@
   --dv-inactivegroup-visiblepanel-tab-background-color: var(--main-bg-color);
   --dv-inactivegroup-hiddenpanel-tab-background-color: var(--main-bg-color);
 }
+.theme-bg-color {
+  background-color: var(--main-bg-color);
+}
 
 /* import dockview styles */
 @import "../node_modules/dockview/dist/styles/dockview.css";

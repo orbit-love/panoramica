@@ -13,7 +13,7 @@ export default function Frame({ children }) {
     api.updateParameters({ fullscreen: false });
   };
 
-  // do the portal thing
+  // put the portal in .dv-dockview so it picks up the theme
   if (api?.isActive && fullscreen) {
     return createPortal(
       <ErrorBoundary
@@ -21,8 +21,8 @@ export default function Frame({ children }) {
           <div className="p-4 text-red-500">Oops! Something went wrong.</div>
         }
       >
-        <div className="bg-indigo-950 absolute top-0 left-0 z-10 p-5 w-full h-full">
-          <div className="flex relative flex-col h-full rounded-sm border border-indigo-900">
+        <div className="absolute top-0 left-0 z-10 p-5 w-full h-full">
+          <div className="theme-bg-color flex relative flex-col h-full rounded-sm border border-indigo-900">
             <button
               onClick={exitFullscreen}
               className="flex items-center pt-2 pb-2 px-4 bg-indigo-900"
@@ -36,7 +36,7 @@ export default function Frame({ children }) {
           </div>
         </div>
       </ErrorBoundary>,
-      document.body
+      document.querySelector(".dv-dockview")
     );
   }
 
