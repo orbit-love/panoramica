@@ -1,5 +1,5 @@
 import { prisma } from "src/data/db";
-import { check, redirect } from "src/auth/auth";
+import { check, redirect } from "src/auth";
 
 export default async function handler(req, res) {
   const user = await check(req, res);

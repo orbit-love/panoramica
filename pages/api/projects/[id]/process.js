@@ -1,5 +1,5 @@
 import { graph } from "src/data/db";
-import { check, redirect, authorizeProject } from "src/auth/auth";
+import { check, redirect, authorizeProject } from "src/auth";
 import { syncProject } from "src/data/graph/mutations";
 
 export default async function handler(req, res) {

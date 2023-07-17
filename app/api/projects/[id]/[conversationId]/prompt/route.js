@@ -8,7 +8,7 @@ import { Document } from "langchain/document";
 import { loadQAStuffChain } from "langchain/chains";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 
-import { checkApp, authorizeProject } from "src/auth/auth";
+import { checkApp, authorizeProject } from "src/auth";
 import { getConversation } from "src/data/graph/queries/getConversation";
 import GraphConnection from "src/data/graph/Connection";
 

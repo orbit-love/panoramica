@@ -65,8 +65,6 @@ import {
   faListTree,
 } from "@fortawesome/pro-solid-svg-icons";
 
-import { faTelescope } from "@fortawesome/pro-duotone-svg-icons";
-
 // add to library
 library.add(
   faBars,
@@ -112,7 +110,6 @@ library.add(
   faArrowLeft,
   faArrowRight,
   faRightLeft,
-  faTelescope,
   faTwitter,
   faDiscord,
   faGithub,

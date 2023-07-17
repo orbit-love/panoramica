@@ -1,4 +1,4 @@
-import { check, redirect, authorizeProject, aiReady } from "src/auth/auth";
+import { check, redirect, authorizeProject, aiReady } from "src/auth";
 import { getActivities } from "src/data/graph/queries";
 import GraphConnection from "src/data/graph/Connection";
 import {

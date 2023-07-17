@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function NameAndIcon({ member, onClick, noColor }) {
+export default function NameAndIcon({ member, onClick }) {
   if (!member) {
     return <div>No member!</div>;
   }

@@ -6,7 +6,7 @@ import { Document } from "langchain/document";
 import { loadQAStuffChain } from "langchain/chains";
 
 import { graph } from "src/data/db";
-import { checkApp, authorizeProject, aiReady } from "src/auth/auth";
+import { checkApp, authorizeProject, aiReady } from "src/auth";
 import { getConversation } from "src/data/graph/queries/getConversation";
 import { updateActivity } from "src/data/graph/mutations";
 import GraphConnection from "src/data/graph/Connection";

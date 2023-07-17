@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 
-import { checkApp, authorizeProject } from "src/auth/auth";
+import { checkApp, authorizeProject } from "src/auth";
 import { getConversation } from "src/data/graph/queries/getConversation";
 import { updateActivity } from "src/data/graph/mutations";
 import GraphConnection from "src/data/graph/Connection";

@@ -45,7 +45,6 @@ export default function Thread(props) {
             <FontAwesomeIcon icon="reply" />
             <NameAndIcon
               member={community.findMemberByActivity(activity)}
-              noColor
               onClick={onClickMember}
             />
           </div>

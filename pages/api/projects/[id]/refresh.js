@@ -1,5 +1,5 @@
 import { prisma, graph } from "src/data/db";
-import { check, redirect, authorizeProject, aiReady } from "src/auth/auth";
+import { check, redirect, authorizeProject, aiReady } from "src/auth";
 import { syncActivities } from "src/data/graph/mutations";
 import { createEmbeddings } from "src/integrations/pinecone/embeddings";
 import { getAPIUrl, getAPIData } from "src/integrations/orbit/api";

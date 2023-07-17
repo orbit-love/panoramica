@@ -1,5 +1,5 @@
 import GraphConnection from "src/data/graph/Connection";
-import { check, redirect, authorizeProject } from "src/auth/auth";
+import { check, redirect, authorizeProject } from "src/auth";
 import { getConnections } from "src/data/graph/queries";
 
 export default async function handler(req, res) {

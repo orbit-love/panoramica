@@ -1,4 +1,4 @@
-import { check, redirect } from "src/auth/auth";
+import { check, redirect } from "src/auth";
 import { prisma } from "src/data/db";
 
 export default async function handler(req, res) {
