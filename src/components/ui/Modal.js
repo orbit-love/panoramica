@@ -8,7 +8,7 @@ export default function Modal({ title, close, children, fullHeight }) {
       <div
         className={classnames(
           `flex relative flex-col rounded-sm border border-gray-500`,
-          { "h-full": fullHeight }
+          { "w-full h-full": fullHeight }
         )}
       >
         <button

@@ -31,6 +31,16 @@ export default function Activity({
   var { source, sourceChannel } = activity;
 
   var Timestamp = () => {
+    return (
+      <TimeAgo
+        date={activity.timestamp}
+        title={c.formatDate(activity.timestamp)}
+        activityId={activity.id}
+      />
+    );
+  };
+
+  var Since = () => {
     var relativePart;
     if (Array.isArray(timeDisplay)) {
       var [parentTimestamp, timestamp] = timeDisplay;
@@ -43,6 +53,7 @@ export default function Activity({
         .toHuman({ milliseconds: false })
         .split(",")[0];
     }
+
     return (
       <>
         {relativePart && (
@@ -51,11 +62,6 @@ export default function Activity({
             <span className="px-1">·</span>
           </>
         )}
-        <TimeAgo
-          date={activity.timestamp}
-          title={c.formatDate(activity.timestamp)}
-          activityId={activity.id}
-        />
       </>
     );
   };
@@ -78,6 +84,7 @@ export default function Activity({
           </div>
         )}
         <div className="text-xs text-right whitespace-nowrap">
+          <Since />
           {activity.url && (
             <a
               className="hover:underline"
