@@ -180,7 +180,7 @@ export default function Home(props) {
               The project has been created. Click the button to fetch data from
               Orbit. This is a one-time operation and takes up to 60 seconds.
             </p>
-            <button onClick={() => importProject()} className={c.buttonClasses}>
+            <button className="btn" onClick={importProject}>
               Import
             </button>
           </div>
@@ -194,12 +194,11 @@ export default function Home(props) {
                   className="flex mt-2 space-x-2 w-full"
                 >
                   <input
-                    className={c.inputClasses}
                     type="search"
                     ref={searchRef}
                     placeholder="Search..."
                   />
-                  <button type="submit" className={c.buttonClasses}>
+                  <button className="btn" type="submit">
                     <FontAwesomeIcon icon="search" />
                   </button>
                 </form>
@@ -251,7 +250,7 @@ export default function Home(props) {
         <Link
           prefetch={false}
           className="text-indigo-600 hover:underline"
-          href={`/`}
+          href={`/dashboard`}
         >
           <FontAwesomeIcon icon="arrow-left" />
           <span className="px-1">Exit</span>

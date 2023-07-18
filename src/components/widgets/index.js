@@ -160,7 +160,7 @@ export const tabComponents = {
     var icon = source ? (
       <SourceIcon activity={{ source }} />
     ) : (
-      <FontAwesomeIcon icon="list-tree" />
+      <FontAwesomeIcon icon="list" />
     );
     return <TabComponentWithIcon api={api} icon={icon} />;
   },

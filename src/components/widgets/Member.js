@@ -4,7 +4,7 @@ import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import { Frame, Header, ActivityFeed } from "src/components/widgets";
 import CompactConnections from "src/components/domains/member/Connections";
 
-export default function Member({ community, api, params, handlers }) {
+export default function Member({ community, params, handlers }) {
   var { member } = params;
   var { onClickConnection } = handlers;
 

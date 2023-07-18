@@ -1,7 +1,5 @@
 import React, { useState, useRef } from "react";
 import { signIn } from "next-auth/react";
-import Button from "src/components/ui/Button";
-import c from "src/configuration/common";
 
 export default function Login({ csrfToken }) {
   const emailRef = useRef();
@@ -34,16 +32,17 @@ export default function Login({ csrfToken }) {
           <input
             ref={emailRef}
             placeholder="foo@foo.com"
-            className={c.inputClasses + " !w-56"}
+            className={"!w-56"}
             type="email"
             id="email"
             name="email"
           />
         </label>
-        <Button type="submit">Sign in with Email</Button>
+        <button className="btn" type="submit">
+          Sign in with email
+        </button>
       </form>
       <div className="my-4 text-center">
-        {!message && `Enter your email to receive a secure sign in link.`}
         {message && <span className="text-green-500">{message}</span>}
       </div>
     </div>

@@ -74,7 +74,7 @@ export default function Project({ project, dispatch }) {
       <div className="px-4 mt-4">
         {status && <div className="pb-4 text-green-500">{status}</div>}
         {loading && (
-          <div className="pb-4 font-normal text-indigo-600">
+          <div className="pb-4 font-normal">
             <FontAwesomeIcon icon="circle-notch" spin />
           </div>
         )}
@@ -88,11 +88,11 @@ export default function Project({ project, dispatch }) {
           }}
           onDelete={() => router.push("/")}
         />
-        <div className="flex flex-col items-start py-6 space-y-1 text-indigo-300">
+        <div className="flex flex-col items-start py-6 space-y-1">
           <div className="flex my-2 space-x-2 text-lg font-thin">
             <div>Actions</div>
             {loading && (
-              <div className="font-normal text-indigo-600">
+              <div className="font-normal">
                 <FontAwesomeIcon icon="circle-notch" spin />
               </div>
             )}

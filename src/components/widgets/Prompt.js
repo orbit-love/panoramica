@@ -38,13 +38,11 @@ export default function Prompt({ project, api }) {
       <div className="flex flex-col px-4 h-full">
         <div className="flex flex-col flex-1 grow mt-4 space-y-1">
           {loading && (
-            <div className="text-indigo-600">
+            <div className="">
               <FontAwesomeIcon icon="circle-notch" spin />
             </div>
           )}
-          <div className="text-indigo-200 whitespace-pre-wrap">
-            {lastMessage}
-          </div>
+          <div className="whitespace-pre-wrap">{lastMessage}</div>
           <div ref={messageRef} />
         </div>
         <div className="py-4">

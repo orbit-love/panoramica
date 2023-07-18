@@ -64,7 +64,7 @@ export default function Thread(props) {
   return (
     <div
       className={classnames("flex flex-col pt-1", {
-        "border-l border-indigo-700 pl-3": depth > 0,
+        "border-l border-gray-300 pl-3": depth > 0,
       })}
     >
       {showConversation && (

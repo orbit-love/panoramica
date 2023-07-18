@@ -1,8 +1,6 @@
 import React, { useState, useCallback } from "react";
 import classnames from "classnames";
 
-import c from "src/configuration/common";
-
 export default function Edit({
   project,
   onUpdate,
@@ -108,7 +106,6 @@ export default function Edit({
         <input
           type="text"
           required
-          className={c.inputClasses}
           placeholder="My Project"
           value={name}
           onChange={({ target }) => setName(target.value)}
@@ -120,7 +117,6 @@ export default function Edit({
         <input
           type="text"
           required
-          className={c.inputClasses}
           placeholder="my-workspace"
           value={workspace}
           onChange={({ target }) => setWorkspace(target.value)}
@@ -130,7 +126,6 @@ export default function Edit({
         <div className="">Orbit API Key (optional, provide to change)</div>
         <input
           type="text"
-          className={c.inputClasses}
           placeholder="*********************************"
           value={apiKey}
           onChange={({ target }) => setApiKey(target.value)}
@@ -140,7 +135,6 @@ export default function Edit({
         <div className="">Activities URL (Optional/Advanced)</div>
         <input
           type="text"
-          className={c.inputClasses}
           placeholder="https://app.orbit.love/<w>/activities?..."
           value={url}
           onChange={({ target }) => setUrl(target.value)}
@@ -151,7 +145,6 @@ export default function Edit({
         <div className="">Model Name</div>
         <input
           type="text"
-          className={c.inputClasses}
           placeholder="gpt-3.5-turbo-0613"
           value={modelName}
           onChange={({ target }) => setModelName(target.value)}
@@ -161,7 +154,6 @@ export default function Edit({
         <div className="">Model API Key (provide to change)</div>
         <input
           type="text"
-          className={c.inputClasses}
           placeholder="*********************************"
           value={modelApiKey}
           onChange={({ target }) => setModelApiKey(target.value)}
@@ -172,7 +164,6 @@ export default function Edit({
         <div className="">Pinecone API Env</div>
         <input
           type="text"
-          className={c.inputClasses}
           placeholder="us-east4-gcp"
           value={pineconeApiEnv}
           onChange={({ target }) => setPineconeApiEnv(target.value)}
@@ -182,7 +173,6 @@ export default function Edit({
         <div className="">Pinecone Index Name</div>
         <input
           type="text"
-          className={c.inputClasses}
           placeholder=""
           value={pineconeIndexName}
           onChange={({ target }) => setPineconeIndexName(target.value)}
@@ -192,7 +182,6 @@ export default function Edit({
         <div className="">Pinecone API Key</div>
         <input
           type="text"
-          className={c.inputClasses}
           placeholder="*********************************"
           value={pineconeApiKey}
           onChange={({ target }) => setPineconeApiKey(target.value)}
@@ -200,13 +189,13 @@ export default function Edit({
       </div>
       <div className="flex-grow my-auto" />
       <div className="flex space-x-2">
-        <button type="submit" className={c.buttonClasses}>
+        <button className="btn" type="submit">
           Update
         </button>
         <button
           type="button"
           onClick={() => deleteProject()}
-          className={classnames(c.buttonClasses, "bg-red-500 hover:bg-red-400")}
+          className={classnames("btn !bg-red-500 !hover:bg-red-400")}
         >
           Delete
         </button>

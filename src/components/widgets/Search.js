@@ -77,13 +77,12 @@ export default function Search({
         <form onSubmit={onSearchSubmit} className="flex px-4 mb-2 space-x-2">
           <input
             ref={searchRef}
-            className={c.inputClasses}
             required
             type="search"
             value={term}
             onChange={onSearchChange}
           />
-          <button type="submit" className={c.buttonClasses}>
+          <button type="submit" className="btn">
             {loading && <FontAwesomeIcon icon="circle-notch" spin />}
             {!loading && <FontAwesomeIcon icon="search" />}
           </button>

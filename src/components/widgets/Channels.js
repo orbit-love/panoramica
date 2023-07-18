@@ -26,7 +26,7 @@ export default function Channels({ api, community, params, handlers }) {
 
   return (
     <Frame>
-      <div className="flex flex-col items-start pl-2 px-4 mt-4 text-indigo-400">
+      <div className="flex flex-col items-start pl-2 px-4 mt-4">
         <table className="border-spacing-x-2 table w-full whitespace-nowrap border-separate">
           <tbody>
             <tr className="font-bold">
@@ -42,7 +42,7 @@ export default function Channels({ api, community, params, handlers }) {
                   <td className="text-right">{count}</td>
                   <td>
                     <button
-                      className="text-indigo-100 hover:underline"
+                      className="hover:underline"
                       onClick={(e) => onClickChannel(e, source, sourceChannel)}
                     >
                       {c.displayChannel(sourceChannel)}

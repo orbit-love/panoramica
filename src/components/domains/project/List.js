@@ -1,7 +1,11 @@
-import React, { useRef } from "react";
+import React from "react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
-export default function List({ user, projects, projectUrl }) {
+export default function List({ projects, projectUrl }) {
+  const { data: session } = useSession();
+  const user = session.user;
+
   return (
     <div className="flex flex-col items-baseline space-y-2">
       <div className="flex items-baseline space-x-2">

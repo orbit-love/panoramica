@@ -1,0 +1,36 @@
+/* conversation rendering styles */
+.a-html code {
+  @apply text-red-400;
+}
+.a-html a {
+  @apply font-bold text-indigo-400;
+}
+.a-html a:hover {
+  @apply underline;
+}
+.a-html blockquote {
+  @apply pl-2;
+  @apply border-l border-gray-400;
+}
+.a-html blockquote > p:before {
+  content: "> ";
+}
+.a-html p {
+  @apply my-1;
+}
+.a-html img {
+  @apply my-4;
+}
+.a-html ol {
+  @apply my-1;
+  @apply list-decimal;
+  @apply list-inside;
+}
+.a-html ul {
+  @apply my-1;
+  @apply list-disc;
+  @apply list-inside;
+}
+.a-html ul li {
+  @apply my-1;
+}

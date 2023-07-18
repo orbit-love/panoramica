@@ -2,7 +2,7 @@ import React from "react";
 import CompactMember from "src/components/domains/member/Member";
 import { Frame, Header, addMemberWidget } from "src/components/widgets";
 
-export default function Members({ community, addWidget, api }) {
+export default function Members({ community, addWidget }) {
   let { members } = community;
   let onClickMember = (member) => {
     return (e) => {
@@ -15,7 +15,7 @@ export default function Members({ community, addWidget, api }) {
     <Frame>
       <Header>
         <div>Members</div>
-        <div className="text-indigo-500">{members.length}</div>
+        <div className="">{members.length}</div>
       </Header>
       <div className="flex flex-col px-4">
         {members.map((member) => (

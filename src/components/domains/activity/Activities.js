@@ -57,11 +57,13 @@ export default function Activities(props) {
               : null
           }
           onClick={(e) => onClickActivity(e, activity)}
-          className={classnames("flex flex-col py-3 px-4 cursor-pointer", {
-            "bg-indigo-950 bg-opacity-10 hover:bg-blue-950 hover:bg-opacity-80":
-              index % 2 === 0,
-            "bg-blue-950 bg-opacity-50 hover:bg-opacity-80": index % 2 === 1,
-          })}
+          className={classnames(
+            "flex flex-col py-3 px-4 cursor-pointer border-b border-gray-200",
+            {
+              "": index % 2 === 0,
+              "": index % 2 === 1,
+            }
+          )}
         >
           <Thread
             key={activity.id}
@@ -72,9 +74,7 @@ export default function Activities(props) {
           />
         </div>
       ))}
-      {page - 1 === totalPages && (
-        <p className="my-5 text-center text-indigo-800">♥</p>
-      )}
+      {page - 1 === totalPages && <p className="my-5 text-center">♥</p>}
     </div>
   );
 }

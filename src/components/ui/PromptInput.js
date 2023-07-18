@@ -26,14 +26,13 @@ export default function PromptInput(props) {
     >
       <textarea
         ref={textareaRef}
-        className={c.inputClasses}
         value={prompt}
         rows={3}
         placeholder={placeholder}
         onChange={(e) => setPrompt(e.target.value)}
       />
       <div className="flex items-end">
-        <button type="submit" className={c.buttonClasses}>
+        <button className="btn" type="submit">
           Submit
         </button>
       </div>

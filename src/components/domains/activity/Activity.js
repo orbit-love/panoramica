@@ -1,6 +1,6 @@
 import React from "react";
 import TimeAgo from "react-timeago";
-import { DateTime, Interval, Duration } from "luxon";
+import { Interval } from "luxon";
 
 import c from "src/configuration/common";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
@@ -65,7 +65,7 @@ export default function Activity({
         <NameAndIcon member={member} onClick={onClickMember} />
         <div className="flex-1" />
         {showSourceIcon && (
-          <div className="flex overflow-hidden items-center space-x-1 text-xs text-right text-indigo-700 text-ellipsis whitespace-nowrap">
+          <div className="flex overflow-hidden items-center space-x-1 text-xs text-right text-ellipsis whitespace-nowrap">
             <SourceIcon activity={activity} />
             {showSourceChannel && sourceChannel && (
               <button
@@ -80,7 +80,7 @@ export default function Activity({
         <div className="text-xs text-right whitespace-nowrap">
           {activity.url && (
             <a
-              className="text-indigo-700 hover:underline"
+              className="hover:underline"
               href={activity.url}
               target="_blank"
               rel="noreferrer"
@@ -89,14 +89,14 @@ export default function Activity({
             </a>
           )}
           {!activity.url && (
-            <div className="text-indigo-700">
+            <div className="">
               <Timestamp />
             </div>
           )}
         </div>
       </div>
       {renderHtml && (
-        <div className="text-sm text-indigo-200">
+        <div className="text-sm">
           <div
             className="a-html overflow-hidden break-words"
             dangerouslySetInnerHTML={{
@@ -106,7 +106,7 @@ export default function Activity({
         </div>
       )}
       {!renderHtml && (
-        <div className="overflow-hidden text-sm text-indigo-200 break-words">
+        <div className="overflow-hidden text-sm break-words">
           {highlightSearchTerm(activity.text, term)}
         </div>
       )}

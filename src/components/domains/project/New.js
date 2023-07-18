@@ -1,7 +1,6 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import c from "src/configuration/common";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function New({ redirectUrl }) {
   const router = useRouter();
@@ -9,9 +8,11 @@ export default function New({ redirectUrl }) {
   const urlRef = useRef(null);
   const apiKeyRef = useRef(null);
   const workspaceRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const url = "/api/projects/create";
     const data = {
       url: urlRef.current?.value,
@@ -34,15 +35,17 @@ export default function New({ redirectUrl }) {
         } else {
           alert(message);
         }
+        setLoading(false);
       });
   };
 
   return (
-    <div className="flex flex-col space-y-2 w-full">
+    <div className="flex flex-col space-y-2">
       <div className="text-lg font-semibold">Create a New Project</div>
       <div className="text-sm">
-        Provide a project name, Orbit workspace, and API key. This will be used
-        to fetch data from the Orbit API.
+        Provide a project name, Orbit workspace, and Orbit API key. This will be
+        used to fetch data from the Orbit API and store it in the Panoramica
+        project.
       </div>
       <div></div>
       <div></div>
@@ -58,7 +61,6 @@ export default function New({ redirectUrl }) {
             ref={nameRef}
             type="text"
             required
-            className={c.inputClasses}
             placeholder="My Project"
           ></input>
         </div>
@@ -68,7 +70,6 @@ export default function New({ redirectUrl }) {
             ref={workspaceRef}
             type="text"
             required
-            className={c.inputClasses}
             placeholder="my-workspace"
           ></input>
         </div>
@@ -78,13 +79,13 @@ export default function New({ redirectUrl }) {
             ref={apiKeyRef}
             type="text"
             required
-            className={c.inputClasses}
             placeholder="obw_abcdefabcdefabcdefabcdef"
           ></input>
         </div>
         <div className="pt-2">
-          <button type="submit" className={c.buttonClasses}>
-            Create
+          <button className="btn" type="submit">
+            {loading && <FontAwesomeIcon icon="circle-notch" spin />}
+            {!loading && "Submit"}
           </button>
         </div>
       </form>

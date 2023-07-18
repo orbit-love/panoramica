@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { createPortal } from "react-dom";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { WidgetContext } from "src/components/context/WidgetContext";
+import Modal from "src/components/ui/Modal";
 
 export default function Frame({ children }) {
   let { api } = useContext(WidgetContext);
@@ -13,7 +13,6 @@ export default function Frame({ children }) {
     api.updateParameters({ fullscreen: false });
   };
 
-  // put the portal in .dv-dockview so it picks up the theme
   if (api?.isActive && fullscreen) {
     return createPortal(
       <ErrorBoundary
@@ -21,33 +20,19 @@ export default function Frame({ children }) {
           <div className="p-4 text-red-500">Oops! Something went wrong.</div>
         }
       >
-        <div className="absolute top-0 left-0 z-10 p-5 w-full h-full">
-          <div className="theme-bg-color flex relative flex-col h-full rounded-sm border border-indigo-900">
-            <button
-              onClick={exitFullscreen}
-              className="flex items-center pt-2 pb-2 px-4 bg-indigo-900"
-            >
-              <div className="text-sm text-white">{api.title}</div>
-              <div className="absolute top-1 right-3">
-                <FontAwesomeIcon icon="xmark" className="" />
-              </div>
-            </button>
-            <div className="overflow-y-scroll grow">{children}</div>
-          </div>
-        </div>
+        <Modal title={api.title} close={exitFullscreen} />
       </ErrorBoundary>,
-      document.querySelector(".dv-dockview")
+      document.body
     );
   }
 
-  const classes = `relative overflow-y-auto h-full border border-indigo-950`;
   return (
     <ErrorBoundary
       fallback={
         <div className="p-4 text-red-500">Oops! Something went wrong.</div>
       }
     >
-      <div className={classes}>{children}</div>
+      <div className="overflow-y-auto relative h-full">{children}</div>
     </ErrorBoundary>
   );
 }

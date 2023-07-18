@@ -138,7 +138,7 @@ export default function Conversation({
         </div>
         <div
           className={classnames("flex flex-col p-4", {
-            "bg-indigo-950 bg-opacity-50 overflow-y-scroll w-1/2": fullscreen,
+            "overflow-y-scroll w-1/2": fullscreen,
             "w-full": !fullscreen,
           })}
         >
@@ -146,14 +146,12 @@ export default function Conversation({
             <>
               <div className="flex overflow-y-scroll flex-col mb-4 space-y-1">
                 {loading && (
-                  <div className="text-indigo-600">
+                  <div className="">
                     <FontAwesomeIcon icon="circle-notch" spin />
                   </div>
                 )}
-                <div className="text-indigo-200 whitespace-pre-wrap">
-                  {lastMessage}
-                </div>
-                <div className="text-indigo-500">
+                <div className="whitespace-pre-wrap">{lastMessage}</div>
+                <div className="">
                   {!lastMessage && !loading && (
                     <>
                       <div className="mb-1 font-semibold">
@@ -208,7 +206,7 @@ export default function Conversation({
                 {lastMessage && !loading && (
                   <button
                     onClick={resetPrompt}
-                    className="text-sm text-right text-indigo-700 hover:underline"
+                    className="text-sm text-right hover:underline"
                   >
                     reset
                   </button>
@@ -224,8 +222,8 @@ export default function Conversation({
             </>
           )}
           {!project.modelName && (
-            <div className="text-yellow-300">
-              LLM and vector store are not configured. Edit the project and add
+            <div className="text-red-500">
+              LLM and vector stores are not configured. Edit the project and add
               the necessary information to enable AI features.
             </div>
           )}

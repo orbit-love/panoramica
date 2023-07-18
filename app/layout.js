@@ -1,13 +1,13 @@
 import React from "react";
 import "styles/globals.css";
 
-var description = "A collection of preview projects";
-var defaultTitle = "Preview";
-var template = "%s — Preview";
+var description = "Expand conversational landscapes with AI";
+var defaultTitle = "Panoramica";
+var template = "%s — Panoramica";
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL),
-  title: "Preview",
+  title: defaultTitle,
   title: {
     template,
     default: defaultTitle,
@@ -27,7 +27,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html>
-      <body className="bg-indigo-950 text-indigo-100">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }

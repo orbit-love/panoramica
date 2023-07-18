@@ -18,10 +18,7 @@ export default function CompactMember({
     };
   }
   return (
-    <button
-      onClick={onClick}
-      className="bg-opacity-0 hover:bg-opacity-50 flex justify-between space-x-1 bg-indigo-900"
-    >
+    <button onClick={onClick} className="flex justify-between space-x-1">
       <div
         className={classnames("flex items-center space-x-1", {
           "max-w-[50%] overflow-hidden text-ellipsis": metrics,
