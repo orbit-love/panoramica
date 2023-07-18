@@ -21,7 +21,9 @@ body {
 
 /* do some tweaking for different themes */
 .dockview-theme-abyss,
-.dockview-theme-dark {
+.dockview-theme-dark,
+.dockview-theme-dracula,
+.dockview-theme-vs {
   @apply text-white;
 }
 

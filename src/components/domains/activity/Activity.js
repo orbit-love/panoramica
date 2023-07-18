@@ -96,17 +96,15 @@ export default function Activity({
         </div>
       </div>
       {renderHtml && (
-        <div className="text-sm">
-          <div
-            className="a-html overflow-hidden break-words"
-            dangerouslySetInnerHTML={{
-              __html: highlightSearchTerm(activity.textHtml, term),
-            }}
-          ></div>
-        </div>
+        <div
+          className="a-html overflow-hidden break-words"
+          dangerouslySetInnerHTML={{
+            __html: highlightSearchTerm(activity.textHtml, term),
+          }}
+        ></div>
       )}
       {!renderHtml && (
-        <div className="overflow-hidden text-sm break-words">
+        <div className="overflow-hidden break-words">
           {highlightSearchTerm(activity.text, term)}
         </div>
       )}

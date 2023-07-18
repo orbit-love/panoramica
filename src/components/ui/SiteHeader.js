@@ -56,7 +56,7 @@ export default function SiteHeader() {
             document.body
           )}
         <div className="cursor-pointer" onClick={toggleEditingTheme}>
-          <FontAwesomeIcon icon={["far", "sun"]} />
+          <FontAwesomeIcon icon={["fas", "brush"]} />
         </div>
         {user && (
           <div className="flex flex-col items-end ml-4 space-x-3">

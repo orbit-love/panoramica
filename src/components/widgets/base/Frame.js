@@ -20,7 +20,9 @@ export default function Frame({ children }) {
           <div className="p-4 text-red-500">Oops! Something went wrong.</div>
         }
       >
-        <Modal title={api.title} close={exitFullscreen} />
+        <Modal title={api.title} close={exitFullscreen} fullHeight>
+          {children}
+        </Modal>
       </ErrorBoundary>,
       document.body
     );

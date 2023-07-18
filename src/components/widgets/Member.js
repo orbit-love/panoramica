@@ -25,7 +25,7 @@ export default function Member({ community, params, handlers }) {
         <NameAndIcon member={member} onClick={() => {}} />
       </Header>
       <div className="flex flex-col space-y-3">
-        <div className="h-[1px] bg-indigo-900" />
+        <div className="h-[1px]" />
         {member.connectionCount > 0 && (
           <>
             <div className="flex flex-col px-4">
@@ -37,7 +37,6 @@ export default function Member({ community, params, handlers }) {
                 }
               />
             </div>
-            <div className="border-b border-indigo-900" />
           </>
         )}
         <ActivityFeed

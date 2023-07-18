@@ -23,9 +23,10 @@ import {
   faBars,
   faXmark,
   faCircle,
+  faBrush,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { faSun } from "@fortawesome/free-regular-svg-icons";
+import { faMessage } from "@fortawesome/free-regular-svg-icons";
 
 import {
   faTwitter,
@@ -60,10 +61,11 @@ library.add(
   faTag,
   faUser,
   faList,
-  faSun,
+  faBrush,
   faBars,
   faXmark,
-  faCircle
+  faCircle,
+  faMessage
 );
 
 export default library;

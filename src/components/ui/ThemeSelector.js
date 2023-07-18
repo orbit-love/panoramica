@@ -24,7 +24,7 @@ export default function ThemeSelector() {
   ];
 
   return (
-    <div className="flex items-start p-4 py-12 px-24 space-x-3 bg-white">
+    <div className="flex items-start px-4 py-4 pb-10 space-x-3 w-96 bg-white">
       <ul>
         {availableThemes.map((name) => (
           <li key={name}>

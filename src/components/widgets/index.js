@@ -165,7 +165,7 @@ export const tabComponents = {
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
   Conversation: ({ api }) => {
-    var icon = <FontAwesomeIcon icon="messages" />;
+    var icon = <FontAwesomeIcon icon={["regular", "message"]} />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
   Prompt: ({ api }) => {

@@ -10,16 +10,17 @@
 }
 .a-html blockquote {
   @apply pl-2;
-  @apply border-l border-gray-400;
+  @apply border-l border-gray-200;
 }
 .a-html blockquote > p:before {
   content: "> ";
 }
 .a-html p {
-  @apply my-1;
+  @apply my-2;
 }
 .a-html img {
   @apply my-4;
+  @apply border border-gray-200;
 }
 .a-html ol {
   @apply my-1;

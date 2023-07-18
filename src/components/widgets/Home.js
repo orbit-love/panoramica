@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHotkeys } from "react-hotkeys-hook";
 import Link from "next/link";
@@ -16,6 +17,8 @@ import {
 import c from "src/configuration/common";
 import Community from "src/models/Community";
 import Feed from "src/models/Feed";
+import Modal from "src/components/ui/Modal";
+import ThemeSelector from "src/components/ui/ThemeSelector";
 
 export default function Home(props) {
   let searchRef = useRef();
@@ -32,6 +35,11 @@ export default function Home(props) {
   let { onClickSource } = handlers;
   let [loading, setLoading] = useState(false);
   let [position, setPosition] = useState();
+  const [editingTheme, setEditingTheme] = useState(false);
+
+  const toggleEditingTheme = () => {
+    setEditingTheme(!editingTheme);
+  };
 
   useEffect(() => {
     if (!containerApi) {
@@ -149,17 +157,18 @@ export default function Home(props) {
         <div className="flex items-center w-full">
           <div className="text-lg">{project.name}</div>
           <div title="Auto update every 60s">
-            <FontAwesomeIcon
-              icon="circle"
-              className="pl-2 text-sm text-green-600"
-            />
+            <FontAwesomeIcon icon="circle" className="pl-2 text-green-600" />
           </div>
           {loading && (
-            <div className="pl-2 font-normal text-indigo-600">
+            <div className="pl-2 font-normal">
               <FontAwesomeIcon icon="circle-notch" spin />
             </div>
           )}
           <div className="mx-auto" />
+          <button onClick={toggleEditingTheme}>
+            <FontAwesomeIcon icon={["fas", "brush"]} />
+          </button>
+          <div className="mx-1" />
           <button
             className=""
             onClick={() =>
@@ -176,7 +185,7 @@ export default function Home(props) {
       <div className="flex flex-col px-4 h-[92%]">
         {!loading && empty && (
           <div className="flex flex-col space-y-6">
-            <p className="text-sm">
+            <p>
               The project has been created. Click the button to fetch data from
               Orbit. This is a one-time operation and takes up to 60 seconds.
             </p>
@@ -247,15 +256,18 @@ export default function Home(props) {
           </>
         )}
         <div className="my-auto" />
-        <Link
-          prefetch={false}
-          className="text-indigo-600 hover:underline"
-          href={`/dashboard`}
-        >
+        <Link prefetch={false} className="hover:underline" href={`/dashboard`}>
           <FontAwesomeIcon icon="arrow-left" />
           <span className="px-1">Exit</span>
         </Link>
       </div>
+      {editingTheme &&
+        createPortal(
+          <Modal title="Change Theme" close={toggleEditingTheme}>
+            <ThemeSelector />
+          </Modal>,
+          document.body
+        )}
     </Frame>
   );
 }

@@ -42,7 +42,7 @@ export default function New({ redirectUrl }) {
   return (
     <div className="flex flex-col space-y-2">
       <div className="text-lg font-semibold">Create a New Project</div>
-      <div className="text-sm">
+      <div className="">
         Provide a project name, Orbit workspace, and Orbit API key. This will be
         used to fetch data from the Orbit API and store it in the Panoramica
         project.

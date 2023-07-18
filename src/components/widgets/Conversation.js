@@ -138,7 +138,7 @@ export default function Conversation({
         </div>
         <div
           className={classnames("flex flex-col p-4", {
-            "overflow-y-scroll w-1/2": fullscreen,
+            "overflow-y-scroll w-1/2 border-l border-gray-100": fullscreen,
             "w-full": !fullscreen,
           })}
         >
@@ -206,7 +206,7 @@ export default function Conversation({
                 {lastMessage && !loading && (
                   <button
                     onClick={resetPrompt}
-                    className="text-sm text-right hover:underline"
+                    className="text-right hover:underline"
                   >
                     reset
                   </button>
