@@ -25,12 +25,14 @@ export default function Connection({ api, params, community, handlers }) {
   return (
     <Frame>
       <Header>
-        <NameAndIcon member={member} onClick={onClickMember} />
-        <FontAwesomeIcon
-          icon="right-left"
-          className="text-xs text-indigo-700"
-        />
-        <NameAndIcon member={connection} onClick={onClickMember} />
+        <div className="flex items-center space-x-2 text-lg">
+          <NameAndIcon member={member} onClick={onClickMember} />
+          <FontAwesomeIcon
+            icon="right-left"
+            className="text-sm text-indigo-700"
+          />
+          <NameAndIcon member={connection} onClick={onClickMember} />
+        </div>
       </Header>
       <ActivityFeed
         activities={activities}

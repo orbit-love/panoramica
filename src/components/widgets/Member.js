@@ -22,10 +22,11 @@ export default function Member({ community, params, handlers }) {
   return (
     <Frame>
       <Header>
-        <NameAndIcon member={member} onClick={() => {}} />
+        <div className="text-lg">
+          <NameAndIcon member={member} onClick={() => {}} />
+        </div>
       </Header>
       <div className="flex flex-col space-y-3">
-        <div className="h-[1px]" />
         {member.connectionCount > 0 && (
           <>
             <div className="flex flex-col px-4">

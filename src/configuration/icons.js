@@ -16,6 +16,7 @@ import {
   faGear,
   faSearch,
   faCircleNotch,
+  faCircleNodes,
   faReply,
   faTag,
   faUser,
@@ -27,6 +28,7 @@ import {
   faHeart,
   faTowerBroadcast,
   faUserAstronaut,
+  faComment,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faMessage } from "@fortawesome/free-regular-svg-icons";
@@ -71,7 +73,10 @@ library.add(
   faMessage,
   faHeart,
   faTowerBroadcast,
-  faUserAstronaut
+  faUserAstronaut,
+  faCircleNodes,
+  faHeart,
+  faComment
 );
 
 export default library;

@@ -68,7 +68,7 @@ export default function Thread(props) {
       })}
     >
       {showConversation && (
-        <div className="flex flex-col mb-2 space-y-2 text-xs text-indigo-400 whitespace-nowrap">
+        <div className="flex flex-col mb-2 space-y-2 text-sm text-indigo-400 whitespace-nowrap">
           {conversation && (
             <Preview activity={conversation} onClickMember={onClickMember} />
           )}
@@ -99,9 +99,7 @@ export default function Thread(props) {
         />
         {/* if we aren't recursing but there are children, put the number */}
         {!renderChildren && thread?.children?.length > 0 && (
-          <div className="text-xs text-indigo-400">
-            {thread.children.length} replies
-          </div>
+          <div className="text-xs">{thread.children.length} replies</div>
         )}
       </div>
       {renderChildren &&

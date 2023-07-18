@@ -70,7 +70,7 @@ export default function Activity({
         <NameAndIcon member={member} onClick={onClickMember} />
         <div className="flex-1" />
         {showSourceIcon && (
-          <div className="flex overflow-hidden items-center space-x-1 text-xs text-right text-ellipsis whitespace-nowrap">
+          <div className="flex overflow-hidden items-center space-x-1 text-sm text-right text-ellipsis whitespace-nowrap">
             <SourceIcon activity={activity} />
             {showSourceChannel && sourceChannel && (
               <button
@@ -82,7 +82,7 @@ export default function Activity({
             )}
           </div>
         )}
-        <div className="text-xs text-right whitespace-nowrap">
+        <div className="text-sm text-right whitespace-nowrap">
           <Since />
           {activity.url && (
             <a
