@@ -98,7 +98,7 @@ export default function Thread(props) {
           }
         />
         {/* if we aren't recursing but there are children, put the number */}
-        {!renderChildren && thread.children?.length > 0 && (
+        {!renderChildren && thread?.children?.length > 0 && (
           <div className="text-xs text-indigo-400">
             {thread.children.length} replies
           </div>
