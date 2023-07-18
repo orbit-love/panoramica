@@ -1,7 +1,7 @@
-import { prisma } from "src/data/db";
 import { check, redirect, authorizeProject } from "src/auth";
 import { getAPIUrl, getAPIData } from "src/integrations/orbit/api";
-import { deleteActivities } from "src/data/prisma/mutations";
+import { graph } from "src/data/db";
+import { setupProject, syncActivities } from "src/data/graph/mutations";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
@@ -10,6 +10,7 @@ export default async function handler(req, res) {
   }
 
   const { id } = req.query;
+  const session = graph.session();
 
   try {
     var project = await authorizeProject({ id, user, res });
@@ -25,26 +26,30 @@ export default async function handler(req, res) {
       url = getAPIUrl({ workspace });
     }
 
-    // delete existing activities for the project
-    await deleteActivities(project);
+    await session.writeTransaction(async (tx) => {
+      await setupProject({ tx, project });
+    });
 
     // import a maximum of 1,000 activities; start at page 1
     const page = 1;
     const pageLimit = 10;
+
     const handleRecords = async (records) => {
       // this is a quick and dirty way to remove duplicate sourceId from
       // the same batch - the Orbit API has returned two activities with the same
       // source id at times
       var sourceIds = records.map((r) => r.sourceId);
-      records = records.filter((record, index) => {
+      const activities = records.filter((record, index) => {
         return sourceIds.indexOf(record.sourceId) === index;
       });
-      // do a bulk insert for speed
-      await prisma.activity.createMany({
-        data: records,
+
+      const count = await session.writeTransaction(async (tx) => {
+        return await syncActivities({ tx, activities, project });
       });
-      console.log("Created activities: " + records.length);
+
+      console.log("Created activities: " + count);
     };
+
     await getAPIData({
       url,
       apiKey,
@@ -60,5 +65,7 @@ export default async function handler(req, res) {
   } catch (err) {
     console.log("Could not import activities", err);
     return res.status(500).json({ message: "Could not import activities" });
+  } finally {
+    session.close();
   }
 }

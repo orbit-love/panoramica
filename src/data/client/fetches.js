@@ -37,16 +37,6 @@ export async function putActivityUpdate({
     .then(handleResult({ onSuccess, setLoading }));
 }
 
-export async function putProjectProcess({ project, onSuccess, setLoading }) {
-  setLoading(true);
-  return fetch(`/api/projects/${project.id}/process`, {
-    method: "PUT",
-    headers,
-  })
-    .then((res) => res.json())
-    .then(handleResult({ onSuccess, setLoading }));
-}
-
 export async function putProjectRefresh({ project, setLoading, onSuccess }) {
   try {
     return fetch(`/api/projects/${project.id}/refresh`, {

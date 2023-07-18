@@ -10,7 +10,6 @@ import {
   loadDefaultLayout,
   storageKey,
   putProjectImport,
-  putProjectProcess,
   putProjectRefresh,
   getProject,
 } from "src/components/widgets";
@@ -105,13 +104,7 @@ export default function Home(props) {
     putProjectImport({
       project,
       setLoading,
-      onSuccess: () => {
-        putProjectProcess({
-          project,
-          setLoading,
-          onSuccess: () => fetchProject(),
-        });
-      },
+      onSuccess: fetchProject,
     });
   }, [project, setLoading, fetchProject]);
 

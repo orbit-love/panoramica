@@ -328,6 +328,7 @@ const getFields = async ({ project, activity, included }) => {
     globalActor: slug,
     globalActorName: name,
     projectId: project.id,
+    id: sourceId,
     tags: properties,
     url: activity_link,
     payload: {},

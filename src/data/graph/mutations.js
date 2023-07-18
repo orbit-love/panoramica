@@ -1,18 +1,4 @@
 import c from "src/configuration/common";
-import { prisma } from "src/data/db";
-
-export async function syncProject({ project, tx }) {
-  await setupProject({ project, tx });
-
-  const projectId = project.id;
-  const activities = await prisma.activity.findMany({
-    where: {
-      projectId,
-    },
-  });
-
-  return syncActivities({ project, activities, tx });
-}
 
 export async function setupProject({ project, tx }) {
   const projectId = project.id;
@@ -46,9 +32,7 @@ export async function setupProject({ project, tx }) {
 export async function syncActivities({ tx, project, activities }) {
   const projectId = project.id;
 
-  // stringify the timestamps for putting into memgraph
   for (let activity of activities) {
-    activity.timestamp = activity.timestamp.toISOString();
     activity.timestampInt = Date.parse(activity.timestamp);
   }
 

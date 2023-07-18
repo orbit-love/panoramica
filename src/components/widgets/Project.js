@@ -6,7 +6,6 @@ import {
   Frame,
   Scroll,
   putProjectImport,
-  putProjectProcess,
   postEmbeddings,
   getProject,
   putProjectRefresh,
@@ -47,13 +46,7 @@ export default function Project({ project, dispatch }) {
     putProjectImport({
       project,
       setLoading,
-      onSuccess: () => {
-        putProjectProcess({
-          project,
-          setLoading,
-          onSuccess: fetchProject,
-        });
-      },
+      onSuccess: fetchProject,
     });
   }, [project, setLoading, fetchProject]);
 
