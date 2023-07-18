@@ -32,6 +32,7 @@ CREATE TABLE "User" (
     "name" TEXT,
     "email" TEXT,
     "emailVerified" TIMESTAMP(3),
+    "admin" BOOLEAN NOT NULL DEFAULT false,
     "image" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -49,8 +50,14 @@ CREATE TABLE "Project" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "url" TEXT NOT NULL,
+    "workspace" TEXT,
+    "url" TEXT,
     "apiKey" TEXT NOT NULL,
+    "modelName" TEXT,
+    "modelApiKey" TEXT,
+    "pineconeApiKey" TEXT,
+    "pineconeApiEnv" TEXT,
+    "pineconeIndexName" TEXT,
 
     CONSTRAINT "Project_pkey" PRIMARY KEY ("id")
 );
@@ -60,20 +67,20 @@ CREATE TABLE "Activity" (
     "id" TEXT NOT NULL,
     "projectId" TEXT NOT NULL,
     "timestamp" TIMESTAMP(3) NOT NULL,
-    "parentId" TEXT,
     "sourceParentId" TEXT,
     "actor" TEXT NOT NULL,
     "actorName" TEXT,
     "globalActor" TEXT,
     "globalActorName" TEXT,
+    "source" TEXT,
     "sourceId" TEXT NOT NULL,
     "sourceType" TEXT,
+    "sourceChannel" TEXT,
     "text" TEXT NOT NULL,
     "textHtml" TEXT,
     "url" TEXT,
     "mentions" JSONB,
     "tags" JSONB,
-    "entities" JSONB,
     "payload" JSONB,
 
     CONSTRAINT "Activity_pkey" PRIMARY KEY ("id")
@@ -95,7 +102,7 @@ CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token"
 CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Project_name_key" ON "Project"("name");
+CREATE UNIQUE INDEX "Activity_sourceId_projectId_key" ON "Activity"("sourceId", "projectId");
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -108,6 +115,3 @@ ALTER TABLE "Project" ADD CONSTRAINT "Project_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "Activity" ADD CONSTRAINT "Activity_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Activity" ADD CONSTRAINT "Activity_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "Activity"("id") ON DELETE SET NULL ON UPDATE CASCADE;
