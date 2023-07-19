@@ -42,7 +42,7 @@ export default function CompactConnections({ member, community, onClick }) {
         <div className="flex flex-col space-y-3">
           <div className="flex flex-col pb-2">
             <div className="pb-1 font-semibold text-indigo-400">
-              Connections
+              Interactions
             </div>
             <div className="flex flex-col">
               {connections.map((connection) => (
