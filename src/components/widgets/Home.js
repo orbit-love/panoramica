@@ -146,11 +146,14 @@ export default function Home(props) {
 
   return (
     <Frame>
-      <Header remove={null}>
+      <div className="py-2 px-4">
         <div className="flex items-center w-full">
           <div className="text-lg">{project.name}</div>
           <div title="Auto update every 60s">
-            <FontAwesomeIcon icon="circle" className="pl-2 text-green-600" />
+            <FontAwesomeIcon
+              icon="circle"
+              className="pl-2 text-sm text-green-600"
+            />
           </div>
           {loading && (
             <div className="pl-2 font-normal">
@@ -174,7 +177,7 @@ export default function Home(props) {
             <FontAwesomeIcon icon="gear" />
           </button>
         </div>
-      </Header>
+      </div>
       <div className="flex flex-col px-4 h-[92%]">
         {!loading && empty && (
           <div className="flex flex-col space-y-6">
