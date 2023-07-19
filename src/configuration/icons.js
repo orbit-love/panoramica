@@ -24,6 +24,9 @@ import {
   faXmark,
   faCircle,
   faBrush,
+  faHeart,
+  faTowerBroadcast,
+  faUserAstronaut,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faMessage } from "@fortawesome/free-regular-svg-icons";
@@ -65,7 +68,10 @@ library.add(
   faBars,
   faXmark,
   faCircle,
-  faMessage
+  faMessage,
+  faHeart,
+  faTowerBroadcast,
+  faUserAstronaut
 );
 
 export default library;

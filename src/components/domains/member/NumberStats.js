@@ -9,7 +9,7 @@ export default function NumberStats({ member }) {
         <span>{member.activityCount}</span>
       </div>
       <div className="flex justify-end items-center space-x-1 w-12 text-indigo-500">
-        <FontAwesomeIcon icon="signal-stream" className="text-xs" />
+        <FontAwesomeIcon icon="tower-broadcast" className="text-xs" />
         <span>{member.connectionCount}</span>
       </div>
     </div>
