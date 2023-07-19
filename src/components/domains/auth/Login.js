@@ -43,7 +43,7 @@ export default function Login({ csrfToken }) {
         </button>
       </form>
       <div className="my-4 text-center">
-        {message && <span className="text-green-500">{message}</span>}
+        {message && <span className="text-success">{message}</span>}
       </div>
     </div>
   );

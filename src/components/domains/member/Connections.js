@@ -41,7 +41,7 @@ export default function CompactConnections({ member, community, onClick }) {
       {connections.length > 0 && (
         <div className="flex flex-col space-y-3">
           <div className="flex flex-col pb-2">
-            <div className="pb-1 font-semibold text-indigo-400">
+            <div className="pb-1 font-semibold text-secondary">
               Interactions
             </div>
             <div className="flex flex-col">

@@ -24,6 +24,26 @@
   --dv-paneview-header-border-color: rgb(51, 51, 51);
 } */
 
+/* add colors for light and dark themes */
+.dockview-theme-light {
+  --pan-primary-color: theme("colors.rose.600");
+  --pan-secondary-color: theme("colors.indigo.500");
+  --pan-tertiary-color: theme("colors.orange.500");
+  --pan-alert-color: theme("colors.red.500");
+  --pan-success-color: theme("colors.green.500");
+}
+
+.dockview-theme-dark,
+.dockview-theme-abyss {
+  --pan-primary-color: theme("colors.rose.400");
+  --pan-secondary-color: theme("colors.indigo.400");
+  --pan-tertiary-color: theme("colors.orange.500");
+  --pan-alert-color: theme("colors.red.500");
+  --pan-success-color: theme("colors.green.500");
+}
+
+/* these classes allow you to style based on the theme */
+/* the mapping is a best guess to the closest dockview var */
 body {
   --pan-color: var(--dv-activegroup-visiblepanel-tab-color);
   --pan-background-color: var(--dv-group-view-background-color);
@@ -33,11 +53,21 @@ body {
   color: var(--pan-color);
 }
 
-/* these classes allow you to style based on the theme */
-/* the mapping is a best guess to the closest dockview var */
+/* colors */
 .theme-color {
   color: var(--pan-color);
 }
+.theme-primary-color {
+  color: var(--pan-primary-color);
+}
+.theme-secondary-color {
+  color: var(--pan-secondary-color);
+}
+.theme-tertiary-color {
+  color: var(--pan-tertiary-color);
+}
+
+/* backgrounds and borders */
 .theme-background-color {
   background-color: var(--pan-background-color);
 }

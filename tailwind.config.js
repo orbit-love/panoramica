@@ -1,3 +1,5 @@
+const colors = require("tailwindcss/colors");
+
 module.exports = {
   darkMode: "class",
   content: [
@@ -14,6 +16,21 @@ module.exports = {
       sm: "640px",
       md: "905px",
       lg: "1024px",
+    },
+    colors: {
+      primary: "var(--pan-primary-color)",
+      secondary: "var(--pan-secondary-color)",
+      tertiary: "var(--pan-tertiary-color)",
+      alert: "var(--pan-alert-color)",
+      success: "var(--pan-success-color)",
+      red: colors.red,
+      rose: colors.rose,
+      orange: colors.orange,
+      indigo: colors.indigo,
+      white: colors.white,
+      blue: colors.blue,
+      gray: colors.gray,
+      green: colors.green,
     },
   },
   plugins: [require("@tailwindcss/typography")],

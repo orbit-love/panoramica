@@ -53,7 +53,7 @@ export default function Thread(props) {
           </div>
         </div>
         {activityThread.children.length > 1 && (
-          <div className="pl-3 text-indigo-400">
+          <div className="pl-3 text-secondary">
             {activityThread.children.length} replies
           </div>
         )}
@@ -68,7 +68,7 @@ export default function Thread(props) {
       })}
     >
       {showConversation && (
-        <div className="flex flex-col mb-2 space-y-2 text-sm text-indigo-400 whitespace-nowrap">
+        <div className="flex flex-col mb-2 space-y-2 text-sm text-secondary whitespace-nowrap">
           {conversation && (
             <Preview activity={conversation} onClickMember={onClickMember} />
           )}

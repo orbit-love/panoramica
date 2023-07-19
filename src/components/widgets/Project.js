@@ -65,7 +65,7 @@ export default function Project({ project, dispatch }) {
   return (
     <Frame>
       <div className="px-4 mt-4">
-        {status && <div className="pb-4 text-green-500">{status}</div>}
+        {status && <div className="text-success pb-4">{status}</div>}
         {loading && (
           <div className="pb-4 font-normal">
             <FontAwesomeIcon icon="circle-notch" spin />

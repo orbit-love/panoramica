@@ -25,7 +25,7 @@ export default function Source({ community, params, api, handlers }) {
           <div>{api.title}</div>
           {sourceChannels.length > 0 && (
             <button
-              className="mr-2 text-indigo-700"
+              className="mr-2 text-secondary"
               onClick={(e) => onClickChannels(e, source)}
             >
               <FontAwesomeIcon icon="bars" />

@@ -1,9 +1,10 @@
 /* conversation rendering styles */
 .a-html code {
-  @apply text-red-400;
+  color: var(--pan-primary-color);
 }
 .a-html a {
-  @apply font-bold text-indigo-400;
+  @apply font-bold;
+  color: var(--pan-secondary-color);
 }
 .a-html a:hover {
   @apply underline;
@@ -18,7 +19,7 @@
   content: "> ";
 }
 .a-html p {
-  @apply my-2;
+  @apply mb-2;
 }
 .a-html img {
   @apply my-4;

@@ -29,7 +29,7 @@ export default function Connection({ api, params, community, handlers }) {
           <NameAndIcon member={member} onClick={onClickMember} />
           <FontAwesomeIcon
             icon="right-left"
-            className="text-sm text-indigo-700"
+            className="text-secondary text-sm"
           />
           <NameAndIcon member={connection} onClick={onClickMember} />
         </div>

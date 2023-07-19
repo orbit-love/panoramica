@@ -20,8 +20,6 @@ export default function ThemeSelector() {
     "dockview-theme-light",
     "dockview-theme-dark",
     "dockview-theme-abyss",
-    "dockview-theme-vs",
-    "dockview-theme-dracula",
   ];
 
   return (
@@ -38,7 +36,7 @@ export default function ThemeSelector() {
                 value={name}
                 defaultChecked={name === theme.name}
               ></input>
-              <span>{c.titleize(name.split("-").slice(-1)[0])}</span>
+              <span>{c.titleize(name.split("-").slice(-1).join(""))}</span>
             </label>
           </li>
         ))}

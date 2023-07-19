@@ -152,7 +152,7 @@ export default function Home(props) {
           <div title="Auto update every 60s">
             <FontAwesomeIcon
               icon="circle"
-              className="pl-2 text-sm text-green-600"
+              className="text-success pl-2 text-sm"
             />
           </div>
           {loading && (
@@ -245,7 +245,7 @@ export default function Home(props) {
                   </div>
                 ))}
               </div>
-              <button className="text-red-500" onClick={resetWidgets}>
+              <button className="text-alert" onClick={resetWidgets}>
                 Reset
               </button>
             </div>
