@@ -1,5 +1,6 @@
 import { React, useContext } from "react";
 
+import c from "src/configuration/common";
 import {
   ThemeContext,
   ThemeDispatchContext,
@@ -24,22 +25,24 @@ export default function ThemeSelector() {
   ];
 
   return (
-    <div className="flex items-start px-4 py-4 pb-10 space-x-3 w-96 bg-white">
-      <ul>
+    <form className="px-4 py-4 pb-10 w-96">
+      <ul className="flex flex-col space-y-1">
         {availableThemes.map((name) => (
           <li key={name}>
-            {name === theme.name && <span className="opacity-50">{name}</span>}
-            {name !== theme.name && (
-              <button
+            <label className="flex items-center space-x-1">
+              <input
+                type="radio"
+                name="theme"
                 className="hover:underline"
                 onClick={() => onSelectTheme(name)}
-              >
-                {name}
-              </button>
-            )}
+                value={name}
+                defaultChecked={name === theme.name}
+              ></input>
+              <span>{c.titleize(name.split("-").slice(-1)[0])}</span>
+            </label>
           </li>
         ))}
       </ul>
-    </div>
+    </form>
   );
 }

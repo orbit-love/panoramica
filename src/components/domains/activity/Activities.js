@@ -58,7 +58,7 @@ export default function Activities(props) {
           }
           onClick={(e) => onClickActivity(e, activity)}
           className={classnames(
-            "flex flex-col py-3 px-4 cursor-pointer border-b border-gray-200",
+            "flex flex-col py-3 px-4 cursor-pointer border-b theme-border-color",
             {
               "": index % 2 === 0,
               "": index % 2 === 1,

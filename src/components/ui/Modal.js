@@ -8,23 +8,25 @@ export default function Modal({ title, close, children, fullHeight }) {
       onClick={(e) => {
         if (e.target === e.currentTarget) close();
       }}
-      className="bg-opacity-50 flex absolute top-0 left-0 z-10 flex-col justify-center items-center p-5 w-full h-full bg-gray-100"
+      className="flex absolute top-0 left-0 z-10 flex-col justify-center items-center p-5 w-full h-full"
     >
       <div
         className={classnames(
-          `flex relative flex-col rounded-sm border border-gray-500`,
+          `theme-border-color theme-inverted flex relative flex-col rounded-sm border-2`,
           { "w-full h-full": fullHeight }
         )}
       >
         <button
           onClick={close}
-          className="flex items-center pt-2 pb-2 px-4 bg-gray-500"
+          className="theme-inverted flex items-center pt-2 pb-2 px-4"
         >
-          <div className="text-white">{title}</div>
+          <div>{title}</div>
           <div className="mx-auto" />
-          <FontAwesomeIcon icon="xmark" className="text-white" />
+          <FontAwesomeIcon icon="xmark" />
         </button>
-        <div className="overflow-y-scroll grow bg-white">{children}</div>
+        <div className="theme-color theme-background-color overflow-y-scroll grow">
+          {children}
+        </div>
       </div>
     </div>
   );

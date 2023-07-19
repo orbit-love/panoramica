@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useReducer, useEffect } from "react";
+import React, { useReducer, useLayoutEffect } from "react";
 
 import {
   ThemeContext,
@@ -19,23 +19,27 @@ const themeReducer = (_, { type, name }) => {
 export default function WithTheme({ children }) {
   // we can't access localStorage on the server so we
   // start with no theme and load from localStorage in useEffect
-  const initialObject = {};
-  const [object, dispatch] = useReducer(themeReducer, initialObject);
+  const initialTheme = {};
+  const [theme, dispatch] = useReducer(themeReducer, initialTheme);
 
-  useEffect(() => {
-    var initialObject;
+  useLayoutEffect(() => {
+    var initialTheme;
     var string = localStorage.getItem(localStorageKey);
     try {
-      initialObject = JSON.parse(string);
+      initialTheme = JSON.parse(string);
     } catch (e) {
       console.log("Could not parse theme from local storage", string);
     }
-    initialObject = initialObject || { name: "dockview-theme-light" };
-    dispatch({ type: "change", name: initialObject.name });
+    initialTheme = initialTheme || { name: "dockview-theme-light" };
+    dispatch({ type: "change", name: initialTheme.name });
   }, []);
 
+  useLayoutEffect(() => {
+    document.body.classList = theme.name;
+  }, [theme.name]);
+
   return (
-    <ThemeContext.Provider value={object}>
+    <ThemeContext.Provider value={theme}>
       <ThemeDispatchContext.Provider value={dispatch}>
         {children}
       </ThemeDispatchContext.Provider>

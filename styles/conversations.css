@@ -10,7 +10,9 @@
 }
 .a-html blockquote {
   @apply pl-2;
-  @apply border-l border-gray-200;
+  border-left-style: solid;
+  border-left-width: 1px;
+  border-color: var(--pan-border-color);
 }
 .a-html blockquote > p:before {
   content: "> ";
@@ -20,7 +22,9 @@
 }
 .a-html img {
   @apply my-4;
-  @apply border border-gray-200;
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--pan-border-color);
 }
 .a-html ol {
   @apply my-1;
