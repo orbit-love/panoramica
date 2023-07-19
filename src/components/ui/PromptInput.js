@@ -1,14 +1,9 @@
-import React, { useRef, useEffect } from "react";
-import c from "src/configuration/common";
+import React, { useRef } from "react";
 
 export default function PromptInput(props) {
   let { prompt, fetchPrompt, setPrompt, placeholder } = props;
   let textareaRef = useRef();
   let formRef = useRef();
-
-  useEffect(() => {
-    textareaRef.current.focus();
-  }, []);
 
   const onKeyDown = (e) => {
     if (e.keyCode == 13 && e.shiftKey == false) {

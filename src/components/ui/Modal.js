@@ -4,7 +4,12 @@ import classnames from "classnames";
 
 export default function Modal({ title, close, children, fullHeight }) {
   return (
-    <div className="bg-opacity-50 flex absolute top-0 left-0 z-10 flex-col justify-center items-center p-5 w-full h-full bg-gray-100">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) close();
+      }}
+      className="bg-opacity-50 flex absolute top-0 left-0 z-10 flex-col justify-center items-center p-5 w-full h-full bg-gray-100"
+    >
       <div
         className={classnames(
           `flex relative flex-col rounded-sm border border-gray-500`,

@@ -19,14 +19,6 @@ body {
   display: none;
 }
 
-/* do some tweaking for different themes */
-.dockview-theme-abyss,
-.dockview-theme-dark,
-.dockview-theme-dracula,
-.dockview-theme-vs {
-  @apply text-white;
-}
-
 /* import dockview styles */
 @import "../node_modules/dockview/dist/styles/dockview.css";
 
@@ -35,3 +27,6 @@ body {
 
 /* import conversation styles */
 @import "./conversations.css";
+
+/* import theme styles */
+@import "./theme.css";

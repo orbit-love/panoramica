@@ -90,7 +90,6 @@ export default function Conversation({
     }
   }, [project, activity, setLastSummary, defaultSummary]);
 
-  console.log(activity);
   useEffect(() => {
     if (!activity.summary) {
       if (project.modelName) {
