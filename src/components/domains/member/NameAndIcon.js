@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function NameAndIcon({ member, onClick }) {
+export default function NameAndIcon({ member, suffix, onClick }) {
   if (!member) {
     return <div>No member!</div>;
   }
@@ -15,7 +15,7 @@ export default function NameAndIcon({ member, onClick }) {
       className="flex overflow-hidden items-center space-x-1 cursor-pointer"
     >
       <div className="overflow-hidden text-rose-500 text-ellipsis whitespace-nowrap hover:underline">
-        {member.globalActorName || member.actorName}
+        {member.globalActorName || member.actorName} {suffix}
       </div>
     </div>
   );

@@ -208,19 +208,19 @@ export const getConnections = async ({
     CALL {
       WITH m AS outgoing, a
       MATCH (outgoing)-[:DID]->(a)-[:MENTIONS]->(incoming:Member)
-      WITH outgoing, incoming, COLLECT(a.id) as activities, count(*) AS count
-      WITH outgoing, incoming, activities, count WHERE count > 0
-      RETURN outgoing, incoming, activities, count
+      WITH outgoing, incoming, max(a.timestampInt) as lastInteraction, COLLECT(a.id) as activities, count(*) AS count
+      WITH outgoing, incoming, lastInteraction, activities, count WHERE count > 0
+      RETURN outgoing, incoming, lastInteraction, activities, count
     UNION
       WITH m AS outgoing, a
       MATCH (outgoing)-[:DID]->(a)-[:REPLIES_TO]->(:Activity)<-[:DID]-(incoming:Member)
-      WITH outgoing, incoming, COLLECT(a.id) as activities, count(*) AS count
-      WITH outgoing, incoming, activities, count WHERE count > 0
-      RETURN outgoing, incoming, activities, count
+      WITH outgoing, incoming, max(a.timestampInt) as lastInteraction, COLLECT(a.id) as activities, count(*) AS count
+      WITH outgoing, incoming, lastInteraction, activities, count WHERE count > 0
+      RETURN outgoing, incoming, lastInteraction, activities, count
     }
-    WITH outgoing, incoming, activities, count
+    WITH outgoing, incoming, lastInteraction, activities, count
       WHERE outgoing <> incoming
-    RETURN outgoing, incoming, activities, count ORDER by outgoing.globalActor, count DESC`,
+    RETURN outgoing, incoming, lastInteraction, activities, count ORDER by outgoing.globalActor, count DESC`,
     { projectId, from, to }
   );
 
@@ -240,7 +240,7 @@ const mapifyConnections = (records) => {
     }
 
     if (!(mentioned in result[mentioner])) {
-      result[mentioner][mentioned] = [0, 0];
+      result[mentioner][mentioned] = [0, 0, row.get("lastInteraction")];
     }
 
     result[mentioner][mentioned][0] += count;
@@ -250,12 +250,11 @@ const mapifyConnections = (records) => {
     }
 
     if (!(mentioner in result[mentioned])) {
-      result[mentioned][mentioner] = [0, 0];
+      result[mentioned][mentioner] = [0, 0, row.get("lastInteraction")];
     }
 
     result[mentioned][mentioner][1] += count;
   }
-
   return result;
 };
 
