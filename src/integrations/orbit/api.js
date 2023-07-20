@@ -100,16 +100,18 @@ const getDiscordFields = async ({ activity, member, included }) => {
     textHtml = String(doc);
   }
 
-  // images will be put out as raw URLs on the cdn.discordapp.com domain, so we rewrite them
-  // into actual HTML tags
-  function replaceUrlWithImgTag(text) {
-    var pattern =
-      /(?<!["'=])(http[s]?:\/\/[^"\s]+(\.(png|jpg|jpeg|gif|bmp)))(?!["'])/g;
-    var newText = text.replace(pattern, '<img src="$1" alt="image" />');
-    return newText;
+  // turn any anchor tags that are just links to images into img tags
+  function replaceAnchorWithImageTags(htmlString) {
+    const pattern =
+      /<a[^>]*href=["'](http[s]?:\/\/[^"\s]+(\.(png|jpg|jpeg|gif|bmp)))["'][^>]*>(.*?)<\/a>/gi;
+    const newHtmlString = htmlString.replace(
+      pattern,
+      '<img src="$1" alt="Discord image" />'
+    );
+    return newHtmlString;
   }
 
-  textHtml = replaceUrlWithImgTag(textHtml);
+  textHtml = replaceAnchorWithImageTags(textHtml);
 
   return {
     sourceId,

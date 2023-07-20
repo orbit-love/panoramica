@@ -56,16 +56,14 @@ export default function Project({ project, dispatch }) {
     putProjectRefresh({
       project,
       setLoading,
-      onSuccess: () => {
-        getProject({ project, setLoading, onSuccess: fetchProject });
-      },
+      onSuccess: fetchProject,
     });
   }, [project, setLoading, fetchProject]);
 
   return (
     <Frame>
       <div className="px-4 mt-4">
-        {status && <div className="text-green-500 pb-4">{status}</div>}
+        {status && <div className="pb-4 text-green-500">{status}</div>}
         {loading && (
           <div className="pb-4 font-normal">
             <FontAwesomeIcon icon="circle-notch" spin />
