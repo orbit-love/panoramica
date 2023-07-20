@@ -16,7 +16,7 @@ body {
 
 /* Don't show the tab on the home view */
 .groupview.locked-groupview .tabs-and-actions-container {
-  display: none;
+  @apply visible md:hidden;
 }
 
 /* import dockview styles */

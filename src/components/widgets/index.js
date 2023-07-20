@@ -140,21 +140,15 @@ const TabComponentWithIcon = ({ api, icon, children }) => {
           </>
         )}
       </div>
-      {title !== "Home" && (
-        <div className="" onClick={onClose}>
-          <FontAwesomeIcon icon="xmark" />
-        </div>
-      )}
+      <div className="" onClick={onClose}>
+        <FontAwesomeIcon icon="xmark" />
+      </div>
     </div>
   );
 };
 export const tabComponents = {
-  Home: ({ title }) => {
-    return (
-      <div className="dockview-react-tab">
-        <div className="dockview-react-tab-title">{title}</div>
-      </div>
-    );
+  Home: ({ api }) => {
+    return <TabComponentWithIcon api={api} />;
   },
   Source: ({ api, params: { source } }) => {
     var icon = source ? (

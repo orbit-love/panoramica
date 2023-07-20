@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useReducer, useState, useCallback, useContext } from "react";
+import React, {
+  useReducer,
+  useState,
+  useCallback,
+  useContext,
+  useEffect,
+} from "react";
 import { Orientation, DockviewReact } from "dockview";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -58,7 +64,10 @@ export default function ProjectPage({ project, data }) {
         try {
           const layout = JSON.parse(layoutString);
           api.fromJSON(layout);
-          success = true;
+          // if no panels were loaded, load the default layout instead
+          if (api.panels.length > 0) {
+            success = true;
+          }
         } catch (err) {
           console.log("Could not load layout", err);
         }
@@ -72,6 +81,19 @@ export default function ProjectPage({ project, data }) {
     },
     [project, setContainerApi]
   );
+
+  useEffect(() => {
+    if (!containerApi) {
+      return;
+    }
+    const disposable = containerApi.onDidLayoutChange(() => {
+      const layout = containerApi.toJSON();
+      localStorage.setItem(storageKey(project), JSON.stringify(layout));
+      console.log("Layout saved...");
+    });
+
+    return () => disposable.dispose();
+  }, [containerApi, project]);
 
   // the escape key closes the active panel
   useHotkeys(
