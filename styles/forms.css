@@ -1,7 +1,7 @@
 body .btn {
   @apply flex-1 py-2 px-4 whitespace-nowrap rounded-md outline-none select-none;
 
-  background-color: var(--pan-secondary-color);
+  @apply bg-secondary;
   @apply text-white;
 }
 

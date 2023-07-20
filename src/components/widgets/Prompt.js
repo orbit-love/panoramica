@@ -3,8 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Frame } from "src/components/widgets";
 import PromptInput from "src/components/ui/PromptInput";
+import Output from "../domains/ai/Output";
+import Loader from "../domains/ui/Loader";
 
-export default function Prompt({ project, api }) {
+export default function Prompt({ project }) {
   var messageRef = useRef();
   let [prompt, setPrompt] = useState("");
   let [loading, setLoading] = useState(false);
@@ -33,18 +35,25 @@ export default function Prompt({ project, api }) {
     },
     [project, setLastMessage, prompt]
   );
+
+  const resetPrompt = useCallback(() => {
+    setPrompt("");
+    setLastMessage(null);
+  }, [setPrompt, setLastMessage]);
+
   return (
     <Frame>
-      <div className="flex flex-col px-4 h-full">
-        <div className="flex flex-col flex-1 grow mt-4 space-y-1">
-          {loading && (
-            <div className="">
-              <FontAwesomeIcon icon="circle-notch" spin />
-            </div>
-          )}
-          <div className="whitespace-pre-wrap">{lastMessage}</div>
-          <div ref={messageRef} />
-        </div>
+      <div className="flex flex-col p-4 h-full">
+        <div className="flex-grow" />
+        <Output
+          lastMessage={lastMessage}
+          loading={loading}
+          resetPrompt={resetPrompt}
+          messageRef={messageRef}
+        >
+          Hello, I'm a friendly AI that can answer questions about your
+          community.
+        </Output>
         <div className="py-4">
           <PromptInput
             prompt={prompt}

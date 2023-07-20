@@ -6,6 +6,8 @@ import { Frame, saveLayout } from "src/components/widgets";
 import Thread from "src/components/domains/activity/Thread";
 import PromptInput from "src/components/ui/PromptInput";
 import { conversationPrompts } from "src/configuration/prompts";
+import ExamplePrompts from "../domains/ai/ExamplePrompts";
+import Output from "../domains/ai/Output";
 
 export default function Conversation({
   project,
@@ -144,72 +146,14 @@ export default function Conversation({
         >
           {project.modelName && (
             <>
-              <div className="flex overflow-y-scroll flex-col mb-4 space-y-1">
-                {loading && (
-                  <div className="">
-                    <FontAwesomeIcon icon="circle-notch" spin />
-                  </div>
-                )}
-                <div className="whitespace-pre-wrap">{lastMessage}</div>
-                <div className="text-tertiary font-light">
-                  {!lastMessage && !loading && (
-                    <>
-                      <div className="mb-1">Load an example prompt:</div>
-                      <ul className="list-disc list-inside">
-                        <li>
-                          <button
-                            className="hover:underline"
-                            onClick={() => runPrompt("NextSteps")}
-                          >
-                            Determine the next steps
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            className="hover:underline"
-                            onClick={() => runPrompt("Topics")}
-                          >
-                            List the key topics discussed
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            className="hover:underline"
-                            onClick={() => runPrompt("Translate")}
-                          >
-                            Translate the conversation into French
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            className="hover:underline"
-                            onClick={() => runPrompt("Timing")}
-                          >
-                            Analyze the time between messages
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            className="hover:underline"
-                            onClick={() => runPrompt("Tabularize")}
-                          >
-                            Display the conversation as a table
-                          </button>
-                        </li>
-                      </ul>
-                    </>
-                  )}
-                </div>
-                <div ref={messageRef} />
-                {lastMessage && !loading && (
-                  <button
-                    onClick={resetPrompt}
-                    className="text-right hover:underline"
-                  >
-                    reset
-                  </button>
-                )}
-              </div>
+              <Output
+                lastMessage={lastMessage}
+                loading={loading}
+                resetPrompt={resetPrompt}
+                messageRef={messageRef}
+              >
+                <ExamplePrompts runPrompt={runPrompt} />
+              </Output>
               {fullscreen && <div className="grow" />}
               <PromptInput
                 prompt={prompt}

@@ -48,34 +48,36 @@ export default function Activities(props) {
 
   return (
     <div ref={containerRef} className="overflow-y-scroll">
-      {items.map((activity, index) => (
-        <div
-          key={activity.id}
-          ref={
-            index === items.length - 1 && page <= totalPages
-              ? setLastElement
-              : null
-          }
-          onClick={(e) => onClickActivity(e, activity)}
-          className={classnames(
-            "flex flex-col py-3 px-4 cursor-pointer border-y border-gray-200 dark:border-gray-800",
-            {
-              "hover:bg-gray-100 hover:bg-opacity-50 dark:hover:bg-gray-800 dark:hover:bg-opacity-40":
-                index % 2 === 0,
-              "bg-gray-100 hover:bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-50 dark:hover:bg-opacity-90":
-                index % 2 === 1,
-            }
-          )}
-        >
-          <Thread
+      {items
+        .filter((a) => a)
+        .map((activity, index) => (
+          <div
             key={activity.id}
-            activity={activity}
-            community={community}
-            maxDepth={maxDepth}
-            handlers={handlers}
-          />
-        </div>
-      ))}
+            ref={
+              index === items.length - 1 && page <= totalPages
+                ? setLastElement
+                : null
+            }
+            onClick={(e) => onClickActivity(e, activity)}
+            className={classnames(
+              "flex flex-col py-3 px-4 cursor-pointer border-y border-gray-200 dark:border-gray-800",
+              {
+                "hover:bg-gray-100 hover:bg-opacity-50 dark:hover:bg-gray-800 dark:hover:bg-opacity-40":
+                  index % 2 === 0,
+                "bg-gray-100 hover:bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-50 dark:hover:bg-opacity-90":
+                  index % 2 === 1,
+              }
+            )}
+          >
+            <Thread
+              key={activity.id}
+              activity={activity}
+              community={community}
+              maxDepth={maxDepth}
+              handlers={handlers}
+            />
+          </div>
+        ))}
       {page - 1 === totalPages && <p className="my-5 text-center">♥</p>}
     </div>
   );
