@@ -6,7 +6,7 @@ import { prisma, safeProjectSelectFields } from "src/data/db";
 
 import SessionContext from "src/components/context/SessionContext";
 import GraphConnection from "src/data/graph/Connection";
-import ProjectPage from "app/projects/[id]/project-page";
+import ProjectPage from "app/projects/[id]/ProjectPage";
 import { getEverything } from "src/data/graph/queries";
 
 export async function generateMetadata({ params }) {

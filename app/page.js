@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
 
 import SessionContext from "src/components/context/SessionContext";
-import HomePage from "app/home-page";
+import HomePage from "app/HomePage";
 
 export default async function Page() {
   const props = await getProps();

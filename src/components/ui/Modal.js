@@ -8,17 +8,17 @@ export default function Modal({ title, close, children, fullHeight }) {
       onClick={(e) => {
         if (e.target === e.currentTarget) close();
       }}
-      className="bg-opacity-90 dark:bg-opacity-90 flex absolute top-0 left-0 z-10 flex-col justify-center items-center p-5 w-full h-full bg-white dark:bg-gray-900"
+      className="bg-opacity-90 dark:bg-opacity-90 flex absolute top-0 left-0 z-10 flex-col justify-center items-center w-full h-full bg-white dark:bg-gray-900"
     >
       <div
         className={classnames(
-          `flex relative flex-col bg-white rounded-sm border-2 border-gray-300 dark:bg-gray-900 dark:border-gray-800`,
+          `flex relative flex-col w-full h-full bg-white border border-gray-700 md:w-auto md:h-auto dark:bg-gray-900 dark:border-gray-100`,
           { "w-full h-full": fullHeight }
         )}
       >
         <button
           onClick={close}
-          className="flex items-center pt-2 pb-2 px-4 bg-gray-300 dark:bg-gray-800"
+          className="flex items-center pt-2 pb-2 px-4 text-white bg-gray-700 dark:text-gray-900 dark:bg-gray-100"
         >
           <div>{title}</div>
           <div className="mx-auto" />

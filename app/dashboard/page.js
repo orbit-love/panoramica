@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
 
 import { prisma } from "src/data/db";
-import DashboardPage from "app/dashboard/dashboard-page";
+import DashboardPage from "app/dashboard/DashboardPage";
 import SessionContext from "src/components/context/SessionContext";
 
 export const metadata = {

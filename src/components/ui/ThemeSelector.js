@@ -19,7 +19,7 @@ export default function ThemeSelector() {
   };
 
   return (
-    <form className="w-[400px] px-4 py-4 pb-16">
+    <form className="md:w-[400px] px-4 py-4 pb-16">
       <ul className="flex flex-col space-y-1">
         {themes.map(({ name }) => (
           <li key={name}>
