@@ -141,137 +141,131 @@ export default function Home(props) {
 
   return (
     <Frame>
-      <div className="">
-        <div className="py-2 px-4">
-          <div className="flex items-center w-full">
-            <div className="text-lg">{project.name}</div>
-            <div title="Auto update every 60s">
-              <FontAwesomeIcon
-                icon="circle"
-                className="pl-2 text-sm text-green-500"
-              />
+      <div className="py-2 px-4">
+        <div className="flex items-center w-full">
+          <div className="text-lg">{project.name}</div>
+          <div title="Auto update every 60s">
+            <FontAwesomeIcon
+              icon="circle"
+              className="pl-2 text-sm text-green-500"
+            />
+          </div>
+          {loading && (
+            <div className="pl-2 font-normal">
+              <FontAwesomeIcon icon="circle-notch" spin />
             </div>
-            {loading && (
-              <div className="pl-2 font-normal">
-                <FontAwesomeIcon icon="circle-notch" spin />
-              </div>
-            )}
-            <div className="mx-auto" />
-            <button onClick={toggleEditingTheme}>
-              <FontAwesomeIcon icon={["fas", "brush"]} />
-            </button>
-            <div className="mx-1" />
-            <button
-              className=""
-              onClick={() =>
-                addWidget("edit-project", "Project", {
-                  title: "Edit Project",
-                  position,
-                })
-              }
-            >
-              <FontAwesomeIcon icon="gear" />
+          )}
+          <div className="mx-auto" />
+          <button onClick={toggleEditingTheme}>
+            <FontAwesomeIcon icon={["fas", "brush"]} />
+          </button>
+          <div className="mx-1" />
+          <button
+            className=""
+            onClick={() =>
+              addWidget("edit-project", "Project", {
+                title: "Edit Project",
+                position,
+              })
+            }
+          >
+            <FontAwesomeIcon icon="gear" />
+          </button>
+        </div>
+      </div>
+      <div className="flex flex-col px-4">
+        {!loading && empty && (
+          <div className="flex flex-col space-y-6">
+            <p>
+              The project has been created. Click the button to fetch data from
+              Orbit. This is a one-time operation and takes up to 60 seconds.
+            </p>
+            <button className="btn" onClick={importProject}>
+              Import
             </button>
           </div>
-        </div>
-        <div className="flex flex-col px-4 h-[93%]">
-          {!loading && empty && (
-            <div className="flex flex-col space-y-6">
-              <p>
-                The project has been created. Click the button to fetch data
-                from Orbit. This is a one-time operation and takes up to 60
-                seconds.
-              </p>
-              <button className="btn" onClick={importProject}>
-                Import
-              </button>
-            </div>
-          )}
-          {community && !empty && (
-            <>
-              <div className="flex flex-col items-start space-y-6 w-full">
-                <div className="flex flex-col items-start space-y-2 w-full">
-                  <form
-                    onSubmit={onSearchSubmit}
-                    className="flex mt-2 space-x-2 w-full"
-                  >
-                    <input
-                      type="search"
-                      ref={searchRef}
-                      placeholder="Search..."
-                    />
-                    <button className="btn" type="submit">
-                      <FontAwesomeIcon icon="search" />
-                    </button>
-                  </form>
-                </div>
-                <div className="flex flex-col items-start w-full">
-                  <div className="text-tertiary pb-1 font-light">Explore</div>
-                  <button onClick={(e) => onClickSource(e, null, { position })}>
-                    All Activity
+        )}
+        {community && !empty && (
+          <>
+            <div className="flex flex-col items-start space-y-6">
+              <div className="flex flex-col items-start space-y-2">
+                <form onSubmit={onSearchSubmit} className="flex mt-2 space-x-2">
+                  <input
+                    type="search"
+                    ref={searchRef}
+                    placeholder="Search..."
+                  />
+                  <button className="btn" type="submit">
+                    <FontAwesomeIcon icon="search" />
                   </button>
-                  <button
-                    onClick={() =>
-                      addWidget("members", "Members", {
-                        title: "Members",
-                        position,
-                      })
-                    }
-                  >
-                    Member List
-                  </button>
-                  <button
-                    onClick={() =>
-                      addWidget("prompt", "Prompt", {
-                        title: "Prompt",
-                        position,
-                      })
-                    }
-                  >
-                    Prompt
-                  </button>
-                  <div className="text-tertiary pb-1 pt-2 font-light">
-                    Sources
-                  </div>
-                  {sources.map((source) => (
-                    <div className="flex flex-col" key={source}>
-                      <button
-                        className="flex items-center space-x-1"
-                        onClick={(e) => onClickSource(e, source, { position })}
-                      >
-                        <div>{c.titleize(source)}</div>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex flex-col">
-                  <button
-                    className="text-tertiary hover:underline"
-                    onClick={resetWidgets}
-                  >
-                    Reset
-                  </button>
-                  <Link
-                    prefetch={false}
-                    className="text-tertiary hover:underline"
-                    href={`/dashboard`}
-                  >
-                    Exit
-                  </Link>
-                </div>
+                </form>
               </div>
-            </>
-          )}
-          <div className="my-auto" />
-        </div>
-        {editingTheme &&
-          createPortal(
-            <Modal title="Change Theme" close={toggleEditingTheme}>
-              <ThemeSelector />
-            </Modal>,
-            document.body
-          )}
+              <div className="flex flex-col items-start w-full">
+                <div className="text-tertiary pb-1 font-light">Explore</div>
+                <button onClick={(e) => onClickSource(e, null, { position })}>
+                  All Activity
+                </button>
+                <button
+                  onClick={() =>
+                    addWidget("members", "Members", {
+                      title: "Members",
+                      position,
+                    })
+                  }
+                >
+                  Member List
+                </button>
+                <button
+                  onClick={() =>
+                    addWidget("prompt", "Prompt", {
+                      title: "Prompt",
+                      position,
+                    })
+                  }
+                >
+                  Prompt
+                </button>
+                <div className="text-tertiary pb-1 pt-2 font-light">
+                  Sources
+                </div>
+                {sources.map((source) => (
+                  <div className="flex flex-col" key={source}>
+                    <button
+                      className="flex items-center space-x-1"
+                      onClick={(e) => onClickSource(e, source, { position })}
+                    >
+                      <div>{c.titleize(source)}</div>
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-col">
+                <button
+                  className="text-tertiary hover:underline"
+                  onClick={resetWidgets}
+                >
+                  Reset
+                </button>
+                <Link
+                  prefetch={false}
+                  className="text-tertiary hover:underline"
+                  href={`/dashboard`}
+                >
+                  Exit
+                </Link>
+              </div>
+            </div>
+          </>
+        )}
+        <div className="my-auto" />
       </div>
+      {editingTheme &&
+        createPortal(
+          <Modal title="Change Theme" close={toggleEditingTheme}>
+            <ThemeSelector />
+          </Modal>,
+          document.body
+        )}
     </Frame>
   );
 }

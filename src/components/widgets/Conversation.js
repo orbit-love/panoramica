@@ -146,6 +146,7 @@ export default function Conversation({
         >
           {project.modelName && (
             <>
+              {fullscreen && <div className="grow" />}
               <Output
                 lastMessage={lastMessage}
                 loading={loading}
@@ -154,7 +155,6 @@ export default function Conversation({
               >
                 <ExamplePrompts runPrompt={runPrompt} />
               </Output>
-              {fullscreen && <div className="grow" />}
               <PromptInput
                 prompt={prompt}
                 setPrompt={setPrompt}
