@@ -15,7 +15,7 @@ import {
   ProjectDispatchContext,
 } from "src/components/context/ProjectContext";
 import Community from "src/models/Community";
-import WithTheme from "src/components/context/WithTheme";
+import Themed from "src/components/context/Themed";
 import { ThemeContext } from "src/components/context/ThemeContext";
 
 const projectReducer = (object, { type, community, project }) => {
@@ -90,12 +90,12 @@ export default function ProjectPage({ project, data }) {
   );
 
   return (
-    <WithTheme>
+    <Themed>
       <ProjectContext.Provider value={object}>
         <ProjectDispatchContext.Provider value={dispatch}>
           <Dockview onReady={onReady} />
         </ProjectDispatchContext.Provider>
       </ProjectContext.Provider>
-    </WithTheme>
+    </Themed>
   );
 }

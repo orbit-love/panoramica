@@ -1,29 +1,42 @@
 /* ooooooOOooooOOOooo */
 body.black-lotus {
   --pan-primary-color: #9cb06e;
-  --pan-secondary-color: #506162;
+  --pan-secondary-color: #5e8d90;
   --pan-tertiary-color: #9f77c2;
 
+  --background-color: #20201e;
+  --tab-background-color: #4e5c5c;
+  --tab-inactive-background-color: #2e3435;
+  --border-color: #404444;
+
   color: #f2f5ee;
-  background-color: #404031;
+  background-color: var(--background-color);
 
   font-family: Comic Sans MS, Comic Sans, cursive;
 }
 
-.black-lotus .dockview-theme-light {
-  --dv-group-view-background-color: #f2f5ee;
+.black-lotus .dockview-theme-dark {
+  --dv-group-view-background-color: var(--background-color);
 
-  --dv-activegroup-visiblepanel-tab-background-color: theme(
-    "colors.orange.900"
+  --dv-activegroup-visiblepanel-tab-background-color: var(
+    --tab-background-color
   );
-  --dv-inactivegroup-visiblepanel-tab-background-color: theme(
-    "colors.orange.900"
+  --dv-inactivegroup-visiblepanel-tab-background-color: var(
+    --tab-background-color
   );
-  --dv-inactivegroup-hiddenpanel-tab-background-color: theme(
-    "colors.orange.800"
+  --dv-inactivegroup-hiddenpanel-tab-background-color: var(
+    --tab-background-color
   );
-  --dv-activegroup-hiddenpanel-tab-background-color: theme("colors.orange.900");
-  --dv-tabs-and-actions-container-background-color: theme("colors.orange.900");
-  --dv-tab-divider-color: theme("colors.amber.800");
-  --dv-separator-border: theme("colors.amber.800");
+
+  --dv-inactivegroup-hiddenpanel-tab-background-color: var(
+    --tab-inactive-background-color
+  );
+  --dv-activegroup-hiddenpanel-tab-background-color: var(
+    --tab-inactive-background-color
+  );
+  --dv-tabs-and-actions-container-background-color: var(
+    --tab-inactive-background-color
+  );
+  --dv-tab-divider-color: var(--border-color);
+  --dv-separator-border: var(--border-color);
 }

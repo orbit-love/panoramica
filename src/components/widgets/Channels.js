@@ -40,7 +40,7 @@ export default function Channels({ api, community, params, handlers }) {
               ({ count, source, sourceChannel, lastActivity }, index) => (
                 <tr key={sourceChannel}>
                   <td className="text-right">{count}</td>
-                  <td>
+                  <td className="text-secondary">
                     <button
                       className="hover:underline"
                       onClick={(e) => onClickChannel(e, source, sourceChannel)}

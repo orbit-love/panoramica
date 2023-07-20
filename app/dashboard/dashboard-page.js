@@ -5,11 +5,11 @@ import React from "react";
 import SiteHeader from "src/components/ui/SiteHeader";
 import New from "src/components/domains/project/New";
 import List from "src/components/domains/project/List";
-import WithTheme from "src/components/context/WithTheme";
+import Themed from "src/components/context/Themed";
 
 export default function DashboardPage({ projects }) {
   return (
-    <WithTheme>
+    <Themed>
       <SiteHeader />
       <div
         id="container"
@@ -29,6 +29,6 @@ export default function DashboardPage({ projects }) {
           </div>
         </div>
       </div>
-    </WithTheme>
+    </Themed>
   );
 }

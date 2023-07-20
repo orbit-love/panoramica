@@ -1,11 +1,12 @@
 import { React, useContext } from "react";
 
-import { availableThemes, themeFor } from "src/components/context/WithTheme";
+import themes from "src/configuration/themes";
+import { themeFor } from "src/components/context/Themed";
 import {
   ThemeContext,
   ThemeDispatchContext,
 } from "src/components/context/ThemeContext";
-import { localStorageKey } from "src/components/context/WithTheme";
+import { localStorageKey } from "src/components/context/Themed";
 
 export default function ThemeSelector() {
   const theme = useContext(ThemeContext);
@@ -20,7 +21,7 @@ export default function ThemeSelector() {
   return (
     <form className="w-[400px] px-4 py-4 pb-16">
       <ul className="flex flex-col space-y-1">
-        {availableThemes.map(({ name }) => (
+        {themes.map(({ name }) => (
           <li key={name}>
             <label className="flex items-center space-x-1">
               <input
