@@ -18,7 +18,7 @@ export default function CompactMember({
     };
   }
   return (
-    <button onClick={onClick} className="flex justify-between space-x-1">
+    <button onClick={onClick} className="group flex justify-between space-x-1">
       <div
         className={classnames("flex items-center space-x-1", {
           "max-w-[50%] overflow-hidden text-ellipsis": metrics,

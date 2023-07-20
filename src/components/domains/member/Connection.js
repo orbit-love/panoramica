@@ -9,31 +9,27 @@ export default function CompactConnection({ member, connection, onClick }) {
   var [outgoing, incoming, lastInteraction] =
     member.connections[connection.globalActor];
   return (
-    <div className="flex">
-      <button
-        key={connection.id}
-        className={classnames(
-          "bg-opacity-0 flex overflow-hidden items-center space-x-1 whitespace-nowrap bg-indigo-900"
-        )}
-        onClick={(e) => onClick(e, member, connection)}
-      >
-        <NameAndIcon
-          member={connection}
-          onClick={() => {}}
-          suffix={
-            <>
-              &nbsp;
-              {outgoing + incoming}
-              <FontAwesomeIcon icon="right-left" className="text-xs" />
-            </>
-          }
-        />
-      </button>
+    <button
+      key={connection.id}
+      className={classnames(
+        "group bg-opacity-0 flex overflow-hidden items-center space-x-4 w-full whitespace-nowrap"
+      )}
+      onClick={(e) => onClick(e, member, connection)}
+    >
+      <div className="flex-grow">
+        <NameAndIcon member={connection} onClick={() => {}} />
+      </div>
+      <div className="mx-auto"></div>
+      <div className="text-secondary">
+        <FontAwesomeIcon icon="comment" flip="horizontal" className="text-xs" />
+        &nbsp;
+        {outgoing + incoming}
+      </div>
       <TimeAgo
-        className="ml-8"
+        className="text-secondary ml-6"
         date={lastInteraction}
         title={c.formatDate(lastInteraction)}
       />
-    </div>
+    </button>
   );
 }

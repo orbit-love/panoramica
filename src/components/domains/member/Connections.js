@@ -41,7 +41,7 @@ export default function CompactConnections({ member, community, onClick }) {
       {connections.length > 0 && (
         <div className="flex flex-col space-y-3">
           <div className="flex flex-col pb-2">
-            <div className="text-secondary pb-1 font-light">Interactions</div>
+            <div className="text-tertiary pb-1 font-light">Connections</div>
             <div className="flex flex-col">
               {connections.map((connection) => (
                 <CompactConnection

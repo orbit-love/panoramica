@@ -23,9 +23,10 @@ export default function Source({ community, params, api, handlers }) {
         <Header>
           {source && <SourceIcon activity={{ source }} />}
           <div>{api.title}</div>
+          <div className="flex-grow" />
           {sourceChannels.length > 0 && (
             <button
-              className="mr-2 text-secondary"
+              className="mr-2"
               onClick={(e) => onClickChannels(e, source)}
             >
               <FontAwesomeIcon icon="bars" />

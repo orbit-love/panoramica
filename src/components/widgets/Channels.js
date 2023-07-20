@@ -1,8 +1,10 @@
 import React from "react";
 
 import Feed from "src/models/Feed";
-import { Frame } from "src/components/widgets";
+import SourceIcon from "src/components/domains/activity/SourceIcon";
+import { Frame, Header } from "src/components/widgets";
 import c from "src/configuration/common";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Channels({ api, community, params, handlers }) {
   var { source } = params;
@@ -26,27 +28,38 @@ export default function Channels({ api, community, params, handlers }) {
 
   return (
     <Frame>
-      <div className="flex flex-col items-start pl-2 px-4 mt-4">
+      {source && (
+        <Header>
+          {source && <SourceIcon activity={{ source }} />}
+          <div>{c.titleize(source)}</div>
+        </Header>
+      )}
+      <div className="flex flex-col items-start pl-2 px-4">
         <table className="border-spacing-x-2 table w-full whitespace-nowrap border-separate">
           <tbody>
-            <tr className="font-bold">
+            <tr className="text-tertiary font-light">
               <td className="text-right" title="Number of conversations">
-                #
+                <FontAwesomeIcon
+                  icon="comment"
+                  flip="horizontal"
+                  className="text-xs"
+                />
               </td>
               <td>Channel</td>
               <td>Last Active</td>
             </tr>
             {channelMetadatas.map(
               ({ count, source, sourceChannel, lastActivity }, index) => (
-                <tr key={sourceChannel}>
+                <tr
+                  key={sourceChannel}
+                  onClick={(e) => onClickChannel(e, source, sourceChannel)}
+                  className="group text-secondary cursor-pointer"
+                >
                   <td className="text-right">{count}</td>
-                  <td className="text-secondary">
-                    <button
-                      className="hover:underline"
-                      onClick={(e) => onClickChannel(e, source, sourceChannel)}
-                    >
+                  <td>
+                    <div className="group-hover:underline hover:underline">
                       {c.displayChannel(sourceChannel)}
-                    </button>
+                    </div>
                   </td>
                   <td>{c.formatDateShort(lastActivity)}</td>
                 </tr>
