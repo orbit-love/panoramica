@@ -79,7 +79,7 @@ export default function Project({ project, dispatch }) {
           }}
           onDelete={() => router.push("/")}
         />
-        <div className="flex flex-col items-start py-6 space-y-1">
+        <div className="text-tertiary flex flex-col items-start py-6 space-y-1">
           <div className="flex my-2 space-x-2 text-lg font-thin">
             <div>Actions</div>
             {loading && (

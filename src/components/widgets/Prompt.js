@@ -51,7 +51,7 @@ export default function Prompt({ project }) {
           resetPrompt={resetPrompt}
           messageRef={messageRef}
         >
-          Hello, I'm a friendly AI that can answer questions about your
+          Hello, I am a friendly AI that can answer questions about your
           community.
         </Output>
         <div className="py-4">
