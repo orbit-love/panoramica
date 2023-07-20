@@ -11,12 +11,9 @@ export default function DashboardPage({ projects }) {
   return (
     <Themed>
       <SiteHeader />
-      <div
-        id="container"
-        className="flex overflow-scroll flex-col justify-center items-center py-20"
-      >
+      <div className="flex overflow-scroll flex-col justify-center items-center md:py-20">
         <div className="flex flex-col items-center space-y-3 w-full">
-          <div className="px-8 py-8 w-1/3">
+          <div className="px-8 py-8 md:w-1/3">
             <div className="flex flex-col space-y-10 w-full">
               {projects.length > 0 && (
                 <List

@@ -6,7 +6,6 @@ import Link from "next/link";
 
 import {
   Frame,
-  Header,
   loadDefaultLayout,
   storageKey,
   putProjectImport,

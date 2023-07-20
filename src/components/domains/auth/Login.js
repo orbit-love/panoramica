@@ -1,12 +1,15 @@
 import React, { useState, useRef } from "react";
 import { signIn } from "next-auth/react";
+import Loader from "src/components/domains/ui/Loader";
 
 export default function Login({ csrfToken }) {
   const emailRef = useRef();
   let [message, setMessage] = useState();
+  const [loading, setLoading] = useState();
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     var email = emailRef.current.value;
     if (email) {
       var { error } = await signIn("email", { email, redirect: false });
@@ -14,37 +17,40 @@ export default function Login({ csrfToken }) {
         console.log(error);
         setMessage("Something in the emailverse went wrong :/");
       } else {
-        setMessage("Success! A link has been emailed to you.");
+        setMessage("Check your inbox, a login link has been emailed to you.");
       }
+      setLoading(false);
     }
   };
 
   return (
-    <div className="py-2">
+    <div className="flex flex-col space-y-2">
       <form
-        className="flex justify-center space-x-2 w-72"
+        className="flex flex-col justify-center items-center w-72 md:flex-row md:space-x-2"
         method="post"
         action="/api/auth/signin/email"
         onSubmit={onSubmit}
       >
-        <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-        <label>
-          <input
-            ref={emailRef}
-            placeholder="foo@foo.com"
-            className={"!w-56"}
-            type="email"
-            id="email"
-            name="email"
-          />
-        </label>
-        <button className="btn" type="submit">
-          Sign in with email
+        <div className="w-full">
+          <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+          <label>
+            <input
+              ref={emailRef}
+              placeholder="foo@foo.com"
+              type="email"
+              id="email"
+              name="email"
+            />
+          </label>
+        </div>
+        <button className="btn my-2 md:my-0" type="submit">
+          {loading && <Loader />}
+          {!loading && "Sign in with email"}
         </button>
       </form>
-      <div className="my-4 text-center">
-        {message && <span className="text-green-500">{message}</span>}
-      </div>
+      {message && (
+        <div className="py-2 text-center text-green-600">{message}</div>
+      )}
     </div>
   );
 }

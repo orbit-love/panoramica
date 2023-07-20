@@ -51,8 +51,8 @@ export default function Prompt({ project }) {
           resetPrompt={resetPrompt}
           messageRef={messageRef}
         >
-          Hello, I am a friendly AI that can answer questions about your
-          community.
+          Hello, I am a friendly AI that can answer questions about
+          conversations in your Panoramica project.
         </Output>
         <PromptInput
           prompt={prompt}

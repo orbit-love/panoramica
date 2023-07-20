@@ -3,6 +3,7 @@ body .btn {
 
   @apply bg-secondary;
   @apply text-white;
+  @apply w-full md:w-auto;
 }
 
 body textarea,
@@ -12,4 +13,5 @@ body input[type="search"],
 body input[type="email"] {
   @apply px-2 py-2 w-full text-sm font-normal rounded outline-none;
   @apply text-gray-800 bg-gray-100 border border-gray-200;
+  @apply w-full md:w-auto;
 }

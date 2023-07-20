@@ -26,14 +26,16 @@ export default function Themed({ children }) {
   const [theme, dispatch] = useReducer(themeReducer, initialTheme);
 
   useLayoutEffect(() => {
-    var initialTheme;
     var string = localStorage.getItem(localStorageKey);
-    try {
-      initialTheme = JSON.parse(string);
-    } catch (e) {
-      console.log("Could not parse theme from local storage", string);
+    if (string) {
+      try {
+        var storedTheme = JSON.parse(string);
+        dispatch({ type: "change", ...storedTheme });
+      } catch (e) {
+        console.log("Could not parse theme from local storage", string);
+        localStorage.removeItem(localStorageKey);
+      }
     }
-    dispatch({ type: "change", ...initialTheme });
   }, []);
 
   useLayoutEffect(() => {

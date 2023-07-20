@@ -26,23 +26,11 @@ export default function SiteHeader() {
 
   return (
     <>
-      <nav className="flex absolute z-10 px-2 py-3 w-full whitespace-nowrap md:px-4">
-        <div>
-          <button
-            className="-mt-2 inline-flex justify-center p-3 mr-2 w-10 text-white rounded outline-none pointer-events-auto hover:text-white hover:bg-indigo-900 md:hidden"
-            onClick={handleClick}
-          >
-            {active ? (
-              <FontAwesomeIcon icon="times" size="1x" />
-            ) : (
-              <FontAwesomeIcon icon="bars" size="1x" />
-            )}
-          </button>
-        </div>
+      <nav className="flex py-3 px-4 w-full whitespace-nowrap">
         <Link href="/" passHref>
           <div className="flex items-center p-1 space-x-3">
             <Image src={logo} alt="Panoramica logo" width="45" />
-            <div className="-mt-2 flex text-3xl font-thin tracking-wider">
+            <div className="-mt-2 hidden text-3xl font-thin tracking-wider md:flex md:visible">
               panoramica
             </div>
           </div>
