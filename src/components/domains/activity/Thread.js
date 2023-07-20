@@ -42,7 +42,7 @@ export default function Thread(props) {
       <div className="flex flex-col space-y-1">
         <div className="flex items-center space-x-1">
           <div className="flex shrink-0 items-center space-x-1">
-            <FontAwesomeIcon icon="reply" className="text-xs opacity-80" />
+            <FontAwesomeIcon icon="reply" className="text-sm opacity-80" />
             <NameAndIcon
               member={community.findMemberByActivity(activity)}
               onClick={onClickMember}
@@ -99,7 +99,7 @@ export default function Thread(props) {
         />
         {/* if we aren't recursing but there are children, put the number */}
         {!renderChildren && thread?.children?.length > 0 && (
-          <div className="text-xs">{thread.children.length} replies</div>
+          <div className="text-sm">{thread.children.length} replies</div>
         )}
       </div>
       {renderChildren &&

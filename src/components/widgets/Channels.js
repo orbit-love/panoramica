@@ -39,11 +39,7 @@ export default function Channels({ api, community, params, handlers }) {
           <tbody>
             <tr className="text-tertiary font-light">
               <td className="text-right" title="Number of conversations">
-                <FontAwesomeIcon
-                  icon="comment"
-                  flip="horizontal"
-                  className="text-xs"
-                />
+                <FontAwesomeIcon icon="comment" flip="horizontal" />
               </td>
               <td>Channel</td>
               <td>Last Active</td>

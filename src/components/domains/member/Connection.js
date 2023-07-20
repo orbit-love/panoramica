@@ -21,7 +21,7 @@ export default function CompactConnection({ member, connection, onClick }) {
       </div>
       <div className="mx-auto"></div>
       <div className="text-secondary">
-        <FontAwesomeIcon icon="comment" flip="horizontal" className="text-xs" />
+        <FontAwesomeIcon icon="comment" flip="horizontal" />
         &nbsp;
         {outgoing + incoming}
       </div>

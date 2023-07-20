@@ -19,7 +19,7 @@ export default function Output({
       {lastMessage && !loading && resetPrompt && (
         <button
           onClick={resetPrompt}
-          className="text-tertiary inline absolute bottom-2 right-3 hover:underline"
+          className="text-tertiary absolute bottom-2 right-3 hover:underline"
         >
           reset
         </button>
