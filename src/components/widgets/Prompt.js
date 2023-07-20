@@ -54,13 +54,11 @@ export default function Prompt({ project }) {
           Hello, I am a friendly AI that can answer questions about your
           community.
         </Output>
-        <div className="py-4">
-          <PromptInput
-            prompt={prompt}
-            setPrompt={setPrompt}
-            fetchPrompt={fetchPrompt}
-          />
-        </div>
+        <PromptInput
+          prompt={prompt}
+          setPrompt={setPrompt}
+          fetchPrompt={fetchPrompt}
+        />
       </div>
     </Frame>
   );
