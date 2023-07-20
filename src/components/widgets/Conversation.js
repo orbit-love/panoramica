@@ -137,7 +137,8 @@ export default function Conversation({
         </div>
         <div
           className={classnames("flex flex-col p-4", {
-            "theme-border-color overflow-y-scroll w-1/2 border-l": fullscreen,
+            "overflow-y-scroll w-1/2 border-l-2 border-gray-200 dark:border-gray-800":
+              fullscreen,
             "w-full": !fullscreen,
           })}
         >
@@ -150,12 +151,10 @@ export default function Conversation({
                   </div>
                 )}
                 <div className="whitespace-pre-wrap">{lastMessage}</div>
-                <div className="">
+                <div className="text-tertiary font-light">
                   {!lastMessage && !loading && (
                     <>
-                      <div className="mb-1 font-semibold">
-                        Load an example prompt:
-                      </div>
+                      <div className="mb-1">Load an example prompt:</div>
                       <ul className="list-disc list-inside">
                         <li>
                           <button
@@ -221,7 +220,7 @@ export default function Conversation({
             </>
           )}
           {!project.modelName && (
-            <div className="text-alert">
+            <div className="text-red-500">
               LLM and vector stores are not configured. Edit the project and add
               the necessary information to enable AI features.
             </div>

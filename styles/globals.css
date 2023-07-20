@@ -30,3 +30,13 @@ body {
 
 /* import theme styles */
 @import "./theme.css";
+
+/* import dockview themes */
+@import "./themes/dockview-theme-light.css";
+@import "./themes/dockview-theme-dark.css";
+
+/* import themes after */
+@import "./themes/panoramica-light.css";
+@import "./themes/panoramica-dark.css";
+@import "./themes/white-lotus.css";
+@import "./themes/black-lotus.css";

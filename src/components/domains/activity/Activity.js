@@ -65,12 +65,12 @@ export default function Activity({
     );
   };
   return (
-    <div key={activity.id} className="flex flex-col pb-2">
-      <div className="flex items-center space-x-2">
+    <div key={activity.id} className="flex flex-col">
+      <div className="flex items-center pb-1 space-x-2">
         <NameAndIcon member={member} onClick={onClickMember} />
         <div className="flex-1" />
         {showSourceIcon && (
-          <div className="flex overflow-hidden items-center space-x-1 text-sm text-right text-ellipsis whitespace-nowrap">
+          <div className="text-secondary flex overflow-hidden items-center space-x-1 text-sm text-right text-ellipsis whitespace-nowrap">
             <SourceIcon activity={activity} />
             {showSourceChannel && sourceChannel && (
               <button
@@ -82,7 +82,7 @@ export default function Activity({
             )}
           </div>
         )}
-        <div className="text-sm text-right whitespace-nowrap">
+        <div className="text-secondary text-sm text-right whitespace-nowrap">
           <Since />
           {activity.url && (
             <a
@@ -94,11 +94,7 @@ export default function Activity({
               <Timestamp />
             </a>
           )}
-          {!activity.url && (
-            <div className="">
-              <Timestamp />
-            </div>
-          )}
+          {!activity.url && <Timestamp />}
         </div>
       </div>
       {renderHtml && (

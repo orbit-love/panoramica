@@ -17,7 +17,7 @@ export default function Frame({ children }) {
     return createPortal(
       <ErrorBoundary
         fallback={
-          <div className="text-alert p-4">Oops! Something went wrong.</div>
+          <div className="text-red-500 p-4">Oops! Something went wrong.</div>
         }
       >
         <Modal title={api.title} close={exitFullscreen} fullHeight>
@@ -31,7 +31,7 @@ export default function Frame({ children }) {
   return (
     <ErrorBoundary
       fallback={
-        <div className="text-alert p-4">Oops! Something went wrong.</div>
+        <div className="text-red-500 p-4">Oops! Something went wrong.</div>
       }
     >
       <div className="overflow-y-auto relative h-full">{children}</div>

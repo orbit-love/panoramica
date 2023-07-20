@@ -41,8 +41,8 @@ export default function Thread(props) {
     return (
       <div className="flex flex-col space-y-1">
         <div className="flex items-center space-x-1">
-          <div className="flex shrink-0 space-x-1">
-            <FontAwesomeIcon icon="reply" />
+          <div className="flex shrink-0 items-center space-x-1">
+            <FontAwesomeIcon icon="reply" className="text-xs opacity-80" />
             <NameAndIcon
               member={community.findMemberByActivity(activity)}
               onClick={onClickMember}
@@ -53,7 +53,7 @@ export default function Thread(props) {
           </div>
         </div>
         {activityThread.children.length > 1 && (
-          <div className="pl-3 text-secondary">
+          <div className="text-secondary pl-3">
             {activityThread.children.length} replies
           </div>
         )}
@@ -64,11 +64,11 @@ export default function Thread(props) {
   return (
     <div
       className={classnames("flex flex-col pt-1", {
-        "border-l theme-border-color pl-3": depth > 0,
+        "border-l border-gray-200 dark:border-gray-700 pl-3": depth > 0,
       })}
     >
       {showConversation && (
-        <div className="flex flex-col mb-2 space-y-2 text-sm text-secondary whitespace-nowrap">
+        <div className="text-secondary flex flex-col mb-2 space-y-2 text-sm whitespace-nowrap">
           {conversation && (
             <Preview activity={conversation} onClickMember={onClickMember} />
           )}

@@ -30,14 +30,14 @@ const projectReducer = (object, { type, community, project }) => {
 };
 
 const Dockview = ({ onReady }) => {
-  const { name } = useContext(ThemeContext);
+  const { dockviewTheme } = useContext(ThemeContext);
   return (
     <DockviewReact
       components={components}
       tabComponents={tabComponents}
       onReady={onReady}
       orientation={Orientation.HORIZONTAL}
-      className={name}
+      className={dockviewTheme}
     />
   );
 };

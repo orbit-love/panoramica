@@ -1,19 +1,19 @@
 /* conversation rendering styles */
+.a-html {
+  @apply leading-5;
+}
 .a-html code {
   color: var(--pan-primary-color);
 }
 .a-html a {
-  @apply font-bold;
+  @apply font-semibold;
   color: var(--pan-secondary-color);
 }
 .a-html a:hover {
   @apply underline;
 }
 .a-html blockquote {
-  @apply pl-2;
-  border-left-style: solid;
-  border-left-width: 1px;
-  border-color: var(--pan-border-color);
+  @apply pl-2 border-l border-gray-200 dark:border-gray-800;
 }
 .a-html blockquote > p:before {
   content: "> ";
@@ -22,10 +22,8 @@
   @apply mb-2;
 }
 .a-html img {
-  @apply my-4;
-  border-style: solid;
-  border-width: 1px;
-  border-color: var(--pan-border-color);
+  @apply mt-6 mx-auto border border-gray-200 dark:border-gray-800;
+  max-width: 600px;
 }
 .a-html ol {
   @apply my-1;

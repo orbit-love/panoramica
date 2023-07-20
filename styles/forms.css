@@ -1,6 +1,8 @@
 body .btn {
-  @apply flex-1 py-2 px-4 font-light whitespace-nowrap rounded-md outline-none select-none;
-  @apply text-white bg-blue-600 hover:bg-blue-700;
+  @apply flex-1 py-2 px-4 font-semibold whitespace-nowrap rounded-md outline-none select-none;
+
+  background-color: var(--pan-secondary-color);
+  @apply text-white;
 }
 
 body textarea,

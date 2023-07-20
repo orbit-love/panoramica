@@ -152,7 +152,7 @@ export default function Home(props) {
           <div title="Auto update every 60s">
             <FontAwesomeIcon
               icon="circle"
-              className="text-success pl-2 text-sm"
+              className="pl-2 text-sm text-green-500"
             />
           </div>
           {loading && (
@@ -178,7 +178,7 @@ export default function Home(props) {
           </button>
         </div>
       </div>
-      <div className="flex flex-col px-4 h-[92%]">
+      <div className="flex flex-col px-4 h-[93%]">
         {!loading && empty && (
           <div className="flex flex-col space-y-6">
             <p>
@@ -209,7 +209,7 @@ export default function Home(props) {
                 </form>
               </div>
               <div className="flex flex-col items-start w-full">
-                <div className="pb-1 font-thin">Explore</div>
+                <div className="text-tertiary pb-1 font-light">Explore</div>
                 <button onClick={(e) => onClickSource(e, null, { position })}>
                   All Activity
                 </button>
@@ -233,7 +233,9 @@ export default function Home(props) {
                 >
                   Prompt
                 </button>
-                <div className="pb-1 pt-2 font-thin">Sources</div>
+                <div className="text-tertiary pb-1 pt-2 font-light">
+                  Sources
+                </div>
                 {sources.map((source) => (
                   <div className="flex flex-col" key={source}>
                     <button
@@ -245,16 +247,20 @@ export default function Home(props) {
                   </div>
                 ))}
               </div>
-              <button className="text-alert" onClick={resetWidgets}>
+              <button className="text-red-500" onClick={resetWidgets}>
                 Reset
               </button>
             </div>
           </>
         )}
         <div className="my-auto" />
-        <Link prefetch={false} className="hover:underline" href={`/dashboard`}>
+        <Link
+          prefetch={false}
+          className="text-tertiary font-light hover:underline"
+          href={`/dashboard`}
+        >
           <FontAwesomeIcon icon="arrow-left" />
-          <span className="px-1">Exit</span>
+          <span className="pl-2 font-light">Exit</span>
         </Link>
       </div>
       {editingTheme &&
