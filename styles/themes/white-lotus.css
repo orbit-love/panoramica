@@ -1,5 +1,3 @@
-@tailwind base;
-
 /* ooooooOOooooOOOooo */
 body.white-lotus {
   --pan-primary-color: #9cb06e;
@@ -24,6 +22,6 @@ body.white-lotus {
   );
   --dv-activegroup-hiddenpanel-tab-background-color: theme("colors.orange.100");
   --dv-tabs-and-actions-container-background-color: theme("colors.orange.100");
-  --dv-tab-divider-color: theme("colors.amber.200");
-  --dv-separator-border: theme("colors.amber.200");
+  --dv-tab-divider-color: theme("colors.orange.200");
+  --dv-separator-border: theme("colors.orange.200");
 }
