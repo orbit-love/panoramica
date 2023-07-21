@@ -26,9 +26,10 @@ export default function CompactConnections({ member, community, onClick }) {
     .map((globalActor) => community.findMemberByGlobalActor(globalActor))
     .sort(sortByFields);
 
-  if (!expanded) {
-    connectedMembers = connectedMembers.slice(0, 10);
-  }
+  const limit = 10;
+  var connectedMembersSlice = expanded
+    ? connectedMembers
+    : connectedMembers.slice(0, limit);
 
   return (
     <>
@@ -37,7 +38,7 @@ export default function CompactConnections({ member, community, onClick }) {
           <div className="flex flex-col pb-2">
             <div className="text-tertiary pb-1 font-light">Connections</div>
             <div className="flex flex-col">
-              {connectedMembers.map((connectedMember) => (
+              {connectedMembersSlice.map((connectedMember) => (
                 <CompactConnection
                   key={connectedMember.globalActor}
                   member={member}
@@ -46,7 +47,7 @@ export default function CompactConnections({ member, community, onClick }) {
                   onClick={onClick}
                 />
               ))}
-              {!expanded && (
+              {!expanded && connectedMembers.length > limit && (
                 <button
                   className="text-tertiary mt-1 font-light text-left hover:underline"
                   onClick={() => setExpanded(true)}
