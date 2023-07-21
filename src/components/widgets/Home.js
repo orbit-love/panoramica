@@ -17,6 +17,7 @@ import Community from "src/models/Community";
 import Feed from "src/models/Feed";
 import Modal from "src/components/ui/Modal";
 import ThemeSelector from "src/components/ui/ThemeSelector";
+import Loader from "../domains/ui/Loader";
 
 export default function Home(props) {
   let searchRef = useRef();
@@ -150,12 +151,13 @@ export default function Home(props) {
               className="pl-2 text-sm text-green-500"
             />
           </div>
+          <div className="mx-auto" />
           {loading && (
             <div className="pl-2 font-normal">
-              <FontAwesomeIcon icon="circle-notch" spin />
+              <Loader />
             </div>
           )}
-          <div className="mx-auto" />
+          <div className="mx-1" />
           <button onClick={toggleEditingTheme}>
             <FontAwesomeIcon icon={["fas", "brush"]} />
           </button>
