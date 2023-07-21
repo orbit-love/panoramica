@@ -16,7 +16,7 @@ export const conversationPrompts = {
     prompt: `Please provide a list of several key topics that were discussed in this conversation.`,
   },
   Translate: {
-    human: "",
+    human: "Translate this conversation into French",
     prompt: `Please translate this conversation into French. Translate one message at a time, starting with the first message given in the context. Display the entirety of each message in plain, human-readable text with 2 lines between each message. Preface each message with the name of the sender.`,
   },
 };
