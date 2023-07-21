@@ -29,6 +29,7 @@ import {
   faTowerBroadcast,
   faUserAstronaut,
   faComment,
+  faArrowsRotate,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faMessage } from "@fortawesome/free-regular-svg-icons";
@@ -76,7 +77,8 @@ library.add(
   faUserAstronaut,
   faCircleNodes,
   faHeart,
-  faComment
+  faComment,
+  faArrowsRotate
 );
 
 export default library;

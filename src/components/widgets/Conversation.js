@@ -1,13 +1,10 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 
 import { Frame, saveLayout } from "src/components/widgets";
 import Thread from "src/components/domains/activity/Thread";
-import PromptInput from "src/components/ui/PromptInput";
 import { conversationPrompts } from "src/configuration/prompts";
-import ExamplePrompts from "../domains/ai/ExamplePrompts";
-import Output from "../domains/ai/Output";
+import Chat from "src/components/domains/ai/Chat";
 
 export default function Conversation({
   project,
@@ -17,36 +14,10 @@ export default function Conversation({
   params,
   handlers,
 }) {
-  var messageRef = useRef();
   var { activity, fullscreen } = params;
-  let [prompt, setPrompt] = useState("");
-  let [lastMessage, setLastMessage] = useState("");
   let [lastSummary, setLastSummary] = useState(api.title);
-  let [loading, setLoading] = useState(false);
 
-  const fetchPrompt = useCallback(
-    async (e) => {
-      e.preventDefault();
-      // clear the last result
-      setLastMessage("");
-      setLoading(true);
-      messageRef.current.scrollIntoView({});
-      var params = new URLSearchParams({ q: prompt });
-      var response = await fetch(
-        `/api/projects/${project.id}/${activity.id}/prompt?${params}`
-      );
-      setLoading(false);
-      const reader = response.body.getReader();
-      while (true) {
-        const { value, done } = await reader.read();
-        const text = new TextDecoder("utf-8").decode(value);
-        if (done) break;
-        setLastMessage((prevText) => prevText + text);
-        messageRef.current.scrollIntoView({});
-      }
-    },
-    [project, activity, setLastMessage, prompt]
-  );
+  const subContext = { conversationId: activity.id };
 
   const updateTitle = useCallback(
     (lastSummary) => {
@@ -104,18 +75,6 @@ export default function Conversation({
     }
   }, []);
 
-  const runPrompt = useCallback(
-    (name) => {
-      setPrompt(conversationPrompts[name]);
-    },
-    [setPrompt]
-  );
-
-  const resetPrompt = useCallback(() => {
-    setPrompt("");
-    setLastMessage(null);
-  }, [setPrompt, setLastMessage]);
-
   return (
     <Frame>
       <div
@@ -147,19 +106,10 @@ export default function Conversation({
           {project.modelName && (
             <>
               {fullscreen && <div className="grow" />}
-              <Output
-                lastMessage={lastMessage}
-                loading={loading}
-                resetPrompt={resetPrompt}
-                messageRef={messageRef}
-              >
-                <ExamplePrompts runPrompt={runPrompt} />
-              </Output>
-              <PromptInput
-                prompt={prompt}
-                setPrompt={setPrompt}
-                fetchPrompt={fetchPrompt}
-                placeholder={"Ask questions about this conversation..."}
+              <Chat
+                project={project}
+                subContext={subContext}
+                examplePrompts={conversationPrompts}
               />
             </>
           )}

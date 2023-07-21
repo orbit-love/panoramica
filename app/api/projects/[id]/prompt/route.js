@@ -1,22 +1,12 @@
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
-import { StreamingTextResponse, LangChainStream } from "ai";
-
-import { OpenAI } from "langchain/llms/openai";
-import { PineconeClient } from "@pinecone-database/pinecone";
-import { PineconeStore } from "langchain/vectorstores/pinecone";
-import { ConversationalRetrievalQAChain } from "langchain/chains";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { ChatMessageHistory } from "langchain/memory";
+import { StreamingTextResponse } from "ai";
 
 import { checkApp, authorizeProject } from "src/auth";
-import { getConversation } from "src/data/graph/queries/getConversation";
-import GraphConnection from "src/data/graph/Connection";
-import c from "src/configuration/common";
 
-export async function GET(request, context) {
-  const { stream, handlers } = LangChainStream();
+import { getAnswerStream } from "src/ai/answer";
 
+export async function POST(request, context) {
   const user = await checkApp();
   if (!user) {
     return redirect("/");
@@ -25,8 +15,7 @@ export async function GET(request, context) {
   var { id } = context.params;
 
   // Alternating messages from Human and AI
-  const body = await request.json();
-  var chat = body.chat;
+  var { chat, subContext } = await request.json();
 
   // q is supposedely the last question from the Human
   var q = chat.pop();
@@ -36,89 +25,16 @@ export async function GET(request, context) {
 
   try {
     var project = await authorizeProject({ id, user });
-    var projectId = project.id;
     if (!project) {
       return;
     }
 
-    const { pineconeApiEnv, pineconeApiKey, pineconeIndexName } = project;
-    const pinecone = new PineconeClient();
-    await pinecone.init({
-      environment: pineconeApiEnv,
-      apiKey: pineconeApiKey,
+    const stream = await getAnswerStream({
+      project,
+      chat,
+      q,
+      subContext,
     });
-    const pineconeIndex = pinecone.Index(pineconeIndexName);
-    var namespace = `project-${projectId}`;
-
-    const vectorStore = await PineconeStore.fromExistingIndex(
-      new OpenAIEmbeddings({
-        openAIApiKey: project.modelApiKey,
-      }),
-      { pineconeIndex, namespace }
-    );
-
-    // Start with an empty history and use the chat to fill it
-    let history = new ChatMessageHistory();
-    for (i in chat) {
-      if (i % 2) {
-        await history.addUserMessage(chat[i]);
-      } else {
-        await history.addAIChatMessage(chat[i]);
-      }
-    }
-
-    // get unique conversation ids from the vector docs
-    const conversationIds = vectorDocs
-      .map((doc) => doc.metadata.conversationId)
-      .filter((conversationId) => conversationId)
-      .filter(c.onlyUnique);
-
-    var conversations = [];
-
-    const graphConnection = new GraphConnection();
-    for (let conversationId of conversationIds) {
-      const messages = await getConversation({
-        graphConnection,
-        projectId,
-        conversationId,
-      });
-      conversations.push(
-        messages.map((message) => JSON.stringify(message)).join("\n")
-      );
-    }
-
-    const model = new OpenAI({
-      modelName: project.modelName,
-      openAIApiKey: project.modelApiKey,
-      temperature: 0.5,
-      streaming: true,
-    });
-    const chainA = loadQAStuffChain(model);
-    const docs = conversations.map(
-      (conversation) => new Document({ pageContent: conversation })
-    );
-    const question = `
-       The context you have been given is a set of conversations from an
-       online chat community. Each conversation is separated by empty lines.
-       Inside each conversation, each message is given as
-       a JSON object on a newline. The messages are in chronological order.
-       If a message is a reply to another message, the replyToMessageId
-       property will point to the parent message.
-       In your reply, always format
-      dates and times in a human-readable fashion such as "June 1 at 10pm" or "2 hours and 5 minutes".
-      Be succinct and don't explain your work unless asked. Do not return messageIds
-      in the response.
-       Now, given the context, please
-       help with the following question or request:
-
-       ${q}`;
-    chainA.call(
-      {
-        input_documents: docs,
-        question,
-      },
-      [handlers]
-    );
 
     return new StreamingTextResponse(stream);
   } catch (err) {
