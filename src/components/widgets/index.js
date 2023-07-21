@@ -241,7 +241,7 @@ export function addConnectionWidget(
 }
 
 export function addSourceWidget(source, addWidget, options = {}) {
-  addWidget(`source-${source}`, "Source", {
+  addWidget(source ? `source-${source}` : "all-activity", "Source", {
     source,
     title: source ? c.titleize(source) : "All Activity",
     ...options,
