@@ -11,7 +11,7 @@ export { default as Home } from "./Home";
 export { default as Member } from "./Member";
 export { default as Members } from "./Members";
 export { default as EditProject } from "./EditProject";
-export { default as Prompt } from "./Prompt";
+export { default as Assistant } from "./Assistant";
 export { default as Search } from "./Search";
 export { default as Source } from "./Source";
 export { default as ActivityFeed } from "src/components/domains/activity/ActivityFeed";
@@ -27,7 +27,7 @@ import Home from "./Home";
 import Member from "./Member";
 import Members from "./Members";
 import EditProject from "./EditProject";
-import Prompt from "./Prompt";
+import Assistant from "./Assistant";
 import Search from "./Search";
 import Source from "./Source";
 
@@ -104,7 +104,7 @@ export const components = {
   Member: (props) => Wrap(Member, props),
   Members: (props) => Wrap(Members, props),
   EditProject: (props) => Wrap(EditProject, props),
-  Prompt: (props) => Wrap(Prompt, props),
+  Assistant: (props) => Wrap(Assistant, props),
   Search: (props) => Wrap(Search, props),
   Source: (props) => Wrap(Source, props),
 };
@@ -159,11 +159,11 @@ export const tabComponents = {
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
   Conversation: ({ api }) => {
-    var icon = <FontAwesomeIcon icon={["regular", "message"]} />;
+    var icon = <FontAwesomeIcon icon="comment" flip="horizontal" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
-  Prompt: ({ api }) => {
-    var icon = <FontAwesomeIcon icon="circle-nodes" />;
+  Assistant: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="wand-magic-sparkles" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
   Search: ({ api }) => {

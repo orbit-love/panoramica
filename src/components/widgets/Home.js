@@ -218,13 +218,13 @@ export default function Home(props) {
                 </button>
                 <button
                   onClick={() =>
-                    addWidget("prompt", "Prompt", {
-                      title: "Prompt",
+                    addWidget("prompt", "Assistant", {
+                      title: "Assistant",
                       position,
                     })
                   }
                 >
-                  Prompt
+                  Assistant
                 </button>
                 <div className="text-tertiary pb-1 pt-2 font-light">
                   Sources

@@ -30,9 +30,8 @@ import {
   faUserAstronaut,
   faComment,
   faArrowsRotate,
+  faWandMagicSparkles,
 } from "@fortawesome/free-solid-svg-icons";
-
-import { faMessage } from "@fortawesome/free-regular-svg-icons";
 
 import {
   faTwitter,
@@ -71,14 +70,14 @@ library.add(
   faBars,
   faXmark,
   faCircle,
-  faMessage,
   faHeart,
   faTowerBroadcast,
   faUserAstronaut,
   faCircleNodes,
   faHeart,
   faComment,
-  faArrowsRotate
+  faArrowsRotate,
+  faWandMagicSparkles
 );
 
 export default library;
