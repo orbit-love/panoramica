@@ -165,7 +165,18 @@ export async function syncActivities({ tx, project, activities }) {
     mentions.length
   );
 
-  // return activities with new uuids
+  const finalResult = await tx.run(
+    `MATCH (p:Project { id: $projectId })
+      WITH p, $activities AS batch
+        UNWIND batch AS activity
+          MATCH (p)-[:OWNS]-(a:Activity { id: activity.id })
+          RETURN a`,
+    { activities, projectId }
+  );
+
+  // return activities with all new fields loaded
+  activities = finalResult.records.map((record) => record.get("a").properties);
+
   return activities;
 }
 

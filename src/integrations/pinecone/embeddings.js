@@ -50,6 +50,7 @@ export const createEmbeddings = async ({ project, activities }) => {
         pageContent: content(activity),
         metadata: {
           id: activity.id,
+          conversationId: activity.conversationId,
           timestamp: truncateDateToDay(activity.timestamp),
         },
       })

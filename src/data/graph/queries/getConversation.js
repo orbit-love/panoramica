@@ -1,5 +1,3 @@
-import c from "src/configuration/common";
-
 const processRow = (record, index) => {
   var a = record.get("a").properties;
   var b = record.get("b")?.properties;
@@ -43,10 +41,7 @@ export const getConversation = async function ({
 }) {
   // this is what we account for here:
   // - single-message conversations return a but not b, hence the optional matches
-  // - multiple levels of replies are returned since every message in the thread
-  // has the same conversationId
-  // this approach relies on the computed conversationId property but the query
-  // ends up being simpler than traversing multiple levels of paths
+  // - all levels of replies are returned
   const query = `
     MATCH (p:Project { id: $projectId })
     WITH p
