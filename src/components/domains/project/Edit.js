@@ -70,6 +70,9 @@ export default function Edit({
         .then((res) => res.json())
         .then(({ result, message }) => {
           if (result?.project) {
+            setModelApiKey("");
+            setPineconeApiKey("");
+            setModelApiKey("");
             onUpdate(result.project);
             setLoading(false);
           } else {
@@ -123,10 +126,9 @@ export default function Edit({
         ></input>
       </div>
       <div className="flex flex-col space-y-1">
-        <div className="">Orbit API Key (optional, provide to change)</div>
+        <div className="">Orbit API Key (provide to change)</div>
         <input
           type="text"
-          placeholder="*********************************"
           value={apiKey}
           onChange={({ target }) => setApiKey(target.value)}
         ></input>
@@ -154,7 +156,6 @@ export default function Edit({
         <div className="">Model API Key (provide to change)</div>
         <input
           type="text"
-          placeholder="*********************************"
           value={modelApiKey}
           onChange={({ target }) => setModelApiKey(target.value)}
         ></input>
@@ -173,16 +174,14 @@ export default function Edit({
         <div className="">Pinecone Index Name</div>
         <input
           type="text"
-          placeholder=""
           value={pineconeIndexName}
           onChange={({ target }) => setPineconeIndexName(target.value)}
         ></input>
       </div>
       <div className="flex flex-col space-y-1">
-        <div className="">Pinecone API Key</div>
+        <div className="">Pinecone API Key (provide to change)</div>
         <input
           type="text"
-          placeholder="*********************************"
           value={pineconeApiKey}
           onChange={({ target }) => setPineconeApiKey(target.value)}
         ></input>
