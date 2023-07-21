@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import CompactConnection from "src/components/domains/member/Connection";
 
 export default function CompactConnections({ member, community, onClick }) {
+  const [expanded, setExpanded] = useState(false);
   const connections = community.findConnections(member) || [];
 
   const sortByFields = (a, b) => {
@@ -21,9 +22,13 @@ export default function CompactConnections({ member, community, onClick }) {
     return lastInteractionB - lastInteractionA || nameSort;
   };
 
-  const connectedMembers = Object.keys(connections)
+  var connectedMembers = Object.keys(connections)
     .map((globalActor) => community.findMemberByGlobalActor(globalActor))
     .sort(sortByFields);
+
+  if (!expanded) {
+    connectedMembers = connectedMembers.slice(0, 10);
+  }
 
   return (
     <>
@@ -41,6 +46,22 @@ export default function CompactConnections({ member, community, onClick }) {
                   onClick={onClick}
                 />
               ))}
+              {!expanded && (
+                <button
+                  className="text-tertiary mt-1 font-light text-left hover:underline"
+                  onClick={() => setExpanded(true)}
+                >
+                  show more
+                </button>
+              )}
+              {expanded && (
+                <button
+                  className="text-tertiary mt-1 font-light text-left hover:underline"
+                  onClick={() => setExpanded(false)}
+                >
+                  show less
+                </button>
+              )}
             </div>
           </div>
         </div>
