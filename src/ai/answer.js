@@ -93,7 +93,7 @@ export const getAnswerStream = async ({ project, q, chat, subContext }) => {
   // Start with an empty history and use the chat to fill it
   let history = new ChatMessageHistory();
   for (const i in chat) {
-    if (i % 2) {
+    if (i % 2 === 0) {
       await history.addUserMessage(chat[i]);
     } else {
       await history.addAIChatMessage(chat[i]);
