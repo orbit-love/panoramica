@@ -94,7 +94,7 @@ export default function Chat({ project, subContext, examplePrompts }) {
   return (
     <Frame>
       <div className="flex flex-col px-4 h-full">
-        <div className="flex flex-col flex-1 grow mt-4 overflow-y-scroll">
+        <div className="flex overflow-y-scroll flex-col flex-1 grow mt-4">
           {!error && !examplePrompts && messages.length === 0 && (
             <div className="text-tertiary font-light">
               Hello, I am a friendly AI that can answer questions about
@@ -129,13 +129,15 @@ export default function Chat({ project, subContext, examplePrompts }) {
           <div ref={messageRef} />
 
           {examplePrompts && (
-            <PromptPicker prompts={examplePrompts} pickPrompt={pickPrompt} />
+            <div className="px-4 mt-4">
+              <PromptPicker prompts={examplePrompts} pickPrompt={pickPrompt} />
+            </div>
           )}
         </div>
-        <div className="py-4 flex flex-col">
-          <div className="ml-auto my-2">
+        <div className="flex flex-col py-4">
+          <div className="my-2 ml-auto">
             <button
-              className="text-secondary hover:underline"
+              className="text-tertiary hover:underline"
               onClick={clearMessages}
             >
               <FontAwesomeIcon className="mr-1" icon="arrows-rotate" />

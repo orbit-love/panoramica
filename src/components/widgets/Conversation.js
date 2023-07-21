@@ -97,7 +97,7 @@ export default function Conversation({
           />
         </div>
         <div
-          className={classnames("flex flex-col p-4", {
+          className={classnames("flex flex-col", {
             "overflow-y-scroll w-1/2 border-l-2 border-gray-200 dark:border-gray-800":
               fullscreen,
             "w-full": !fullscreen,
