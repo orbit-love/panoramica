@@ -65,7 +65,11 @@ export default function Activity({
     );
   };
   return (
-    <div key={activity.id} className="flex flex-col">
+    <div
+      key={activity.id}
+      data-activity-id={activity.id}
+      className="flex flex-col"
+    >
       <div className="flex items-center pb-1 space-x-2">
         <NameAndIcon member={member} onClick={onClickMember} />
         <div className="flex-1" />

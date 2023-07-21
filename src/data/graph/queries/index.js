@@ -9,10 +9,7 @@ export const getEverything = async (props) => {
   ]);
 };
 
-// return members active in the time period, not those inactive but mentioned
-// can deal with this corner case later
-// if a conversation has an activity out of the window and the member has no other
-// activities, they would be missing
+// return members with an activity in the time period
 export const getMembers = async ({ projectId, graphConnection, from, to }) => {
   const { records } = await graphConnection.run(
     `MATCH (p:Project { id: $projectId })
@@ -30,11 +27,8 @@ export const getMembers = async ({ projectId, graphConnection, from, to }) => {
   }));
 };
 
-// return activities that represent thread parents, along with the members
-// that exist throughout the thread
-// if the conversation started in the timeframe, we grab it, otherwise not
-// this will definitely not be the right solution forever
-// a workaround may be to leave out to/from for now, the UI will handle it
+// returns a map of all activities with additional information
+// about the threads and replies
 export const getThreads = async function ({
   projectId,
   graphConnection,

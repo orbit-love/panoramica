@@ -31,8 +31,10 @@ export default async function handler(req, res) {
 
     const handleRecords = async (activities) => {
       // sync activities to the graph db
+      // uuids are returned with new activities that pinecone needs, so we
+      // reassing the activities variable
       await session.writeTransaction(async (tx) => {
-        await syncActivities({ tx, project, activities });
+        activities = await syncActivities({ tx, project, activities });
       });
 
       // create embeddings if the project supports it

@@ -43,11 +43,11 @@ export default async function handler(req, res) {
         return sourceIds.indexOf(record.sourceId) === index;
       });
 
-      const count = await session.writeTransaction(async (tx) => {
+      const createdActivities = await session.writeTransaction(async (tx) => {
         return await syncActivities({ tx, activities, project });
       });
 
-      console.log("Created activities: " + count);
+      console.log("Created activities: " + createdActivities.length);
     };
 
     await getAPIData({

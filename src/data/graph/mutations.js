@@ -1,5 +1,4 @@
 import c from "src/configuration/common";
-import { uuid } from "uuidv4";
 
 export async function setupProject({ project, tx }) {
   const projectId = project.id;
@@ -34,20 +33,20 @@ export async function syncActivities({ tx, project, activities }) {
   const projectId = project.id;
 
   for (let activity of activities) {
-    activity.id = activity.id || uuid();
     activity.timestampInt = Date.parse(activity.timestamp);
   }
 
   // bulk add all the activities with the help of UNWIND
   // use the sourceId as a key to avoid duplicates
   // don't change the id of the activity, only set when new
-  await tx.run(
+  const { records } = await tx.run(
     `MATCH (p:Project { id: $projectId })
         WITH p, $activities AS batch
           UNWIND batch AS activity
           MERGE (p)-[:OWNS]-(a:Activity { sourceId: activity.sourceId })
+           CALL uuid_generator.get() YIELD uuid
            SET a += {
-            id: COALESCE(a.id, activity.id),
+            id: COALESCE(a.id, uuid),
             actor: activity.actor,
             sourceId: activity.sourceId,
             sourceParentId: activity.sourceParentId,
@@ -64,117 +63,72 @@ export async function syncActivities({ tx, project, activities }) {
             sourceChannel: activity.sourceChannel,
             globalActor: activity.globalActor,
             globalActorName: activity.globalActorName
-          }`,
+          } RETURN a`,
     { activities, projectId }
   );
   console.log("Memgraph: Added (:Activity) nodes - " + activities.length);
 
-  // this runs across all activities, not just ones in the function argument
-  // this ensures the new activities will be attached as replies to activities
-  // not in the incoming batch
-  await tx.run(
-    `MATCH (p:Project { id: $projectId })
-        WITH p
-          MATCH (p)-[:OWNS]->(a1:Activity), (p)-[:OWNS]->(a2:Activity)
-          WHERE a1.sourceParentId = a2.sourceId
-          MERGE (a1)-[r:REPLIES_TO]->(a2)
-          SET a1.parentId = a2.id`,
-    { projectId }
-  );
-  console.log("Memgraph: Added (a:Activity)-[:REPLIES_TO]->(p:Activity) edges");
+  // get the activities back from the result and assign them to the activities array
+  // since some may have been created with a new uuid
+  activities = records.map((record) => record.get("a").properties);
 
-  // assign conversationId for convenience - this never changes
-  // todo - this can be optimized to run only for new activities, same as previous step
-  await tx.run(
-    `MATCH (p:Project { id: $projectId })
-      WITH p
-        MATCH path = (p)-[:OWNS]->(ancestor:Activity)<-[:REPLIES_TO*0..]-(activity:Activity)
-          WITH activity, ancestor, reduce(acc = ancestor, n in nodes(path) | CASE WHEN n.timestamp < acc.timestamp THEN n ELSE acc END) as conversationStarter
-        ORDER BY conversationStarter.timestamp
-          WITH activity, HEAD(COLLECT(conversationStarter.id)) as conversationId
-        SET activity.conversationId = conversationId`,
-    { projectId }
-  );
-  console.log("Memgraph: Added activity.conversationId");
-
-  const getCount = ({ records }) => {
-    return records[0].get("count");
-  };
-
-  // add the Conversation label to activities with replies and no parent
-  const conversations = await tx.run(
-    `MATCH (p:Project { id: $projectId })
-        WITH p
-          MATCH (p)-[:OWNS]->(a:Activity)
-            WHERE EXISTS((a)<-[:REPLIES_TO]-()) AND NOT EXISTS((a)-[:REPLIES_TO]->())
-          SET a:Conversation
-          WITH count(a) as count RETURN count`,
-    { projectId }
-  );
-  console.log(
-    "Memgraph: Added (:Conversation) labels - " + getCount(conversations)
-  );
-
-  // add the Reply label to activities with a parent
-  const replies = await tx.run(
-    `MATCH (p:Project { id: $projectId })
-        WITH p
-          MATCH (p)-[:OWNS]->(a:Activity)
-            WHERE EXISTS((a)-[:REPLIES_TO]->())
-          SET a:Reply
-          WITH count(a) as count RETURN count`,
-    { projectId }
-  );
-  console.log("Memgraph: Added (:Reply) labels - " + getCount(replies));
-
-  // add the Island label to activities with a parent
-  const islands = await tx.run(
-    `MATCH (p:Project { id: $projectId })
-        WITH p
-          MATCH (p)-[:OWNS]->(a:Activity)
-            WHERE NOT EXISTS((a)<-[:REPLIES_TO]-()) AND NOT EXISTS((a)-[:REPLIES_TO]->())
-          SET a:Island
-          WITH count(a) as count RETURN count`,
-    { projectId }
-  );
-  console.log("Memgraph: Added (:Island) labels - " + getCount(islands));
-
-  // create the set of members for the activities
-  // TODO: actors could be an array here, otherwise it just gets overridden
+  // assign parentId and :Reply label to activities that have a sourceParentId matching another activity
   await tx.run(
     `MATCH (p:Project { id: $projectId })
         WITH p, $activities AS batch
-          UNWIND batch AS activity
-          MERGE (p)-[:OWNS]-(m:Member { globalActor: activity.globalActor })
-          SET m += {
-           globalActorName: activity.globalActorName,
-           actor: activity.actor,
-           actorName: activity.actorName
-          }`,
+        UNWIND batch AS activity
+          MATCH (p)-[:OWNS]->(a1:Activity { id: activity.id }), (p)-[:OWNS]->(a2:Activity)
+            WHERE a1.sourceParentId = a2.sourceId
+            MERGE (a1)-[r:REPLIES_TO]->(a2)
+          SET a1.parentId = a2.id
+          SET a1:Reply`,
+    { activities, projectId }
+  );
+  console.log("Memgraph: Added (a:Activity)-[:REPLIES_TO]->(p:Activity) edges");
+
+  // assign conversationId to the farthest ancestor of each activity or that activity itself
+  // apply the :Conversation label if the farthest ancestor is the activity itself
+  await tx.run(
+    `MATCH (p:Project { id: $projectId })
+      WITH p, $activities AS batch
+      UNWIND batch AS batchActivity
+        MATCH path = (p)-[:OWNS]->(ancestor:Activity)<-[:REPLIES_TO*0..]-(activity:Activity { id: batchActivity.id })
+          WITH activity, ancestor, reduce(acc = ancestor, n in nodes(path) | CASE WHEN n.timestamp < acc.timestamp THEN n ELSE acc END) as conversationStarter
+            ORDER BY conversationStarter.timestamp
+          WITH activity, HEAD(COLLECT(conversationStarter.id)) as conversationId
+            SET activity.conversationId = conversationId
+          WITH activity WHERE activity.id = conversationId
+            SET activity:Conversation`,
+    { activities, projectId }
+  );
+  console.log("Memgraph: Added activity.conversationId");
+
+  // create (:Member) nodes for each unique globalActor
+  await tx.run(
+    `MATCH (p:Project { id: $projectId })
+      WITH p, $activities AS batch
+        UNWIND batch AS activity
+        MERGE (p)-[:OWNS]-(m:Member { globalActor: activity.globalActor })
+          SET m.globalActorName = activity.globalActorName`,
     { activities, projectId }
   );
   console.log("Memgraph: Created (:Member) nodes");
 
-  // create the :DID edge between Members and Activities
+  // create [:DID] edges between members and activities
   await tx.run(
     `MATCH (p:Project { id: $projectId })
         WITH p, $activities AS batch
             UNWIND batch AS activity
-            MATCH (p)-[:OWNS]->(m:Member { globalActor: activity.globalActor }),
-                  (p)-[:OWNS]->(a:Activity { id: activity.id })
+            MATCH (p)-[:OWNS]->(a:Activity { id: activity.id }),
+                  (p)-[:OWNS]->(m:Member { globalActor: activity.globalActor })
            MERGE (m)-[r:DID]-(a)`,
     { activities, projectId }
   );
-  console.log(
-    "Memgraph: Created (:Member)->[:DID]->(:Activity) edges - " +
-      activities.length
-  );
+  console.log("Memgraph: Created (:Member)->[:DID]->(:Activity) edges");
 
   let mentions = [];
 
-  // not that all the the member nodes exist, we can look them up by their
-  // actor property and create :MENTIONS edges from Activity to Member
-  // go back through all the activities and create mentions
+  // create [:MENTIONS] edges from activities to members
   for (let activity of activities) {
     const activityMentions = (activity.mentions || []).filter(c.onlyUnique);
     for (let mention of activityMentions) {
@@ -202,7 +156,7 @@ export async function syncActivities({ tx, project, activities }) {
           UNWIND batch AS mention
             MATCH
               (p)-[:OWNS]->(m:Member   { globalActor: mention.globalActor }),
-              (p)-[:OWNS]->(a:Activity { id: mention.activityId })
+              (p)-[:OWNS]->(a:Activity { activityId: mention.activityId })
             MERGE (a)-[r:MENTIONS]-(m)`,
     { mentions, projectId }
   );
@@ -211,7 +165,8 @@ export async function syncActivities({ tx, project, activities }) {
     mentions.length
   );
 
-  return activities.length;
+  // return activities with new uuids
+  return activities;
 }
 
 export const updateActivity = async ({ tx, project, activityId, summary }) => {
