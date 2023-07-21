@@ -114,7 +114,7 @@ export default function Conversation({
             </>
           )}
           {!project.modelName && (
-            <div className="text-red-500">
+            <div className="p-4 text-red-500">
               LLM and vector stores are not configured. Edit the project and add
               the necessary information to enable AI features.
             </div>

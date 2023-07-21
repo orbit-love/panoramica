@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Loader from "../ui/Loader";
 
 export default function New({ redirectUrl }) {
   const router = useRouter();
@@ -34,8 +35,8 @@ export default function New({ redirectUrl }) {
           router.push(redirectUrl(result.project.id));
         } else {
           alert(message);
+          setLoading(false);
         }
-        setLoading(false);
       });
   };
 
@@ -84,7 +85,7 @@ export default function New({ redirectUrl }) {
         </div>
         <div className="pt-2">
           <button className="btn" type="submit">
-            {loading && <FontAwesomeIcon icon="circle-notch" spin />}
+            {loading && <Loader />}
             {!loading && "Submit"}
           </button>
         </div>

@@ -15,7 +15,7 @@ export default function Modal({ title, close, children, fullHeight }) {
           `flex relative flex-col bg-white border border-gray-700 dark:bg-gray-900 dark:border-gray-800`,
           {
             "w-full h-full": fullHeight,
-            "md:w-auto md:h-auto": !fullHeight,
+            "sm:w-auto sm:h-auto": !fullHeight,
           }
         )}
       >

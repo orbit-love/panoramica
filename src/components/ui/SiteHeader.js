@@ -30,7 +30,7 @@ export default function SiteHeader() {
         <Link href="/" passHref>
           <div className="flex items-center p-1 space-x-3">
             <Image src={logo} alt="Panoramica logo" width="45" />
-            <div className="-mt-2 hidden text-3xl font-thin tracking-wider md:flex md:visible">
+            <div className="-mt-2 hidden text-3xl font-thin tracking-wider sm:flex sm:visible">
               panoramica
             </div>
           </div>

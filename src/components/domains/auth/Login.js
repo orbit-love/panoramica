@@ -24,18 +24,19 @@ export default function Login({ csrfToken }) {
   };
 
   return (
-    <div className="flex flex-col space-y-2">
+    <div className="flex flex-col space-y-2 w-full items-center">
       <form
-        className="flex flex-col justify-center items-center w-72 md:flex-row md:space-x-2"
+        className="flex flex-col justify-around items-center w-full sm:w-1/3 sm:flex-row sm:space-x-2 px-4"
         method="post"
         action="/api/auth/signin/email"
         onSubmit={onSubmit}
       >
-        <div className="w-full">
+        <div className="w-full sm:w-auto">
           <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
           <label>
             <input
               ref={emailRef}
+              className="w-full sm:!w-64"
               placeholder="foo@foo.com"
               type="email"
               id="email"
@@ -43,7 +44,7 @@ export default function Login({ csrfToken }) {
             />
           </label>
         </div>
-        <button className="btn my-2 md:my-0" type="submit">
+        <button className="btn my-2 sm:my-0" type="submit">
           {loading && <Loader />}
           {!loading && "Sign in with email"}
         </button>
