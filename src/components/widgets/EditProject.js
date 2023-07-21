@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   Frame,
@@ -11,8 +10,9 @@ import {
 } from "src/components/widgets";
 import Community from "src/models/Community";
 import Edit from "src/components/domains/project/Edit";
+import Loader from "../domains/ui/Loader";
 
-export default function Project({ project, dispatch }) {
+export default function EditProject({ project, dispatch }) {
   const router = useRouter();
   let [status, setStatus] = useState();
   let [loading, setLoading] = useState(false);
@@ -63,11 +63,7 @@ export default function Project({ project, dispatch }) {
     <Frame>
       <div className="px-4 mt-4">
         {status && <div className="pb-4 text-green-500">{status}</div>}
-        {loading && (
-          <div className="pb-4 font-normal">
-            <FontAwesomeIcon icon="circle-notch" spin />
-          </div>
-        )}
+        {loading && <div className="pb-4">{loading && <Loader />}</div>}
         <Edit
           project={project}
           setLoading={setLoading}
@@ -79,19 +75,15 @@ export default function Project({ project, dispatch }) {
           onDelete={() => router.push("/")}
         />
         <div className="text-tertiary flex flex-col items-start py-6 space-y-1">
-          <div className="flex my-2 space-x-2 text-lg font-thin">
+          <div className="flex items-center my-2 space-x-2 text-lg font-thin">
             <div>Actions</div>
-            {loading && (
-              <div className="font-normal">
-                <FontAwesomeIcon icon="circle-notch" spin />
-              </div>
-            )}
+            {loading && <Loader />}
           </div>
+          <button className="hover:underline" onClick={refreshProject}>
+            Import latest data from Orbit
+          </button>
           <button className="hover:underline" onClick={importProject}>
             Reimport all data from Orbit
-          </button>
-          <button className="hover:underline" onClick={refreshProject}>
-            Fetch latest data from Orbit
           </button>
           <button className="hover:underline" onClick={createEmbeddings}>
             Load embeddings into vector store

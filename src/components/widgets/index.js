@@ -10,7 +10,7 @@ export { default as Conversation } from "./Conversation";
 export { default as Home } from "./Home";
 export { default as Member } from "./Member";
 export { default as Members } from "./Members";
-export { default as Project } from "./Project";
+export { default as EditProject } from "./EditProject";
 export { default as Prompt } from "./Prompt";
 export { default as Search } from "./Search";
 export { default as Source } from "./Source";
@@ -26,7 +26,7 @@ import Conversation from "./Conversation";
 import Home from "./Home";
 import Member from "./Member";
 import Members from "./Members";
-import Project from "./Project";
+import EditProject from "./EditProject";
 import Prompt from "./Prompt";
 import Search from "./Search";
 import Source from "./Source";
@@ -103,7 +103,7 @@ export const components = {
   Home: (props) => Wrap(Home, props),
   Member: (props) => Wrap(Member, props),
   Members: (props) => Wrap(Members, props),
-  Project: (props) => Wrap(Project, props),
+  EditProject: (props) => Wrap(EditProject, props),
   Prompt: (props) => Wrap(Prompt, props),
   Search: (props) => Wrap(Search, props),
   Source: (props) => Wrap(Source, props),

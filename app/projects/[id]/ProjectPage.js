@@ -70,6 +70,7 @@ export default function ProjectPage({ project, data }) {
           }
         } catch (err) {
           console.log("Could not load layout", err);
+          localStorage.removeItem(storageKey(project));
         }
       }
 

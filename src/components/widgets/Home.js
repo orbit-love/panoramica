@@ -113,13 +113,12 @@ export default function Home(props) {
     console.log("Project refreshed");
   }, [project, fetchProject]);
 
-  // refresh the project right away so new data comes in
+  // refresh the project every minute to fetch new data
   useEffect(() => {
     if (!empty) {
       var interval = setInterval(() => {
         refreshProject();
       }, 60 * 1000);
-      refreshProject();
       return () => {
         clearInterval(interval);
       };
@@ -165,7 +164,7 @@ export default function Home(props) {
           <button
             className=""
             onClick={() =>
-              addWidget("edit-project", "Project", {
+              addWidget("edit-project", "EditProject", {
                 title: "Edit Project",
                 position,
               })
