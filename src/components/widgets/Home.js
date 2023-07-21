@@ -128,7 +128,8 @@ export default function Home(props) {
   const onSearchSubmit = (e) => {
     e.preventDefault();
     var term = searchRef.current.value;
-    addWidget("search", "Search", { title: term, position });
+    var id = term ? `search-${term}` : "search";
+    addWidget(id, "Search", { title: term || "Search", position });
     searchRef.current.value = "";
     searchRef.current.blur();
   };

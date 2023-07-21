@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Activities from "src/components/domains/activity/Activities";
 import { Frame, saveLayout } from "src/components/widgets";
-import c from "src/configuration/common";
 
 export default function Search({
   project,
@@ -13,11 +12,12 @@ export default function Search({
   handlers,
 }) {
   var searchRef = useRef();
+  const initialTerm = api.title === "Search" ? "" : api.title;
 
   const [loading, setLoading] = useState(false);
   const [docs, setDocs] = useState([]);
-  const [term, setTerm] = useState(api.title); // tracks the input box
-  const [appliedTerm, setAppliedTerm] = useState(api.title);
+  const [term, setTerm] = useState(initialTerm); // tracks the input box
+  const [appliedTerm, setAppliedTerm] = useState(initialTerm);
 
   const fetchSearch = useCallback(async () => {
     setLoading(true);
@@ -36,8 +36,10 @@ export default function Search({
 
   const updateTitle = useCallback(
     (appliedTerm) => {
-      api.setTitle(appliedTerm);
-      saveLayout({ project, containerApi });
+      if (appliedTerm) {
+        api.setTitle(appliedTerm);
+        saveLayout({ project, containerApi });
+      }
     },
     [project, api, containerApi]
   );
