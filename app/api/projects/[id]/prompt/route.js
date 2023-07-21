@@ -5,9 +5,9 @@ import { StreamingTextResponse, LangChainStream } from "ai";
 import { OpenAI } from "langchain/llms/openai";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
-import { Document } from "langchain/document";
-import { loadQAStuffChain } from "langchain/chains";
+import { ConversationalRetrievalQAChain } from "langchain/chains";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { ChatMessageHistory } from "langchain/memory";
 
 import { checkApp, authorizeProject } from "src/auth";
 import { getConversation } from "src/data/graph/queries/getConversation";
@@ -23,10 +23,17 @@ export async function GET(request, context) {
   }
 
   var { id } = context.params;
-  var q = request.nextUrl.searchParams.get("q");
+
+  // Alternating messages from Human and AI
+  const body = await request.json();
+  var chat = body.chat;
+
+  // q is supposedely the last question from the Human
+  var q = chat.pop();
   if (!q) {
     q = "What was the most recent activity in this community?";
   }
+
   try {
     var project = await authorizeProject({ id, user });
     var projectId = project.id;
@@ -50,15 +57,14 @@ export async function GET(request, context) {
       { pineconeIndex, namespace }
     );
 
-    const vectorDocs = await vectorStore.similaritySearch(q, 10);
-    if (vectorDocs.length === 0) {
-      return NextResponse.json(
-        {
-          message:
-            "No information exists that could help provide an answer. Please try another query.",
-        },
-        { status: 400 }
-      );
+    // Start with an empty history and use the chat to fill it
+    let history = new ChatMessageHistory();
+    for (i in chat) {
+      if (i % 2) {
+        await history.addUserMessage(chat[i]);
+      } else {
+        await history.addAIChatMessage(chat[i]);
+      }
     }
 
     // get unique conversation ids from the vector docs

@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 
 export default function PromptInput(props) {
-  let { prompt, fetchPrompt, setPrompt, placeholder } = props;
+  let { prompt, fetchPrompt, setPrompt, disabled, placeholder } = props;
   let textareaRef = useRef();
   let formRef = useRef();
 
@@ -24,10 +24,15 @@ export default function PromptInput(props) {
         value={prompt}
         rows={3}
         placeholder={placeholder}
+        disabled={disabled ? "disabled" : ""}
         onChange={(e) => setPrompt(e.target.value)}
       />
       <div className="flex items-end">
-        <button className="btn" type="submit">
+        <button
+          className="btn"
+          type="submit"
+          disabled={disabled ? "disabled" : ""}
+        >
           Submit
         </button>
       </div>
