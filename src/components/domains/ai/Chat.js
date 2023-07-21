@@ -95,7 +95,7 @@ export default function Chat({ project, subContext, examplePrompts }) {
     <Frame>
       <div className="flex flex-col px-4 h-full">
         <div className="flex flex-col flex-1 grow mt-4 overflow-y-scroll">
-          {!error && !subContext && messages.length === 0 && (
+          {!error && !examplePrompts && messages.length === 0 && (
             <div className="text-tertiary font-light">
               Hello, I am a friendly AI that can answer questions about
               conversations in your Panoramica project.
