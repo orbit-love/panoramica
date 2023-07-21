@@ -3,7 +3,7 @@ import { PineconeClient } from "@pinecone-database/pinecone";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { ConversationalRetrievalQAChain } from "langchain/chains";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { ChatMessageHistory } from "langchain/memory";
+import { BufferMemory, ChatMessageHistory } from "langchain/memory";
 import { getConversation } from "src/data/graph/queries/getConversation";
 import GraphConnection from "src/data/graph/Connection";
 import { ChatOpenAI } from "langchain/chat_models/openai";
@@ -136,10 +136,14 @@ export const getAnswerStream = async ({ project, q, chat, subContext }) => {
     streaming: true,
   });
 
-  ConversationalRetrievalQAChain.fromLLM(model, retriever, {}).call(
-    { question, chat_history: history },
-    [handlers]
-  );
+  const chain = ConversationalRetrievalQAChain.fromLLM(model, retriever, {
+    memory: new BufferMemory({
+      memoryKey: "chat_history",
+      chatHistory: history,
+    }),
+  });
+
+  chain.call({ question }, [handlers]);
 
   return stream;
 };

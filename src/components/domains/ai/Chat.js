@@ -21,7 +21,8 @@ export default function Chat({ project, subContext, examplePrompts }) {
     setMessages((messages) => messages.slice(0, -1));
   };
 
-  const clearMessages = () => {
+  const reset = () => {
+    setStreaming(false);
     setError("");
     setMessages([]);
   };
@@ -136,10 +137,7 @@ export default function Chat({ project, subContext, examplePrompts }) {
         </div>
         <div className="flex flex-col py-4">
           <div className="my-2 ml-auto">
-            <button
-              className="text-tertiary hover:underline"
-              onClick={clearMessages}
-            >
+            <button className="text-tertiary hover:underline" onClick={reset}>
               <FontAwesomeIcon className="mr-1" icon="arrows-rotate" />
               Reset
             </button>
