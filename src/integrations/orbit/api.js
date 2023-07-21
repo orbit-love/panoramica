@@ -6,7 +6,6 @@ import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 
 import { prisma } from "src/data/db";
-import { uuid } from "uuidv4";
 import axios from "axios";
 
 const getMentions = function (text) {
@@ -319,7 +318,7 @@ const getFields = async ({ project, activity, included }) => {
     typeFields.actorName = member.attributes.name || member.attributes.slug;
   }
 
-  // set a default for text that should be overridden
+  // default text should be overridden by typeFields
   let text = "";
 
   const fields = {
@@ -328,8 +327,6 @@ const getFields = async ({ project, activity, included }) => {
     sourceType,
     text,
     ...typeFields,
-    // Manually generate an id
-    id: uuid(),
     globalActor: slug,
     globalActorName: name,
     projectId: project.id,

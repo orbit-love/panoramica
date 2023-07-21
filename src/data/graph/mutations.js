@@ -1,14 +1,11 @@
 import c from "src/configuration/common";
+import { uuid } from "uuidv4";
 
 export async function setupProject({ project, tx }) {
   const projectId = project.id;
 
   // merge project node
-  await tx.run(
-    `MERGE (p:Project { id: $projectId })
-        RETURN p`,
-    { projectId }
-  );
+  await tx.run(`MERGE (p:Project { id: $projectId }) RETURN p`, { projectId });
   console.log("Memgraph: Created project");
 
   // delete previous nodes and relationships
@@ -17,35 +14,40 @@ export async function setupProject({ project, tx }) {
         DETACH DELETE n`,
     { projectId }
   );
-  console.log("Memgraph: Deleted data");
+  console.log("Memgraph: Cleared existing project data");
+}
 
+// set up constraints and indexes for memgraph
+export async function setupConstraints({ tx }) {
   // ensure only one project with the same id is ever created
-  // await tx.run(`CREATE CONSTRAINT ON (p:Parent) ASSERT p.id IS UNIQUE`);
-  // await tx.run(`CREATE INDEX ON :Project(id)`);
-  // await tx.run(`CREATE INDEX ON :Member(globalActor)`);
-  // await tx.run(`CREATE INDEX ON :Activity(id)`);
-  // await tx.run(`CREATE INDEX ON :Activity(timestamp)`);
+  await tx.run(`CREATE CONSTRAINT ON (p:Parent) ASSERT p.id IS UNIQUE`);
+  // create indices for faster lookups
+  await tx.run(`CREATE INDEX ON :Project(id)`);
+  await tx.run(`CREATE INDEX ON :Member(globalActor)`);
+  await tx.run(`CREATE INDEX ON :Activity(id)`);
+  await tx.run(`CREATE INDEX ON :Activity(timestamp)`);
 
-  // console.log("Memgraph: Created uniqueness constraint");
+  console.log("Memgraph: Created constraints");
 }
 
 export async function syncActivities({ tx, project, activities }) {
   const projectId = project.id;
 
   for (let activity of activities) {
+    activity.id = activity.id || uuid();
     activity.timestampInt = Date.parse(activity.timestamp);
   }
 
-  // bulk add all the activities
-  // use the sourceId as a key, so even if the database has a different
-  // record for the activity, a duplicate won't be created
+  // bulk add all the activities with the help of UNWIND
+  // use the sourceId as a key to avoid duplicates
+  // don't change the id of the activity, only set when new
   await tx.run(
     `MATCH (p:Project { id: $projectId })
         WITH p, $activities AS batch
           UNWIND batch AS activity
           MERGE (p)-[:OWNS]-(a:Activity { sourceId: activity.sourceId })
            SET a += {
-            id: activity.id,
+            id: COALESCE(a.id, activity.id),
             actor: activity.actor,
             sourceId: activity.sourceId,
             sourceParentId: activity.sourceParentId,
