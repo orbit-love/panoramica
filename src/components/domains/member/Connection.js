@@ -5,19 +5,23 @@ import TimeAgo from "react-timeago";
 import c from "src/configuration/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function CompactConnection({ member, connection, onClick }) {
-  var [outgoing, incoming, lastInteraction] =
-    member.connections[connection.globalActor];
+export default function CompactConnection({
+  member,
+  connectedMember,
+  connection,
+  onClick,
+}) {
+  var [outgoing, incoming, lastInteraction] = connection;
   return (
     <button
-      key={connection.id}
+      key={connectedMember.id}
       className={classnames(
         "group bg-opacity-0 flex overflow-hidden items-center space-x-4 w-full whitespace-nowrap"
       )}
-      onClick={(e) => onClick(e, member, connection)}
+      onClick={(e) => onClick(e, member, connectedMember)}
     >
       <div className="flex-grow">
-        <NameAndIcon member={connection} onClick={() => {}} />
+        <NameAndIcon member={connectedMember} onClick={() => {}} />
       </div>
       <div className="mx-auto"></div>
       <div className="text-secondary">

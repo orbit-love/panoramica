@@ -68,9 +68,9 @@ export default function Activity({
     <div
       key={activity.id}
       data-activity-id={activity.id}
-      className="flex flex-col"
+      className="flex flex-col py-1"
     >
-      <div className="flex items-center pb-1 space-x-2">
+      <div className="flex items-center space-x-2">
         <NameAndIcon member={member} onClick={onClickMember} />
         <div className="flex-1" />
         {showSourceIcon && (

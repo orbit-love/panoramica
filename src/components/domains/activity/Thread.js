@@ -42,7 +42,7 @@ export default function Thread(props) {
       <div className="flex flex-col space-y-1">
         <div className="flex items-center space-x-1">
           <div className="flex shrink-0 items-center space-x-1">
-            <FontAwesomeIcon icon="reply" className="text-sm opacity-80" />
+            <FontAwesomeIcon icon="reply" className="text-xs" />
             <NameAndIcon
               member={community.findMemberByActivity(activity)}
               onClick={onClickMember}
@@ -53,7 +53,7 @@ export default function Thread(props) {
           </div>
         </div>
         {activityThread.children.length > 1 && (
-          <div className="text-secondary pl-3">
+          <div className="text-secondary">
             {activityThread.children.length} replies
           </div>
         )}
@@ -63,28 +63,24 @@ export default function Thread(props) {
 
   return (
     <div
-      className={classnames("flex flex-col pt-1", {
+      className={classnames("flex flex-col", {
+        "pt-2 pb-3": depth === 0,
         "border-l border-gray-200 dark:border-gray-700 pl-3": depth > 0,
       })}
     >
       {showConversation && (
-        <div className="text-secondary flex flex-col mb-2 space-y-2 text-sm whitespace-nowrap">
+        <div className="text-secondary flex flex-col mb-1 space-y-0 text-sm whitespace-nowrap">
           {conversation && (
             <Preview activity={conversation} onClickMember={onClickMember} />
           )}
           {showParent && (
-            <div className="pl-3">
+            <div className="">
               <Preview activity={parent} onClickMember={onClickMember} />
             </div>
           )}
         </div>
       )}
-      <div
-        className={classnames("pb-1", {
-          "pl-3": showConversation,
-          "pl-7": showParent,
-        })}
-      >
+      <div>
         <Activity
           activity={activity}
           community={community}
@@ -99,7 +95,9 @@ export default function Thread(props) {
         />
         {/* if we aren't recursing but there are children, put the number */}
         {!renderChildren && thread?.children?.length > 0 && (
-          <div className="text-sm">{thread.children.length} replies</div>
+          <div className="text-secondary text-sm">
+            {thread.children.length} replies
+          </div>
         )}
       </div>
       {renderChildren &&

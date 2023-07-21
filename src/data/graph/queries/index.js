@@ -23,7 +23,6 @@ export const getMembers = async ({ projectId, graphConnection, from, to }) => {
   );
   return toProperties(records, (record) => ({
     activityCount: record.get("count").low,
-    connections: [],
   }));
 };
 

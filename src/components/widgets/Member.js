@@ -8,16 +8,11 @@ export default function Member({ community, params, handlers }) {
   var { member } = params;
   var { onClickConnection } = handlers;
 
-  // this will allow the feed to render the latest activity by this
-  // member in each thread, preventing other thread noise from
-  // obscuring how the member was involved
+  // for each thread, render the latest activity that involves the member
+  // as a starting point for exploring the thread
   var activities = community.activities.filter(
     (activity) => activity.globalActor === member.globalActor
   );
-
-  // an alternative would be only showing their activities and linking to conversations
-  // or showing a conversation summary view; what is nice is to see the members / topics
-  // var activities = community.activities.filter(activity => activity.globalActor === member.globalActor);
 
   return (
     <Frame>
@@ -27,19 +22,13 @@ export default function Member({ community, params, handlers }) {
         </div>
       </Header>
       <div className="flex flex-col space-y-3">
-        {member.connectionCount > 0 && (
-          <>
-            <div className="flex flex-col px-4">
-              <CompactConnections
-                member={member}
-                community={community}
-                onClick={(e, member, connection) =>
-                  onClickConnection(e, member, connection)
-                }
-              />
-            </div>
-          </>
-        )}
+        <CompactConnections
+          member={member}
+          community={community}
+          onClick={(e, member, connection) =>
+            onClickConnection(e, member, connection)
+          }
+        />
         <ActivityFeed
           activities={activities}
           community={community}

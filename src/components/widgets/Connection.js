@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import { Frame, Header, ActivityFeed } from "src/components/widgets";
 
-export default function Connection({ api, params, community, handlers }) {
+export default function Connection({ params, community, handlers }) {
   var { member, connection } = params;
   var { onClickMember } = handlers;
 
