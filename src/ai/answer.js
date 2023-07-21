@@ -7,6 +7,7 @@ import { ChatMessageHistory } from "langchain/memory";
 import { getConversation } from "src/data/graph/queries/getConversation";
 import GraphConnection from "src/data/graph/Connection";
 import { ChatOpenAI } from "langchain/chat_models/openai";
+import c from "src/configuration/common";
 
 const loadConversationDocs = async (projectId, conversationId) => {
   if (!conversationId) return [];
@@ -23,6 +24,27 @@ const loadConversationDocs = async (projectId, conversationId) => {
   return allDocs;
 };
 
+const loadConversationDocsByVectorSearch = async (project, q) => {
+  const vectorStore = await prepareVectorStore(project);
+  const vectorDocs = await vectorStore.similaritySearch(q, 10);
+
+  // get unique conversation ids from the vector docs
+  const conversationIds = vectorDocs
+    .map((doc) => doc.metadata.conversationId)
+    .filter((conversationId) => conversationId)
+    .filter(c.onlyUnique);
+
+  var conversationDocs = [];
+
+  for (let conversationId of conversationIds) {
+    const docs = await loadConversationDocs(project.id, conversationId);
+    conversationDocs = conversationDocs.concat(docs);
+    conversationDocs.push({ pageContent: "\n\n--Next Conversation--\n\n" });
+  }
+
+  return conversationDocs;
+};
+
 const formatQuestionForConversation = (q) =>
   `The context you have been given is a conversation
     that took place in an online community. Each message is given as
@@ -36,12 +58,18 @@ const formatQuestionForConversation = (q) =>
 
     ${q}`;
 
-const formatQuestionForVectorDocs = (q) => `
-The context you have been given is a series of messages in an
-online chat community. Please format the response with 2 newlines
-between paragraphs.
+const formatQuestionForConversations = (q) =>
+  `The context you have been given is one or more conversations
+    that took place in an online community. Each message is given as
+    a JSON object on a newline in chronological order. Separate conversations
+    are separated by 2 blank lines and the words "Next Conversation". If a message is a reply to another message, the replyToMessageId
+    property will point to the parent message. In your reply, always format
+    dates and times in a human-readable fashion such as "June 1 at 10pm" or "2 hours and 5 minutes".
+    Be succinct and don't explain your work unless asked. Do not return messageIds
+    in the response. Now, given the context, please
+    help with the following question or request:
 
-Please answer this question about the community: ${q}`;
+    ${q}`;
 
 const prepareVectorStore = async (project) => {
   const { id, pineconeApiEnv, pineconeApiKey, pineconeIndexName } = project;
@@ -92,8 +120,13 @@ export const getAnswerStream = async ({ project, q, chat, subContext }) => {
     };
   } else {
     // Project level context
-    question = formatQuestionForVectorDocs(q);
-    retriever = (await prepareVectorStore(project)).asRetriever();
+    question = formatQuestionForConversations(q);
+    retriever = {
+      async getRelevantDocuments(_) {
+        // Search for vector entries mapping the prompt and turn them into conversation docs
+        return loadConversationDocsByVectorSearch(project, q);
+      },
+    };
   }
 
   const model = new ChatOpenAI({
