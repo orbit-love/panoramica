@@ -29,7 +29,7 @@ export default function Source({ community, params, api, handlers }) {
               className="mr-2"
               onClick={(e) => onClickChannels(e, source)}
             >
-              <FontAwesomeIcon icon="bars" />
+              <FontAwesomeIcon icon="list" />
             </button>
           )}
         </Header>
