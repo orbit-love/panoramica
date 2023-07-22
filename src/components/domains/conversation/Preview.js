@@ -16,8 +16,8 @@ export default function Preview(props) {
   var showParent = parent && parent?.id !== conversation?.id;
 
   return (
-    <div className="flex flex-col pt-2 pb-3">
-      <div className="text-secondary flex flex-col mb-1 space-y-0 text-sm whitespace-nowrap">
+    <div className="flex flex-col">
+      <div className="text-secondary flex flex-col text-sm whitespace-nowrap">
         {showConversation && (
           <ActivityPreview
             activity={conversation}
@@ -47,6 +47,9 @@ export default function Preview(props) {
             {thread.children.length} replies
           </div>
         )}
+        {thread?.children?.length === 0 && (
+          <div className="text-secondary text-sm">No replies</div>
+        )}
       </div>
     </div>
   );
@@ -55,7 +58,7 @@ export default function Preview(props) {
 const ActivityPreview = ({ activity, community, onClickMember }) => {
   var activityThread = community.threads[activity.id];
   return (
-    <div className="flex flex-col space-y-1">
+    <div className="flex flex-col">
       <div className="flex items-center space-x-1">
         <div className="flex shrink-0 items-center space-x-1">
           <FontAwesomeIcon icon="reply" className="text-xs" />

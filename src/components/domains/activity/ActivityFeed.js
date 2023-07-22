@@ -1,26 +1,30 @@
 import React from "react";
 
-import Activities from "src/components/domains/activity/Activities";
+import Paginated from "src/components/domains/activity/Paginated";
+import Expandable from "src/components/domains/conversation/Expandable";
 
+// this component transforms a list of activities into the most recent
+// activity for each unique conversation
 export default function ActivityFeed({ activities, community, handlers }) {
-  // only show the most recent reply in any conversation
+  // show the most recent message in each conversation
   var conversationIds = activities.map((a) => a.conversationId);
   activities = activities.filter((activity, index) => {
     return conversationIds.indexOf(activity.conversationId) === index;
   });
 
-  var onClickActivity = (e, activity) => {
-    var conversation = community.findActivityById(activity.conversationId);
-    handlers.onClickActivity(e, conversation);
-  };
-
-  // max depth of 0 prevents threads rendering down, so that
   return (
-    <Activities
+    <Paginated
       activities={activities}
       community={community}
-      handlers={{ ...handlers, onClickActivity }}
-      maxDepth={0}
+      eachActivity={({ activity, index }) => (
+        <Expandable
+          key={activity.id}
+          index={index}
+          activity={activity}
+          community={community}
+          handlers={handlers}
+        />
+      )}
     />
   );
 }

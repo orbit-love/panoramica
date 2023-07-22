@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import Activities from "src/components/domains/activity/Activities";
+import ActivityFeed from "src/components/domains/activity/ActivityFeed";
 import { Frame, saveLayout } from "src/components/widgets";
 
 export default function Search({
@@ -68,11 +68,6 @@ export default function Search({
     community.findActivityById(id)
   );
 
-  var onClickActivity = (e, activity) => {
-    var conversation = community.findActivityById(activity.conversationId);
-    handlers.onClickActivity(e, conversation);
-  };
-
   return (
     <Frame>
       <div className="flex flex-col mt-6 space-y-2">
@@ -89,12 +84,11 @@ export default function Search({
             {!loading && <FontAwesomeIcon icon="search" />}
           </button>
         </form>
-        <Activities
+        <ActivityFeed
           activities={activities}
           community={community}
           term={appliedTerm}
-          handlers={{ ...handlers, onClickActivity }}
-          maxDepth={0}
+          handlers={handlers}
         />
       </div>
     </Frame>

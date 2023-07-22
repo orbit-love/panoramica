@@ -84,7 +84,7 @@ export default function Conversation({
         })}
       >
         <div
-          className={classnames("expand-images pt-4 px-6", {
+          className={classnames("pt-4 px-6", {
             grow: !fullscreen,
             "overflow-y-scroll w-1/2": fullscreen,
           })}

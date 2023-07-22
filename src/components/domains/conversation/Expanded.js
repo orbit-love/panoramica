@@ -17,8 +17,7 @@ export default function ExpandedConversation(props) {
 
   return (
     <div
-      className={classnames("flex flex-col", {
-        "pt-2 pb-3": depth === 0,
+      className={classnames("flex flex-col expand-images", {
         "border-l border-gray-200 dark:border-gray-700 pl-3": depth > 0,
       })}
     >
