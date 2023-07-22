@@ -2,9 +2,9 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import classnames from "classnames";
 
 import { Frame, saveLayout } from "src/components/widgets";
-import Thread from "src/components/domains/activity/Thread";
 import { conversationPrompts } from "src/configuration/prompts";
 import Chat from "src/components/domains/ai/Chat";
+import ExapndedConversation from "src/components/domains/conversation/Expanded";
 
 export default function Conversation({
   project,
@@ -89,11 +89,10 @@ export default function Conversation({
             "overflow-y-scroll w-1/2": fullscreen,
           })}
         >
-          <Thread
+          <ExapndedConversation
             activity={activity}
             community={community}
             handlers={handlers}
-            onClickActivity={() => {}}
           />
         </div>
         <div

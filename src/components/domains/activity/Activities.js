@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import classnames from "classnames";
 
-import Thread from "src/components/domains/activity/Thread";
+import Preview from "src/components/domains/conversation/Preview";
 
 const pageSize = 10;
 
@@ -47,7 +47,7 @@ export default function Activities(props) {
   }, [lastElement]);
 
   return (
-    <div ref={containerRef} className="overflow-y-scroll">
+    <div ref={containerRef}>
       {items
         .filter((a) => a)
         .map((activity, index) => (
@@ -69,7 +69,7 @@ export default function Activities(props) {
               }
             )}
           >
-            <Thread
+            <Preview
               key={activity.id}
               activity={activity}
               community={community}
