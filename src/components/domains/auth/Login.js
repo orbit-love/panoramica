@@ -18,15 +18,16 @@ export default function Login({ csrfToken }) {
         setMessage("Something in the emailverse went wrong :/");
       } else {
         setMessage("Check your inbox, a login link has been emailed to you.");
+        emailRef.current.value = "";
       }
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col space-y-2 w-full items-center">
+    <div className="flex flex-col items-center space-y-2 w-full">
       <form
-        className="flex flex-col justify-around items-center w-full sm:w-1/3 sm:flex-row sm:space-x-2 px-4"
+        className="flex flex-col justify-around items-center px-4 w-full sm:flex-row sm:space-x-2 sm:w-1/3"
         method="post"
         action="/api/auth/signin/email"
         onSubmit={onSubmit}
