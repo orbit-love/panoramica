@@ -70,7 +70,6 @@ export const loadDefaultLayout = (api) => {
 export const saveLayout = ({ project, containerApi }) => {
   const layout = containerApi.toJSON();
   localStorage.setItem(storageKey(project), JSON.stringify(layout));
-  console.log("Layout saved...");
 };
 
 var Wrap = (Component, props) => {

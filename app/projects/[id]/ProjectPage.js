@@ -15,6 +15,7 @@ import {
   tabComponents,
   storageKey,
   loadDefaultLayout,
+  saveLayout,
 } from "src/components/widgets";
 import {
   ProjectContext,
@@ -88,9 +89,7 @@ export default function ProjectPage({ project, data }) {
       return;
     }
     const disposable = containerApi.onDidLayoutChange(() => {
-      const layout = containerApi.toJSON();
-      localStorage.setItem(storageKey(project), JSON.stringify(layout));
-      console.log("Layout saved...");
+      saveLayout({ project, containerApi });
     });
 
     return () => disposable.dispose();
