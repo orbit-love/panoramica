@@ -34,7 +34,7 @@ export default function Channels({ api, community, params, handlers }) {
           <div>{c.titleize(source)}</div>
         </Header>
       )}
-      <div className="flex flex-col items-start pl-2 px-4">
+      <div className="flex flex-col items-start pl-2 px-6">
         <table className="border-spacing-x-2 table w-full whitespace-nowrap border-separate">
           <tbody>
             <tr className="text-tertiary font-light">

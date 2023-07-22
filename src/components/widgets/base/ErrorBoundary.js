@@ -5,7 +5,7 @@ const WithErrorBoundary = ({ children }) => {
   return (
     <ErrorBoundary
       fallback={
-        <div className="p-4 text-red-500">Oops! Something went wrong.</div>
+        <div className="p-6 text-red-500">Oops! Something went wrong.</div>
       }
     >
       {children}

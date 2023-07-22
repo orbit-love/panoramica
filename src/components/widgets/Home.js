@@ -142,7 +142,7 @@ export default function Home(props) {
 
   return (
     <Frame>
-      <div className="py-2 px-4">
+      <div className="py-2 px-6">
         <div className="flex items-center w-full">
           <div className="text-lg">{project.name}</div>
           <div title="Auto update every 60s">
@@ -175,7 +175,7 @@ export default function Home(props) {
           </button>
         </div>
       </div>
-      <div className="flex flex-col px-4">
+      <div className="flex flex-col px-6">
         {!loading && empty && (
           <div className="flex flex-col space-y-6">
             <p>

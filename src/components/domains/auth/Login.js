@@ -27,7 +27,7 @@ export default function Login({ csrfToken }) {
   return (
     <div className="flex flex-col items-center space-y-2 w-full">
       <form
-        className="flex flex-col justify-around items-center px-4 w-full sm:flex-row sm:space-x-2 sm:w-1/3"
+        className="flex flex-col justify-around items-center px-6 w-full sm:flex-row sm:space-x-2 sm:w-1/3"
         method="post"
         action="/api/auth/signin/email"
         onSubmit={onSubmit}

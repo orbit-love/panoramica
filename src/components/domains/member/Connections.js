@@ -34,7 +34,7 @@ export default function CompactConnections({ member, community, onClick }) {
   return (
     <>
       {connectedMembers.length > 0 && (
-        <div className="flex flex-col px-4 space-y-3">
+        <div className="flex flex-col px-6 space-y-3">
           <div className="flex flex-col pb-2">
             <div className="text-tertiary pb-1 font-light">Connections</div>
             <div className="flex flex-col">

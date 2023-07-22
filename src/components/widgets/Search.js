@@ -76,7 +76,7 @@ export default function Search({
   return (
     <Frame>
       <div className="flex flex-col mt-6 space-y-2">
-        <form onSubmit={onSearchSubmit} className="flex px-4 mb-2 space-x-2">
+        <form onSubmit={onSearchSubmit} className="flex px-6 mb-2 space-x-2">
           <input
             ref={searchRef}
             required

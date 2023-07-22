@@ -26,7 +26,7 @@ export default function SiteHeader() {
 
   return (
     <>
-      <nav className="flex py-3 px-4 w-full whitespace-nowrap">
+      <nav className="flex py-3 px-6 w-full whitespace-nowrap">
         <Link href="/" passHref>
           <div className="flex items-center p-1 space-x-3">
             <Image src={logo} alt="Panoramica logo" width="45" />

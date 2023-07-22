@@ -84,7 +84,7 @@ export default function Conversation({
         })}
       >
         <div
-          className={classnames("expand-images px-4 pt-4", {
+          className={classnames("expand-images pt-4 px-6", {
             grow: !fullscreen,
             "overflow-y-scroll w-1/2": fullscreen,
           })}
@@ -114,7 +114,7 @@ export default function Conversation({
             </>
           )}
           {!project.modelName && (
-            <div className="p-4 text-red-500">
+            <div className="p-6 text-red-500">
               LLM and vector stores are not configured. Edit the project and add
               the necessary information to enable AI features.
             </div>

@@ -61,7 +61,7 @@ export default function EditProject({ project, dispatch }) {
 
   return (
     <Frame>
-      <div className="px-4 mt-4">
+      <div className="px-6 mt-4">
         {status && <div className="pb-4 text-green-500">{status}</div>}
         {loading && <div className="pb-4">{loading && <Loader />}</div>}
         <Edit

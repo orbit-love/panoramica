@@ -17,7 +17,7 @@ export default function Members({ community, addWidget }) {
         <div className="text-lg">Members</div>
         <div className="">{members.length}</div>
       </Header>
-      <div className="flex flex-col px-4">
+      <div className="flex flex-col px-6">
         {members.map((member) => (
           <CompactMember
             key={member.globalActor}
