@@ -86,3 +86,30 @@ export function addActivityWidget(activity, addWidget, options = {}) {
     ...options,
   });
 }
+
+export const clickHandlers = (addWidget) => ({
+  onClickMember: (e, member, options) => {
+    e.stopPropagation();
+    addMemberWidget(member, addWidget, options);
+  },
+  onClickSource: (e, source, options) => {
+    e.stopPropagation();
+    addSourceWidget(source, addWidget, options);
+  },
+  onClickChannel: (e, source, sourceChannel, options) => {
+    e.stopPropagation();
+    addChannelWidget(source, sourceChannel, addWidget, options);
+  },
+  onClickChannels: (e, source, options) => {
+    e.stopPropagation();
+    addChannelsWidget(source, addWidget, options);
+  },
+  onClickConnection: (e, member, connection, options) => {
+    e.stopPropagation();
+    addConnectionWidget(member, connection, addWidget, options);
+  },
+  onClickActivity: (e, activity, options) => {
+    e.stopPropagation();
+    addActivityWidget(activity, addWidget, options);
+  },
+});

@@ -1,6 +1,7 @@
 import React from "react";
 import CompactMember from "src/components/domains/member/Member";
-import { Frame, Header, addMemberWidget } from "src/components/widgets";
+import { Frame, Header } from "src/components/widgets";
+import { addMemberWidget } from "src/components/widgets/setup/widgets";
 
 export default function Members({ community, addWidget }) {
   let { members } = community;

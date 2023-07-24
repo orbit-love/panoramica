@@ -18,7 +18,7 @@ import {
   ProjectContext,
   ProjectDispatchContext,
 } from "src/components/context/ProjectContext";
-import { addWidget } from "src/components/widgets/setup/widgets";
+import { addWidget, clickHandlers } from "src/components/widgets/setup/widgets";
 
 const components = {
   Channel: (props) => WithContext(Channel, props),
@@ -56,30 +56,3 @@ const WithContext = (Component, props) => {
     </WidgetContext.Provider>
   );
 };
-
-export const clickHandlers = (addWidget) => ({
-  onClickMember: (e, member, options) => {
-    e.stopPropagation();
-    addMemberWidget(member, addWidget, options);
-  },
-  onClickSource: (e, source, options) => {
-    e.stopPropagation();
-    addSourceWidget(source, addWidget, options);
-  },
-  onClickChannel: (e, source, sourceChannel, options) => {
-    e.stopPropagation();
-    addChannelWidget(source, sourceChannel, addWidget, options);
-  },
-  onClickChannels: (e, source, options) => {
-    e.stopPropagation();
-    addChannelsWidget(source, addWidget, options);
-  },
-  onClickConnection: (e, member, connection, options) => {
-    e.stopPropagation();
-    addConnectionWidget(member, connection, addWidget, options);
-  },
-  onClickActivity: (e, activity, options) => {
-    e.stopPropagation();
-    addActivityWidget(activity, addWidget, options);
-  },
-});
