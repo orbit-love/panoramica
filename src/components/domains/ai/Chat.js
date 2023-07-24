@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from "react";
 
-import { Frame } from "src/components/widgets";
+import ErrorBoundary from "src/components/widgets/base/ErrorBoundary";
 import PromptInput from "src/components/ui/PromptInput";
 import Loader from "src/components/domains/ui/Loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -93,7 +93,7 @@ export default function Chat({ project, subContext, examplePrompts }) {
   };
 
   return (
-    <Frame>
+    <ErrorBoundary>
       <div className="flex flex-col px-6 h-full">
         <div className="flex overflow-y-scroll flex-col flex-1 grow mt-4">
           {!error && !examplePrompts && messages.length === 0 && (
@@ -150,6 +150,6 @@ export default function Chat({ project, subContext, examplePrompts }) {
           />
         </div>
       </div>
-    </Frame>
+    </ErrorBoundary>
   );
 }

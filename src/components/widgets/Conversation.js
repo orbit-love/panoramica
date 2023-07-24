@@ -14,7 +14,7 @@ export default function Conversation({
   params,
   handlers,
 }) {
-  var { activity, fullscreen } = params;
+  var { activity } = params;
   let [lastSummary, setLastSummary] = useState(api.title);
 
   const subContext = { conversationId: activity.id };
@@ -77,39 +77,21 @@ export default function Conversation({
 
   return (
     <Frame>
-      <div
-        className={classnames("flex h-full", {
-          "flex-row": fullscreen,
-          "flex-col space-y-4": !fullscreen,
-        })}
-      >
-        <div
-          className={classnames("pt-4 px-6", {
-            grow: !fullscreen,
-            "overflow-y-scroll w-1/2": fullscreen,
-          })}
-        >
+      <div className="flex flex-col md:flex-row h-full">
+        <div className="pt-4 px-6 md:overflow-y-scroll w-full">
           <FullThreadView
             activity={activity}
             community={community}
             handlers={handlers}
           />
         </div>
-        <div
-          className={classnames("flex flex-col", {
-            "overflow-y-scroll w-1/2 border-l-2 border-gray-200 dark:border-gray-800":
-              fullscreen,
-            "w-full": !fullscreen,
-          })}
-        >
+        <div className="flex flex-col md:overflow-y-scroll w-full border-l border-gray-200 dark:border-gray-800">
           {project.modelName && (
-            <>
-              <Chat
-                project={project}
-                subContext={subContext}
-                examplePrompts={conversationPrompts}
-              />
-            </>
+            <Chat
+              project={project}
+              subContext={subContext}
+              examplePrompts={conversationPrompts}
+            />
           )}
           {!project.modelName && (
             <div className="p-6 text-red-500">
