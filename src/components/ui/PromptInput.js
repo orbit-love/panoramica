@@ -30,15 +30,16 @@ export default function PromptInput(props) {
           <textarea
             ref={textareaRef}
             value={prompt}
+            rows={3}
             className="p-0 pl-3 pr-10 m-0 w-full bg-transparent border-0 resize-none focus:ring-0 focus-visible:ring-0 md:pl-0 md:pr-24 dark:text-white dark:bg-transparent"
             placeholder={placeholder}
             disabled={disabled ? "disabled" : ""}
             onChange={(e) => setPrompt(e.target.value)}
           />
-          <div className="enabled:bg-brand-purple absolute bottom-3 right-4 transition-colors disabled:text-gray-400 disabled:opacity-40 md:bottom-5 md:pl-8">
+          <div className="enabled:bg-brand-purple absolute top-3 right-4 transition-colors disabled:text-gray-400 disabled:opacity-40 md:top-5 md:pl-8">
             <button
               type="submit"
-              className="btn !bg-tertiary opacity-90 hover:opacity-100"
+              className="btn h-12 !bg-tertiary opacity-90 hover:opacity-100"
               disabled={disabled ? "disabled" : ""}
             >
               {loading && <Loader className="text-white" />}

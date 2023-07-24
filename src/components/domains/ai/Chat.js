@@ -124,18 +124,20 @@ export default function Chat({ project, subContext, examplePrompts }) {
           <div ref={messageRef} />
 
           {messages.length === 0 && examplePrompts && (
-            <div className="px-6 mt-4">
+            <div className="flex flex-1 items-end my-4">
               <PromptPicker prompts={examplePrompts} pickPrompt={pickPrompt} />
             </div>
           )}
         </div>
         <div className="flex flex-col pt-2 pb-6">
-          <div className="my-2 ml-auto">
-            <button className="text-tertiary hover:underline" onClick={reset}>
-              <FontAwesomeIcon className="mr-1" icon="arrows-rotate" />
-              Reset
-            </button>
-          </div>
+          {messages.length > 0 && (
+            <div className="my-2 ml-auto">
+              <button className="text-tertiary hover:underline" onClick={reset}>
+                <FontAwesomeIcon className="mr-1" icon="arrows-rotate" />
+                Reset
+              </button>
+            </div>
+          )}
           <PromptInput
             prompt={prompt}
             setPrompt={setPrompt}
