@@ -1,7 +1,7 @@
 body .btn {
-  @apply flex-1 py-2 px-4 whitespace-nowrap rounded-md outline-none select-none md:px-6;
+  @apply flex-1 py-2 px-4 whitespace-nowrap rounded-md outline-none select-none;
 
-  @apply bg-secondary;
+  @apply bg-tertiary;
   @apply text-white;
   @apply w-full sm:w-auto;
 }

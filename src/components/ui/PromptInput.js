@@ -39,7 +39,7 @@ export default function PromptInput(props) {
           <div className="enabled:bg-brand-purple absolute top-3 right-4 transition-colors disabled:text-gray-400 disabled:opacity-40 md:top-5 md:pl-8">
             <button
               type="submit"
-              className="btn h-12 !bg-tertiary opacity-90 hover:opacity-100"
+              className="btn h-16 !bg-tertiary opacity-90 hover:opacity-100"
               disabled={disabled ? "disabled" : ""}
             >
               {loading && <Loader className="text-white" />}
