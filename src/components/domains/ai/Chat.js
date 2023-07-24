@@ -97,8 +97,8 @@ export default function Chat({ project, subContext, examplePrompts }) {
       <div className="flex flex-col px-6 h-full">
         <div className="flex overflow-y-scroll flex-col flex-1 grow justify-end mt-4">
           {!error && !examplePrompts && messages.length === 0 && (
-            <div className="text-tertiary font-light">
-              Hello, I am a friendly AI that can answer questions about
+            <div className="text-tertiary my-4 font-light">
+              Hello! I am a friendly AI that can answer questions about
               conversations in your Panoramica project.
             </div>
           )}
@@ -131,7 +131,7 @@ export default function Chat({ project, subContext, examplePrompts }) {
         </div>
         <div className="flex flex-col pt-2 pb-6">
           {messages.length > 0 && (
-            <div className="my-2 ml-auto">
+            <div className="mb-4 ml-auto">
               <button className="text-tertiary hover:underline" onClick={reset}>
                 <FontAwesomeIcon className="mr-1" icon="arrows-rotate" />
                 Reset
