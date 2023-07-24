@@ -1,5 +1,6 @@
 import React from "react";
-import { Frame, Header, ActivityFeed } from "src/components/widgets";
+import { Frame, Header } from "src/components/widgets";
+import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
 import c from "src/configuration/common";
 
@@ -19,7 +20,7 @@ export default function Channel({ community, params, handlers }) {
           <div>{c.displayChannel(sourceChannel)}</div>
         </Header>
       )}
-      <ActivityFeed
+      <ConversationFeed
         activities={activities}
         community={community}
         handlers={handlers}

@@ -1,7 +1,8 @@
 import React from "react";
 
+import { Frame, Header } from "src/components/widgets";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
-import { Frame, Header, ActivityFeed } from "src/components/widgets";
+import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import CompactConnections from "src/components/domains/member/Connections";
 
 export default function Member({ community, params, handlers }) {
@@ -29,7 +30,7 @@ export default function Member({ community, params, handlers }) {
             onClickConnection(e, member, connection)
           }
         />
-        <ActivityFeed
+        <ConversationFeed
           activities={activities}
           community={community}
           handlers={handlers}

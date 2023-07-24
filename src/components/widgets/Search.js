@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import ActivityFeed from "src/components/domains/feed/ActivityFeed";
+import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import { Frame, saveLayout } from "src/components/widgets";
 
 export default function Search({
@@ -84,7 +84,7 @@ export default function Search({
             {!loading && <FontAwesomeIcon icon="search" />}
           </button>
         </form>
-        <ActivityFeed
+        <ConversationFeed
           activities={activities}
           community={community}
           term={appliedTerm}

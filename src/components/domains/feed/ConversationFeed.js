@@ -1,11 +1,11 @@
 import React from "react";
 
 import Paginator from "src/components/domains/feed/Paginator";
-import Conversation from "src/components/domains/feed/Conversation";
+import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
 
 // this component transforms a list of activities into the most recent
 // activity for each unique conversation
-export default function ActivityFeed({ activities, community, handlers }) {
+export default function ConversationFeed({ activities, community, handlers }) {
   // show the most recent message in each conversation
   var conversationIds = activities.map((a) => a.conversationId);
   activities = activities.filter((activity, index) => {
@@ -17,7 +17,7 @@ export default function ActivityFeed({ activities, community, handlers }) {
       activities={activities}
       community={community}
       eachActivity={({ activity, index }) => (
-        <Conversation
+        <ConversationFeedItem
           key={activity.id}
           index={index}
           activity={activity}

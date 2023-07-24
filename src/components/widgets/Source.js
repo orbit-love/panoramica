@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Feed from "src/models/Feed";
 import { Frame, Header } from "src/components/widgets";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
-import ActivityFeed from "src/components/domains/feed/ActivityFeed";
+import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 
 export default function Source({ community, params, api, handlers }) {
   var { source } = params;
@@ -35,7 +35,7 @@ export default function Source({ community, params, api, handlers }) {
           )}
         </Header>
       )}
-      <ActivityFeed
+      <ConversationFeed
         activities={activities}
         community={community}
         handlers={handlers}

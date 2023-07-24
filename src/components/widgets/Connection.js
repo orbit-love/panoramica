@@ -1,8 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { Frame, Header } from "src/components/widgets";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
-import { Frame, Header, ActivityFeed } from "src/components/widgets";
+import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 
 export default function Connection({ params, community, handlers }) {
   var { member, connection } = params;
@@ -34,7 +35,7 @@ export default function Connection({ params, community, handlers }) {
           <NameAndIcon member={connection} onClick={onClickMember} />
         </div>
       </Header>
-      <ActivityFeed
+      <ConversationFeed
         activities={activities}
         community={community}
         handlers={handlers}

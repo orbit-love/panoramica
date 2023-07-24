@@ -5,7 +5,7 @@ import PreviewView from "src/components/domains/conversation/views/PreviewView";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import Toolbar from "src/components/domains/conversation/Toolbar";
 
-export default function Conversation(props) {
+export default function ConversationFeedItem(props) {
   var { index, activity, community, handlers } = props;
   var [expanded, setExpanded] = useState(false);
 
