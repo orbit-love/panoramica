@@ -1,9 +1,10 @@
 import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Feed from "src/models/Feed";
+import { Frame, Header } from "src/components/widgets";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
-import { Frame, Header, ActivityFeed } from "src/components/widgets";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ActivityFeed from "src/components/domains/feed/ActivityFeed";
 
 export default function Source({ community, params, api, handlers }) {
   var { source } = params;

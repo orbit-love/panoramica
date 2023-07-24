@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import ActivityFeed from "src/components/domains/activity/ActivityFeed";
+import ActivityFeed from "src/components/domains/feed/ActivityFeed";
 import { Frame, saveLayout } from "src/components/widgets";
 
 export default function Search({

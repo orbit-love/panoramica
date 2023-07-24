@@ -2,7 +2,7 @@ import React from "react";
 import classnames from "classnames";
 import Activity from "src/components/domains/activity/Activity";
 
-export default function ExpandedConversation(props) {
+export default function FullThreadView(props) {
   let { activity, community, depth = 0, handlers } = props;
 
   var thread = community.threads[activity.id];
@@ -32,7 +32,7 @@ export default function ExpandedConversation(props) {
       {childActivities?.map((childActivity, index) => {
         var { id } = childActivity;
         return (
-          <ExpandedConversation
+          <FullThreadView
             key={id}
             activity={childActivity}
             community={community}

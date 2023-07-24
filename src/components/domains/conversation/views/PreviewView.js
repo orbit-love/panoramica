@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Activity from "src/components/domains/activity/Activity";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 
-export default function Preview(props) {
+export default function PreviewView(props) {
   let { activity, community, handlers } = props;
   let { onClickMember } = handlers;
 

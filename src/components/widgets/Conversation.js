@@ -4,7 +4,7 @@ import classnames from "classnames";
 import { Frame, saveLayout } from "src/components/widgets";
 import { conversationPrompts } from "src/configuration/prompts";
 import Chat from "src/components/domains/ai/Chat";
-import ExapndedConversation from "src/components/domains/conversation/Expanded";
+import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 
 export default function Conversation({
   project,
@@ -89,7 +89,7 @@ export default function Conversation({
             "overflow-y-scroll w-1/2": fullscreen,
           })}
         >
-          <ExapndedConversation
+          <FullThreadView
             activity={activity}
             community={community}
             handlers={handlers}

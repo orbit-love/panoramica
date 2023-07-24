@@ -1,7 +1,7 @@
 import React from "react";
 
-import Paginated from "src/components/domains/activity/Paginated";
-import Expandable from "src/components/domains/conversation/Expandable";
+import Paginator from "src/components/domains/feed/Paginator";
+import Conversation from "src/components/domains/feed/Conversation";
 
 // this component transforms a list of activities into the most recent
 // activity for each unique conversation
@@ -13,11 +13,11 @@ export default function ActivityFeed({ activities, community, handlers }) {
   });
 
   return (
-    <Paginated
+    <Paginator
       activities={activities}
       community={community}
       eachActivity={({ activity, index }) => (
-        <Expandable
+        <Conversation
           key={activity.id}
           index={index}
           activity={activity}

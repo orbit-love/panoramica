@@ -1,37 +1,11 @@
 import React, { useState } from "react";
 import classnames from "classnames";
 
-import Preview from "src/components/domains/conversation/Preview";
-import Expanded from "src/components/domains/conversation/Expanded";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PreviewView from "src/components/domains/conversation/views/PreviewView";
+import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
+import Toolbar from "src/components/domains/conversation/Toolbar";
 
-const Menu = ({ onOpen, onExpand, canExpand, expanded }) => {
-  return (
-    <div className="group-hover/menu:flex text-tertiary bg-opacity-80 hidden absolute bottom-4 right-6 py-1 px-3 space-x-4 bg-gray-200 rounded-full dark:bg-gray-700">
-      {canExpand && (
-        <>
-          {expanded && (
-            <button onClick={onExpand}>
-              <FontAwesomeIcon icon="chevron-up" />
-            </button>
-          )}
-          {!expanded && (
-            <button onClick={onExpand}>
-              <FontAwesomeIcon icon="chevron-down" />
-            </button>
-          )}
-        </>
-      )}
-      {
-        <button onClick={onOpen}>
-          <FontAwesomeIcon icon="arrow-right" />
-        </button>
-      }
-    </div>
-  );
-};
-
-export default function Expandable(props) {
+export default function Conversation(props) {
   var { index, activity, community, handlers } = props;
   var [expanded, setExpanded] = useState(false);
 
@@ -45,7 +19,7 @@ export default function Expandable(props) {
 
   var onExpand = () => {
     let selection = window.getSelection().toString();
-    if (selection.length <= 0) {
+    if (canExpand && selection.length <= 0) {
       setExpanded(!expanded);
     }
   };
@@ -63,9 +37,9 @@ export default function Expandable(props) {
         }
       )}
     >
-      {expanded && <Expanded {...props} activity={conversation} />}
-      {!expanded && <Preview {...props} />}
-      <Menu
+      {expanded && <FullThreadView {...props} activity={conversation} />}
+      {!expanded && <PreviewView {...props} />}
+      <Toolbar
         {...props}
         canExpand={canExpand}
         expanded={expanded}

@@ -14,7 +14,6 @@ export { default as EditProject } from "./EditProject";
 export { default as Assistant } from "./Assistant";
 export { default as Search } from "./Search";
 export { default as Source } from "./Source";
-export { default as ActivityFeed } from "src/components/domains/activity/ActivityFeed";
 
 export * from "src/data/client/fetches";
 
