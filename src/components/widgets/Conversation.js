@@ -104,7 +104,6 @@ export default function Conversation({
         >
           {project.modelName && (
             <>
-              {fullscreen && <div className="grow" />}
               <Chat
                 project={project}
                 subContext={subContext}

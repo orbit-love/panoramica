@@ -135,7 +135,7 @@ export default function Chat({ project, subContext, examplePrompts }) {
             </div>
           )}
         </div>
-        <div className="flex flex-col py-6">
+        <div className="flex flex-col pt-2 pb-6">
           <div className="my-2 ml-auto">
             <button className="text-tertiary hover:underline" onClick={reset}>
               <FontAwesomeIcon className="mr-1" icon="arrows-rotate" />
