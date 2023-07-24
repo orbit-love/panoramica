@@ -1,5 +1,5 @@
 body .btn {
-  @apply flex-1 py-2 px-4 md:px-6 whitespace-nowrap rounded-md outline-none select-none;
+  @apply flex-1 py-2 px-4 whitespace-nowrap rounded-md outline-none select-none md:px-6;
 
   @apply bg-secondary;
   @apply text-white;
@@ -11,6 +11,6 @@ body input[type="text"],
 body input[type="password"],
 body input[type="search"],
 body input[type="email"] {
-  @apply px-2 py-2 w-full text-sm font-normal rounded outline-none;
+  @apply px-2 py-2 w-full font-normal rounded outline-none;
   @apply text-gray-800 bg-gray-100 border border-gray-200;
 }

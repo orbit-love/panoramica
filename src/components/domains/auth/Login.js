@@ -46,7 +46,7 @@ export default function Login({ csrfToken }) {
           </label>
         </div>
         <button className="btn my-2 sm:my-0" type="submit">
-          {loading && <Loader />}
+          {loading && <Loader className="text-white" />}
           {!loading && "Sign in with email"}
         </button>
       </form>

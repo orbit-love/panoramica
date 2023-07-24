@@ -111,19 +111,13 @@ export default function Chat({ project, subContext, examplePrompts }) {
                 key={index}
                 className={
                   classes +
-                  " whitespace-pre-wrap my-2 p-4 bg-gray-100 dark:bg-gray-800"
+                  " rounded-md whitespace-pre-wrap my-2 p-4 bg-gray-100 dark:bg-gray-800"
                 }
               >
                 {message}
               </div>
             );
           })}
-
-          {loading && (
-            <div className="my-4 mx-auto">
-              <Loader />
-            </div>
-          )}
 
           {error && <div className="text-red-500">{error}</div>}
 
@@ -147,6 +141,7 @@ export default function Chat({ project, subContext, examplePrompts }) {
             setPrompt={setPrompt}
             fetchPrompt={fetchPrompt}
             disabled={loading || streaming}
+            loading={loading}
           />
         </div>
       </div>

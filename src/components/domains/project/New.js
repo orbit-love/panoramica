@@ -85,7 +85,7 @@ export default function New({ redirectUrl }) {
         </div>
         <div className="pt-2">
           <button className="btn" type="submit">
-            {loading && <Loader />}
+            {loading && <Loader className="text-white" />}
             {!loading && "Submit"}
           </button>
         </div>
