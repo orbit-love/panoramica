@@ -95,7 +95,7 @@ export default function Chat({ project, subContext, examplePrompts }) {
   return (
     <ErrorBoundary>
       <div className="flex flex-col px-6 h-full">
-        <div className="flex overflow-y-scroll flex-col flex-1 grow mt-4">
+        <div className="flex overflow-y-scroll flex-col flex-1 grow justify-end mt-4">
           {!error && !examplePrompts && messages.length === 0 && (
             <div className="text-tertiary font-light">
               Hello, I am a friendly AI that can answer questions about
