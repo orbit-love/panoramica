@@ -1,16 +1,16 @@
 import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
+import { Frame } from "src/components/widgets";
 import {
-  Frame,
   putProjectImport,
   postEmbeddings,
   getProject,
   putProjectRefresh,
-} from "src/components/widgets";
+} from "src/data/client/fetches";
 import Community from "src/models/Community";
 import Edit from "src/components/domains/project/Edit";
-import Loader from "../domains/ui/Loader";
+import Loader from "src/components/domains/ui/Loader";
 
 export default function EditProject({ project, dispatch }) {
   const router = useRouter();

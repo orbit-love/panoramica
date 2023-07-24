@@ -4,14 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHotkeys } from "react-hotkeys-hook";
 import Link from "next/link";
 
+import { Frame, loadDefaultLayout, storageKey } from "src/components/widgets";
 import {
-  Frame,
-  loadDefaultLayout,
-  storageKey,
   putProjectImport,
   putProjectRefresh,
   getProject,
-} from "src/components/widgets";
+} from "src/data/client/fetches";
 import utils from "src/utils";
 import Community from "src/models/Community";
 import Modal from "src/components/ui/Modal";

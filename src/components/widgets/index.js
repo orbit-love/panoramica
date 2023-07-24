@@ -15,8 +15,6 @@ export { default as Assistant } from "./Assistant";
 export { default as Search } from "./Search";
 export { default as Source } from "./Source";
 
-export * from "src/data/client/fetches";
-
 // available widgets
 import Channel from "./Channel";
 import Channels from "./Channels";
