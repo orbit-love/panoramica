@@ -9,45 +9,16 @@ import { getConversation } from "src/data/graph/queries/getConversation";
 import GraphConnection from "src/data/graph/Connection";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import utils from "src/utils";
-
-const PROMPT_TEMPLATE = `
-You're an AI that helps me answer some questions about the online community I manage.
-{context_intro}
-Context: {context}
-Please use the messages above when possible to answer my questions.
-
-On going chat between Me and You:
-{chat_history}
-
-Task: Based on the provided context, answer me.
-
-Note: in your reply, always format dates and times in a human-readable fashion such as "June 1 at 10pm" or "2 hours and 5 minutes".
-Be succinct and don't explain your work unless asked. Do not return messageIds in the response. If the context doesn't help, say so.
-
-Your answer:
-`;
-
-const SINGLE_CONVERSATION_CONTEXT_INTRO = `
-The following context is a conversation that took place in my community.
-Each message is given as a JSON object on a newline in chronological order.
-If a message is a reply to another message, the replyToMessageId
-property will point to the parent message.
-`;
-
-const PROJECT_CONVERSATIONS_CONTETXT_INTRO = `
-These are one or more conversations that took place in my community.
-Each message is given as a JSON object on a newline in chronological order.
-Separate conversations are separated by 2 blank lines and the words "Next Conversation".
-If a message is a reply to another message, the replyToMessageId property will point to the parent message
-`;
+import {
+  PROMPT_TEMPLATE,
+  SINGLE_CONVERSATION_CONTEXT_INTRO,
+  PROJECT_CONVERSATIONS_CONTEXT_INTRO,
+} from "src/ai/templates";
 
 const formatChat = (chat) => {
   const people = ["Me", "AI"];
   let i = 0;
-  return chat.reduce(
-    (result, message) => `${result}${people[i++ % 2]}: ${message}\n`,
-    ""
-  );
+  return chat.map((message) => `${people[i++ % 2]}: ${message}`).join("\n");
 };
 
 const loadConversationDocs = async (projectId, conversationId) => {
@@ -80,7 +51,7 @@ const loadConversationDocsByVectorSearch = async (project, q) => {
   for (let conversationId of conversationIds) {
     const docs = await loadConversationDocs(project.id, conversationId);
     conversationDocs = conversationDocs.concat(docs);
-    conversationDocs.push("\n\n--Next Conversation--\n\n");
+    conversationDocs.push("\n--Next Conversation--\n");
   }
 
   return conversationDocs;
@@ -123,7 +94,7 @@ export const getAnswerStream = async ({ project, q, chat, subContext }) => {
     context = conversationDocs;
   } else {
     // Project level context
-    contextIntro = PROJECT_CONVERSATIONS_CONTETXT_INTRO;
+    contextIntro = PROJECT_CONVERSATIONS_CONTEXT_INTRO;
     // Search for vector entries mapping the prompt and turn them into conversation docs
     context = await loadConversationDocsByVectorSearch(project, q);
   }
@@ -137,12 +108,10 @@ export const getAnswerStream = async ({ project, q, chat, subContext }) => {
 
   const prompt = PromptTemplate.fromTemplate(PROMPT_TEMPLATE);
 
-  const chain = new LLMChain({ llm, prompt });
-
-  chain.call(
+  new LLMChain({ llm, prompt }).call(
     {
-      context: context.join(""),
       context_intro: contextIntro,
+      context: context.join("\n"),
       chat_history: chatHistory,
     },
     [handlers]
