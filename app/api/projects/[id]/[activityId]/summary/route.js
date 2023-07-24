@@ -17,7 +17,7 @@ export async function GET(_, context) {
     return redirect("/");
   }
 
-  var { id, conversationId } = context.params;
+  var { id, activityId } = context.params;
 
   try {
     var project = await authorizeProject({ id, user });
@@ -37,7 +37,7 @@ export async function GET(_, context) {
     const messages = await getConversation({
       graphConnection,
       projectId,
-      conversationId,
+      conversationId: activityId,
     });
 
     if (messages.length === 0) {
@@ -80,7 +80,7 @@ export async function GET(_, context) {
           await updateActivity({
             tx,
             project,
-            activityId: conversationId,
+            activityId,
             summary,
           });
         });

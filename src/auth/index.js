@@ -1,7 +1,6 @@
 import { prisma } from "src/data/db";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "src/auth/nextAuthOptions";
-import { authOptions as appAuthOptions } from "app/api/auth/[...nextauth]/route";
 import { NextResponse } from "next/server";
 
 // res can be null here; if req is null, some errors may appear in the logs
@@ -17,7 +16,7 @@ export const check = async function (req, res) {
 
 // res can be null here; if req is null, some errors may appear in the logs
 export const checkApp = async function () {
-  const session = await getServerSession(appAuthOptions);
+  const session = await getServerSession(authOptions);
   if (session?.user) {
     return session.user;
   } else {

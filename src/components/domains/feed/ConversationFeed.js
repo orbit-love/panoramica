@@ -5,7 +5,12 @@ import ConversationFeedItem from "src/components/domains/feed/ConversationFeedIt
 
 // this component transforms a list of activities into the most recent
 // activity for each unique conversation
-export default function ConversationFeed({ activities, community, handlers }) {
+export default function ConversationFeed({
+  project,
+  activities,
+  community,
+  handlers,
+}) {
   // show the most recent message in each conversation
   var conversationIds = activities.map((a) => a.conversationId);
   activities = activities.filter((activity, index) => {
@@ -18,6 +23,7 @@ export default function ConversationFeed({ activities, community, handlers }) {
       community={community}
       eachActivity={({ activity, index }) => (
         <ConversationFeedItem
+          project={project}
           key={activity.id}
           index={index}
           activity={activity}

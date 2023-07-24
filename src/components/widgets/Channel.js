@@ -4,7 +4,7 @@ import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
 import utils from "src/utils";
 
-export default function Channel({ community, params, handlers }) {
+export default function Channel({ project, community, params, handlers }) {
   var { source, sourceChannel } = params;
 
   var activities = community.activities.filter(
@@ -21,6 +21,7 @@ export default function Channel({ community, params, handlers }) {
         </Header>
       )}
       <ConversationFeed
+        project={project}
         activities={activities}
         community={community}
         handlers={handlers}

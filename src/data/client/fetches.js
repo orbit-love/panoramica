@@ -3,67 +3,17 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-export async function getProject({ project, onSuccess, setLoading }) {
-  setLoading(true);
-  fetch(`/api/projects/${project.id}`)
-    .then((res) => res.json())
-    .then(handleResult({ onSuccess, setLoading }));
-}
-
-export async function putProjectImport({ project, onSuccess, setLoading }) {
-  setLoading(true);
-  return fetch(`/api/projects/${project.id}/import`, {
-    method: "PUT",
+const makeRequest = ({ url, method = "GET", onSuccess, setLoading }) => {
+  setLoading && setLoading(true);
+  return fetch(url, {
+    method,
     headers,
   })
     .then((res) => res.json())
     .then(handleResult({ onSuccess, setLoading }));
-}
+};
 
-export async function putActivityUpdate({
-  project,
-  activity,
-  data,
-  onSuccess,
-  setLoading,
-}) {
-  setLoading(true);
-  return fetch(`/api/projects/${project.id}/${activity.id}`, {
-    method: "PUT",
-    headers,
-    body: JSON.stringify(data),
-  })
-    .then((res) => res.json())
-    .then(handleResult({ onSuccess, setLoading }));
-}
-
-export async function putProjectRefresh({ project, setLoading, onSuccess }) {
-  try {
-    return fetch(`/api/projects/${project.id}/refresh`, {
-      method: "PUT",
-      headers,
-    })
-      .then((res) => res.json())
-      .then(handleResult({ onSuccess, setLoading }));
-  } catch (e) {
-    // just catch and log exceptions for now, this happens when 2 refreshes
-    // end up firing at the same time and causing a transaction collision;
-    // real solution eventually needed
-    console.log("Refresh transaction failed ", e);
-  }
-}
-
-export async function postEmbeddings({ project, setLoading, onSuccess }) {
-  setLoading(true);
-  return fetch(`/api/projects/${project.id}/embeddings/create`, {
-    method: "POST",
-    headers,
-  })
-    .then((res) => res.json())
-    .then(handleResult({ onSuccess, setLoading }));
-}
-
-var handleResult =
+const handleResult =
   ({ onSuccess, setLoading }) =>
   async ({ result, message }) => {
     if (message) {
@@ -73,3 +23,63 @@ var handleResult =
     }
     setLoading && setLoading(false);
   };
+
+export async function getProject({ project, onSuccess, setLoading }) {
+  makeRequest({ url: `/api/projects/${project.id}`, onSuccess, setLoading });
+}
+
+export async function putProjectImport({ project, onSuccess, setLoading }) {
+  makeRequest({
+    url: `/api/projects/${project.id}/import`,
+    method: "PUT",
+    onSuccess,
+    setLoading,
+  });
+}
+
+export async function putProjectRefresh({ project, setLoading, onSuccess }) {
+  makeRequest({
+    url: `/api/projects/${project.id}/refresh`,
+    method: "PUT",
+    onSuccess,
+    setLoading,
+  });
+}
+
+export async function postEmbeddings({ project, setLoading, onSuccess }) {
+  makeRequest({
+    url: `/api/projects/${project.id}/embeddings/create`,
+    method: "POST",
+    onSuccess,
+    setLoading,
+  });
+}
+
+export async function postCreateBookmark({
+  project,
+  activity,
+  setLoading,
+  onSuccess,
+}) {
+  makeRequest({
+    url: `/api/projects/${project.id}/${activity.id}/bookmarks`,
+    method: "POST",
+    onSuccess,
+    setLoading,
+  });
+}
+
+export async function deleteBookmark({
+  project,
+  activity,
+  setLoading,
+  onSuccess,
+}) {
+  console.log(project.id);
+  makeRequest({
+    url: `/api/projects/${project.id}/${activity.id}/bookmarks`,
+    method: "DELETE",
+    onSuccess,
+    setLoading,
+  });
+}

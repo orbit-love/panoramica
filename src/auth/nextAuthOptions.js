@@ -6,9 +6,10 @@ export const authOptions = {
   adapter: PrismaAdapter(prisma),
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    // add the admin flag on the session user object
+    // add the admin flag and user id on the session user object
     async session({ session, user }) {
       if (user) {
+        session.user.id = user.id;
         session.user.admin = user.admin;
       }
       return session;

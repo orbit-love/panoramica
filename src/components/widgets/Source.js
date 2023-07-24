@@ -5,7 +5,7 @@ import { Frame, Header } from "src/components/widgets";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 
-export default function Source({ community, params, api, handlers }) {
+export default function Source({ project, community, params, api, handlers }) {
   var { source } = params;
   var { onClickChannels } = handlers;
 
@@ -34,6 +34,7 @@ export default function Source({ community, params, api, handlers }) {
         </Header>
       )}
       <ConversationFeed
+        project={project}
         activities={activities}
         community={community}
         handlers={handlers}

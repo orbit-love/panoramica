@@ -5,7 +5,7 @@ import { Frame, Header } from "src/components/widgets";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 
-export default function Connection({ params, community, handlers }) {
+export default function Connection({ project, params, community, handlers }) {
   var { member, connection } = params;
   var { onClickMember } = handlers;
 
@@ -36,6 +36,7 @@ export default function Connection({ params, community, handlers }) {
         </div>
       </Header>
       <ConversationFeed
+        project={project}
         activities={activities}
         community={community}
         handlers={handlers}

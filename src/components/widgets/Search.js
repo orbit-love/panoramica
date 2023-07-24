@@ -85,6 +85,7 @@ export default function Search({
           </button>
         </form>
         <ConversationFeed
+          project={project}
           activities={activities}
           community={community}
           term={appliedTerm}

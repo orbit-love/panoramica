@@ -5,7 +5,7 @@ import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import CompactConnections from "src/components/domains/member/Connections";
 
-export default function Member({ community, params, handlers }) {
+export default function Member({ project, community, params, handlers }) {
   var { member } = params;
   var { onClickConnection } = handlers;
 
@@ -31,6 +31,7 @@ export default function Member({ community, params, handlers }) {
           }
         />
         <ConversationFeed
+          project={project}
           activities={activities}
           community={community}
           handlers={handlers}

@@ -32,7 +32,10 @@ import {
   faArrowsRotate,
   faWandMagicSparkles,
   faPaperPlane,
+  faBookmark,
 } from "@fortawesome/free-solid-svg-icons";
+
+import { faBookmark as faBookmarkRegular } from "@fortawesome/free-regular-svg-icons";
 
 import {
   faTwitter,
@@ -79,7 +82,9 @@ library.add(
   faComment,
   faArrowsRotate,
   faWandMagicSparkles,
-  faPaperPlane
+  faPaperPlane,
+  faBookmark,
+  faBookmarkRegular
 );
 
 export default library;

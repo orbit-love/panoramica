@@ -7,12 +7,12 @@ export default class Connection {
 
   // don't share sessions to avoid transaction issues
   async run(query, params = {}) {
-    var id = this.newQueryId();
+    // var id = this.newQueryId();
     var session = this.driver.session();
-    console.time(`Graph Query ${id}`);
+    // console.time(`Graph Query ${id}`);
     var result = await session.run(query, params);
     session.close();
-    console.timeEnd(`Graph Query ${id}`);
+    // console.timeEnd(`Graph Query ${id}`);
     return result;
   }
 

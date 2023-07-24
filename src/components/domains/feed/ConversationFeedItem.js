@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import classnames from "classnames";
 
 import PreviewView from "src/components/domains/conversation/views/PreviewView";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import Toolbar from "src/components/domains/conversation/Toolbar";
+import { postCreateBookmark, deleteBookmark } from "src/data/client/fetches";
 
 export default function ConversationFeedItem(props) {
-  var { index, activity, community, handlers } = props;
+  var { index, project, activity, community, handlers } = props;
   var [expanded, setExpanded] = useState(false);
+  var [bookmarked, setBookmarked] = useState(false);
 
   var conversationActivity = community.findActivityById(
     activity.conversationId
@@ -19,12 +21,34 @@ export default function ConversationFeedItem(props) {
     handlers.onClickActivity(e, conversationActivity);
   };
 
-  var onExpand = () => {
-    let selection = window.getSelection().toString();
-    if (canExpand && selection.length <= 0) {
-      setExpanded(!expanded);
+  var onExpand = (event) => {
+    if (event.target === event.currentTarget) {
+      let selection = window.getSelection().toString();
+      if (canExpand && selection.length <= 0) {
+        setExpanded(!expanded);
+      }
     }
   };
+
+  const onBookmark = useCallback(() => {
+    if (bookmarked) {
+      setBookmarked(false);
+      deleteBookmark({
+        project,
+        activity: conversationActivity,
+        setLoading: () => {},
+        onSuccess: () => {},
+      });
+    } else {
+      setBookmarked(true);
+      postCreateBookmark({
+        project,
+        activity: conversationActivity,
+        setLoading: () => {},
+        onSuccess: () => {},
+      });
+    }
+  }, [project, bookmarked, conversationActivity]);
 
   return (
     <div
@@ -50,6 +74,8 @@ export default function ConversationFeedItem(props) {
         setExpanded={setExpanded}
         onOpen={onOpen}
         onExpand={onExpand}
+        bookmarked={bookmarked}
+        onBookmark={onBookmark}
       />
     </div>
   );
