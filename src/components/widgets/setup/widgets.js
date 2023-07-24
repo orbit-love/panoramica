@@ -1,3 +1,5 @@
+import utils from "src/utils";
+
 export const addWidget =
   ({ containerApi }) =>
   (id, component, params = {}) => {
