@@ -7,7 +7,7 @@ import { BufferMemory, ChatMessageHistory } from "langchain/memory";
 import { getConversation } from "src/data/graph/queries/getConversation";
 import GraphConnection from "src/data/graph/Connection";
 import { ChatOpenAI } from "langchain/chat_models/openai";
-import c from "src/configuration/common";
+import utils from "src/utils";
 
 const loadConversationDocs = async (projectId, conversationId) => {
   if (!conversationId) return [];
@@ -32,7 +32,7 @@ const loadConversationDocsByVectorSearch = async (project, q) => {
   const conversationIds = vectorDocs
     .map((doc) => doc.metadata.conversationId)
     .filter((conversationId) => conversationId)
-    .filter(c.onlyUnique);
+    .filter(utils.onlyUnique);
 
   var conversationDocs = [];
 

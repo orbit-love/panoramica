@@ -2,7 +2,7 @@ import React from "react";
 import { Frame, Header } from "src/components/widgets";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
-import c from "src/configuration/common";
+import utils from "src/utils";
 
 export default function Channel({ community, params, handlers }) {
   var { source, sourceChannel } = params;
@@ -17,7 +17,7 @@ export default function Channel({ community, params, handlers }) {
       {source && (
         <Header>
           {source && <SourceIcon activity={{ source }} />}
-          <div>{c.displayChannel(sourceChannel)}</div>
+          <div>{utils.displayChannel(sourceChannel)}</div>
         </Header>
       )}
       <ConversationFeed

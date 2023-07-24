@@ -1,4 +1,4 @@
-import c from "src/configuration/common";
+import utils from "src/utils";
 
 export const getEverything = async (props) => {
   return Promise.all([
@@ -38,7 +38,7 @@ export const getConversations = async function ({
   const updateResult = function (activity, members) {
     let item = result[activity];
     if (item) {
-      item.members = [...item.members, ...members].filter(c.onlyUnique);
+      item.members = [...item.members, ...members].filter(utils.onlyUnique);
     } else {
       result[activity] = { members: [...members] };
     }

@@ -1,4 +1,4 @@
-import c from "src/configuration/common";
+import utils from "src/utils";
 
 export async function setupProject({ project, tx }) {
   const projectId = project.id;
@@ -130,7 +130,7 @@ export async function syncActivities({ tx, project, activities }) {
 
   // create [:MENTIONS] edges from activities to members
   for (let activity of activities) {
-    const activityMentions = (activity.mentions || []).filter(c.onlyUnique);
+    const activityMentions = (activity.mentions || []).filter(utils.onlyUnique);
     for (let mention of activityMentions) {
       // find some activity where the actor is the same to try
       // and get the global actor

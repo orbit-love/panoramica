@@ -36,7 +36,7 @@ import {
   ProjectContext,
   ProjectDispatchContext,
 } from "src/components/context/ProjectContext";
-import c from "src/configuration/common";
+import utils from "src/utils";
 
 export const storageKey = (project) => `dockview-${project.id}`;
 export const loadDefaultLayout = (api) => {
@@ -241,7 +241,7 @@ export function addConnectionWidget(
 export function addSourceWidget(source, addWidget, options = {}) {
   addWidget(source ? `source-${source}` : "all-activity", "Source", {
     source,
-    title: source ? c.titleize(source) : "All Activity",
+    title: source ? utils.titleize(source) : "All Activity",
     ...options,
   });
 }
@@ -255,7 +255,7 @@ export function addChannelWidget(
   addWidget(`channel-${source}-${sourceChannel}`, "Channel", {
     source,
     sourceChannel,
-    title: c.displayChannel(sourceChannel),
+    title: utils.displayChannel(sourceChannel),
     tabComponent: "Source",
     ...options,
   });

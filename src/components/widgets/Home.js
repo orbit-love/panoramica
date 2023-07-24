@@ -12,7 +12,7 @@ import {
   putProjectRefresh,
   getProject,
 } from "src/components/widgets";
-import c from "src/configuration/common";
+import utils from "src/utils";
 import Community from "src/models/Community";
 import Modal from "src/components/ui/Modal";
 import ThemeSelector from "src/components/ui/ThemeSelector";
@@ -234,7 +234,7 @@ export default function Home(props) {
                       className="flex items-center space-x-1"
                       onClick={(e) => onClickSource(e, source, { position })}
                     >
-                      <div>{c.titleize(source)}</div>
+                      <div>{utils.titleize(source)}</div>
                     </button>
                   </div>
                 ))}

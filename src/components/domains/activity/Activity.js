@@ -2,7 +2,7 @@ import React from "react";
 import TimeAgo from "react-timeago";
 import { Interval } from "luxon";
 
-import c from "src/configuration/common";
+import utils from "src/utils";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
 
@@ -34,7 +34,7 @@ export default function Activity({
     return (
       <TimeAgo
         date={activity.timestamp}
-        title={c.formatDate(activity.timestamp)}
+        title={utils.formatDate(activity.timestamp)}
       />
     );
   };
@@ -81,7 +81,7 @@ export default function Activity({
                 className="hover:underline"
                 onClick={(e) => onClickChannel(e, source, sourceChannel)}
               >
-                {c.displayChannel(sourceChannel)}
+                {utils.displayChannel(sourceChannel)}
               </button>
             )}
           </div>

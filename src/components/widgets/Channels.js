@@ -2,7 +2,7 @@ import React from "react";
 
 import SourceIcon from "src/components/domains/activity/SourceIcon";
 import { Frame, Header } from "src/components/widgets";
-import c from "src/configuration/common";
+import utils from "src/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Channels({ community, params, handlers }) {
@@ -31,7 +31,7 @@ export default function Channels({ community, params, handlers }) {
       {source && (
         <Header>
           {source && <SourceIcon activity={{ source }} />}
-          <div>{c.titleize(source)}</div>
+          <div>{utils.titleize(source)}</div>
         </Header>
       )}
       <div className="flex flex-col items-start pl-2 px-6">
@@ -54,10 +54,10 @@ export default function Channels({ community, params, handlers }) {
                   <td className="text-right">{count}</td>
                   <td>
                     <div className="group-hover:underline hover:underline">
-                      {c.displayChannel(sourceChannel)}
+                      {utils.displayChannel(sourceChannel)}
                     </div>
                   </td>
-                  <td>{c.formatDateShort(lastActivity)}</td>
+                  <td>{utils.formatDateShort(lastActivity)}</td>
                 </tr>
               )
             )}

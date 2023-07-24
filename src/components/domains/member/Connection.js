@@ -2,7 +2,7 @@ import React from "react";
 import classnames from "classnames";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import TimeAgo from "react-timeago";
-import c from "src/configuration/common";
+import utils from "src/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function CompactConnection({
@@ -32,7 +32,7 @@ export default function CompactConnection({
       <TimeAgo
         className="text-secondary ml-6"
         date={lastInteraction}
-        title={c.formatDate(lastInteraction)}
+        title={utils.formatDate(lastInteraction)}
       />
     </button>
   );

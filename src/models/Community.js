@@ -1,4 +1,4 @@
-import c from "src/configuration/common";
+import utils from "src/utils";
 
 /* holds the data for the community */
 export default class Community {
@@ -33,7 +33,7 @@ export default class Community {
   getSources({ activities = this.activities }) {
     return activities
       .map((activity) => activity.source)
-      .filter(c.onlyUnique)
+      .filter(utils.onlyUnique)
       .filter((s) => s)
       .sort();
   }
@@ -43,7 +43,7 @@ export default class Community {
       .filter((activity) => source === activity.source)
       .map((activity) => activity.sourceChannel)
       .filter((c) => c)
-      .filter(c.onlyUnique)
-      .sort((a, b) => c.displayChannel(a) - c.displayChannel(b));
+      .filter(utils.onlyUnique)
+      .sort((a, b) => utils.displayChannel(a) - utils.displayChannel(b));
   }
 }
