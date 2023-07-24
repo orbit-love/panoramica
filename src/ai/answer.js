@@ -1,13 +1,57 @@
 import { LangChainStream } from "ai";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
-import { ConversationalRetrievalQAChain } from "langchain/chains";
+import { LLMChain } from "langchain/chains";
+import { PromptTemplate } from "langchain/prompts";
+
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { BufferMemory, ChatMessageHistory } from "langchain/memory";
 import { getConversation } from "src/data/graph/queries/getConversation";
 import GraphConnection from "src/data/graph/Connection";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import utils from "src/utils";
+
+const PROMPT_TEMPLATE = `
+You're Jane's assistant that helps her answer my questions about the online community I manage.
+The following context may or may not help you answer my questions.
+{context_intro}
+{context}
+If this doesn't help ignore the above and answer normally
+
+Conversation between me and Jane:
+{chat_history}
+
+Task: Answer for Jane
+
+Note: in your reply, always format
+dates and times in a human-readable fashion such as "June 1 at 10pm" or "2 hours and 5 minutes".
+Be succinct and don't explain your work unless asked. Do not return messageIds
+in the response.
+
+Your answer:
+`;
+
+const SINGLE_CONVERSATION_CONTEXT_INTRO = `
+This is a conversation that took place in my community.
+Each message is given as a JSON object on a newline in chronological order.
+If a message is a reply to another message, the replyToMessageId
+property will point to the parent message
+`;
+
+const PROJECT_CONVERSATIONS_CONTETXT_INTRO = `
+These are one or more conversations that took place in my community.
+Each message is given as a JSON object on a newline in chronological order.
+Separate conversations are separated by 2 blank lines and the words "Next Conversation".
+If a message is a reply to another message, the replyToMessageId property will point to the parent message
+`;
+
+const formatChat = (chat) => {
+  const people = ["Me", "Jane"];
+  let i = 0;
+  return chat.reduce(
+    (result, message) => `${result}${people[i++ % 2]}: ${message}\n`,
+    ""
+  );
+};
 
 const loadConversationDocs = async (projectId, conversationId) => {
   if (!conversationId) return [];
@@ -45,32 +89,6 @@ const loadConversationDocsByVectorSearch = async (project, q) => {
   return conversationDocs;
 };
 
-const formatQuestionForConversation = (q) =>
-  `The context you have been given is a conversation
-    that took place in an online community. Each message is given as
-    a JSON object on a newline in chronological order.
-    If a message is a reply to another message, the replyToMessageId
-    property will point to the parent message. In your reply, always format
-    dates and times in a human-readable fashion such as "June 1 at 10pm" or "2 hours and 5 minutes".
-    Be succinct and don't explain your work unless asked. Do not return messageIds
-    in the response. Now, given the context, please
-    help with the following question or request:
-
-    ${q}`;
-
-const formatQuestionForConversations = (q) =>
-  `The context you have been given is one or more conversations
-    that took place in an online community. Each message is given as
-    a JSON object on a newline in chronological order. Separate conversations
-    are separated by 2 blank lines and the words "Next Conversation". If a message is a reply to another message, the replyToMessageId
-    property will point to the parent message. In your reply, always format
-    dates and times in a human-readable fashion such as "June 1 at 10pm" or "2 hours and 5 minutes".
-    Be succinct and don't explain your work unless asked. Do not return messageIds
-    in the response. Now, given the context, please
-    help with the following question or request:
-
-    ${q}`;
-
 const prepareVectorStore = async (project) => {
   const { id, pineconeApiEnv, pineconeApiKey, pineconeIndexName } = project;
   const pinecone = new PineconeClient();
@@ -90,15 +108,7 @@ const prepareVectorStore = async (project) => {
 };
 
 export const getAnswerStream = async ({ project, q, chat, subContext }) => {
-  // Start with an empty history and use the chat to fill it
-  let history = new ChatMessageHistory();
-  for (const i in chat) {
-    if (i % 2 === 0) {
-      await history.addUserMessage(chat[i]);
-    } else {
-      await history.addAIChatMessage(chat[i]);
-    }
-  }
+  const chatHistory = formatChat([...chat, q]);
 
   const { stream, handlers } = LangChainStream();
 
@@ -107,43 +117,35 @@ export const getAnswerStream = async ({ project, q, chat, subContext }) => {
     subContext?.conversationId
   );
 
-  let question, retriever;
+  let contextIntro, context;
 
   if (conversationDocs.length > 0) {
     // Conversation context
-    question = formatQuestionForConversation(q);
-    retriever = {
-      getRelevantDocuments(_) {
-        // We always want the whole conversation. Augment later with product documentation
-        return conversationDocs;
-      },
-    };
+    contextIntro = SINGLE_CONVERSATION_CONTEXT_INTRO;
+    // We always want the whole conversation. Augment later with product documentation
+    context = conversationDocs;
   } else {
     // Project level context
-    question = formatQuestionForConversations(q);
-    retriever = {
-      async getRelevantDocuments(_) {
-        // Search for vector entries mapping the prompt and turn them into conversation docs
-        return loadConversationDocsByVectorSearch(project, q);
-      },
-    };
+    contextIntro = PROJECT_CONVERSATIONS_CONTETXT_INTRO;
+    // Search for vector entries mapping the prompt and turn them into conversation docs
+    context = await loadConversationDocsByVectorSearch(project, q);
   }
 
-  const model = new ChatOpenAI({
+  const llm = new ChatOpenAI({
     modelName: project.modelName,
     openAIApiKey: project.modelApiKey,
     temperature: 0.5,
     streaming: true,
   });
 
-  const chain = ConversationalRetrievalQAChain.fromLLM(model, retriever, {
-    memory: new BufferMemory({
-      memoryKey: "chat_history",
-      chatHistory: history,
-    }),
-  });
+  const prompt = PromptTemplate.fromTemplate(PROMPT_TEMPLATE);
 
-  chain.call({ question }, [handlers]);
+  const chain = new LLMChain({ llm, prompt, verbose: true });
+
+  chain.call(
+    { context, context_intro: contextIntro, chat_history: chatHistory },
+    [handlers]
+  );
 
   return stream;
 };
