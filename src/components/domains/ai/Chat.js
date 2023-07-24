@@ -129,7 +129,7 @@ export default function Chat({ project, subContext, examplePrompts }) {
 
           <div ref={messageRef} />
 
-          {examplePrompts && (
+          {messages.length === 0 && examplePrompts && (
             <div className="px-6 mt-4">
               <PromptPicker prompts={examplePrompts} pickPrompt={pickPrompt} />
             </div>

@@ -31,6 +31,7 @@ import {
   faComment,
   faArrowsRotate,
   faWandMagicSparkles,
+  faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -77,7 +78,8 @@ library.add(
   faHeart,
   faComment,
   faArrowsRotate,
-  faWandMagicSparkles
+  faWandMagicSparkles,
+  faPaperPlane
 );
 
 export default library;
