@@ -9,12 +9,14 @@ export default function ConversationFeedItem(props) {
   var { index, activity, community, handlers } = props;
   var [expanded, setExpanded] = useState(false);
 
-  var conversation = community.findActivityById(activity.conversationId);
-  var thread = community.threads[conversation.id];
-  var canExpand = thread?.children?.length > 0;
+  var conversationActivity = community.findActivityById(
+    activity.conversationId
+  );
+  var conversation = community.conversations[conversationActivity.id];
+  var canExpand = conversation?.children?.length > 0;
 
   var onOpen = (e) => {
-    handlers.onClickActivity(e, conversation);
+    handlers.onClickActivity(e, conversationActivity);
   };
 
   var onExpand = () => {
@@ -37,7 +39,9 @@ export default function ConversationFeedItem(props) {
         }
       )}
     >
-      {expanded && <FullThreadView {...props} activity={conversation} />}
+      {expanded && (
+        <FullThreadView {...props} activity={conversationActivity} />
+      )}
       {!expanded && <PreviewView {...props} />}
       <Toolbar
         {...props}

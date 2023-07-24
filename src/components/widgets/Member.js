@@ -9,8 +9,8 @@ export default function Member({ community, params, handlers }) {
   var { member } = params;
   var { onClickConnection } = handlers;
 
-  // for each thread, render the latest activity that involves the member
-  // as a starting point for exploring the thread
+  // for each conversation, render the latest activity that involves the member
+  // as a starting point for exploring the conversation
   var activities = community.activities.filter(
     (activity) => activity.globalActor === member.globalActor
   );

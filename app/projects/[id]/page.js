@@ -49,17 +49,18 @@ export async function getProps(params) {
       var from = "1900-01-01";
       var to = "2100-01-01";
       const graphConnection = new GraphConnection();
-      let [threads, members, activities, connections] = await getEverything({
-        projectId,
-        graphConnection,
-        from,
-        to,
-      });
+      let [conversations, members, activities, connections] =
+        await getEverything({
+          projectId,
+          graphConnection,
+          from,
+          to,
+        });
       return {
         session,
         project,
         data: {
-          threads,
+          conversations,
           members,
           activities,
           connections,

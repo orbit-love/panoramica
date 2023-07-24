@@ -2,7 +2,7 @@ import c from "src/configuration/common";
 
 export const getEverything = async (props) => {
   return Promise.all([
-    getThreads(props),
+    getConversations(props),
     getMembers(props),
     getActivities(props),
     getConnections(props),
@@ -26,9 +26,8 @@ export const getMembers = async ({ projectId, graphConnection, from, to }) => {
   }));
 };
 
-// returns a map of all activities with additional information
-// about the threads and replies
-export const getThreads = async function ({
+// returns a map of activities that includes members and replies
+export const getConversations = async function ({
   projectId,
   graphConnection,
   from,
@@ -46,8 +45,7 @@ export const getThreads = async function ({
   };
 
   // match each activity and produce a path of its replies, including itself
-  // (*1.. would exclude itself)
-  const matchThread = `
+  const matchConversation = `
     MATCH (p:Project { id: $projectId })
     WITH p
     MATCH (p)-[:OWNS]->(a:Activity)
@@ -59,7 +57,7 @@ export const getThreads = async function ({
 
   const addRepliers = async () => {
     const { records } = await graphConnection.run(
-      `${matchThread}
+      `${matchConversation}
       MATCH (node)<-[:DID]-(m:Member)
       RETURN a.id as activity, COLLECT(DISTINCT m.globalActor) as members`,
       { projectId, from, to }
@@ -72,7 +70,7 @@ export const getThreads = async function ({
 
   const addMentioners = async () => {
     const { records } = await graphConnection.run(
-      `${matchThread}
+      `${matchConversation}
       MATCH (node)-[:MENTIONS]-(m:Member)
       RETURN a.id as activity, COLLECT(DISTINCT m.globalActor) as members`,
       { projectId, from, to }
@@ -80,23 +78,6 @@ export const getThreads = async function ({
 
     for (let record of records) {
       updateResult(record.get("activity"), record.get("members"), []);
-    }
-  };
-
-  const addParents = async () => {
-    const { records } = await graphConnection.run(
-      `MATCH (p:Project { id: $projectId })
-        WITH p
-        MATCH (p)-[:OWNS]->(a:Activity)-[:REPLIES_TO]->(parent:Activity)
-      RETURN a.id as activity, parent.id as parent`,
-      { projectId, from, to }
-    );
-
-    for (let record of records) {
-      var item = result[record.get("activity")];
-      item.parent = record.get("parent");
-      // if something has a parent, it's a reply
-      item.type = "reply";
     }
   };
 
@@ -114,53 +95,13 @@ export const getThreads = async function ({
     for (let record of records) {
       var item = result[record.get("activity")];
       item.children = record.get("children");
-      // if something has no parent but does have children, it's a thread (starter)
-      // this call comes after the parents call for this reason
-      if (!item.parent) {
-        item.type = "thread";
-      }
-    }
-  };
-
-  // return the list of all descendant activities and the first/last timestamps
-  // for help with rendering the conversation
-  const addTimestamp = async () => {
-    const { records } = await graphConnection.run(
-      `MATCH (p:Project { id: $projectId })
-        WITH p
-        MATCH (p)-[:OWNS]->(a:Activity)<-[:REPLIES_TO*1..]-(descendant:Activity)
-        WITH a, descendant
-        ORDER by descendant.timestamp
-      WITH a.id AS activity,
-           COLLECT(DISTINCT descendant.id) as descendants,
-           COLLECT(descendant.timestamp) as timestamps
-      RETURN activity, descendants,
-        LAST(timestamps) AS last_timestamp,
-        HEAD(timestamps) AS first_timestamp`,
-      { projectId, from, to }
-    );
-
-    for (let record of records) {
-      var item = result[record.get("activity")];
-      item.first_timestamp = record.get("first_timestamp");
-      item.last_timestamp = record.get("last_timestamp");
-      item.descendants = record.get("descendants");
     }
   };
 
   // these have to be done serially for now
   await addRepliers();
   await addMentioners();
-  await addParents();
   await addChildren();
-  await addTimestamp();
-
-  // if an activity has no parent or children, it's an island
-  for (let [_, item] of Object.entries(result)) {
-    if (!item.type) {
-      item.type = "island";
-    }
-  }
 
   return result;
 };

@@ -26,13 +26,13 @@ export default async function handler(req, res) {
 
     console.time("Fetching graph data");
     // these can all go async to be much faster, they don't depend on each other
-    let [threads, members, activities, connections] = await getEverything(
+    let [conversations, members, activities, connections] = await getEverything(
       props
     );
     console.timeEnd("Fetching graph data");
 
     const result = {
-      threads,
+      conversations,
       members,
       activities,
       connections,

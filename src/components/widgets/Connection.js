@@ -9,18 +9,18 @@ export default function Connection({ params, community, handlers }) {
   var { member, connection } = params;
   var { onClickMember } = handlers;
 
-  // the intention here is to grab activities that are in threads
+  // the intention here is to grab activities that are in conversations
   // with both members and where either is the actor; this ensures the activity
   // used to display the conversation is from either member
   var activities = community.activities.filter((activity) => {
-    var { members } = community.threads[activity.conversationId];
-    var threadIsKeepable =
+    var { members } = community.conversations[activity.conversationId];
+    var keepConversation =
       members.indexOf(member.globalActor) > -1 &&
       members.indexOf(connection.globalActor) > -1;
-    var activityIsKeepable =
+    var keepActivity =
       activity.globalActor === member.globalActor ||
       activity.globalActor === connection.globalActor;
-    return threadIsKeepable && activityIsKeepable;
+    return keepConversation && keepActivity;
   });
 
   return (

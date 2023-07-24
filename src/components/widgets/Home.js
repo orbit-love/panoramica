@@ -14,7 +14,6 @@ import {
 } from "src/components/widgets";
 import c from "src/configuration/common";
 import Community from "src/models/Community";
-import Feed from "src/models/Feed";
 import Modal from "src/components/ui/Modal";
 import ThemeSelector from "src/components/ui/ThemeSelector";
 import Loader from "../domains/ui/Loader";
@@ -136,8 +135,7 @@ export default function Home(props) {
 
   var sources = [];
   if (community) {
-    var feed = new Feed({ community });
-    sources = feed.getSources({});
+    sources = community.getSources({});
   }
 
   return (

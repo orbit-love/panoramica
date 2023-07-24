@@ -1,7 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import Feed from "src/models/Feed";
 import { Frame, Header } from "src/components/widgets";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
@@ -10,8 +9,7 @@ export default function Source({ community, params, api, handlers }) {
   var { source } = params;
   var { onClickChannels } = handlers;
 
-  var feed = new Feed({ community, source });
-  var sourceChannels = feed.getSourceChannels({ source });
+  var sourceChannels = community.getSourceChannels({ source });
 
   var activities = community.activities;
   if (source) {

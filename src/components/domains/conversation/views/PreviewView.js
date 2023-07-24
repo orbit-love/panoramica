@@ -8,7 +8,7 @@ export default function PreviewView(props) {
   let { activity, community, handlers } = props;
   let { onClickMember } = handlers;
 
-  var thread = community.threads[activity.id];
+  var conversation = community.conversations[activity.id];
   var conversation = community.findActivityById(activity.conversationId);
   var parent = community.findActivityById(activity.parentId);
 
@@ -42,12 +42,12 @@ export default function PreviewView(props) {
           showSourceIcon
           timeDisplay={activity.timestamp}
         />
-        {thread?.children?.length > 0 && (
+        {conversation?.children?.length > 0 && (
           <div className="text-secondary text-sm">
-            {thread.children.length} replies
+            {conversation.children.length} replies
           </div>
         )}
-        {thread?.children?.length === 0 && (
+        {conversation?.children?.length === 0 && (
           <div className="text-secondary text-sm">No replies</div>
         )}
       </div>
@@ -56,7 +56,7 @@ export default function PreviewView(props) {
 }
 
 const ActivityPreview = ({ activity, community, onClickMember }) => {
-  var activityThread = community.threads[activity.id];
+  var activityConversation = community.conversations[activity.id];
   return (
     <div className="flex flex-col">
       <div className="flex items-center space-x-1">
@@ -71,9 +71,9 @@ const ActivityPreview = ({ activity, community, onClickMember }) => {
           {activity.text}
         </div>
       </div>
-      {activityThread.children.length > 1 && (
+      {activityConversation.children.length > 1 && (
         <div className="text-secondary">
-          {activityThread.children.length} replies
+          {activityConversation.children.length} replies
         </div>
       )}
     </div>

@@ -1,3 +1,5 @@
+import c from "src/configuration/common";
+
 /* holds the data for the community */
 export default class Community {
   constructor({ result }) {
@@ -5,7 +7,7 @@ export default class Community {
 
     this.members = this.result.members;
     this.activities = this.result.activities;
-    this.threads = this.result.threads;
+    this.conversations = this.result.conversations;
     this.connections = this.result.connections;
   }
 
@@ -26,5 +28,22 @@ export default class Community {
 
   findConnections(member) {
     return this.connections[member.globalActor];
+  }
+
+  getSources({ activities = this.activities }) {
+    return activities
+      .map((activity) => activity.source)
+      .filter(c.onlyUnique)
+      .filter((s) => s)
+      .sort();
+  }
+
+  getSourceChannels({ source, activities = this.activities }) {
+    return activities
+      .filter((activity) => source === activity.source)
+      .map((activity) => activity.sourceChannel)
+      .filter((c) => c)
+      .filter(c.onlyUnique)
+      .sort((a, b) => c.displayChannel(a) - c.displayChannel(b));
   }
 }

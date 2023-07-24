@@ -5,10 +5,10 @@ import Activity from "src/components/domains/activity/Activity";
 export default function FullThreadView(props) {
   let { activity, community, depth = 0, handlers } = props;
 
-  var thread = community.threads[activity.id];
+  var conversation = community.conversations[activity.id];
   var parent = community.findActivityById(activity.parentId);
 
-  var childActivities = thread.children
+  var childActivities = conversation.children
     ?.map((id) => community.activities.find((a) => a.id === id))
     ?.filter((a) => a);
 

@@ -1,22 +1,22 @@
 import React from "react";
 
-import Feed from "src/models/Feed";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
 import { Frame, Header } from "src/components/widgets";
 import c from "src/configuration/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function Channels({ api, community, params, handlers }) {
+export default function Channels({ community, params, handlers }) {
   var { source } = params;
   var { onClickChannel } = handlers;
 
-  var feed = new Feed({ community });
-  var sourceChannels = feed.getSourceChannels({ source });
+  var sourceChannels = community.getSourceChannels({ source });
 
   var channelMetadatas = sourceChannels
     .map((sourceChannel) => {
-      var channelFeed = new Feed({ community, sourceChannel });
-      var activities = channelFeed.getFilteredActivities();
+      var activities = community.activities.filter(
+        (activity) =>
+          activity.source === source && activity.sourceChannel === sourceChannel
+      );
       var lastActivity = activities[0]?.timestamp;
       return { count: activities.length, source, sourceChannel, lastActivity };
     })
