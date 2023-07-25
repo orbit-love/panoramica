@@ -94,7 +94,11 @@ export default function Conversation({
           "flex-col md:flex-row": flexCol === undefined,
         })}
       >
-        <div className="py-4 px-6 w-full md:overflow-y-scroll">
+        <div
+          className={classnames("py-4 px-6 w-full max-w-xl", {
+            "overflow-y-scroll": !flexCol,
+          })}
+        >
           <div className="flex justify-between items-center pb-4 mb-4 border-b border-gray-300 dark:border-gray-800">
             <div onClick={fetchSummary} className="font-semibold">
               {activity.summary}
@@ -110,7 +114,7 @@ export default function Conversation({
           />
         </div>
         {flexCol && <div className="grow" />}
-        <div className="flex flex-col w-full border-l border-gray-300 md:overflow-y-scroll dark:border-gray-800">
+        <div className="flex flex-col w-full border-l border-gray-300 dark:border-gray-800">
           {project.modelName && (
             <Chat
               project={project}
