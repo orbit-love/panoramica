@@ -94,7 +94,7 @@ export default function Conversation({
           "flex-col md:flex-row": flexCol === undefined,
         })}
       >
-        <div className="pt-4 px-6 w-full md:overflow-y-scroll">
+        <div className="py-4 px-6 w-full md:overflow-y-scroll">
           <div className="flex justify-between items-center pb-4 mb-4 border-b border-gray-300 dark:border-gray-800">
             <div onClick={fetchSummary} className="font-semibold">
               {activity.summary}

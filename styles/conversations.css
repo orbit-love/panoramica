@@ -41,3 +41,7 @@
 .a-html ul li {
   @apply my-1;
 }
+.a-html ul li p,
+.a-html ol li p {
+  display: inline;
+}
