@@ -1,3 +1,4 @@
+import { graph } from "src/data/db";
 import { processRequest } from "src/server/requests";
 import {
   createBookmark,
