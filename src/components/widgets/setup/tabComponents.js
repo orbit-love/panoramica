@@ -74,7 +74,11 @@ const TabComponentWithIcon = ({ api, icon, children }) => {
   };
 
   return (
-    <div className="dockview-react-tab" onClick={onClick} title={title}>
+    <div
+      className="dockview-react-tab hover:dark:bg-gray-950 hover:bg-gray-100"
+      onClick={onClick}
+      title={title}
+    >
       <div className="dockview-react-tab-title max-w-[200px] overflow-x-hidden text-ellipsis whitespace-nowrap">
         {children}
         {!children && (
