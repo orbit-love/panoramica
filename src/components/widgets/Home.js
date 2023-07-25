@@ -219,7 +219,7 @@ export default function Home(props) {
                 </form>
               </div>
               <div className="flex flex-col items-start w-full">
-                <div className="text-tertiary pb-1 font-light">Explore</div>
+                <div className="text-tertiary pb-1 font-semibold">Explore</div>
                 <button
                   onClick={(e) =>
                     onClickSource(e, null, { position: newPanelPosition() })
@@ -263,7 +263,7 @@ export default function Home(props) {
                       </div>
                     ))}
                 </div>
-                <div className="text-tertiary pb-1 pt-2 font-light">
+                <div className="text-tertiary pb-1 pt-2 font-semibold">
                   Sources
                 </div>
                 {sources.map((source) => (
@@ -281,18 +281,11 @@ export default function Home(props) {
                   </div>
                 ))}
               </div>
-              <div className="flex flex-col">
-                <button
-                  className="text-tertiary hover:underline"
-                  onClick={resetWidgets}
-                >
+              <div className="flex flex-col text-gray-400 dark:text-gray-500">
+                <button className="hover:underline" onClick={resetWidgets}>
                   Reset
                 </button>
-                <Link
-                  prefetch={false}
-                  className="text-tertiary hover:underline"
-                  href={`/dashboard`}
-                >
+                <Link prefetch={false} href={`/dashboard`}>
                   Exit
                 </Link>
               </div>

@@ -73,7 +73,7 @@ export default function ConversationFeedItem(props) {
   return (
     <div
       className={classnames(
-        "group/menu flex flex-col py-6 px-6 relative border-y border-gray-200 dark:border-gray-800",
+        "group/menu flex flex-col py-6 px-6 relative border-b border-gray-300 dark:border-gray-700",
         {
           "hover:bg-gray-100 hover:bg-opacity-50 dark:hover:bg-gray-800 dark:hover:bg-opacity-40":
             index % 2 === 0,

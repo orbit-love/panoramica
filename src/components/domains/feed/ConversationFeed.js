@@ -19,7 +19,7 @@ export default function ConversationFeed({
 
   return (
     <div className="flex">
-      <div className="max-w-xl">
+      <div className="max-w-xl border-t border-gray-300 dark:border-gray-700">
         <Paginator
           activities={activities}
           community={community}
