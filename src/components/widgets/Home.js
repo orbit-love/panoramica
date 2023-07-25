@@ -21,7 +21,8 @@ import utils from "src/utils";
 import Community from "src/models/Community";
 import Modal from "src/components/ui/Modal";
 import ThemeSelector from "src/components/ui/ThemeSelector";
-import Loader from "../domains/ui/Loader";
+import Loader from "src/components/domains/ui/Loader";
+import SourceIcon from "src/components/domains/activity/SourceIcon";
 
 export default function Home(props) {
   let searchRef = useRef();
@@ -248,14 +249,17 @@ export default function Home(props) {
                     .map((activity) => (
                       <div
                         key={activity.id}
-                        className="overflow-x-hidden w-full text-sm text-left text-gray-400 text-ellipsis cursor-pointer hover:underline dark:text-gray-500"
+                        className="group flex items-center space-x-1 w-full text-sm text-left text-gray-400 text-ellipsis cursor-pointer dark:text-gray-500"
                         onClick={(e) =>
                           onClickActivity(e, activity, {
                             position: newPanelPosition(),
                           })
                         }
                       >
-                        {activity.summary || activity.text.slice(0, 25)}
+                        <SourceIcon activity={activity} className="text-xs" />
+                        <div className="group-hover:underline overflow-x-hidden w-full text-ellipsis">
+                          {activity.summary || activity.text.slice(0, 50)}
+                        </div>
                       </div>
                     ))}
                 </div>
