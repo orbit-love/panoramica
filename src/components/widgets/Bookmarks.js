@@ -8,8 +8,6 @@ import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 export default function Bookmarks({ project, community, api, handlers }) {
   const { bookmarks } = useContext(BookmarksContext);
 
-  bookmarks.sort((a, b) => b.createdAtInt - a.createdAtInt);
-
   const activities = bookmarks.map((bookmark) =>
     community.findActivityById(bookmark.activityId)
   );

@@ -36,7 +36,7 @@ export default function Home(props) {
   } = props;
 
   const { bookmarks } = useContext(BookmarksContext);
-  const { onClickSource } = handlers;
+  const { onClickSource, onClickActivity } = handlers;
   const [loading, setLoading] = useState(false);
   const [editingTheme, setEditingTheme] = useState(false);
 
@@ -240,6 +240,25 @@ export default function Home(props) {
                 <button onClick={onClickBookmarks}>
                   Bookmarks ({bookmarks.length})
                 </button>
+                <div className="flex flex-col items-start w-full whitespace-nowrap">
+                  {bookmarks
+                    .map(({ activityId }) =>
+                      community.findActivityById(activityId)
+                    )
+                    .map((activity) => (
+                      <div
+                        key={activity.id}
+                        className="overflow-x-hidden w-full text-sm text-left text-gray-400 text-ellipsis cursor-pointer hover:underline dark:text-gray-500"
+                        onClick={(e) =>
+                          onClickActivity(e, activity, {
+                            position: newPanelPosition(),
+                          })
+                        }
+                      >
+                        {activity.summary || activity.text.slice(0, 25)}
+                      </div>
+                    ))}
+                </div>
                 <div className="text-tertiary pb-1 pt-2 font-light">
                   Sources
                 </div>

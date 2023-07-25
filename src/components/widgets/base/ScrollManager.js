@@ -18,7 +18,7 @@ export default function ScrollManager({ isActive, children }) {
     <div
       ref={scrollRef}
       onScroll={onScroll}
-      className="overflow-y-auto relative h-full"
+      className="overflow-y-auto overflow-x-hidden relative h-full"
     >
       {children}
     </div>

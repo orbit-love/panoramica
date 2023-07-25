@@ -93,14 +93,15 @@ export default function Conversation({
           "flex-col md:flex-row": flexCol === undefined,
         })}
       >
-        <div className="pt-4 px-6 md:overflow-y-scroll w-full">
+        <div className="pt-4 px-6 w-full md:overflow-y-scroll">
           <FullThreadView
             activity={activity}
             community={community}
             handlers={handlers}
           />
         </div>
-        <div className="flex flex-col md:overflow-y-scroll w-full border-l border-gray-200 dark:border-gray-800">
+        {flexCol && <div className="grow" />}
+        <div className="flex flex-col w-full border-l border-gray-200 md:overflow-y-scroll dark:border-gray-800">
           {project.modelName && (
             <Chat
               project={project}
