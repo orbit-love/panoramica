@@ -17,7 +17,7 @@ export default function Channel({ project, community, params, handlers }) {
       {source && (
         <Header>
           {source && <SourceIcon activity={{ source }} />}
-          <div>{utils.displayChannel(sourceChannel)}</div>
+          <div>{sourceChannel}</div>
         </Header>
       )}
       <ConversationFeed

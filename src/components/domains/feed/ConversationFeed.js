@@ -35,7 +35,7 @@ export default function ConversationFeed({
           )}
         />
       </div>
-      <div className="flex-1 bg-gray-300 border-l border-gray-200 dark:bg-black dark:border-gray-800"></div>
+      <div className="dark:bg-gray-950 flex-1 bg-gray-300 border-l border-gray-200 dark:border-gray-800"></div>
     </div>
   );
 }

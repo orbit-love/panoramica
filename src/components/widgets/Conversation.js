@@ -6,6 +6,7 @@ import { conversationPrompts } from "src/configuration/prompts";
 import Chat from "src/components/domains/ai/Chat";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import useResizeCallback from "src/hooks/useResizeCallback";
+import BookmarkAction from "../domains/bookmarks/BookmarkAction";
 
 export default function Conversation({
   project,
@@ -14,6 +15,7 @@ export default function Conversation({
   containerApi,
   params,
   handlers,
+  dispatch,
 }) {
   var { activity } = params;
   let [lastSummary, setLastSummary] = useState(api.title);
@@ -61,15 +63,14 @@ export default function Conversation({
         allText += text;
         setLastSummary((prevText) => prevText + text);
       }
-      if (allText.length === 0) {
-        setLastSummary(defaultSummary);
-      } else {
-        activity.summary = allText;
-      }
+      // update the summary on the activity object and in the project context
+      activity.summary = allText.length > 0 ? allText : defaultSummary;
+      dispatch({ type: "updated", community });
+      setLastSummary(activity.summary);
     } catch (e) {
-      setLastSummary(defaultSummary);
+      console.error(e);
     }
-  }, [project, activity, setLastSummary, defaultSummary]);
+  }, [project, activity, setLastSummary, defaultSummary, community, dispatch]);
 
   useEffect(() => {
     if (!activity.summary) {
@@ -94,6 +95,14 @@ export default function Conversation({
         })}
       >
         <div className="pt-4 px-6 w-full md:overflow-y-scroll">
+          <div className="flex justify-between items-center pb-4 mb-4 border-b border-gray-300 dark:border-gray-800">
+            <div onClick={fetchSummary} className="font-semibold">
+              {activity.summary}
+            </div>
+            <span className="text-tertiary">
+              <BookmarkAction project={project} activity={activity} />
+            </span>
+          </div>
           <FullThreadView
             activity={activity}
             community={community}
@@ -101,7 +110,7 @@ export default function Conversation({
           />
         </div>
         {flexCol && <div className="grow" />}
-        <div className="flex flex-col w-full border-l border-gray-200 md:overflow-y-scroll dark:border-gray-800">
+        <div className="flex flex-col w-full border-l border-gray-300 md:overflow-y-scroll dark:border-gray-800">
           {project.modelName && (
             <Chat
               project={project}

@@ -21,7 +21,7 @@ export default function Modal({ title, close, children, fullHeight }) {
       >
         <button
           onClick={close}
-          className="flex items-center pt-2 pb-2 px-6 text-white bg-gray-700 dark:text-gray-300 dark:bg-gray-800"
+          className="flex items-center pt-2 pb-2 px-6 text-white bg-gray-700 dark:text-gray-200 dark:bg-gray-800"
         >
           <div>{title}</div>
           <div className="mx-auto" />

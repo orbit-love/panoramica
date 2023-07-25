@@ -24,7 +24,7 @@ export default function CompactConnection({
         <NameAndIcon member={connectedMember} onClick={() => {}} />
       </div>
       <div className="mx-auto"></div>
-      <div className="text-secondary">
+      <div title="Number of interactions" className="text-secondary">
         <FontAwesomeIcon icon="comment" flip="horizontal" />
         &nbsp;
         {outgoing + incoming}
@@ -32,7 +32,7 @@ export default function CompactConnection({
       <TimeAgo
         className="text-secondary ml-6"
         date={lastInteraction}
-        title={utils.formatDate(lastInteraction)}
+        title={`Last interacted on ${utils.formatDate(lastInteraction)}`}
       />
     </button>
   );

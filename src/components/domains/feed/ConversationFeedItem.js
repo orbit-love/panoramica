@@ -1,23 +1,12 @@
 import React, { useState, useCallback, useContext } from "react";
 import classnames from "classnames";
 
-import {
-  BookmarksContext,
-  BookmarksDispatchContext,
-} from "src/components/context/BookmarksContext";
 import PreviewView from "src/components/domains/conversation/views/PreviewView";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import Toolbar from "src/components/domains/conversation/Toolbar";
-import {
-  postCreateBookmark,
-  deleteBookmark,
-} from "src/data/client/fetches/bookmarks";
 
 export default function ConversationFeedItem(props) {
-  var { index, project, activity, community, handlers } = props;
-
-  const { bookmarks } = useContext(BookmarksContext);
-  const dispatch = useContext(BookmarksDispatchContext);
+  var { index, activity, community, handlers } = props;
 
   var [expanded, setExpanded] = useState(false);
 
@@ -27,10 +16,6 @@ export default function ConversationFeedItem(props) {
 
   var conversation = community.conversations[conversationActivity.id];
   var canExpand = conversation?.children?.length > 0;
-
-  var bookmark = bookmarks?.find(
-    (bookmark) => bookmark.activityId === conversationActivity.id
-  );
 
   var onOpen = (e) => {
     handlers.onClickActivity(e, conversationActivity);
@@ -42,33 +27,6 @@ export default function ConversationFeedItem(props) {
       setExpanded(!expanded);
     }
   };
-
-  const onBookmark = useCallback(() => {
-    if (bookmark) {
-      deleteBookmark({
-        project,
-        activity: conversationActivity,
-        onSuccess: () => {
-          dispatch({
-            type: "removeBookmark",
-            bookmark,
-          });
-        },
-      });
-    } else {
-      postCreateBookmark({
-        project,
-        activity: conversationActivity,
-        onSuccess: ({ result }) => {
-          const { bookmark } = result;
-          dispatch({
-            type: "addBookmark",
-            bookmark,
-          });
-        },
-      });
-    }
-  }, [project, dispatch, bookmark, conversationActivity]);
 
   return (
     <div
@@ -88,13 +46,12 @@ export default function ConversationFeedItem(props) {
       {!expanded && <PreviewView onExpand={onExpand} {...props} />}
       <Toolbar
         {...props}
+        activity={conversationActivity}
         canExpand={canExpand}
         expanded={expanded}
         setExpanded={setExpanded}
         onOpen={onOpen}
         onExpand={onExpand}
-        bookmark={bookmark}
-        onBookmark={onBookmark}
       />
     </div>
   );

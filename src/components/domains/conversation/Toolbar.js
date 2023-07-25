@@ -1,16 +1,16 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import BookmarkAction from "src/components/domains/bookmarks/BookmarkAction";
 
 export default function Toolbar({
+  project,
+  activity,
   onOpen,
   onExpand,
   canExpand,
   expanded,
-  bookmark,
-  onBookmark,
 }) {
   const expandIcon = expanded ? "chevron-up" : "chevron-down";
-  const bookmarkIcon = bookmark ? "bookmark" : ["far", "bookmark"];
   return (
     <div className="group-hover/menu:flex text-tertiary bg-opacity-80 hidden absolute bottom-4 right-6 py-1 px-5 space-x-4 bg-gray-200 rounded-full dark:bg-gray-700">
       {canExpand && (
@@ -18,9 +18,7 @@ export default function Toolbar({
           <FontAwesomeIcon icon={expandIcon} />
         </button>
       )}
-      <button onClick={onBookmark}>
-        <FontAwesomeIcon icon={bookmarkIcon} className="text-sm" />
-      </button>
+      <BookmarkAction project={project} activity={activity} />
       {
         <button onClick={onOpen}>
           <FontAwesomeIcon icon="arrow-right" />
