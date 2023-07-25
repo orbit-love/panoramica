@@ -10,9 +10,7 @@ import {
   deleteBookmark,
 } from "src/data/client/fetches/bookmarks";
 
-export default function BookmarkAction(props) {
-  var { project, activity } = props;
-
+export default function BookmarkAction({ project, activity, className }) {
   const { bookmarks } = useContext(BookmarksContext);
   const dispatch = useContext(BookmarksDispatchContext);
 
@@ -50,7 +48,7 @@ export default function BookmarkAction(props) {
   }, [project, dispatch, bookmark, activity]);
 
   return (
-    <button onClick={onBookmark}>
+    <button onClick={onBookmark} className={className}>
       <FontAwesomeIcon icon={bookmarkIcon} />
     </button>
   );
