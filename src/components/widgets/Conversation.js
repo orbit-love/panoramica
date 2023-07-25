@@ -85,7 +85,7 @@ export default function Conversation({
   }, []);
 
   return (
-    <Frame>
+    <Frame fullWidth>
       <div
         ref={flexContainerRef}
         className={classnames("flex h-full", {

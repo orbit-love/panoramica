@@ -6,7 +6,7 @@ import ScrollManager from "src/components/widgets/base/ScrollManager";
 import ErrorBoundary from "src/components/widgets/base/ErrorBoundary";
 import Modal from "src/components/ui/Modal";
 
-export default function Frame({ children }) {
+export default function Frame({ fullWidth, children }) {
   let { api } = useContext(WidgetContext);
   let { fullscreen } = api.panel.params || {};
   const [isActive, setIsActive] = useState(false);
@@ -35,7 +35,9 @@ export default function Frame({ children }) {
 
   return (
     <ErrorBoundary>
-      <ScrollManager isActive={isActive}>{children}</ScrollManager>
+      <ScrollManager isActive={isActive} fullWidth={fullWidth}>
+        {children}
+      </ScrollManager>
     </ErrorBoundary>
   );
 }

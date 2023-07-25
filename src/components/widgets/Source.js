@@ -18,21 +18,16 @@ export default function Source({ project, community, params, api, handlers }) {
 
   return (
     <Frame>
-      {source && (
-        <Header>
-          {source && <SourceIcon activity={{ source }} />}
-          <div>{api.title}</div>
-          <div className="flex-grow" />
-          {sourceChannels.length > 0 && (
-            <button
-              className="mr-2"
-              onClick={(e) => onClickChannels(e, source)}
-            >
-              <FontAwesomeIcon icon="list" />
-            </button>
-          )}
-        </Header>
-      )}
+      <Header>
+        {source && <SourceIcon activity={{ source }} />}
+        <div>{api.title}</div>
+        <div className="flex-grow" />
+        {sourceChannels.length > 0 && (
+          <button className="mr-2" onClick={(e) => onClickChannels(e, source)}>
+            <FontAwesomeIcon icon="list" />
+          </button>
+        )}
+      </Header>
       <ConversationFeed
         project={project}
         activities={activities}

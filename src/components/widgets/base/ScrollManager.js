@@ -1,6 +1,7 @@
 import React, { useState, useLayoutEffect, useRef } from "react";
+import classNames from "classnames";
 
-export default function ScrollManager({ isActive, children }) {
+export default function ScrollManager({ isActive, fullWidth, children }) {
   const scrollRef = useRef();
   const [scrollValue, setScrollValue] = useState(0);
 
@@ -18,7 +19,12 @@ export default function ScrollManager({ isActive, children }) {
     <div
       ref={scrollRef}
       onScroll={onScroll}
-      className="overflow-y-auto overflow-x-hidden relative h-full"
+      className={classNames(
+        "overflow-y-auto overflow-x-hidden relative h-full",
+        {
+          "max-w-xl": !fullWidth,
+        }
+      )}
     >
       {children}
     </div>

@@ -2,7 +2,6 @@ import React, { useState, useCallback, useRef } from "react";
 
 import ErrorBoundary from "src/components/widgets/base/ErrorBoundary";
 import PromptInput from "src/components/ui/PromptInput";
-import Loader from "src/components/domains/ui/Loader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PromptPicker from "./PromptPicker";
 

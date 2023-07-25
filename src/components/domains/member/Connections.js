@@ -3,7 +3,7 @@ import CompactConnection from "src/components/domains/member/Connection";
 
 export default function CompactConnections({ member, community, onClick }) {
   const [expanded, setExpanded] = useState(false);
-  const connections = community.findConnections(member) || [];
+  const connections = community.findConnections(member) || {};
 
   const sortByFields = (a, b) => {
     var lastInteractionA = connections[a.globalActor][2];

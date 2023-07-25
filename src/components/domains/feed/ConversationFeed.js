@@ -18,24 +18,21 @@ export default function ConversationFeed({
   });
 
   return (
-    <div className="flex">
-      <div className="max-w-xl border-t border-gray-300 dark:border-gray-700">
-        <Paginator
-          activities={activities}
-          community={community}
-          eachActivity={({ activity, index }) => (
-            <ConversationFeedItem
-              project={project}
-              key={activity.id}
-              index={index}
-              activity={activity}
-              community={community}
-              handlers={handlers}
-            />
-          )}
-        />
-      </div>
-      <div className="dark:bg-gray-950 flex-1 bg-gray-300 border-l border-gray-200 dark:border-gray-800"></div>
+    <div className="border-t border-gray-300 dark:border-gray-700">
+      <Paginator
+        activities={activities}
+        community={community}
+        eachActivity={({ activity, index }) => (
+          <ConversationFeedItem
+            project={project}
+            key={activity.id}
+            index={index}
+            activity={activity}
+            community={community}
+            handlers={handlers}
+          />
+        )}
+      />
     </div>
   );
 }
