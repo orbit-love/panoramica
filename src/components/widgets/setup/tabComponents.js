@@ -34,6 +34,14 @@ const tabComponents = {
     var icon = <FontAwesomeIcon icon="list" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
+  Bookmarks: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="bookmark" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
+  EditProject: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="gear" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
   Connection: ({ api, title, params: { member, connection } }) => {
     return (
       <TabComponentWithIcon api={api}>

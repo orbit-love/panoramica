@@ -48,3 +48,9 @@ export const saveLayout = ({ project, containerApi }) => {
   const layout = containerApi.toJSON();
   localStorage.setItem(storageKey(project), JSON.stringify(layout));
 };
+
+export const resetLayout = ({ project, containerApi }) => {
+  localStorage.removeItem(storageKey(project));
+  containerApi.clear();
+  loadDefaultLayout(containerApi);
+};

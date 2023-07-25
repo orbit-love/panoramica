@@ -1,10 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHotkeys } from "react-hotkeys-hook";
 import Link from "next/link";
 
-import { Frame, loadDefaultLayout, storageKey } from "src/components/widgets";
+import { BookmarksContext } from "src/components/context/BookmarksContext";
+import { Frame, resetLayout } from "src/components/widgets";
 import {
   putProjectImport,
   putProjectRefresh,
@@ -28,37 +35,31 @@ export default function Home(props) {
     handlers,
   } = props;
 
-  let { onClickSource } = handlers;
-  let [loading, setLoading] = useState(false);
-  let [position, setPosition] = useState();
+  const { bookmarks } = useContext(BookmarksContext);
+  const { onClickSource } = handlers;
+  const [loading, setLoading] = useState(false);
   const [editingTheme, setEditingTheme] = useState(false);
 
   const toggleEditingTheme = () => {
     setEditingTheme(!editingTheme);
   };
 
-  useEffect(() => {
-    if (!containerApi) {
-      return;
-    }
-    const disposable = containerApi.onDidLayoutChange(() => {
-      // set position to be where tabs should be opened, either
-      // inside the group to the right or in a new group if none exists
+  // for opening new panels, either place them in the group to
+  // the immediate right or open a new group on the right
+  // this ensures no panels open in the Home group
+  const newPanelPosition = useCallback(() => {
+    if (containerApi) {
       if (containerApi.groups.length > 1) {
         let referenceGroup = containerApi.groups[1];
-        setPosition({
+        return {
           referenceGroup,
           direction: "within",
-        });
+        };
       } else {
-        setPosition({ direction: "right" });
+        return { direction: "right" };
       }
-    });
-
-    return () => {
-      disposable.dispose();
-    };
-  }, [project, containerApi]);
+    }
+  }, [containerApi]);
 
   // constraints don't seem to be serialized so reapply them
   // these avoid the home bar getting very wide when othen panels are
@@ -77,9 +78,7 @@ export default function Home(props) {
   );
 
   const resetWidgets = useCallback(() => {
-    localStorage.removeItem(storageKey(project));
-    containerApi.clear();
-    loadDefaultLayout(containerApi);
+    resetLayout({ project, containerApi });
   }, [project, containerApi]);
 
   const fetchProject = useCallback(async () => {
@@ -122,13 +121,41 @@ export default function Home(props) {
     }
   }, [empty, refreshProject]);
 
-  const onSearchSubmit = (e) => {
+  const onSearchSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      var term = searchRef.current.value;
+      var id = term ? `search-${term}` : "search";
+      addWidget(id, "Search", {
+        title: term || "Search",
+        position: newPanelPosition(),
+      });
+      searchRef.current.value = "";
+      searchRef.current.blur();
+    },
+    [addWidget, newPanelPosition]
+  );
+
+  const onClickBookmarks = (e) => {
     e.preventDefault();
-    var term = searchRef.current.value;
-    var id = term ? `search-${term}` : "search";
-    addWidget(id, "Search", { title: term || "Search", position });
-    searchRef.current.value = "";
-    searchRef.current.blur();
+    addWidget("bookmarks", "Bookmarks", {
+      title: "Bookmarks",
+      position: newPanelPosition(),
+    });
+  };
+
+  const onClickEditProject = (e) => {
+    e.preventDefault();
+    addWidget("edit-project", "EditProject", {
+      title: "Edit Project",
+      position: newPanelPosition(),
+    });
+  };
+  const onClickAssistant = () => {
+    addWidget("prompt", "Assistant", {
+      title: "Assistant",
+      position: newPanelPosition(),
+    });
   };
 
   var sources = [];
@@ -158,15 +185,7 @@ export default function Home(props) {
             <FontAwesomeIcon icon={["fas", "brush"]} />
           </button>
           <div className="mx-1" />
-          <button
-            className=""
-            onClick={() =>
-              addWidget("edit-project", "EditProject", {
-                title: "Edit Project",
-                position,
-              })
-            }
-          >
+          <button onClick={onClickEditProject}>
             <FontAwesomeIcon icon="gear" />
           </button>
         </div>
@@ -200,28 +219,26 @@ export default function Home(props) {
               </div>
               <div className="flex flex-col items-start w-full">
                 <div className="text-tertiary pb-1 font-light">Explore</div>
-                <button onClick={(e) => onClickSource(e, null, { position })}>
+                <button
+                  onClick={(e) =>
+                    onClickSource(e, null, { position: newPanelPosition() })
+                  }
+                >
                   All Activity
                 </button>
                 <button
                   onClick={() =>
                     addWidget("members", "Members", {
                       title: "Members",
-                      position,
+                      position: newPanelPosition(),
                     })
                   }
                 >
                   Member List
                 </button>
-                <button
-                  onClick={() =>
-                    addWidget("prompt", "Assistant", {
-                      title: "Assistant",
-                      position,
-                    })
-                  }
-                >
-                  Assistant
+                <button onClick={onClickAssistant}>Assistant</button>
+                <button onClick={onClickBookmarks}>
+                  Bookmarks ({bookmarks.length})
                 </button>
                 <div className="text-tertiary pb-1 pt-2 font-light">
                   Sources
@@ -230,7 +247,11 @@ export default function Home(props) {
                   <div className="flex flex-col" key={source}>
                     <button
                       className="flex items-center space-x-1"
-                      onClick={(e) => onClickSource(e, source, { position })}
+                      onClick={(e) =>
+                        onClickSource(e, source, {
+                          position: newPanelPosition(),
+                        })
+                      }
                     >
                       <div>{utils.titleize(source)}</div>
                     </button>

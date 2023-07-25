@@ -3,7 +3,7 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-const makeRequest = ({ url, method = "GET", onSuccess, setLoading }) => {
+export const makeRequest = ({ url, method = "GET", onSuccess, setLoading }) => {
   setLoading && setLoading(true);
   return fetch(url, {
     method,
@@ -50,35 +50,6 @@ export async function postEmbeddings({ project, setLoading, onSuccess }) {
   makeRequest({
     url: `/api/projects/${project.id}/embeddings/create`,
     method: "POST",
-    onSuccess,
-    setLoading,
-  });
-}
-
-export async function postCreateBookmark({
-  project,
-  activity,
-  setLoading,
-  onSuccess,
-}) {
-  makeRequest({
-    url: `/api/projects/${project.id}/${activity.id}/bookmarks`,
-    method: "POST",
-    onSuccess,
-    setLoading,
-  });
-}
-
-export async function deleteBookmark({
-  project,
-  activity,
-  setLoading,
-  onSuccess,
-}) {
-  console.log(project.id);
-  makeRequest({
-    url: `/api/projects/${project.id}/${activity.id}/bookmarks`,
-    method: "DELETE",
     onSuccess,
     setLoading,
   });

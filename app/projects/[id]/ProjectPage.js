@@ -17,24 +17,19 @@ import {
   loadDefaultLayout,
   saveLayout,
 } from "src/components/widgets";
+import { getBookmarks } from "src/data/client/fetches/bookmarks";
 import {
   ProjectContext,
   ProjectDispatchContext,
 } from "src/components/context/ProjectContext";
+import {
+  BookmarksContext,
+  BookmarksDispatchContext,
+} from "src/components/context/BookmarksContext";
 import Community from "src/models/Community";
 import Themed from "src/components/context/Themed";
 import { ThemeContext } from "src/components/context/ThemeContext";
-
-const projectReducer = (object, { type, community, project }) => {
-  switch (type) {
-    case "updated": {
-      return { ...object, community };
-    }
-    case "updateProject": {
-      return { ...object, project };
-    }
-  }
-};
+import { projectReducer, bookmarksReducer } from "src/reducers";
 
 const Dockview = ({ onReady }) => {
   const { dockviewTheme } = useContext(ThemeContext);
@@ -53,7 +48,23 @@ export default function ProjectPage({ project, data }) {
   const community = new Community({ result: data });
   const initialObject = { project, community };
   const [object, dispatch] = useReducer(projectReducer, initialObject);
-  let [containerApi, setContainerApi] = useState(null);
+
+  const [bookmarks, bookmarksDispatch] = useReducer(bookmarksReducer, {
+    bookmarks: [],
+  });
+  const [containerApi, setContainerApi] = useState(null);
+
+  useEffect(() => {
+    getBookmarks({
+      project,
+      onSuccess: ({ result: { bookmarks } }) => {
+        bookmarksDispatch({
+          type: "setBookmarks",
+          bookmarks,
+        });
+      },
+    });
+  }, [project, bookmarksDispatch]);
 
   const onReady = useCallback(
     (event) => {
@@ -113,11 +124,15 @@ export default function ProjectPage({ project, data }) {
 
   return (
     <Themed>
-      <ProjectContext.Provider value={object}>
-        <ProjectDispatchContext.Provider value={dispatch}>
-          <Dockview onReady={onReady} />
-        </ProjectDispatchContext.Provider>
-      </ProjectContext.Provider>
+      <BookmarksContext.Provider value={bookmarks}>
+        <BookmarksDispatchContext.Provider value={bookmarksDispatch}>
+          <ProjectContext.Provider value={object}>
+            <ProjectDispatchContext.Provider value={dispatch}>
+              <Dockview onReady={onReady} />
+            </ProjectDispatchContext.Provider>
+          </ProjectContext.Provider>
+        </BookmarksDispatchContext.Provider>
+      </BookmarksContext.Provider>
     </Themed>
   );
 }

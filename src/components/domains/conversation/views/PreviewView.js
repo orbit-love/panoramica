@@ -5,31 +5,38 @@ import Activity from "src/components/domains/activity/Activity";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 
 export default function PreviewView(props) {
-  let { activity, community, handlers } = props;
+  let { activity, community, handlers, onExpand } = props;
   let { onClickMember } = handlers;
 
-  var conversation = community.conversations[activity.id];
-  var conversation = community.findActivityById(activity.conversationId);
-  var parent = community.findActivityById(activity.parentId);
+  const conversation = community.conversations[activity.id];
+  const conversationActivity = community.findActivityById(
+    activity.conversationId
+  );
+  const parentActivity = community.findActivityById(activity.parentId);
 
-  var showConversation = activity.id !== conversation?.id;
-  var showParent = parent && parent?.id !== conversation?.id;
+  const showConversation = activity.id !== conversationActivity?.id;
+  const showParent =
+    parentActivity && parentActivity?.id !== conversationActivity?.id;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col space-y-1">
       <div className="text-secondary flex flex-col text-sm whitespace-nowrap">
         {showConversation && (
           <ActivityPreview
-            activity={conversation}
+            activity={conversationActivity}
+            conversation={community.conversations[conversationActivity.id]}
             community={community}
             onClickMember={onClickMember}
+            onExpand={onExpand}
           />
         )}
         {showParent && (
           <ActivityPreview
-            activity={parent}
+            activity={parentActivity}
+            conversation={community.conversations[parentActivity.id]}
             community={community}
             onClickMember={onClickMember}
+            onExpand={onExpand}
           />
         )}
       </div>
@@ -42,21 +49,23 @@ export default function PreviewView(props) {
           showSourceIcon
           timeDisplay={activity.timestamp}
         />
-        {conversation?.children?.length > 0 && (
-          <div className="text-secondary text-sm">
-            {conversation.children.length} replies
-          </div>
-        )}
-        {conversation?.children?.length === 0 && (
-          <div className="text-secondary text-sm">No replies</div>
-        )}
+        <Replies
+          conversation={conversation}
+          onExpand={onExpand}
+          showNoReplies={!showConversation}
+        />
       </div>
     </div>
   );
 }
 
-const ActivityPreview = ({ activity, community, onClickMember }) => {
-  var activityConversation = community.conversations[activity.id];
+const ActivityPreview = ({
+  activity,
+  conversation,
+  community,
+  onClickMember,
+  onExpand,
+}) => {
   return (
     <div className="flex flex-col">
       <div className="flex items-center space-x-1">
@@ -67,14 +76,39 @@ const ActivityPreview = ({ activity, community, onClickMember }) => {
             onClick={onClickMember}
           />
         </div>
-        <div className="shrink-1 overflow-hidden text-ellipsis">
+        <button
+          onClick={onExpand}
+          className="shrink-1 overflow-hidden text-ellipsis hover:underline"
+        >
           {activity.text}
-        </div>
+        </button>
       </div>
-      {activityConversation.children.length > 1 && (
-        <div className="text-secondary">
-          {activityConversation.children.length} replies
-        </div>
+      <Replies
+        conversation={conversation}
+        onExpand={onExpand}
+        replyMinimum={2}
+      />
+    </div>
+  );
+};
+
+const Replies = ({
+  conversation,
+  onExpand,
+  replyMinimum = 1,
+  showNoReplies = true,
+}) => {
+  const childrenLength = conversation.children?.length || 0;
+  return (
+    <div className="text-secondary text-sm">
+      {childrenLength >= replyMinimum && (
+        <button onClick={onExpand} className="hover:underline">
+          {childrenLength === 1 && "1 reply"}
+          {childrenLength > 1 && `${childrenLength} replies`}
+        </button>
+      )}
+      {childrenLength === 0 && showNoReplies && (
+        <div className="text-secondary text-sm">0 replies</div>
       )}
     </div>
   );

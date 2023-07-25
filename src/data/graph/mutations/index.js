@@ -192,37 +192,3 @@ export const updateActivity = async ({ tx, project, activityId, summary }) => {
   );
   console.log("Memgraph: Updated activity");
 };
-
-export const createBookmark = async ({ tx, project, activityId, user }) => {
-  const projectId = project.id;
-  const userId = user.id;
-  const createdAt = new Date().toISOString();
-  const createdAtInt = Date.parse(createdAt);
-
-  await tx.run(
-    `MATCH (p:Project { id: $projectId })
-      WITH p
-        MATCH (p)-[:OWNS]->(a:Activity { id: $activityId })
-      WITH a
-        MERGE (a)<-[r:BOOKMARKED]-(u:User { id: $userId })
-      SET r.createdAt = $createdAt, r.createdAtInt = $createdAtInt`,
-    { projectId, activityId, userId, createdAt, createdAtInt }
-  );
-  console.log("Memgraph: Created bookmark");
-};
-
-export const deleteBookmark = async ({ tx, project, activityId, user }) => {
-  const projectId = project.id;
-  const userId = user.id;
-
-  await tx.run(
-    `MATCH (p:Project { id: $projectId })
-      WITH p
-        MATCH (p)-[:OWNS]->(a:Activity { id: $activityId })
-      WITH a
-        MATCH (a)<-[r:BOOKMARKED]-(u:User { id: $userId })
-      DELETE r`,
-    { projectId, activityId, userId }
-  );
-  console.log("Memgraph: Deleted bookmark");
-};

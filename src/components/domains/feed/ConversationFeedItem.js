@@ -1,58 +1,77 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import classnames from "classnames";
 
+import {
+  BookmarksContext,
+  BookmarksDispatchContext,
+} from "src/components/context/BookmarksContext";
 import PreviewView from "src/components/domains/conversation/views/PreviewView";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import Toolbar from "src/components/domains/conversation/Toolbar";
-import { postCreateBookmark, deleteBookmark } from "src/data/client/fetches";
+import {
+  postCreateBookmark,
+  deleteBookmark,
+} from "src/data/client/fetches/bookmarks";
 
 export default function ConversationFeedItem(props) {
   var { index, project, activity, community, handlers } = props;
+
+  const { bookmarks } = useContext(BookmarksContext);
+  const dispatch = useContext(BookmarksDispatchContext);
+
   var [expanded, setExpanded] = useState(false);
-  var [bookmarked, setBookmarked] = useState(false);
 
   var conversationActivity = community.findActivityById(
     activity.conversationId
   );
+
   var conversation = community.conversations[conversationActivity.id];
   var canExpand = conversation?.children?.length > 0;
+
+  var bookmark = bookmarks?.find(
+    (bookmark) => bookmark.activityId === conversationActivity.id
+  );
 
   var onOpen = (e) => {
     handlers.onClickActivity(e, conversationActivity);
   };
 
-  var onExpand = (event) => {
-    if (event.target === event.currentTarget) {
-      let selection = window.getSelection().toString();
-      if (canExpand && selection.length <= 0) {
-        setExpanded(!expanded);
-      }
+  var onExpand = () => {
+    let selection = window.getSelection().toString();
+    if (canExpand && selection.length <= 0) {
+      setExpanded(!expanded);
     }
   };
 
   const onBookmark = useCallback(() => {
-    if (bookmarked) {
-      setBookmarked(false);
+    if (bookmark) {
       deleteBookmark({
         project,
         activity: conversationActivity,
-        setLoading: () => {},
-        onSuccess: () => {},
+        onSuccess: () => {
+          dispatch({
+            type: "removeBookmark",
+            bookmark,
+          });
+        },
       });
     } else {
-      setBookmarked(true);
       postCreateBookmark({
         project,
         activity: conversationActivity,
-        setLoading: () => {},
-        onSuccess: () => {},
+        onSuccess: ({ result }) => {
+          const { bookmark } = result;
+          dispatch({
+            type: "addBookmark",
+            bookmark,
+          });
+        },
       });
     }
-  }, [project, bookmarked, conversationActivity]);
+  }, [project, dispatch, bookmark, conversationActivity]);
 
   return (
     <div
-      onClick={onExpand}
       className={classnames(
         "group/menu flex flex-col py-6 px-6 relative border-y border-gray-200 dark:border-gray-800",
         {
@@ -66,7 +85,7 @@ export default function ConversationFeedItem(props) {
       {expanded && (
         <FullThreadView {...props} activity={conversationActivity} />
       )}
-      {!expanded && <PreviewView {...props} />}
+      {!expanded && <PreviewView onExpand={onExpand} {...props} />}
       <Toolbar
         {...props}
         canExpand={canExpand}
@@ -74,7 +93,7 @@ export default function ConversationFeedItem(props) {
         setExpanded={setExpanded}
         onOpen={onOpen}
         onExpand={onExpand}
-        bookmarked={bookmarked}
+        bookmark={bookmark}
         onBookmark={onBookmark}
       />
     </div>

@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 
 // available widgets
+import Bookmarks from "../Bookmarks";
 import Channel from "../Channel";
 import Channels from "../Channels";
 import Connection from "../Connection";
@@ -21,6 +22,7 @@ import {
 import { addWidget, clickHandlers } from "src/components/widgets/setup/widgets";
 
 const components = {
+  Bookmarks: (props) => WithContext(Bookmarks, props),
   Channel: (props) => WithContext(Channel, props),
   Channels: (props) => WithContext(Channels, props),
   Conversation: (props) => WithContext(Conversation, props),
