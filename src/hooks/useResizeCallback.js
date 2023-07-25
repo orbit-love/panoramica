@@ -24,7 +24,7 @@ const useResizeCallback = (ref, cutoffWidth, callback) => {
       // Cleanup the observer by unobserving all elements
       observer.disconnect();
     };
-  }, []);
+  }, [ref, cutoffWidth, callback]);
 };
 
 export default useResizeCallback;
