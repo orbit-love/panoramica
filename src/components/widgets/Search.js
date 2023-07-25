@@ -64,9 +64,9 @@ export default function Search({
     setTerm(e.target.value);
   };
 
-  var activities = docs.map(({ metadata: { id } }) =>
-    community.findActivityById(id)
-  );
+  var activities = docs
+    .map(({ conversationId }) => community.findActivityById(conversationId))
+    .filter((activity) => activity);
 
   return (
     <Frame>

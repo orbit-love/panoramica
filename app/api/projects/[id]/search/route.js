@@ -5,6 +5,7 @@ import { checkApp, authorizeProject } from "src/auth";
 import { PineconeClient } from "@pinecone-database/pinecone";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import utils from "src/utils";
 
 export async function GET(request, context) {
   const user = await checkApp();
@@ -43,12 +44,19 @@ export async function GET(request, context) {
     // the client will not use the text in the vector store for rendering, it
     // will just use the metadata to find the activity locally; so save bytes and don't include values
     // but not seeming to work yet...
-    const vectorDocs = await vectorStore.similaritySearch(q, 25, {
-      // includeData: true,
-      // includeMetadata: true,
-    });
+    const vectorDocs = await vectorStore.similaritySearch(q, 25);
+
+    const result = vectorDocs
+      .sort((a, b) => b.metadata.timestamp - a.metadata.timestamp)
+      .map((doc) => doc.metadata.conversationId)
+      .filter((conversationId) => conversationId)
+      .filter(utils.onlyUnique)
+      .map((conversationId) => ({
+        conversationId,
+      }));
+
     return NextResponse.json({
-      result: vectorDocs,
+      result,
     });
   } catch (err) {
     console.log(err);
