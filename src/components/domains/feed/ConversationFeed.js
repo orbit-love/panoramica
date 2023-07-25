@@ -11,6 +11,12 @@ export default function ConversationFeed({
   community,
   handlers,
 }) {
+  // show the most recent message in each conversation
+  var conversationIds = activities.map((a) => a.conversationId);
+  activities = activities.filter((activity, index) => {
+    return conversationIds.indexOf(activity.conversationId) === index;
+  });
+
   return (
     <div className="flex">
       <div className="max-w-xl border-t border-gray-300 dark:border-gray-700">

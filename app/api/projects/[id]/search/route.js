@@ -47,7 +47,6 @@ export async function GET(request, context) {
     const vectorDocs = await vectorStore.similaritySearch(q, 25);
 
     const result = vectorDocs
-      .sort((a, b) => b.metadata.timestamp - a.metadata.timestamp)
       .map((doc) => doc.metadata.conversationId)
       .filter((conversationId) => conversationId)
       .filter(utils.onlyUnique)
