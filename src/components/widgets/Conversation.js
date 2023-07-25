@@ -5,6 +5,7 @@ import { Frame, saveLayout } from "src/components/widgets";
 import { conversationPrompts } from "src/configuration/prompts";
 import Chat from "src/components/domains/ai/Chat";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
+import useResizeCallback from "src/hooks/useResizeCallback";
 
 export default function Conversation({
   project,
@@ -16,6 +17,13 @@ export default function Conversation({
 }) {
   var { activity } = params;
   let [lastSummary, setLastSummary] = useState(api.title);
+  let [flexCol, setFlexCol] = useState();
+
+  const flexContainerRef = useRef();
+  const cutoffWidth = 650;
+  useResizeCallback(flexContainerRef, cutoffWidth, (isBelowCutoffWidth) =>
+    setFlexCol(isBelowCutoffWidth)
+  );
 
   const subContext = { conversationId: activity.id };
 
@@ -77,7 +85,14 @@ export default function Conversation({
 
   return (
     <Frame>
-      <div className="flex flex-col md:flex-row h-full">
+      <div
+        ref={flexContainerRef}
+        className={classnames("flex h-full", {
+          "flex-col": flexCol,
+          "flex-row": flexCol === false,
+          "flex-col md:flex-row": flexCol === undefined,
+        })}
+      >
         <div className="pt-4 px-6 md:overflow-y-scroll w-full">
           <FullThreadView
             activity={activity}
