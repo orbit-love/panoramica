@@ -1,4 +1,5 @@
-import { check, redirect, authorizeProject, aiReady } from "src/auth";
+import { check, redirect, authorizeProject } from "src/auth";
+import { aiReady } from "src/integrations/ready";
 import { getActivities } from "src/data/graph/queries";
 import GraphConnection from "src/data/graph/Connection";
 import {
@@ -17,6 +18,10 @@ export default async function handler(req, res) {
     var project = await authorizeProject({ id, user, res });
     var projectId = project.id;
     if (!project) {
+      return;
+    }
+
+    if (project.userId != user.id && !user.admin) {
       return;
     }
 

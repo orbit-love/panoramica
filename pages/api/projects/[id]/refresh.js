@@ -1,8 +1,10 @@
 import { graph } from "src/data/db";
-import { check, redirect, authorizeProject, aiReady } from "src/auth";
+import { check, redirect, authorizeProject } from "src/auth";
+import { aiReady } from "src/integrations/ready";
 import { syncActivities } from "src/data/graph/mutations";
 import { createEmbeddings } from "src/integrations/pinecone/embeddings";
 import { getAPIUrl, getAPIData } from "src/integrations/orbit/api";
+import { orbitImportReady } from "src/integrations/ready";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
@@ -15,6 +17,9 @@ export default async function handler(req, res) {
   try {
     var project = await authorizeProject({ id, user, res });
     if (!project) {
+      return;
+    }
+    if (!orbitImportReady(project)) {
       return;
     }
 

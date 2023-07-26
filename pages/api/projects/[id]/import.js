@@ -2,6 +2,7 @@ import { check, redirect, authorizeProject } from "src/auth";
 import { getAPIUrl, getAPIData } from "src/integrations/orbit/api";
 import { graph } from "src/data/db";
 import { setupProject, syncActivities } from "src/data/graph/mutations";
+import { orbitImportReady } from "src/integrations/ready";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
@@ -15,6 +16,9 @@ export default async function handler(req, res) {
   try {
     var project = await authorizeProject({ id, user, res });
     if (!project) {
+      return;
+    }
+    if (!orbitImportReady(project)) {
       return;
     }
 

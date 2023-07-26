@@ -2,6 +2,10 @@ import { prisma } from "src/data/db";
 import { check, redirect } from "src/auth";
 
 export default async function handler(req, res) {
+  if (process.env.DISABLE_PROJECT_CREATION === "true") {
+    return res.status(401).json({ data: "Project creation is disallowed" });
+  }
+
   const user = await check(req, res);
   if (!user) {
     return redirect(res);
@@ -10,11 +14,10 @@ export default async function handler(req, res) {
   // Get data submitted in request's body.
   const body = req.body;
 
-  // Guard clause checks for first and last name,
-  // and returns early if they are not found
-  if (!body.name || !body.workspace || !body.apiKey) {
+  // Guard clause checks for name and returns early
+  if (!body.name) {
     // Sends a HTTP bad request error code
-    return res.status(400).json({ data: "Name or URL not found" });
+    return res.status(400).json({ data: "Name not found" });
   }
 
   try {

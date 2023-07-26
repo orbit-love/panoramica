@@ -4,7 +4,7 @@ import { StreamingTextResponse } from "ai";
 
 import { checkApp, authorizeProject } from "src/auth";
 
-import { getAnswerStream } from "src/ai/answer";
+import { getAnswerStream } from "src/integrations/ai/answer";
 
 export async function POST(request, context) {
   const user = await checkApp();
@@ -24,7 +24,7 @@ export async function POST(request, context) {
   }
 
   try {
-    var project = await authorizeProject({ id, user });
+    var project = await authorizeProject({ id, user, allowPublic: true });
     if (!project) {
       return;
     }

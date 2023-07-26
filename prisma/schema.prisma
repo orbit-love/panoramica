@@ -13,7 +13,7 @@ datasource db {
 }
 
 model Account {
-  id                String    @id @default(cuid())
+  id                 String    @id @default(cuid())
   userId             String
   type               String
   provider           String
@@ -32,7 +32,7 @@ model Account {
 }
 
 model Session {
-  id                 String    @id @default(cuid())
+  id           String    @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
@@ -40,7 +40,7 @@ model Session {
 }
 
 model User {
-  id                 String    @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
   email         String?   @unique
   emailVerified DateTime?
@@ -48,7 +48,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  projects   Project[]
+  projects      Project[]
 }
 
 model VerificationToken {
@@ -60,63 +60,17 @@ model VerificationToken {
 }
 
 model Project {
-   id                 String    @id @default(cuid())
-  userId        String
-  user   User   @relation(fields: [userId], references: [id])
-  name          String
-  workspace     String?
-  url           String?
-  apiKey           String
-  modelName     String?
-  modelApiKey   String?
-  pineconeApiKey     String?
-  pineconeApiEnv     String?
-  pineconeIndexName     String?
-  activities    Activity[]
-}
-
-model Activity {
-  // core fields
-   id                 String    @id @default(cuid())
-  project   Project    @relation(fields: [projectId], references: [id])
-  projectId String
-  timestamp   DateTime
-
-  // activities and and parents
-  // the source platform id for the parent activity
-  sourceParentId String?
-
-  // managing actors
-  actor          String
-  actorName          String?
-  globalActor          String?
-  globalActorName          String?
-
-  // the name of the source platform, e.g. twitter
-  source       String?
-  // the id on the source platform, i.e. tweet id
-  sourceId     String
-  // the activity type for an additional dimension
-  sourceType   String?
-  // the channel on the source platform, e.g. 'announcements'
-  sourceChannel String?
-
-  // content fields
-  text         String
-  textHtml     String?
-  url          String?
-
-  // member linking
-  mentions     Json?
-
-  // general properties for filtering
-  tags      Json?
-
-  // debugging - the raw contents
-  payload      Json?
-
-  // don't allow the same activity twice in the same project
-  // commented out because the incoming data is not clean and
-  // not dealing with that yet
-  @@unique([sourceId, projectId])
+  id                  String    @id @default(cuid())
+  userId              String
+  user   User         @relation(fields: [userId], references: [id])
+  name                String
+  workspace           String?
+  url                 String?
+  apiKey              String?
+  modelName           String?
+  modelApiKey         String?
+  pineconeApiKey      String?
+  pineconeApiEnv      String?
+  pineconeIndexName   String?
+  demo                Boolean   @default(false)
 }

@@ -11,6 +11,7 @@ import {
 import Community from "src/models/Community";
 import Edit from "src/components/domains/project/Edit";
 import Loader from "src/components/domains/ui/Loader";
+import { aiReady, orbitImportReady } from "src/integrations/ready";
 
 export default function EditProject({ project, dispatch }) {
   const router = useRouter();
@@ -61,7 +62,7 @@ export default function EditProject({ project, dispatch }) {
 
   return (
     <Frame>
-      <div className="px-6 mt-4">
+      <div className="px-6 mt-4 mb-6">
         {status && <div className="pb-4 text-green-500">{status}</div>}
         {loading && <div className="pb-4">{loading && <Loader />}</div>}
         <Edit
@@ -74,21 +75,31 @@ export default function EditProject({ project, dispatch }) {
           }}
           onDelete={() => router.push("/")}
         />
-        <div className="text-tertiary flex flex-col items-start py-6 space-y-1">
-          <div className="flex items-center my-2 space-x-2 text-lg font-thin">
-            <div>Actions</div>
-            {loading && <Loader />}
+
+        {(orbitImportReady(project) || aiReady(project)) && (
+          <div className="text-tertiary flex flex-col items-start py-6 space-y-1">
+            <div className="flex items-center my-2 space-x-2 text-lg font-thin">
+              <div>Actions</div>
+              {loading && <Loader />}
+            </div>
+            {orbitImportReady(project) && (
+              <>
+                <button className="hover:underline" onClick={refreshProject}>
+                  Import latest data from Orbit
+                </button>
+                <button className="hover:underline" onClick={importProject}>
+                  Reimport all data from Orbit
+                </button>
+              </>
+            )}
+
+            {aiReady(project) && (
+              <button className="hover:underline" onClick={createEmbeddings}>
+                Load embeddings into vector store
+              </button>
+            )}
           </div>
-          <button className="hover:underline" onClick={refreshProject}>
-            Import latest data from Orbit
-          </button>
-          <button className="hover:underline" onClick={importProject}>
-            Reimport all data from Orbit
-          </button>
-          <button className="hover:underline" onClick={createEmbeddings}>
-            Load embeddings into vector store
-          </button>
-        </div>
+        )}
       </div>
     </Frame>
   );

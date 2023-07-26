@@ -23,6 +23,7 @@ import Modal from "src/components/ui/Modal";
 import ThemeSelector from "src/components/ui/ThemeSelector";
 import Loader from "src/components/domains/ui/Loader";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
+import { orbitImportReady } from "src/integrations/ready";
 
 export default function Home(props) {
   let searchRef = useRef();
@@ -152,6 +153,14 @@ export default function Home(props) {
       position: newPanelPosition(),
     });
   };
+
+  const onClickUser = (e) => {
+    e.preventDefault();
+    addWidget("user", "User", {
+      title: "User",
+      position: newPanelPosition(),
+    });
+  };
   const onClickAssistant = () => {
     addWidget("prompt", "Assistant", {
       title: "Assistant",
@@ -181,18 +190,26 @@ export default function Home(props) {
               <Loader />
             </div>
           )}
-          <div className="mx-1" />
-          <button onClick={toggleEditingTheme}>
+          <button className="ml-2" onClick={toggleEditingTheme}>
             <FontAwesomeIcon icon={["fas", "brush"]} />
           </button>
-          <div className="mx-1" />
-          <button onClick={onClickEditProject}>
+          <button className="ml-2" onClick={onClickUser}>
+            <FontAwesomeIcon icon={["fas", "user"]} />
+          </button>
+          <button className="ml-2" onClick={onClickEditProject}>
             <FontAwesomeIcon icon="gear" />
           </button>
         </div>
       </div>
-      <div className="flex flex-col px-6">
-        {!loading && empty && (
+      <div className="flex flex-col px-6 pt-1">
+        {!loading && empty && !orbitImportReady(project) && (
+          <p>
+            The project has been created. Provide in the settings a workspace
+            slug and an API key to import data from Orbit. You can also use
+            Panoramica's API to push your data.
+          </p>
+        )}
+        {!loading && empty && orbitImportReady(project) && (
           <div className="flex flex-col space-y-6">
             <p>
               The project has been created. Click the button to fetch data from

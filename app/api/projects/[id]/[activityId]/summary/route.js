@@ -6,7 +6,8 @@ import { Document } from "langchain/document";
 import { loadQAStuffChain } from "langchain/chains";
 
 import { graph } from "src/data/db";
-import { checkApp, authorizeProject, aiReady } from "src/auth";
+import { checkApp, authorizeProject } from "src/auth";
+import { aiReady } from "src/integrations/ready";
 import { getConversation } from "src/data/graph/queries/getConversation";
 import { updateActivity } from "src/data/graph/mutations";
 import GraphConnection from "src/data/graph/Connection";
@@ -20,7 +21,7 @@ export async function GET(_, context) {
   var { id, activityId } = context.params;
 
   try {
-    var project = await authorizeProject({ id, user });
+    var project = await authorizeProject({ user });
     var projectId = project.id;
     if (!project) {
       return;

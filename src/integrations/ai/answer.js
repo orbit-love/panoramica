@@ -13,7 +13,7 @@ import {
   PROMPT_TEMPLATE,
   SINGLE_CONVERSATION_CONTEXT_INTRO,
   PROJECT_CONVERSATIONS_CONTEXT_INTRO,
-} from "src/ai/templates";
+} from "src/integrations/ai/templates";
 
 const formatChat = (chat) => {
   const people = ["Me", "AI"];

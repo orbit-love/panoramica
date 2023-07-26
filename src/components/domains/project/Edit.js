@@ -105,83 +105,94 @@ export default function Edit({
       onSubmit={onSubmit}
     >
       <div className="flex flex-col space-y-1">
-        <div className="">Name</div>
+        <label htmlFor="name">Name</label>
         <input
           type="text"
           required
           placeholder="My Project"
+          name="name"
           value={name}
           onChange={({ target }) => setName(target.value)}
         ></input>
       </div>
       <div className="my-2 text-lg font-thin">Activity Data Source</div>
       <div className="flex flex-col space-y-1">
-        <div className="">Orbit Workspace</div>
+        <label htmlFor="orbit-workspace">Orbit Workspace</label>
         <input
           type="text"
           required
           placeholder="my-workspace"
+          name="orbit-workspace"
           value={workspace}
           onChange={({ target }) => setWorkspace(target.value)}
         ></input>
       </div>
       <div className="flex flex-col space-y-1">
-        <div className="">Orbit API Key (provide to change)</div>
+        <label htmlFor="orbit-api-key">Orbit API Key (provide to change)</label>
         <input
           type="text"
+          name="orbit-api-key"
           value={apiKey}
           onChange={({ target }) => setApiKey(target.value)}
         ></input>
       </div>
       <div className="flex flex-col space-y-1">
-        <div className="">Activities URL (Optional/Advanced)</div>
+        <label htmlFor="orbit-url">Activities URL (Optional/Advanced)</label>
         <input
           type="text"
           placeholder="https://app.orbit.love/<w>/activities?..."
+          name="orbit-url"
           value={url}
           onChange={({ target }) => setUrl(target.value)}
         ></input>
       </div>
       <div className="my-2 text-lg font-thin">Language Model Features</div>
       <div className="flex flex-col space-y-1">
-        <div className="">Model Name</div>
+        <label htmlFor="model-name">Model Name</label>
         <input
           type="text"
           placeholder="gpt-3.5-turbo-0613"
+          name="model-name"
           value={modelName}
           onChange={({ target }) => setModelName(target.value)}
         ></input>
       </div>
       <div className="flex flex-col space-y-1">
-        <div className="">Model API Key (provide to change)</div>
+        <label htmlFor="model-api-key">Model API Key (provide to change)</label>
         <input
           type="text"
+          name="model-api-key"
           value={modelApiKey}
           onChange={({ target }) => setModelApiKey(target.value)}
         ></input>
       </div>
       <div className="my-2 text-lg font-thin">Vector Store Features</div>
       <div className="flex flex-col space-y-1">
-        <div className="">Pinecone API Env</div>
+        <label htmlFor="pinecone-api-env">Pinecone API Env</label>
         <input
           type="text"
           placeholder="us-east4-gcp"
+          name="pinecone-api-env"
           value={pineconeApiEnv}
           onChange={({ target }) => setPineconeApiEnv(target.value)}
         ></input>
       </div>
       <div className="flex flex-col space-y-1">
-        <div className="">Pinecone Index Name</div>
+        <label htmlFor="pinecone-index-name">Pinecone Index Name</label>
         <input
           type="text"
           value={pineconeIndexName}
+          name="pinecone-index-name"
           onChange={({ target }) => setPineconeIndexName(target.value)}
         ></input>
       </div>
       <div className="flex flex-col space-y-1">
-        <div className="">Pinecone API Key (provide to change)</div>
+        <label htmlFor="pinecone-api-key">
+          Pinecone API Key (provide to change)
+        </label>
         <input
           type="text"
+          name="pinecone-api-key"
           value={pineconeApiKey}
           onChange={({ target }) => setPineconeApiKey(target.value)}
         ></input>

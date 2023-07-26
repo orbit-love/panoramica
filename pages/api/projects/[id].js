@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   const graphConnection = new GraphConnection();
   var { id, from, to } = req.query;
 
-  var project = await authorizeProject({ id, user, res });
+  var project = await authorizeProject({ id, user, res, allowPublic: true });
   if (!project) {
     return;
   }

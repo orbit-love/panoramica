@@ -28,6 +28,10 @@ export async function getProject({ project, onSuccess, setLoading }) {
   makeRequest({ url: `/api/projects/${project.id}`, onSuccess, setLoading });
 }
 
+export async function getJWT({ onSuccess, setLoading }) {
+  makeRequest({ url: `/api/user/jwt`, onSuccess, setLoading });
+}
+
 export async function putProjectImport({ project, onSuccess, setLoading }) {
   makeRequest({
     url: `/api/projects/${project.id}/import`,

@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "../ui/Loader";
 
 export default function New({ redirectUrl }) {
@@ -70,7 +69,6 @@ export default function New({ redirectUrl }) {
           <input
             ref={workspaceRef}
             type="text"
-            required
             placeholder="my-workspace"
           ></input>
         </div>
@@ -79,7 +77,6 @@ export default function New({ redirectUrl }) {
           <input
             ref={apiKeyRef}
             type="text"
-            required
             placeholder="obw_abcdefabcdefabcdefabcdef"
           ></input>
         </div>

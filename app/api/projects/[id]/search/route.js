@@ -19,7 +19,7 @@ export async function GET(request, context) {
     q = "orbit";
   }
   try {
-    var project = await authorizeProject({ id, user });
+    var project = await authorizeProject({ id, user, allowPublic: true });
     var projectId = project.id;
     if (!project) {
       return;

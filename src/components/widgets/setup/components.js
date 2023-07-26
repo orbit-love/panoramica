@@ -13,8 +13,10 @@ import EditProject from "../EditProject";
 import Assistant from "../Assistant";
 import Search from "../Search";
 import Source from "../Source";
+import User from "../User";
 
 import { WidgetContext } from "src/components/context/WidgetContext";
+
 import {
   ProjectContext,
   ProjectDispatchContext,
@@ -31,6 +33,7 @@ const components = {
   Member: (props) => WithContext(Member, props),
   Members: (props) => WithContext(Members, props),
   EditProject: (props) => WithContext(EditProject, props),
+  User: (props) => WithContext(User, props),
   Assistant: (props) => WithContext(Assistant, props),
   Search: (props) => WithContext(Search, props),
   Source: (props) => WithContext(Source, props),

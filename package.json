@@ -27,6 +27,7 @@
     "compromise": "^14.9.0",
     "dockview": "^1.7.6",
     "encoding": "^0.1.13",
+    "jsonwebtoken": "^9.0.1",
     "langchain": "^0.0.101",
     "luxon": "^3.3.0",
     "neo4j-driver": "^5.9.0",
