@@ -42,10 +42,11 @@ export default function Home(props) {
   const [loading, setLoading] = useState(false);
   const [editingTheme, setEditingTheme] = useState(false);
 
-  var {
-    data: { user },
-  } = useSession();
-  user = user.fake ? null : user;
+  var user,
+    { data: session } = useSession();
+  if (session && session.user && !session.user.fake) {
+    user = session.user;
+  }
 
   const toggleEditingTheme = () => {
     setEditingTheme(!editingTheme);

@@ -48,11 +48,10 @@ export default function BookmarkAction({ project, activity, className }) {
     }
   }, [project, dispatch, bookmark, activity]);
 
-  var {
-    data: { user },
-  } = useSession();
-  user = user.fake ? null : user;
-  if (!user) return <> </>;
+  var { data: session } = useSession();
+  if (!session || !session.user || session.user.fake) {
+    return <> </>;
+  }
 
   return (
     <button onClick={onBookmark} className={className}>
