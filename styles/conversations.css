@@ -1,0 +1,47 @@
+/* conversation rendering styles */
+.a-html {
+  @apply leading-5;
+}
+.a-html code {
+  color: var(--pan-primary-color);
+}
+.a-html a {
+  @apply font-semibold;
+  color: var(--pan-secondary-color);
+}
+.a-html a:hover {
+  @apply underline;
+}
+.a-html blockquote {
+  @apply pl-2 border-l border-gray-200 dark:border-gray-800;
+}
+.a-html blockquote > p:before {
+  content: "> ";
+}
+.a-html p {
+  @apply mb-2;
+}
+.a-html img {
+  @apply border border-gray-200 dark:border-gray-800;
+  @apply mt-6 mb-4 max-h-[150px];
+}
+.expand-images .a-html img {
+  @apply max-h-[500px];
+}
+.a-html ol {
+  @apply my-1;
+  @apply list-decimal;
+  @apply list-inside;
+}
+.a-html ul {
+  @apply my-1;
+  @apply list-disc;
+  @apply list-inside;
+}
+.a-html ul li {
+  @apply my-1;
+}
+.a-html ul li p,
+.a-html ol li p {
+  display: inline;
+}

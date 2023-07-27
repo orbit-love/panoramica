@@ -1,0 +1,61 @@
+{
+  "name": "panoramica",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@fortawesome/free-regular-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@next-auth/prisma-adapter": "^1.0.7",
+    "@pinecone-database/pinecone": "^0.1.6",
+    "@prisma/client": "^4.16.0",
+    "ai": "^2.1.14",
+    "axios": "^1.4.0",
+    "classnames": "^2.3.2",
+    "compromise": "^14.9.0",
+    "dockview": "^1.7.6",
+    "encoding": "^0.1.13",
+    "jsonwebtoken": "^9.0.1",
+    "langchain": "^0.0.101",
+    "luxon": "^3.3.0",
+    "neo4j-driver": "^5.9.0",
+    "next": "^13.4.7",
+    "next-auth": "^4.22.1",
+    "nodemailer": "^6.9.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-error-boundary": "^4.0.10",
+    "react-hotkeys-hook": "^4.4.0",
+    "react-modal": "^3.14.4",
+    "react-tabs": "^6.0.1",
+    "react-timeago": "^7.1.0",
+    "rehype-stringify": "^9.0.3",
+    "remark": "^14.0.3",
+    "remark-gfm": "^3.0.1",
+    "remark-github": "^11.2.4",
+    "remark-parse": "^10.0.2",
+    "remark-rehype": "^10.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.2",
+    "autoprefixer": "^10.4.14",
+    "eslint": "8.11.0",
+    "eslint-config-next": "^13.4.5",
+    "postcss": "^8.4.24",
+    "prisma": "^4.16.0",
+    "tailwindcss": "^3.0.23",
+    "tsx": "^3.12.7"
+  }
+}

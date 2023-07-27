@@ -1,0 +1,9 @@
+/* a light, panoramic theme */
+.panoramica-light {
+  --pan-primary-color: #bf4b57;
+  --pan-secondary-color: #405091;
+  --pan-tertiary-color: #a3449e;
+
+  background-color: theme("colors.white");
+  color: theme("colors.gray.800");
+}
