@@ -1,7 +1,13 @@
 export const aiReady = (project) => {
-  return project.modelApiKey && project.pineconeApiKey;
+  if (project.aiReady) {
+    return true;
+  }
+  return !!(project.modelApiKey && project.pineconeApiKey);
 };
 
 export const orbitImportReady = (project) => {
-  return (project.url || project.workspace) && project.apiKey;
+  if (project.orbitImportReady) {
+    return true;
+  }
+  return !!((project.url || project.workspace) && project.apiKey);
 };

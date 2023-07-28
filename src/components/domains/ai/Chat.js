@@ -69,7 +69,10 @@ export default function Chat({ project, subContext, examplePrompts }) {
 
     if (!response.ok) {
       popMessage();
-      setError("Sorry, something went wrong. Please try again.");
+      const data = await response.json();
+      setError(
+        data.message || "Sorry, something went wrong. Please try again."
+      );
       return;
     }
 

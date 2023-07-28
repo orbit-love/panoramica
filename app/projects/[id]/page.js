@@ -9,6 +9,7 @@ import GraphConnection from "src/data/graph/Connection";
 import ProjectPage from "app/projects/[id]/ProjectPage";
 import { getEverything } from "src/data/graph/queries";
 import { demoSession } from "src/auth";
+import { aiReady, orbitImportReady } from "src/integrations/ready";
 
 export async function generateMetadata({ params }) {
   // read route params
@@ -84,9 +85,20 @@ const getProject = async (id, user) => {
       },
     ];
   }
+
   // use an allowlist of fields to avoid sending back any API keys
-  return prisma.project.findFirst({
+  const project = await prisma.project.findFirst({
     where,
-    select: safeProjectSelectFields(),
   });
+
+  const safeProject = {};
+
+  for (const field in safeProjectSelectFields()) {
+    safeProject[field] = project[field];
+  }
+
+  safeProject.aiReady = aiReady(project);
+  safeProject.orbitImportReady = orbitImportReady(project);
+
+  return safeProject;
 };

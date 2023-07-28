@@ -21,7 +21,7 @@ export async function GET(_, context) {
   var { id, activityId } = context.params;
 
   try {
-    var project = await authorizeProject({ user });
+    var project = await authorizeProject({ id, user });
     var projectId = project.id;
     if (!project) {
       return;

@@ -36,11 +36,29 @@ export async function POST(request, context) {
       subContext,
     });
 
+    if (!stream) {
+      return NextResponse.json(
+        {
+          message:
+            "Sorry, we couldn't process your request because the traffic is currently too high",
+        },
+        {
+          status: 429,
+        }
+      );
+    }
+
     return new StreamingTextResponse(stream);
   } catch (err) {
     console.log(err);
-    return new NextResponse("Drat. Could not process request.", {
-      status: 500,
-    });
+    return new NextResponse.json(
+      {
+        message:
+          "Sorry we couldn't process your request due to an unexpected error.",
+      },
+      {
+        status: 500,
+      }
+    );
   }
 }

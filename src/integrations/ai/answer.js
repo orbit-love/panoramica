@@ -14,6 +14,7 @@ import {
   SINGLE_CONVERSATION_CONTEXT_INTRO,
   PROJECT_CONVERSATIONS_CONTEXT_INTRO,
 } from "src/integrations/ai/templates";
+import { checkAILimits } from "./limiter";
 
 const formatChat = (chat) => {
   const people = ["Me", "AI"];
@@ -77,6 +78,7 @@ const prepareVectorStore = async (project) => {
 
 export const getAnswerStream = async ({ project, q, chat, subContext }) => {
   const chatHistory = formatChat([...chat, q]);
+  const { modelName, modelApiKey } = project;
 
   const { stream, handlers } = LangChainStream();
 
@@ -100,22 +102,40 @@ export const getAnswerStream = async ({ project, q, chat, subContext }) => {
   }
 
   const llm = new ChatOpenAI({
-    modelName: project.modelName,
-    openAIApiKey: project.modelApiKey,
+    modelName,
+    openAIApiKey: modelApiKey,
     temperature: 0.3,
     streaming: true,
   });
 
+  const promptArgs = {
+    context_intro: contextIntro,
+    context: context.join("\n"),
+    chat_history: chatHistory,
+  };
+
+  // We have to format ourselves to get the right token count
+  const formattedPrompt = utils.formatUnicornString(
+    PROMPT_TEMPLATE,
+    promptArgs
+  );
+
+  if (
+    !checkAILimits({
+      counterId: utils.hashString(modelApiKey),
+      counterName: project.name,
+      prompt: formattedPrompt,
+      modelName,
+    })
+  ) {
+    return;
+  }
+
   const prompt = PromptTemplate.fromTemplate(PROMPT_TEMPLATE);
 
-  new LLMChain({ llm, prompt }).call(
-    {
-      context_intro: contextIntro,
-      context: context.join("\n"),
-      chat_history: chatHistory,
-    },
-    [handlers]
-  );
+  // Unfortunately we can pass in the formattedPrompt because it might have a lot of curly braces from JSON Docs
+  // And langchain would attempt to find the arguments
+  new LLMChain({ llm, prompt }).call(promptArgs, [handlers]);
 
   return stream;
 };
