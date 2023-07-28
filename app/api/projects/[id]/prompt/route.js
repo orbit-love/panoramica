@@ -26,7 +26,14 @@ export async function POST(request, context) {
   try {
     var project = await authorizeProject({ id, user, allowPublic: true });
     if (!project) {
-      return;
+      return NextResponse.json(
+        {
+          message: "You are not allowed to perform this action",
+        },
+        {
+          status: 401,
+        }
+      );
     }
 
     const stream = await getAnswerStream({
@@ -51,7 +58,7 @@ export async function POST(request, context) {
     return new StreamingTextResponse(stream);
   } catch (err) {
     console.log(err);
-    return new NextResponse.json(
+    return NextResponse.json(
       {
         message:
           "Sorry we couldn't process your request due to an unexpected error.",
