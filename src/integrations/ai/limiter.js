@@ -3,10 +3,11 @@ import { encoding_for_model } from "tiktoken";
 // 90_000 TPM + 3500 RPM for most cases (gpt 4)
 // 180_000 TPM + 3500 RPM for most cases (gpt 3.5 turbo)
 
-// Putting the limits on the safer side for no
+// Putting the limits on the safer side
 // Warning: This doesn't account for multiple projects sharing the same account
 const TOKENS_LIMIT = 89900;
-const REQUESTS_LIMIT = 3490;
+// 100 should be good enough
+const REQUESTS_LIMIT = 100;
 
 // Per minute because Open AI has minutely limiters
 // Also it's okay to keep it in server memory because we only care about the current minute
