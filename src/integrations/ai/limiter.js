@@ -6,7 +6,7 @@ import { encoding_for_model } from "tiktoken";
 // Putting the limits on the safer side for no
 // Warning: This doesn't account for multiple projects sharing the same account
 const TOKENS_LIMIT = 89900;
-const REQUESTS_LIMIT = 2;
+const REQUESTS_LIMIT = 3490;
 
 // Per minute because Open AI has minutely limiters
 // Also it's okay to keep it in server memory because we only care about the current minute
