@@ -1,4 +1,4 @@
-import { encoding_for_model } from "js-tiktoken";
+import { encodingForModel } from "js-tiktoken";
 
 // 90_000 TPM + 3500 RPM for most cases (gpt 4)
 // 180_000 TPM + 3500 RPM for most cases (gpt 3.5 turbo)
@@ -54,9 +54,9 @@ export const checkAILimits = ({
   // if the model is not valid tiktoken will throw an error, default to gpt 3.5
   let encoding;
   try {
-    encoding = encoding_for_model(modelName);
+    encoding = encodingForModel(modelName);
   } catch {
-    encoding = encoding_for_model("gpt-3.5-turbo");
+    encoding = encodingForModel("gpt-3.5-turbo");
   }
 
   const tokenCount = encoding.encode(prompt).length;
