@@ -5,9 +5,9 @@ import { encoding_for_model } from "tiktoken";
 
 // Putting the limits on the safer side
 // Warning: This doesn't account for multiple projects sharing the same account
-const TOKENS_LIMIT = process.env.AI_TPM || 89900;
+const TOKENS_LIMIT = parseInt(process.env.AI_TPM || 89900);
 // 100 should be good enough
-const REQUESTS_LIMIT = process.env.AI_RPM || 100;
+const REQUESTS_LIMIT = parseInt(process.env.AI_RPM || 100);
 
 // Per minute because Open AI has minutely limiters
 // Also it's okay to keep it in server memory because we only care about the current minute
