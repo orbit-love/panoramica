@@ -1,4 +1,4 @@
-import { encoding_for_model } from "tiktoken";
+import { encoding_for_model } from "js-tiktoken";
 
 // 90_000 TPM + 3500 RPM for most cases (gpt 4)
 // 180_000 TPM + 3500 RPM for most cases (gpt 3.5 turbo)

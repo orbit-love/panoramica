@@ -49,8 +49,13 @@ export default function Conversation({
       var response = await fetch(
         `/api/projects/${project.id}/${activity.id}/summary`
       );
+
+      if (!response.ok) {
+        return;
+      }
       // clear it to start over
       setLastSummary("");
+
       const reader = response.body.getReader();
       // keep track of the response to see if it came back empty
       // if it did, it means the model failed somewhere and we should
