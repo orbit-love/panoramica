@@ -11,6 +11,8 @@ import { aiReady } from "src/integrations/ready";
 import { getConversation } from "src/data/graph/queries/getConversation";
 import { updateActivity } from "src/data/graph/mutations";
 import GraphConnection from "src/data/graph/Connection";
+import { checkAILimits } from "src/integrations/ai/limiter";
+import utils from "src/utils";
 
 export async function GET(_, context) {
   const user = await checkApp();
@@ -21,10 +23,12 @@ export async function GET(_, context) {
   var { id, activityId } = context.params;
 
   try {
-    var project = await authorizeProject({ id, user });
+    var project = await authorizeProject({ id, user, allowPublic: true });
     var projectId = project.id;
     if (!project) {
-      return;
+      return NextResponse("Summary not allowed for this project", {
+        status: 401,
+      });
     }
 
     if (!aiReady(project)) {
@@ -73,6 +77,25 @@ export async function GET(_, context) {
     help with the following question or request.
 
     ${q}`;
+
+    if (
+      !checkAILimits({
+        counterId: utils.hashString(project.modelApiKey),
+        counterName: project.name,
+        modelName: project.modelName,
+        prompt: question,
+      })
+    ) {
+      return NextResponse.json(
+        {
+          message:
+            "Sorry, we couldn't process your request because the traffic is currently too high",
+        },
+        {
+          status: 429,
+        }
+      );
+    }
 
     const onCompletion = async (summary) => {
       const session = graph.session();

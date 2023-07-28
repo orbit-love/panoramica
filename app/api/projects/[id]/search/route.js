@@ -20,7 +20,12 @@ export async function GET(request, context) {
     var project = await authorizeProject({ id, user, allowPublic: true });
     var projectId = project.id;
     if (!project) {
-      return;
+      return NextResponse.json(
+        {
+          message: "Could not perform search",
+        },
+        { status: 401 }
+      );
     }
 
     const { pineconeApiEnv, pineconeApiKey, pineconeIndexName } = project;
