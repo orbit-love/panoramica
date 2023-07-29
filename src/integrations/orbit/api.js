@@ -23,8 +23,22 @@ const getMentions = function (text) {
 };
 
 export function getAPIUrl({ workspace, timeframe = "" }) {
+  // list of conversational activity types to fetch from orbit
+  let activityTypes = [
+    "discord:message:sent",
+    "discord:message:replied",
+    "discord:thread:replied",
+    "issue_comment:created",
+    "issues:opened",
+    "pull_requests:opened",
+    "tweet:sent",
+    "slack:message:sent",
+    "slack:thread:replied",
+  ];
+
+  let activityTypeStr = activityTypes.join("%2C");
   // only conversational activity types with referenced tweets, 90 days default
-  let queryString = `activity_type=discord%3Amessage%3Asent%2Cdiscord%3Amessage%3Areplied%2Cdiscord%3Athread%3Areplied%2Cissue_comment%3Acreated%2Cissues%3Aopened%2Cpull_requests%3Aopened%2Ctweet%3Asent&include_referenced_activities=true${timeframe}`;
+  let queryString = `activity_type=${activityTypeStr}&include_referenced_activities=true${timeframe}`;
   return `https://app.orbit.love/${workspace}/activities.json?${queryString}`;
 }
 
@@ -68,8 +82,6 @@ const getDiscordFields = async ({ activity, member, included }) => {
     sourceParentId = null;
   }
 
-  // once we have the text, we can update this
-  // we need body_html as body does not have the mentions substituted
   let mentions = getMentions(body_html);
   let actor;
   let actorName;
@@ -111,6 +123,48 @@ const getDiscordFields = async ({ activity, member, included }) => {
   }
 
   textHtml = replaceAnchorWithImageTags(textHtml);
+
+  return {
+    sourceId,
+    sourceParentId,
+    source,
+    sourceChannel,
+    text,
+    textHtml,
+    actor,
+    actorName,
+    mentions,
+  };
+};
+
+const getSlackFields = async ({ activity, member, included }) => {
+  let { key, body, body_html, properties, referenced_activities } =
+    activity.attributes;
+  let { slack_channel } = properties;
+  let sourceId = key;
+  let source = "slack";
+  let sourceParentId = referenced_activities?.find(
+    (refActivity) => !!refActivity.key
+  )?.key;
+
+  let mentions = getMentions(body_html);
+  let actor;
+  let actorName;
+  let sourceChannel = slack_channel;
+
+  let slackIdentity = getIdentity({
+    type: "slack_identity",
+    member,
+    included,
+  });
+  if (slackIdentity) {
+    let { username, name } = slackIdentity.attributes;
+    actor = username;
+    actorName = name || username;
+  }
+
+  let text = body || "";
+  let textHtml = body_html || "";
 
   return {
     sourceId,
@@ -272,6 +326,9 @@ const getTypeFields = async (props) => {
     case "issue_comment_activity":
     case "fork_activity":
       return await getGitHubFields(props);
+    case "slack_thread_replied_activity":
+    case "slack_message_sent_activity":
+      return await getSlackFields(props);
     default:
       return {};
   }

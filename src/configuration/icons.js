@@ -42,6 +42,7 @@ import {
   faDiscord,
   faGithub,
   faDiscourse,
+  faSlack,
 } from "@fortawesome/free-brands-svg-icons";
 
 // add to library
@@ -61,6 +62,7 @@ library.add(
   faRightLeft,
   faTwitter,
   faDiscord,
+  faSlack,
   faGithub,
   faDiscourse,
   faGear,

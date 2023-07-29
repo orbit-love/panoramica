@@ -12,6 +12,10 @@ export default function SourceIcon({ activity, className }) {
       return (
         <FontAwesomeIcon icon="fa-brands fa-discord" className={className} />
       );
+    case "slack":
+      return (
+        <FontAwesomeIcon icon="fa-brands fa-slack" className={className} />
+      );
     case "github":
       return (
         <FontAwesomeIcon icon="fa-brands fa-github" className={className} />
