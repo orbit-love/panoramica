@@ -15,7 +15,7 @@ export default function NameAndIcon({ member, suffix, onClick }) {
       className="flex overflow-hidden items-center space-x-1 cursor-pointer"
     >
       <div className="text-primary group-hover:underline overflow-hidden text-ellipsis whitespace-nowrap hover:underline">
-        {member.globalActorName || member.actorName} {suffix}
+        {member.globalActorName || member.globalActor} {suffix}
       </div>
     </div>
   );
