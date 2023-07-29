@@ -34,7 +34,7 @@ const getTweetFields = ({ activity }) => {
   const source = "twitter";
   // pull out the strings for the mentions and annotations
   const mentions = (
-    tweet.entities.mentions || tweet.entities.user_mentions
+    tweet.entities?.mentions || tweet.entities?.user_mentions
   )?.map((mention) => mention.username || mention.screen_name);
   // look to see if the tweet is a reply and grab the id
   var sourceParentId = tweet.referenced_tweets?.find(
