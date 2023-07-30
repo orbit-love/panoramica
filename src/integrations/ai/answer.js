@@ -1,10 +1,7 @@
 import { LangChainStream } from "ai";
-import { PineconeClient } from "@pinecone-database/pinecone";
-import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { LLMChain } from "langchain/chains";
 import { PromptTemplate } from "langchain/prompts";
 
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { getConversation } from "src/data/graph/queries/getConversation";
 import GraphConnection from "src/data/graph/Connection";
 import { ChatOpenAI } from "langchain/chat_models/openai";
@@ -14,6 +11,7 @@ import {
   SINGLE_CONVERSATION_CONTEXT_INTRO,
   PROJECT_CONVERSATIONS_CONTEXT_INTRO,
 } from "src/integrations/ai/templates";
+import { prepareVectorStore } from "src/integrations/pinecone";
 import { checkAILimits } from "./limiter";
 
 const formatChat = (chat) => {
@@ -37,8 +35,8 @@ const loadConversationDocs = async (projectId, conversationId) => {
   return allDocs;
 };
 
-const loadConversationDocsByVectorSearch = async (project, q) => {
-  const vectorStore = await prepareVectorStore(project);
+export const loadConversationDocsByVectorSearch = async (project, q) => {
+  const vectorStore = await prepareVectorStore({ project });
   const vectorDocs = await vectorStore.similaritySearch(q, 10);
 
   // get unique conversation ids from the vector docs
@@ -51,29 +49,11 @@ const loadConversationDocsByVectorSearch = async (project, q) => {
 
   for (let conversationId of conversationIds) {
     const docs = await loadConversationDocs(project.id, conversationId);
-    conversationDocs = conversationDocs.concat(docs);
     conversationDocs.push("\n--Next Conversation--\n");
+    conversationDocs = conversationDocs.concat(docs);
   }
 
   return conversationDocs;
-};
-
-const prepareVectorStore = async (project) => {
-  const { id, pineconeApiEnv, pineconeApiKey, pineconeIndexName } = project;
-  const pinecone = new PineconeClient();
-  await pinecone.init({
-    environment: pineconeApiEnv,
-    apiKey: pineconeApiKey,
-  });
-  const pineconeIndex = pinecone.Index(pineconeIndexName);
-  var namespace = `project-${id}`;
-
-  return await PineconeStore.fromExistingIndex(
-    new OpenAIEmbeddings({
-      openAIApiKey: project.modelApiKey,
-    }),
-    { pineconeIndex, namespace }
-  );
 };
 
 export const getAnswerStream = async ({ project, q, chat, subContext }) => {

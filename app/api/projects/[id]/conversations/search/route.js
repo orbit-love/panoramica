@@ -25,13 +25,14 @@ export async function GET(request, context) {
       );
     }
 
-    var namespace = `project-${projectId}`;
+    var namespace = `project-conversations-${projectId}`;
     const vectorStore = await prepareVectorStore({ project, namespace });
 
-    const vectorDocs = await vectorStore.similaritySearchWithScore(q, 25, {
-      contentLength: { $gt: 50 },
+    var vectorDocs = await vectorStore.similaritySearchWithScore(q, 25, {
+      contentLength: { $gt: 150 },
     });
 
+    // get unique conversation ids from the vector docs
     const result = vectorDocs.map(([doc, score]) => ({
       ...doc.metadata,
       pageContent: doc.pageContent,

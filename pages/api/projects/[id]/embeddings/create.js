@@ -4,6 +4,7 @@ import { getActivities } from "src/data/graph/queries";
 import GraphConnection from "src/data/graph/Connection";
 import {
   createEmbeddings,
+  createConversationEmbeddings,
   deleteEmbeddings,
 } from "src/integrations/pinecone/embeddings";
 
@@ -42,7 +43,22 @@ export default async function handler(req, res) {
       projectId,
     });
 
-    await createEmbeddings({ project, activities });
+    // create a map of conversations and activities for
+    // conversation-level embeds
+    const conversations = {};
+    activities.forEach((activity) => {
+      if (!conversations[activity.conversationId]) {
+        conversations[activity.conversationId] = [];
+      }
+      conversations[activity.conversationId].push(activity);
+    });
+
+    // create embeddings for all activities at the same time
+    await Promise.all([
+      createEmbeddings({ project, activities }),
+      createConversationEmbeddings({ project, conversations }),
+    ]);
+
     res.status(200).json({ result: "success" });
   } catch (err) {
     console.log("Could not process project", err);

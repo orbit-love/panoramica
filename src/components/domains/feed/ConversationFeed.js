@@ -11,7 +11,9 @@ export default function ConversationFeed({
   community,
   handlers,
 }) {
-  // show the most recent message in each conversation
+  // if multiple activities are in the same conversation, only show
+  // the first one that is passed in the array; this allows callers
+  // to specific the activity they want shown in the preview
   var conversationIds = activities.map((a) => a.conversationId);
   activities = activities.filter((activity, index) => {
     return conversationIds.indexOf(activity.conversationId) === index;
