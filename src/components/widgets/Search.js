@@ -66,7 +66,7 @@ export default function Search({
   };
 
   var activities = docs
-    .map(({ conversationId }) => community.findActivityById(conversationId))
+    .map(({ id }) => community.findActivityById(id))
     .filter((activity) => activity);
 
   return (

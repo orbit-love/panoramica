@@ -5,7 +5,7 @@ import Activity from "src/components/domains/activity/Activity";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 
 export default function PreviewView(props) {
-  let { activity, community, handlers, onExpand } = props;
+  let { activity, community, handlers, onExpand, term } = props;
   let { onClickMember } = handlers;
 
   const conversation = community.conversations[activity.id];
@@ -48,6 +48,7 @@ export default function PreviewView(props) {
           showSourceChannel
           showSourceIcon
           timeDisplay={activity.timestamp}
+          term={term}
         />
         <Replies
           conversation={conversation}

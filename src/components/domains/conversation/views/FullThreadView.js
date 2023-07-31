@@ -3,7 +3,7 @@ import classnames from "classnames";
 import Activity from "src/components/domains/activity/Activity";
 
 export default function FullThreadView(props) {
-  let { activity, community, depth = 0, handlers } = props;
+  let { activity, community, depth = 0, handlers, term } = props;
 
   var conversation = community.conversations[activity.id];
   var parentActivity = community.findActivityById(activity.parentId);
@@ -40,6 +40,7 @@ export default function FullThreadView(props) {
         showSourceChannel={depth === 0}
         showSourceIcon={depth === 0}
         timeDisplay={timeDisplay}
+        term={term}
       />
       {childActivities?.map((childActivity, index) => {
         var { id } = childActivity;
@@ -51,6 +52,7 @@ export default function FullThreadView(props) {
             depth={depth + 1}
             handlers={handlers}
             lastChild={index === childActivities.length - 1}
+            term={term}
           />
         );
       })}

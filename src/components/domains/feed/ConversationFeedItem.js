@@ -8,7 +8,7 @@ import Toolbar from "src/components/domains/conversation/Toolbar";
 import { BookmarksContext } from "src/components/context/BookmarksContext";
 
 export default function ConversationFeedItem(props) {
-  var { index, activity, community, handlers } = props;
+  var { index, activity, community, handlers, term } = props;
 
   const { bookmarks } = useContext(BookmarksContext);
   const [expanded, setExpanded] = useState(false);
@@ -48,7 +48,11 @@ export default function ConversationFeedItem(props) {
       )}
     >
       {expanded && (
-        <FullThreadView {...props} activity={conversationActivity} />
+        <FullThreadView
+          {...props}
+          activity={conversationActivity}
+          term={term}
+        />
       )}
       {!expanded && <PreviewView onExpand={onExpand} {...props} />}
       <Toolbar

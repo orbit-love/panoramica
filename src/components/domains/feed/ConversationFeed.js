@@ -10,6 +10,7 @@ export default function ConversationFeed({
   activities,
   community,
   handlers,
+  term,
 }) {
   // if multiple activities are in the same conversation, only show
   // the first one that is passed in the array; this allows callers
@@ -32,6 +33,7 @@ export default function ConversationFeed({
             activity={activity}
             community={community}
             handlers={handlers}
+            term={term}
           />
         )}
       />
