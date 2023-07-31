@@ -99,7 +99,7 @@ export default function ActivityPage({
               <Back project={project} />
               <div className="flex flex-col py-3 space-y-6 w-full">
                 <div className="text-tertiary text-lg">
-                  View Similar Conversations
+                  Similar Conversations
                 </div>
                 <SimilarConversations
                   project={project}
