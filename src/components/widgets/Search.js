@@ -16,12 +16,14 @@ export default function Search({
   const initialTerm = api.title === "Search" ? "" : api.title;
 
   const [loading, setLoading] = useState(false);
-  const [docs, setDocs] = useState([]);
+  const [docs, setDocs] = useState({ result: [] });
   const [term, setTerm] = useState(initialTerm); // tracks the input box
   const [appliedTerm, setAppliedTerm] = useState(initialTerm);
+  const [seeAll, setSeeAll] = useState(false);
 
   const fetchSearch = useCallback(async () => {
     setLoading(true);
+    setSeeAll(false);
     fetch(`/api/projects/${project.id}/search?q=${term}`)
       .then((res) => res.json())
       .then(({ result, message }) => {
@@ -29,7 +31,7 @@ export default function Search({
           alert(message);
         } else {
           setAppliedTerm(term);
-          setDocs(result);
+          setDocs({ result });
         }
         setLoading(false);
       });
@@ -65,9 +67,12 @@ export default function Search({
     setTerm(e.target.value);
   };
 
-  var activities = docs
-    .map(({ id }) => community.findActivityById(id))
-    .filter((activity) => activity);
+  // filter out docs that aren't likely to be good results
+  var scoreThreshold = 0.76;
+  var activities = docs.result
+    .filter(({ score }) => seeAll || score > scoreThreshold)
+    .map(({ id }) => community.findActivityById(id));
+  var numberOfActivitiesBelowThreshold = docs.result.length - activities.length;
 
   return (
     <Frame>
@@ -92,6 +97,17 @@ export default function Search({
           term={appliedTerm}
           handlers={handlers}
         />
+        {!seeAll && numberOfActivitiesBelowThreshold > 0 && (
+          <div className="p-6">
+            <button
+              className="text-tertiary hover:underline"
+              title="See potentially less relevant results"
+              onClick={() => setSeeAll(true)}
+            >
+              See {numberOfActivitiesBelowThreshold} more
+            </button>
+          </div>
+        )}
       </div>
     </Frame>
   );
