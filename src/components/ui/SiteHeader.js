@@ -27,16 +27,16 @@ export default function SiteHeader({ hideLogo }) {
           absolute: hideLogo,
         })}
       >
-        {!hideLogo && (
-          <Link href="/" passHref>
-            <div className="flex items-center p-1 space-x-3">
-              <Image src={logo} alt="Panoramica logo" width="45" />
+        <Link href="/" passHref>
+          <div className="flex items-center p-1 space-x-3">
+            <Image src={logo} alt="Panoramica logo" width="45" />
+            {!hideLogo && (
               <div className="-mt-2 hidden text-3xl font-thin tracking-wider sm:flex sm:visible">
                 panoramica
               </div>
-            </div>
-          </Link>
-        )}
+            )}
+          </div>
+        </Link>
         <div className="flex-1" />
         {editingTheme &&
           createPortal(
