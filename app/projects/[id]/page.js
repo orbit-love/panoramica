@@ -91,14 +91,16 @@ const getProject = async (id, user) => {
     where,
   });
 
-  const safeProject = {};
+  if (project) {
+    const safeProject = {};
 
-  for (const field in safeProjectSelectFields()) {
-    safeProject[field] = project[field];
+    for (const field in safeProjectSelectFields()) {
+      safeProject[field] = project[field];
+    }
+
+    safeProject.aiReady = aiReady(project);
+    safeProject.orbitImportReady = orbitImportReady(project);
+
+    return safeProject;
   }
-
-  safeProject.aiReady = aiReady(project);
-  safeProject.orbitImportReady = orbitImportReady(project);
-
-  return safeProject;
 };
