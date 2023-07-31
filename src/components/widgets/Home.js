@@ -182,8 +182,10 @@ export default function Home(props) {
   return (
     <Frame>
       <div className="py-2 px-6">
-        <div className="flex items-center w-full whitespace-nowrap">
-          <div className="overflow-hidden text-ellipsis">{project.name}</div>
+        <div className="flex items-center py-2 w-full whitespace-nowrap">
+          <div className="overflow-hidden font-semibold text-ellipsis">
+            {project.name}
+          </div>
           <div title="Auto update every 60s">
             <FontAwesomeIcon
               icon="circle"
@@ -195,19 +197,6 @@ export default function Home(props) {
             <div className="pl-2 font-normal">
               <Loader />
             </div>
-          )}
-          <button className="ml-2" onClick={toggleEditingTheme}>
-            <FontAwesomeIcon icon={["fas", "brush"]} />
-          </button>
-          {user && (
-            <>
-              <button className="ml-2" onClick={onClickUser}>
-                <FontAwesomeIcon icon={["fas", "user"]} />
-              </button>
-              <button className="ml-2" onClick={onClickEditProject}>
-                <FontAwesomeIcon icon="gear" />
-              </button>
-            </>
           )}
         </div>
       </div>
@@ -234,7 +223,7 @@ export default function Home(props) {
           <>
             <div className="flex flex-col items-start space-y-6">
               <div className="flex flex-col items-start space-y-2">
-                <form onSubmit={onSearchSubmit} className="flex mt-2 space-x-2">
+                <form onSubmit={onSearchSubmit} className="flex space-x-2">
                   <input
                     type="search"
                     ref={searchRef}
@@ -308,11 +297,45 @@ export default function Home(props) {
                   </div>
                 ))}
               </div>
-              <div className="flex flex-col text-gray-400 dark:text-gray-500">
+              <div className="flex flex-col items-start text-gray-400 dark:text-gray-500">
+                {project.demo && (
+                  <Link
+                    target="_blank"
+                    href={`/projects/${project.id}/welcome`}
+                    prefetch={false}
+                    className="hover:underline"
+                  >
+                    <FontAwesomeIcon icon="arrow-up-right-from-square" />{" "}
+                    Preview
+                  </Link>
+                )}
+                <button
+                  className="hover:underline"
+                  onClick={toggleEditingTheme}
+                >
+                  Theme
+                </button>
+                <button
+                  className="hover:underline"
+                  onClick={onClickEditProject}
+                >
+                  Settings
+                </button>
+                {user && (
+                  <>
+                    <button className="hover:underline" onClick={onClickUser}>
+                      API Settings
+                    </button>
+                  </>
+                )}
                 <button className="hover:underline" onClick={resetWidgets}>
                   Reset
                 </button>
-                <Link prefetch={false} href={`/dashboard`}>
+                <Link
+                  className="hover:underline"
+                  prefetch={false}
+                  href={`/dashboard`}
+                >
                   Exit
                 </Link>
               </div>

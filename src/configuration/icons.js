@@ -33,6 +33,7 @@ import {
   faWandMagicSparkles,
   faPaperPlane,
   faBookmark,
+  faArrowUpRightFromSquare,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faBookmark as faBookmarkRegular } from "@fortawesome/free-regular-svg-icons";
@@ -86,7 +87,8 @@ library.add(
   faWandMagicSparkles,
   faPaperPlane,
   faBookmark,
-  faBookmarkRegular
+  faBookmarkRegular,
+  faArrowUpRightFromSquare
 );
 
 export default library;
