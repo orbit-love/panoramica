@@ -25,7 +25,7 @@ export default function Activity({
   term,
   timeDisplay,
 }) {
-  var { onClickMember, onClickChannel } = handlers;
+  var { onClickMember, onClickChannel, onClickTimestamp } = handlers;
   var member = community.findMemberByActivity(activity);
   var renderHtml = activity.textHtml?.length > 0;
   var { source, sourceChannel } = activity;
@@ -88,7 +88,15 @@ export default function Activity({
         )}
         <div className="text-secondary text-sm text-right whitespace-nowrap">
           <Since />
-          {activity.url && (
+          {onClickTimestamp && (
+            <button
+              className="hover:underline"
+              onClick={(e) => onClickTimestamp(e, activity)}
+            >
+              <Timestamp />
+            </button>
+          )}
+          {!onClickTimestamp && activity.url && (
             <a
               className="hover:underline"
               href={activity.url}
@@ -98,7 +106,7 @@ export default function Activity({
               <Timestamp />
             </a>
           )}
-          {!activity.url && <Timestamp />}
+          {!onClickTimestamp && !activity.url && <Timestamp />}
         </div>
       </div>
       {renderHtml && (

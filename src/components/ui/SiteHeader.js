@@ -5,12 +5,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { signOut } from "next-auth/react";
+import classnames from "classnames";
 
 import Modal from "src/components/ui/Modal";
 import ThemeSelector from "src/components/ui/ThemeSelector";
 import logo from "public/logo.png";
 
-export default function SiteHeader() {
+export default function SiteHeader({ hideLogo }) {
   const { data: session } = useSession();
   const user = session?.user;
   const [editingTheme, setEditingTheme] = useState(false);
@@ -21,15 +22,21 @@ export default function SiteHeader() {
 
   return (
     <>
-      <nav className="flex py-3 px-6 w-full whitespace-nowrap">
-        <Link href="/" passHref>
-          <div className="flex items-center p-1 space-x-3">
-            <Image src={logo} alt="Panoramica logo" width="45" />
-            <div className="-mt-2 hidden text-3xl font-thin tracking-wider sm:flex sm:visible">
-              panoramica
+      <nav
+        className={classnames(`flex py-3 px-6 w-full whitespace-nowrap`, {
+          absolute: hideLogo,
+        })}
+      >
+        {!hideLogo && (
+          <Link href="/" passHref>
+            <div className="flex items-center p-1 space-x-3">
+              <Image src={logo} alt="Panoramica logo" width="45" />
+              <div className="-mt-2 hidden text-3xl font-thin tracking-wider sm:flex sm:visible">
+                panoramica
+              </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+        )}
         <div className="flex-1" />
         {editingTheme &&
           createPortal(
@@ -41,7 +48,7 @@ export default function SiteHeader() {
         <div className="cursor-pointer" onClick={toggleEditingTheme}>
           <FontAwesomeIcon icon={["fas", "brush"]} />
         </div>
-        {user && (
+        {user && !user.fake && (
           <div className="flex flex-col items-end ml-4 space-x-3">
             <span>{session.user.email}</span>
             <button className="underline" onClick={signOut}>
