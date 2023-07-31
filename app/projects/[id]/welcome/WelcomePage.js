@@ -13,7 +13,7 @@ import Paginator from "src/components/domains/feed/Paginator";
 import Themed from "src/components/context/Themed";
 import ActivityItem from "src/components/domains/public/ActivityItem";
 
-const ConversationFeed = ({ project, activities, community }) => {
+const ConversationFeed = ({ project, activities, community, term }) => {
   const onClickTimestamp = (activity) =>
     `/projects/${project.id}/${activity.conversationId}`;
   const handlers = {
@@ -34,6 +34,7 @@ const ConversationFeed = ({ project, activities, community }) => {
           activity={activity}
           community={community}
           handlers={handlers}
+          term={term}
         />
       )}
     />
@@ -116,7 +117,7 @@ const SearchConversations = (props) => {
         </button>
       </form>
       {activities.length > 0 && (
-        <ConversationFeed {...props} activities={activities} />
+        <ConversationFeed {...props} term={term} activities={activities} />
       )}
       {!seeAll && numberOfActivitiesBelowThreshold > 0 && (
         <div className="p-6">
