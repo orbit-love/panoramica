@@ -1,6 +1,7 @@
 import React from "react";
 import TimeAgo from "react-timeago";
 import { Interval } from "luxon";
+import Link from "next/link";
 
 import utils from "src/utils";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
@@ -89,12 +90,9 @@ export default function Activity({
         <div className="text-secondary text-sm text-right whitespace-nowrap">
           <Since />
           {onClickTimestamp && (
-            <button
-              className="hover:underline"
-              onClick={(e) => onClickTimestamp(e, activity)}
-            >
+            <Link className="hover:underline" href={onClickTimestamp(activity)}>
               <Timestamp />
-            </button>
+            </Link>
           )}
           {!onClickTimestamp && activity.url && (
             <a

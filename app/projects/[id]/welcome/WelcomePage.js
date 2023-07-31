@@ -3,6 +3,7 @@
 import React, { useState, useCallback, useRef } from "react";
 import SiteHeader from "src/components/ui/SiteHeader";
 import classnames from "classnames";
+import { useRouter } from "next/navigation";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "src/components/domains/ui/Loader";
@@ -53,10 +54,12 @@ const EachActivity = (props) => {
 };
 
 const ConversationFeed = ({ project, activities, community }) => {
+  const onClickTimestamp = (activity) =>
+    `/projects/${project.id}/${activity.conversationId}`;
   const handlers = {
     onCLickMember: () => {},
     onClickChannel: () => {},
-    onClickTimestamp: () => {},
+    onClickTimestamp,
   };
 
   return (
