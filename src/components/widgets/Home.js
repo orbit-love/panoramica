@@ -182,8 +182,8 @@ export default function Home(props) {
   return (
     <Frame>
       <div className="py-2 px-6">
-        <div className="flex items-center w-full">
-          <div className="text-lg">{project.name}</div>
+        <div className="flex items-center w-full whitespace-nowrap">
+          <div className="overflow-hidden text-ellipsis">{project.name}</div>
           <div title="Auto update every 60s">
             <FontAwesomeIcon
               icon="circle"
@@ -211,7 +211,7 @@ export default function Home(props) {
           )}
         </div>
       </div>
-      <div className="flex flex-col px-6 pt-1">
+      <div className="flex flex-col pt-1 px-6">
         {!loading && empty && !orbitImportReady(project) && (
           <p>
             The project has been created. Provide in the settings a workspace
