@@ -68,6 +68,7 @@ const SearchConversations = (props) => {
   const [loading, setLoading] = useState(false);
   const [docs, setDocs] = useState({ result: [] });
   const [term, setTerm] = useState("");
+  const [appliedTerm, setAppliedTerm] = useState("");
   const [seeAll, setSeeAll] = useState(false);
 
   const fetchSearch = useCallback(async () => {
@@ -79,6 +80,7 @@ const SearchConversations = (props) => {
         if (message) {
           alert(message);
         } else {
+          setAppliedTerm(term);
           setDocs({ result });
         }
         setLoading(false);
@@ -117,7 +119,11 @@ const SearchConversations = (props) => {
         </button>
       </form>
       {activities.length > 0 && (
-        <ConversationFeed {...props} term={term} activities={activities} />
+        <ConversationFeed
+          {...props}
+          term={appliedTerm}
+          activities={activities}
+        />
       )}
       {!seeAll && numberOfActivitiesBelowThreshold > 0 && (
         <div className="p-6">
@@ -142,12 +148,9 @@ export default function WelcomePage({ project, data }) {
     <Themed>
       <ProjectContext.Provider value={object}>
         <SiteHeader hideLogo />
-        <div className="flex-col py-8 space-y-6 h-full sm:flex-row sm:px-6">
+        <div className="flex-col py-8 pt-24 space-y-6 h-full sm:flex-row sm:pt-0 sm:px-6 md:pt-12">
           <div className="flex flex-col space-y-2 text-center">
             <div className="text-3xl font-bold">{project.name}</div>
-            <div className="text-tertiary font-light">
-              Search & Browse Conversations
-            </div>
           </div>
           <div className="flex-col space-y-9 sm:flex sm:flex-row sm:space-y-0 sm:space-x-6">
             <div className="flex flex-col h-[calc(100vh-160px)] space-y-4 sm:w-1/2 w-full overflow-x-hidden">
