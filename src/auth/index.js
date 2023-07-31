@@ -6,17 +6,14 @@ import jwt from "jsonwebtoken";
 
 const secret = process.env.NEXTAUTH_SECRET;
 
-export const demoSession = () =>
-  process.env.DEMO_SITE
-    ? {
-        expire: "1",
-        user: {
-          id: "0",
-          email: "visitor@panoramica.ai",
-          fake: true,
-        },
-      }
-    : null;
+export const demoSession = () => ({
+  expire: "1",
+  user: {
+    id: "0",
+    email: "visitor@panoramica.ai",
+    fake: true,
+  },
+});
 
 const checkJWT = function (req) {
   const authorization = req.headers.authorization || "";

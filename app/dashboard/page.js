@@ -26,7 +26,13 @@ export default async function Page() {
 }
 
 export async function getProps() {
-  const session = (await getServerSession(authOptions)) || demoSession();
+  // if we're running in demo mode, allow the user access to the
+  // dashboard of public projects; otherwise deny access
+  var session = await getServerSession(authOptions);
+  const demoSite = !!process.env.DEMO_SITE;
+  if (!session && demoSite) {
+    session = demoSession();
+  }
   const user = session?.user;
   if (user) {
     let where = {};
@@ -37,7 +43,7 @@ export async function getProps() {
         },
       ];
     }
-    if (!user.admin && process.env.DEMO_SITE) {
+    if (!user.admin && demoSite) {
       where.OR = [
         ...where.OR,
         {
@@ -62,7 +68,7 @@ export async function getProps() {
     });
 
     return {
-      demoSite: !!process.env.DEMO_SITE,
+      demoSite,
       session,
       projects,
     };
