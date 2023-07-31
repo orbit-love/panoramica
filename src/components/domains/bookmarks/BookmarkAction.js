@@ -54,7 +54,11 @@ export default function BookmarkAction({ project, activity, className }) {
   }
 
   return (
-    <button onClick={onBookmark} className={className}>
+    <button
+      title="Bookmark conversation"
+      onClick={onBookmark}
+      className={className}
+    >
       <FontAwesomeIcon icon={bookmarkIcon} />
     </button>
   );

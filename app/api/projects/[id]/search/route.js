@@ -34,7 +34,6 @@ export async function GET(request, context) {
 
     const result = vectorDocs.map(([doc, score]) => ({
       ...doc.metadata,
-      pageContent: doc.pageContent,
       score,
     }));
 

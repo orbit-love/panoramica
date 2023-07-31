@@ -14,6 +14,7 @@ import Assistant from "../Assistant";
 import Search from "../Search";
 import Source from "../Source";
 import User from "../User";
+import Similar from "../Similar";
 
 import { WidgetContext } from "src/components/context/WidgetContext";
 
@@ -37,6 +38,7 @@ const components = {
   Assistant: (props) => WithContext(Assistant, props),
   Search: (props) => WithContext(Search, props),
   Source: (props) => WithContext(Source, props),
+  Similar: (props) => WithContext(Similar, props),
 };
 export default components;
 
@@ -47,8 +49,8 @@ const WithContext = (Component, props) => {
   // pass down a widget context with the dockview api object for the panel
   // the Component will receive dockview props directly, the context is to
   // allow child components like Frame to access the properties easily
-  const widgetContext = { api: props.api };
   var addWidgetFunc = addWidget(props);
+  const widgetContext = { api: props.api, addWidget: addWidgetFunc };
   return (
     <WidgetContext.Provider value={widgetContext}>
       <Component

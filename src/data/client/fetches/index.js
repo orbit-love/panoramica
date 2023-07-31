@@ -66,3 +66,19 @@ export async function postEmbeddings({ project, setLoading, onSuccess }) {
     });
   }
 }
+
+export async function getSimilarConversations({
+  project,
+  activityId,
+  setLoading,
+  onSuccess,
+}) {
+  if (aiReady(project)) {
+    makeRequest({
+      url: `/api/projects/${project.id}/${activityId}/similar`,
+      method: "GET",
+      onSuccess,
+      setLoading,
+    });
+  }
+}

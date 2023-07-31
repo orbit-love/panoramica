@@ -26,6 +26,10 @@ const tabComponents = {
     var icon = <FontAwesomeIcon icon="search" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
+  Similar: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="wand-magic-sparkles" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
   Member: ({ api }) => {
     var icon = <FontAwesomeIcon icon="user-astronaut" />;
     return <TabComponentWithIcon api={api} icon={icon} />;

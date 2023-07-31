@@ -7,6 +7,7 @@ import Chat from "src/components/domains/ai/Chat";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import useResizeCallback from "src/hooks/useResizeCallback";
 import BookmarkAction from "../domains/bookmarks/BookmarkAction";
+import SimilarAction from "../domains/conversation/SimilarAction";
 
 export default function Conversation({
   project,
@@ -108,9 +109,10 @@ export default function Conversation({
             <div onClick={fetchSummary} className="font-semibold">
               {activity.summary}
             </div>
-            <span className="text-tertiary">
+            <div className="text-tertiary flex space-x-3">
+              <SimilarAction activity={activity} />
               <BookmarkAction project={project} activity={activity} />
-            </span>
+            </div>
           </div>
           <FullThreadView
             activity={activity}

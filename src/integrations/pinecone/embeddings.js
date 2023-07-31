@@ -19,6 +19,10 @@ function embeddedContent(activity) {
   return stripHtmlTags(activity.textHtml);
 }
 
+export const toPageContent = (activities) => {
+  return activities.map(embeddedContent).join(" ");
+};
+
 export const deleteEmbeddings = async ({ project }) => {
   var pineconeIndex = await getPineconeIndex({ project });
   var projectId = project.id;
@@ -64,7 +68,7 @@ export const createConversationEmbeddings = async ({
   const docs = [];
   for (let [conversationId, activities] of Object.entries(conversations)) {
     // reverse the activities so that the oldest is first
-    const pageContent = activities.reverse().map(embeddedContent).join(" ");
+    const pageContent = toPageContent(activities.reverse());
     // grab the most recent activity for the timestamp
     const lastActivity = activities[0];
     // add the number of activities as a relevance marker

@@ -3,15 +3,17 @@ import { redirect } from "next/navigation";
 
 import { checkApp, authorizeProject } from "src/auth";
 import { prepareVectorStore } from "src/integrations/pinecone";
+import { getActivities } from "src/data/graph/queries/conversations";
+import { toPageContent } from "src/integrations/pinecone/embeddings";
+import GraphConnection from "src/data/graph/Connection";
 
-export async function GET(request, context) {
+export async function GET(_, context) {
   const user = await checkApp();
   if (!user) {
     return redirect("/");
   }
 
-  var { id } = context.params;
-  var q = request.nextUrl.searchParams.get("q");
+  var { id, activityId } = context.params;
 
   try {
     var project = await authorizeProject({ id, user, allowPublic: true });
@@ -25,6 +27,15 @@ export async function GET(request, context) {
       );
     }
 
+    var conversationId = activityId;
+    const graphConnection = new GraphConnection();
+    var activities = await getActivities({
+      projectId,
+      conversationId,
+      graphConnection,
+    });
+    var q = toPageContent(activities);
+
     var namespace = `project-conversations-${projectId}`;
     const vectorStore = await prepareVectorStore({ project, namespace });
 
@@ -32,10 +43,12 @@ export async function GET(request, context) {
       contentLength: { $gt: 150 },
     });
 
+    // filter out the match for the conversation itself
+    vectorDocs = vectorDocs.filter(([doc, _]) => doc.metadata.id != activityId);
+
     // get unique conversation ids from the vector docs
     const result = vectorDocs.map(([doc, score]) => ({
       ...doc.metadata,
-      pageContent: doc.pageContent,
       score,
     }));
 

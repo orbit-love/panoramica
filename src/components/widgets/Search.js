@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import { Frame, saveLayout } from "src/components/widgets";
+import Loader from "../domains/ui/Loader";
 
 export default function Search({
   project,
@@ -80,7 +81,7 @@ export default function Search({
             onChange={onSearchChange}
           />
           <button type="submit" className="btn">
-            {loading && <FontAwesomeIcon icon="circle-notch" spin />}
+            {loading && <Loader />}
             {!loading && <FontAwesomeIcon icon="search" />}
           </button>
         </form>
