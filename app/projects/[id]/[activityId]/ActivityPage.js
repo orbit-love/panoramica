@@ -80,7 +80,7 @@ export default function ActivityPage({
               <Link href={`/projects/${project.id}/welcome`}>Back</Link>
             </div>
           </div>
-          <div className="flex-col justify-center space-y-6 sm:flex sm:flex-row sm:space-y-0 sm:space-x-6">
+          <div className="flex-col justify-center px-6 space-y-6 sm:flex sm:flex-row sm:space-y-0 sm:space-x-6">
             <div className="flex overflow-x-hidden flex-col space-y-6 w-full sm:w-2/3">
               {activity.summary && (
                 <div className="text-secondary text-2xl">

@@ -5,7 +5,7 @@ import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import Loader from "src/components/domains/ui/Loader";
 import { getSimilarConversations } from "src/data/client/fetches";
 
-export default function Similar({ project, community, params, api, handlers }) {
+export default function Similar({ project, community, params, handlers }) {
   var { activityId } = params;
   const [loading, setLoading] = useState(false);
   const [docs, setDocs] = useState({ result: [] });
