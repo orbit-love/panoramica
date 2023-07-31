@@ -123,8 +123,9 @@ export default function Edit({
         <input
           type="checkbox"
           placeholder="My Project"
-          className="w-4 h-4 text-tertiary bg-gray-100 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
+          className="text-tertiary w-4 h-4 bg-gray-100 rounded border-gray-300 dark:bg-gray-700 dark:border-gray-600"
           name="demo"
+          id="demo"
           checked={demo}
           onChange={() => setDemo(!demo)}
         ></input>
