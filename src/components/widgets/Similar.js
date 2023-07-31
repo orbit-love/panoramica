@@ -9,6 +9,7 @@ export default function Similar({ project, community, params, api, handlers }) {
   var { activityId } = params;
   const [loading, setLoading] = useState(false);
   const [docs, setDocs] = useState({ result: [] });
+  const [seeAll, setSeeAll] = useState(false);
 
   useEffect(() => {
     getSimilarConversations({
@@ -22,9 +23,14 @@ export default function Similar({ project, community, params, api, handlers }) {
   var activity = community.findActivityById(activityId);
   var summary = activity.summary || activity.text.slice(0, 50);
 
+  // filter out docs that aren't likely to be good results
+  // this threshold is higher than individual activities because
+  // more text means higher likelihood of higher scores
+  var scoreThreshold = 0.81;
   var activities = docs.result
-    .map(({ id }) => community.findActivityById(id))
-    .filter((activity) => activity);
+    .filter(({ score }) => seeAll || score > scoreThreshold)
+    .map(({ id }) => community.findActivityById(id));
+  var numberOfActivitiesBelowThreshold = docs.result.length - activities.length;
 
   return (
     <Frame>
@@ -43,6 +49,17 @@ export default function Similar({ project, community, params, api, handlers }) {
         community={community}
         handlers={handlers}
       />
+      {!seeAll && numberOfActivitiesBelowThreshold > 0 && (
+        <div className="p-6">
+          <button
+            className="text-tertiary hover:underline"
+            title="See potentially less relevant results"
+            onClick={() => setSeeAll(true)}
+          >
+            See {numberOfActivitiesBelowThreshold} more with lower relevance
+          </button>
+        </div>
+      )}
     </Frame>
   );
 }

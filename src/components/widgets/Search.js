@@ -104,7 +104,7 @@ export default function Search({
               title="See potentially less relevant results"
               onClick={() => setSeeAll(true)}
             >
-              See {numberOfActivitiesBelowThreshold} more
+              See {numberOfActivitiesBelowThreshold} more with lower relevance
             </button>
           </div>
         )}
