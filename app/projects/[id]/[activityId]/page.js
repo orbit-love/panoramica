@@ -3,6 +3,9 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
 import { prisma, safeProjectSelectFields } from "src/data/db";
+import { getActivities } from "src/data/graph/queries/conversations";
+import { toPageContent } from "src/integrations/pinecone/embeddings";
+import { prepareVectorStore } from "src/integrations/pinecone";
 
 import SessionContext from "src/components/context/SessionContext";
 import GraphConnection from "src/data/graph/Connection";
@@ -72,10 +75,25 @@ export async function getProps(params) {
         activityId,
         projectId,
       });
+      let similarConversations = await getSimilarConversations({
+        project,
+        activityId,
+      });
+
+      const safeProject = {};
+
+      for (const field in safeProjectSelectFields()) {
+        safeProject[field] = project[field];
+      }
+
+      safeProject.aiReady = aiReady(project);
+      safeProject.orbitImportReady = orbitImportReady(project);
+
       return {
         session,
-        project,
+        project: safeProject,
         activity,
+        similarConversations,
         data: {
           conversations,
           members,
@@ -87,6 +105,36 @@ export async function getProps(params) {
   }
   return {};
 }
+
+const getSimilarConversations = async ({ project, activityId }) => {
+  var projectId = project.id;
+  var conversationId = activityId;
+  const graphConnection = new GraphConnection();
+  var activities = await getActivities({
+    projectId,
+    conversationId,
+    graphConnection,
+  });
+  var q = toPageContent(activities);
+
+  var namespace = `project-conversations-${projectId}`;
+  const vectorStore = await prepareVectorStore({ project, namespace });
+
+  var vectorDocs = await vectorStore.similaritySearchWithScore(q, 25, {
+    contentLength: { $gt: 150 },
+  });
+
+  // filter out the match for the conversation itself
+  vectorDocs = vectorDocs.filter(([doc, _]) => doc.metadata.id != activityId);
+
+  // get unique conversation ids from the vector docs
+  const result = vectorDocs.map(([doc, score]) => ({
+    ...doc.metadata,
+    score,
+  }));
+
+  return result;
+};
 
 const getProject = async (id, user) => {
   let where = { id };
@@ -105,17 +153,5 @@ const getProject = async (id, user) => {
   const project = await prisma.project.findFirst({
     where,
   });
-
-  if (project) {
-    const safeProject = {};
-
-    for (const field in safeProjectSelectFields()) {
-      safeProject[field] = project[field];
-    }
-
-    safeProject.aiReady = aiReady(project);
-    safeProject.orbitImportReady = orbitImportReady(project);
-
-    return safeProject;
-  }
+  return project;
 };
