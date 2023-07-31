@@ -53,6 +53,7 @@ export async function GET(_, context) {
     }));
 
     return NextResponse.json({
+      q,
       result,
     });
   } catch (err) {

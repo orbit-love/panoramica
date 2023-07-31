@@ -2,9 +2,14 @@ import { graph } from "src/data/db";
 import { check, redirect, authorizeProject } from "src/auth";
 import { aiReady } from "src/integrations/ready";
 import { syncActivities } from "src/data/graph/mutations";
-import { createEmbeddings } from "src/integrations/pinecone/embeddings";
+import {
+  createEmbeddings,
+  createConversationEmbeddings,
+} from "src/integrations/pinecone/embeddings";
+import { getActivities } from "src/data/graph/queries/conversations";
 import { getAPIUrl, getAPIData } from "src/integrations/orbit/api";
 import { orbitImportReady } from "src/integrations/ready";
+import GraphConnection from "src/data/graph/Connection";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
@@ -24,7 +29,7 @@ export default async function handler(req, res) {
     }
 
     const allData = [];
-    let { url, apiKey, workspace } = project;
+    let { id: projectId, url, apiKey, workspace } = project;
     // if a url is not provided, use the default
     if (!url) {
       url = getAPIUrl({ workspace });
@@ -37,7 +42,7 @@ export default async function handler(req, res) {
     const handleRecords = async (activities) => {
       // sync activities to the graph db
       // uuids are returned with new activities that pinecone needs, so we
-      // reassing the activities variable
+      // reassigning the activities variable
       await session.writeTransaction(async (tx) => {
         activities = await syncActivities({ tx, project, activities });
       });
@@ -45,6 +50,25 @@ export default async function handler(req, res) {
       // create embeddings if the project supports it
       if (aiReady(project)) {
         await createEmbeddings({ project, activities });
+
+        // map the incoming activities to unique conversationIds
+        var conversations = {};
+        var conversationIds = activities.map(
+          ({ conversationId }) => conversationId
+        );
+
+        // iterate over the conversationIds and load the activities for each one
+        const graphConnection = new GraphConnection();
+        for (let conversationId of conversationIds) {
+          conversations[conversationId] = await getActivities({
+            projectId,
+            conversationId,
+            graphConnection,
+          });
+        }
+
+        // create embeddings for the conversations
+        await createConversationEmbeddings({ project, conversations });
       }
     };
 

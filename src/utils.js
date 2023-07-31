@@ -69,6 +69,31 @@ const common = {
     }
     return hash;
   },
+  stripHtmlTags(htmlString) {
+    // replace all html tags with a space
+    return htmlString.replace(/<[^>]*>/g, " ");
+  },
+  stripMentions(string) {
+    // match the apostrophe to that it and what comes after is also removed
+    return string.replace(/@[\w']+/g, "");
+  },
+  stripLinks(string) {
+    return string.replace(/https?:\/\/\S+/g, "");
+  },
+  stripPunctuation(string) {
+    return string.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+  },
+  stripEmojis(string) {
+    return string.replace(
+      /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
+      ""
+    );
+  },
+  truncateDateToDay(isoDatetime) {
+    const date = new Date(isoDatetime);
+    date.setHours(0, 0, 0, 0); // Truncate time to midnight
+    return date.getTime(); // Get the timestamp in milliseconds
+  },
 };
 
 export default common;

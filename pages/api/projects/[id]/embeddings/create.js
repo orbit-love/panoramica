@@ -45,13 +45,15 @@ export default async function handler(req, res) {
 
     // create a map of conversations and activities for
     // conversation-level embeds
+    // reverse the activities so that the earliest activities will
+    // be added to the map below first
     const conversations = {};
-    activities.forEach((activity) => {
+    for (let activity of activities) {
       if (!conversations[activity.conversationId]) {
         conversations[activity.conversationId] = [];
       }
       conversations[activity.conversationId].push(activity);
-    });
+    }
 
     // create embeddings for all activities at the same time
     await Promise.all([

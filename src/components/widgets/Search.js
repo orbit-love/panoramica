@@ -81,7 +81,7 @@ export default function Search({
             onChange={onSearchChange}
           />
           <button type="submit" className="btn">
-            {loading && <Loader />}
+            {loading && <Loader className="text-white" />}
             {!loading && <FontAwesomeIcon icon="search" />}
           </button>
         </form>

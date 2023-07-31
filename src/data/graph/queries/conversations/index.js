@@ -8,7 +8,7 @@ export const getActivities = async function ({
     MATCH (p:Project { id: $projectId })
     WITH p
       MATCH (p)-[:OWNS]-(a:Activity { conversationId: $conversationId })<-[:REPLIES_TO*0..]-(b:Activity)
-    WITH b
+    WITH DISTINCT b
       ORDER BY b.timestamp
     RETURN b`;
 
