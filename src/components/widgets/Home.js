@@ -305,8 +305,8 @@ export default function Home(props) {
                     prefetch={false}
                     className="hover:underline"
                   >
-                    <FontAwesomeIcon icon="arrow-up-right-from-square" />{" "}
-                    Preview
+                    <FontAwesomeIcon icon="arrow-up-right-from-square" /> Public
+                    View
                   </Link>
                 )}
                 <button
