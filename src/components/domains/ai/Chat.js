@@ -1,11 +1,17 @@
 import React, { useState, useCallback, useRef } from "react";
+import classnames from "classnames";
 
 import ErrorBoundary from "src/components/widgets/base/ErrorBoundary";
 import PromptInput from "src/components/ui/PromptInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PromptPicker from "./PromptPicker";
 
-export default function Chat({ project, subContext, examplePrompts }) {
+export default function Chat({
+  project,
+  subContext,
+  examplePrompts,
+  placeholder,
+}) {
   var messageRef = useRef();
 
   let [prompt, setPrompt] = useState("");
@@ -94,50 +100,65 @@ export default function Chat({ project, subContext, examplePrompts }) {
     setStreaming(false);
   };
 
+  placeholder =
+    placeholder ||
+    "Hello! I am a friendly AI that can answer questions about conversations in your Panoramica project";
+
   return (
     <ErrorBoundary>
-      <div className="flex flex-col px-6 h-full">
-        <div className="flex flex-col flex-1 grow justify-end mt-4">
-          {!error && !examplePrompts && messages.length === 0 && (
-            <div className="text-tertiary my-4 font-light">
-              Hello! I am a friendly AI that can answer questions about
-              conversations in your Panoramica project.
-            </div>
-          )}
-
+      <div className="flex flex-col h-full">
+        <div className="overflow-y-scroll grow h-full">
           {messages.map((message, index) => {
             const isAi = index % 2 === 1;
-            const classes = isAi ? "ml-8" : "";
             return (
               <div
                 key={index}
-                className={
-                  classes +
-                  " rounded-md whitespace-pre-wrap my-2 p-4 bg-gray-100 dark:bg-gray-800"
-                }
+                className={classnames(
+                  "flex justify-start px-4 py-4 space-x-3 whitespace-pre-wrap",
+                  {
+                    "bg-gray-50 dark:bg-gray-900": isAi,
+                    "dark:bg-gray-950 bg-gray-100": !isAi,
+                  }
+                )}
               >
-                {message}
+                <div className="w-6 text-center">
+                  {isAi && (
+                    <FontAwesomeIcon
+                      icon="robot"
+                      className={isAi && "text-secondary"}
+                    />
+                  )}
+                  {!isAi && (
+                    <FontAwesomeIcon
+                      icon="user"
+                      className={!isAi && "text-tertiary"}
+                    />
+                  )}
+                </div>
+                <div>{message}</div>
               </div>
             );
           })}
-
-          {error && <div className="text-red-500">{error}</div>}
-
           <div ref={messageRef} />
-
-          {messages.length === 0 && examplePrompts && (
-            <div className="flex flex-1 items-end my-4">
-              <PromptPicker prompts={examplePrompts} pickPrompt={pickPrompt} />
-            </div>
-          )}
         </div>
-        <div className="flex flex-col pt-2 pb-6">
+        <div className="flex flex-col pt-2 px-4 pb-6">
           {messages.length > 0 && (
             <div className="mb-4 ml-auto">
               <button className="text-tertiary hover:underline" onClick={reset}>
                 <FontAwesomeIcon className="mr-1" icon="arrows-rotate" />
                 Reset
               </button>
+            </div>
+          )}
+          {!error && !examplePrompts && messages.length === 0 && (
+            <div className="text-tertiary my-4 font-light">{placeholder}</div>
+          )}
+
+          {error && <div className="text-red-500">{error}</div>}
+
+          {messages.length === 0 && examplePrompts && (
+            <div className="flex flex-1 items-end my-4">
+              <PromptPicker prompts={examplePrompts} pickPrompt={pickPrompt} />
             </div>
           )}
           <PromptInput

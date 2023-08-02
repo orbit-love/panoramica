@@ -123,7 +123,7 @@ export default function Conversation({
           />
         </div>
         {flexCol && <div className="grow" />}
-        <div className="flex flex-col w-full border-l border-gray-300 dark:border-gray-800">
+        <div className="flex flex-col pt-2 w-full border-l border-gray-300 dark:border-gray-800">
           {project.modelName && (
             <Chat
               project={project}

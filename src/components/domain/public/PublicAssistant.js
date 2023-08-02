@@ -1,0 +1,12 @@
+import React, { useState, useCallback, useRef } from "react";
+
+import Chat from "src/components/domains/ai/Chat";
+
+export default function PublicAssistant({ project, community }) {
+  var placeholder = `Hi! I'm an AI Assistant here to help you navigate the ${project.name}.`;
+  return (
+    <div className="flex flex-col justify-end h-[calc(100vh-200px)]">
+      <Chat project={project} community={community} placeholder={placeholder} />
+    </div>
+  );
+}

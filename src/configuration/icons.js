@@ -34,6 +34,7 @@ import {
   faPaperPlane,
   faBookmark,
   faArrowUpRightFromSquare,
+  faRobot,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faBookmark as faBookmarkRegular } from "@fortawesome/free-regular-svg-icons";
@@ -88,7 +89,8 @@ library.add(
   faPaperPlane,
   faBookmark,
   faBookmarkRegular,
-  faArrowUpRightFromSquare
+  faArrowUpRightFromSquare,
+  faRobot
 );
 
 export default library;
