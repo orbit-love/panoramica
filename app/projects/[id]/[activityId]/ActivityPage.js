@@ -84,20 +84,22 @@ export default function ActivityPage({
             </div>
           </div>
           <div className="flex-col justify-center px-6 space-y-6 sm:flex sm:flex-row sm:space-y-0 sm:space-x-6">
-            <div className="flex overflow-x-hidden flex-col space-y-6 w-full sm:w-2/3">
-              <div className="flex justify-between items-center">
+            <div className="flex flex-col space-y-6 w-full sm:max-w-[700px]">
+              <div className="flex flex-col justify-between items-start space-y-4 sm:flex-row sm:items-center sm:space-y-0">
                 {activity.summary && (
                   <div className="text-secondary grow text-2xl font-bold">
                     {activity.summary}
                   </div>
                 )}
                 {activity.url && (
-                  <SourceAction
-                    activity={activity}
-                    className="btn !bg-secondary text-sm !flex-none font-semibold text-center"
-                  >
-                    Open on {utils.titleize(activity.source)}
-                  </SourceAction>
+                  <div>
+                    <SourceAction
+                      activity={activity}
+                      className="btn !bg-secondary text-sm !flex-none font-semibold text-center"
+                    >
+                      Open on {utils.titleize(activity.source)}
+                    </SourceAction>
+                  </div>
                 )}
               </div>
               <div className="text-lg">
