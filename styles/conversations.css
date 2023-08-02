@@ -16,7 +16,7 @@
   content: "> ";
 }
 .a-html p {
-  @apply mb-2;
+  @apply my-2;
 }
 .a-html img {
   @apply border border-gray-200 dark:border-gray-800;
