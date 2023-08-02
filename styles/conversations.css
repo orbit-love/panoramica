@@ -1,7 +1,4 @@
 /* conversation rendering styles */
-.a-html {
-  @apply leading-5;
-}
 .a-html code {
   color: var(--pan-primary-color);
 }
