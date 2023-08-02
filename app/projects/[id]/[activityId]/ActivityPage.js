@@ -76,7 +76,7 @@ export default function ActivityPage({
     <Themed>
       <ProjectContext.Provider value={object}>
         <SiteHeader hideLogo />
-        <div className="flex-col justify-center py-8 space-y-12 h-full sm:flex-row sm:px-6">
+        <div className="flex-col py-8 pt-16 space-y-12 h-full sm:flex-row sm:px-6">
           <div className="flex flex-col space-y-2 text-center">
             <div className="text-3xl font-bold">{project.name}</div>
             <div className="text-tertiary font-light">
