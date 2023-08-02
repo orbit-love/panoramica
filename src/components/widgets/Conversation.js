@@ -8,8 +8,7 @@ import FullThreadView from "src/components/domains/conversation/views/FullThread
 import useResizeCallback from "src/hooks/useResizeCallback";
 import BookmarkAction from "../domains/bookmarks/BookmarkAction";
 import SimilarAction from "../domains/conversation/SimilarAction";
-import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SourceAction from "../domains/conversation/SourceAction";
 
 export default function Conversation({
   project,
@@ -112,15 +111,7 @@ export default function Conversation({
               {activity.summary}
             </div>
             <div className="text-tertiary flex space-x-3">
-              {activity.url && (
-                <Link
-                  href={activity.url}
-                  title={`Open on ${activity.source}`}
-                  target="_blank"
-                >
-                  <FontAwesomeIcon icon="external-link" />
-                </Link>
-              )}
+              <SourceAction activity={activity} />
               <SimilarAction activity={activity} />
               <BookmarkAction project={project} activity={activity} />
             </div>

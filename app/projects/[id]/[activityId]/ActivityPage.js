@@ -10,6 +10,8 @@ import FullThreadView from "src/components/domains/conversation/views/FullThread
 import ActivityItem from "src/components/domains/public/ActivityItem";
 
 import Themed from "src/components/context/Themed";
+import SourceAction from "src/components/domains/conversation/SourceAction";
+import utils from "src/utils";
 
 const SimilarConversations = ({
   project,
@@ -83,11 +85,21 @@ export default function ActivityPage({
           </div>
           <div className="flex-col justify-center px-6 space-y-6 sm:flex sm:flex-row sm:space-y-0 sm:space-x-6">
             <div className="flex overflow-x-hidden flex-col space-y-6 w-full sm:w-2/3">
-              {activity.summary && (
-                <div className="text-secondary text-2xl">
-                  {`🧵 ${activity.summary}`}
-                </div>
-              )}
+              <div className="flex justify-between items-center">
+                {activity.summary && (
+                  <div className="text-secondary grow text-2xl font-bold">
+                    {activity.summary}
+                  </div>
+                )}
+                {activity.url && (
+                  <SourceAction
+                    activity={activity}
+                    className="btn !bg-secondary text-sm !flex-none font-semibold text-center"
+                  >
+                    Open on {utils.titleize(activity.source)}
+                  </SourceAction>
+                )}
+              </div>
               <div className="text-lg">
                 <FullThreadView
                   project={project}
