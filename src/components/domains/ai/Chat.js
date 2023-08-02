@@ -141,12 +141,15 @@ export default function Chat({
           })}
           <div ref={messageRef} />
         </div>
-        <div className="flex flex-col pt-2 px-4 pb-6">
+        <div className="flex relative flex-col pt-2 px-4 pb-6">
           {messages.length > 0 && (
-            <div className="mb-4 ml-auto">
-              <button className="text-tertiary hover:underline" onClick={reset}>
+            <div className="-mt-8 absolute right-5 z-20">
+              <button
+                className="text-tertiary text-xs hover:underline"
+                onClick={reset}
+              >
                 <FontAwesomeIcon className="mr-1" icon="arrows-rotate" />
-                Reset
+                <span>reset</span>
               </button>
             </div>
           )}
