@@ -52,10 +52,11 @@ export default function ActivityPage({
 
   const onClickTimestamp = (activity) =>
     `/projects/${project.id}/${activity.conversationId}`;
+  const onClickTimestampWithAnchor = (activity) =>
+    `/projects/${project.id}/${activity.conversationId}#${activity.id}`;
   const handlers = {
     onCLickMember: () => {},
     onClickChannel: () => {},
-    onClickTimestamp,
   };
 
   const Back = ({ project }) => (
@@ -93,7 +94,11 @@ export default function ActivityPage({
                   key={activity}
                   activity={activity}
                   community={community}
-                  handlers={handlers}
+                  handlers={{
+                    ...handlers,
+                    onClickTimestamp: onClickTimestampWithAnchor,
+                  }}
+                  linkAllTimestamps
                 />
               </div>
               <Back project={project} />
@@ -104,7 +109,7 @@ export default function ActivityPage({
                 <SimilarConversations
                   project={project}
                   community={community}
-                  handlers={handlers}
+                  handlers={{ ...handlers, onClickTimestamp }}
                   similarConversations={similarConversations}
                 />
                 <Back project={project} />

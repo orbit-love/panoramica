@@ -22,11 +22,13 @@ export default function Activity({
   community,
   showSourceIcon,
   showSourceChannel,
+  linkTimestamp,
   handlers,
   term,
   timeDisplay,
 }) {
-  var { onClickMember, onClickChannel, onClickTimestamp } = handlers;
+  var { onClickMember, onClickChannel, onClickActivity, onClickTimestamp } =
+    handlers;
   var member = community.findMemberByActivity(activity);
   var renderHtml = activity.textHtml?.length > 0;
   var { source, sourceChannel } = activity;
@@ -68,7 +70,7 @@ export default function Activity({
   return (
     <div
       key={activity.id}
-      data-activity-id={activity.id}
+      id={activity.id}
       className="flex flex-col py-2 space-y-1"
     >
       <div className="flex items-center space-x-2">
@@ -89,22 +91,27 @@ export default function Activity({
         )}
         <div className="text-secondary text-sm text-right whitespace-nowrap">
           <Since />
-          {onClickTimestamp && (
+          {linkTimestamp && onClickTimestamp && (
             <Link className="hover:underline" href={onClickTimestamp(activity)}>
               <Timestamp />
             </Link>
           )}
-          {!onClickTimestamp && activity.url && (
-            <a
+          {linkTimestamp && !onClickTimestamp && (
+            <button
               className="hover:underline"
-              href={activity.url}
+              onClick={(e) =>
+                onClickActivity(
+                  e,
+                  community.findActivityById(activity.conversationId)
+                )
+              }
               target="_blank"
               rel="noreferrer"
             >
               <Timestamp />
-            </a>
+            </button>
           )}
-          {!onClickTimestamp && !activity.url && <Timestamp />}
+          {!linkTimestamp && <Timestamp />}
         </div>
       </div>
       {renderHtml && (

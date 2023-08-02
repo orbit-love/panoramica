@@ -49,6 +49,7 @@ export default function PreviewView(props) {
           showSourceIcon
           timeDisplay={activity.timestamp}
           term={term}
+          linkTimestamp={true}
         />
         <Replies
           conversation={conversation}
