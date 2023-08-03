@@ -1,3 +1,4 @@
+import { graph } from "src/data/db";
 import GraphConnection from "src/data/graph/Connection";
 import { processRequest } from "src/server/requests";
 import { getPrompts } from "src/data/graph/queries/prompts";
