@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import classnames from "classnames";
 
 import { Frame, saveLayout } from "src/components/widgets";
-import { conversationPrompts } from "src/configuration/prompts";
 import Chat from "src/components/domains/ai/Chat";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import useResizeCallback from "src/hooks/useResizeCallback";
@@ -18,6 +17,7 @@ export default function Conversation({
   params,
   handlers,
   dispatch,
+  prompts,
 }) {
   var { activity } = params;
   let [lastSummary, setLastSummary] = useState(api.title);
@@ -42,6 +42,9 @@ export default function Conversation({
   useEffect(() => {
     updateTitle(lastSummary);
   }, [lastSummary, updateTitle]);
+
+  // filter to only show conversation prompts
+  prompts = prompts.filter((prompt) => prompt.type === "Conversation");
 
   const defaultSummary = activity.text.slice(0, 50);
 
@@ -123,12 +126,12 @@ export default function Conversation({
           />
         </div>
         {flexCol && <div className="grow" />}
-        <div className="flex flex-col pt-2 w-full border-l border-gray-300 dark:border-gray-800">
+        <div className="flex flex-col w-full border-l border-gray-300 dark:border-gray-800">
           {project.modelName && (
             <Chat
               project={project}
               subContext={subContext}
-              examplePrompts={conversationPrompts}
+              examplePrompts={prompts}
             />
           )}
           {!project.modelName && (

@@ -129,7 +129,7 @@ export default function Edit({
           checked={demo}
           onChange={() => setDemo(!demo)}
         ></input>
-        <label htmlFor="demo">Make Project public</label>
+        <label htmlFor="demo">Make Project Public</label>
       </div>
       <div className="my-2 text-lg font-thin">Activity Data Source</div>
       <div className="flex flex-col space-y-1">

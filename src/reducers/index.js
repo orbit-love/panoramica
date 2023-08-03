@@ -1,10 +1,16 @@
-export const projectReducer = (object, { type, community, project }) => {
+export const projectReducer = (
+  object,
+  { type, community, project, prompts }
+) => {
   switch (type) {
     case "updated": {
       return { ...object, community };
     }
     case "updateProject": {
       return { ...object, project };
+    }
+    case "updatePrompts": {
+      return { ...object, prompts };
     }
   }
 };

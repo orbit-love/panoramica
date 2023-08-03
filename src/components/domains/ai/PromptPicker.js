@@ -3,15 +3,13 @@ import React from "react";
 export default function PromptPicker({ prompts, pickPrompt }) {
   return (
     <div className="text-tertiary font-light">
-      <div className="mb-1">Need an idea? Try an example prompt:</div>
+      <div className="mb-1 font-semibold">Try an example prompt:</div>
       <ul className="flex-col">
-        {Object.keys(prompts).map((promptKey) => (
-          <li key={promptKey}>
-            <div
-              className="cursor-pointer hover:underline"
-              onClick={() => pickPrompt(prompts[promptKey].prompt)}
-            >
-              &middot; {prompts[promptKey].human}
+        {prompts.map(({ label, prompt }) => (
+          <li key={label}>
+            <div onClick={() => pickPrompt(prompt)}>
+              &middot;{" "}
+              <span className="cursor-pointer hover:underline">{label}</span>
             </div>
           </li>
         ))}

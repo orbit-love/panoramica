@@ -65,7 +65,7 @@ export default function SearchConversations(props) {
           type="search"
           value={term}
           onChange={onSearchChange}
-          className="w-full"
+          className="!w-full"
         />
         <div className="w-1"></div>
         <button type="submit" className="btn">

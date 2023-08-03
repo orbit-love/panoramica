@@ -5,11 +5,18 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-export const makeRequest = ({ url, method = "GET", onSuccess, setLoading }) => {
+export const makeRequest = ({
+  url,
+  method = "GET",
+  body,
+  onSuccess,
+  setLoading,
+}) => {
   setLoading && setLoading(true);
   return fetch(url, {
     method,
     headers,
+    body,
   })
     .then((res) => res.json())
     .then(handleResult({ onSuccess, setLoading }));

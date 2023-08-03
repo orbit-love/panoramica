@@ -26,7 +26,13 @@ export default function User() {
         <div className="font-semibold">Generate JWT Token</div>
 
         <div className="flex mt-2 space-x-2 bg-gray-100 dark:text-white dark:bg-gray-800">
-          <input type="text" defaultValue={jwt} readOnly onClick={onFocus} />
+          <input
+            type="text"
+            defaultValue={jwt}
+            readOnly
+            onClick={onFocus}
+            className="!w-full"
+          />
           <button className="btn" onFocus={fetchJWT}>
             {loading && <Loader className="text-white" />}
             {!loading && <FontAwesomeIcon icon="arrows-rotate" />}

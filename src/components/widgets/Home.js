@@ -160,6 +160,14 @@ export default function Home(props) {
     });
   };
 
+  const onClickEditPrompts = (e) => {
+    e.preventDefault();
+    addWidget("edit-prompts", "EditPrompts", {
+      title: "Edit Prompts",
+      position: newPanelPosition(),
+    });
+  };
+
   const onClickUser = (e) => {
     e.preventDefault();
     addWidget("user", "User", {
@@ -228,6 +236,7 @@ export default function Home(props) {
                     type="search"
                     ref={searchRef}
                     placeholder="Search..."
+                    className="!w-full"
                   />
                   <button className="btn" type="submit">
                     <FontAwesomeIcon icon="search" />
@@ -279,9 +288,7 @@ export default function Home(props) {
                       </div>
                     ))}
                 </div>
-                <div className="text-tertiary pb-1 pt-2 font-semibold">
-                  Sources
-                </div>
+                <div className="text-tertiary pt-2 font-semibold">Sources</div>
                 {sources.map((source) => (
                   <div className="flex flex-col" key={source}>
                     <button
@@ -296,48 +303,64 @@ export default function Home(props) {
                     </button>
                   </div>
                 ))}
-              </div>
-              <div className="flex flex-col items-start text-gray-400 dark:text-gray-500">
                 {project.demo && (
-                  <Link
-                    target="_blank"
-                    href={`/projects/${project.id}/welcome`}
-                    prefetch={false}
-                    className="hover:underline"
-                  >
-                    <FontAwesomeIcon icon="arrow-up-right-from-square" /> Public
-                    View
-                  </Link>
-                )}
-                <button
-                  className="hover:underline"
-                  onClick={toggleEditingTheme}
-                >
-                  Theme
-                </button>
-                <button
-                  className="hover:underline"
-                  onClick={onClickEditProject}
-                >
-                  Settings
-                </button>
-                {user && (
                   <>
-                    <button className="hover:underline" onClick={onClickUser}>
-                      API Settings
-                    </button>
+                    <div className="text-tertiary pt-2 font-semibold">
+                      Portal
+                    </div>
+                    <div className="flex flex-col items-start">
+                      <Link
+                        target="_blank"
+                        href={`/projects/${project.id}/welcome`}
+                        prefetch={false}
+                        className="hover:underline"
+                      >
+                        <FontAwesomeIcon icon="arrow-up-right-from-square" />{" "}
+                        View Site
+                      </Link>
+                    </div>
                   </>
                 )}
-                <button className="hover:underline" onClick={resetWidgets}>
-                  Reset
-                </button>
-                <Link
-                  className="hover:underline"
-                  prefetch={false}
-                  href={`/dashboard`}
-                >
-                  Exit
-                </Link>
+                <div className="text-tertiary pb-1 pt-2 font-semibold">
+                  Settings
+                </div>
+                <div className="flex flex-col items-start text-sm text-gray-400 dark:text-gray-500">
+                  <button
+                    className="hover:underline"
+                    onClick={onClickEditProject}
+                  >
+                    Project Settings
+                  </button>
+                  <button
+                    className="hover:underline"
+                    onClick={onClickEditPrompts}
+                  >
+                    Edit Prompts
+                  </button>
+                  {user && (
+                    <>
+                      <button className="hover:underline" onClick={onClickUser}>
+                        API Settings
+                      </button>
+                    </>
+                  )}
+                  <button
+                    className="hover:underline"
+                    onClick={toggleEditingTheme}
+                  >
+                    Change Theme
+                  </button>
+                  <button className="hover:underline" onClick={resetWidgets}>
+                    Reset Layout
+                  </button>
+                  <Link
+                    className="hover:underline"
+                    prefetch={false}
+                    href={`/dashboard`}
+                  >
+                    Exit to Dashboard
+                  </Link>
+                </div>
               </div>
             </div>
           </>

@@ -5,6 +5,7 @@ import ErrorBoundary from "src/components/widgets/base/ErrorBoundary";
 import PromptInput from "src/components/ui/PromptInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PromptPicker from "./PromptPicker";
+import { AIMessage, HumanMessage } from "src/components/domains/ai";
 
 export default function Chat({
   project,
@@ -102,42 +103,19 @@ export default function Chat({
 
   placeholder =
     placeholder ||
-    "Hello! I am a friendly AI that can answer questions about conversations in your Panoramica project";
+    "Hello! I am a friendly AI that can answer questions about conversations in your Panoramica project.";
 
   return (
     <ErrorBoundary>
       <div className="flex flex-col h-full">
-        <div className="overflow-y-scroll grow h-full">
+        <div className="overflow-y-scroll grow pb-8 h-full">
           {messages.map((message, index) => {
             const isAi = index % 2 === 1;
-            return (
-              <div
-                key={index}
-                className={classnames(
-                  "flex justify-start px-4 py-4 space-x-3 whitespace-pre-wrap",
-                  {
-                    "bg-gray-50 dark:bg-gray-900": isAi,
-                    "dark:bg-gray-950 bg-gray-100": !isAi,
-                  }
-                )}
-              >
-                <div className="w-6 text-center">
-                  {isAi && (
-                    <FontAwesomeIcon
-                      icon="robot"
-                      className={isAi && "text-secondary"}
-                    />
-                  )}
-                  {!isAi && (
-                    <FontAwesomeIcon
-                      icon="user"
-                      className={!isAi && "text-tertiary"}
-                    />
-                  )}
-                </div>
-                <div>{message}</div>
-              </div>
-            );
+            if (isAi) {
+              return <AIMessage key={index}>{message}</AIMessage>;
+            } else {
+              return <HumanMessage key={index}>{message}</HumanMessage>;
+            }
           })}
           <div ref={messageRef} />
         </div>
@@ -153,17 +131,24 @@ export default function Chat({
               </button>
             </div>
           )}
-          {!error && !examplePrompts && messages.length === 0 && (
-            <div className="text-tertiary my-4 font-light">{placeholder}</div>
-          )}
-
-          {error && <div className="text-red-500">{error}</div>}
-
-          {messages.length === 0 && examplePrompts && (
-            <div className="flex flex-1 items-end my-4">
-              <PromptPicker prompts={examplePrompts} pickPrompt={pickPrompt} />
+          {!error && messages.length === 0 && (
+            <div className="text-tertiary my-4 font-light">
+              <AIMessage>
+                {placeholder}
+                {examplePrompts?.length > 0 && (
+                  <div className="flex flex-1 items-end my-4">
+                    <PromptPicker
+                      prompts={examplePrompts}
+                      pickPrompt={pickPrompt}
+                    />
+                  </div>
+                )}
+              </AIMessage>
             </div>
           )}
+
+          {error && <div className="py-4 text-red-500">{error}</div>}
+
           <PromptInput
             prompt={prompt}
             setPrompt={setPrompt}

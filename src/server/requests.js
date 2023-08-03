@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { checkApp, authorizeProject } from "src/auth";
 
-export const processRequest = async ({ params }, callback) => {
+export const processRequest = async ({ body, params }, callback) => {
   var project,
     user = await checkApp();
   if (user) {
@@ -14,7 +14,7 @@ export const processRequest = async ({ params }, callback) => {
   }
 
   try {
-    var result = await callback({ project, params, user });
+    var result = await callback({ project, body, params, user });
     return NextResponse.json({ result });
   } catch (e) {
     console.log(e);

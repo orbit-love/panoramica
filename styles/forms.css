@@ -24,11 +24,18 @@ body input[type="text"],
 body input[type="password"],
 body input[type="search"],
 body input[type="email"] {
-  @apply px-2 py-2 w-full font-normal rounded outline-none;
+  @apply p-2 font-normal rounded outline-none;
+  @apply w-full sm:w-auto;
   @apply text-gray-800 bg-gray-100 border border-gray-200;
 }
 
 body input[disabled],
 body input[readonly] {
   @apply text-gray-900 dark:!bg-gray-300 bg-gray-200;
+}
+
+body select {
+  @apply p-2 font-normal rounded outline-none;
+  @apply w-full sm:w-auto;
+  @apply text-gray-800 bg-gray-100 border border-gray-200;
 }

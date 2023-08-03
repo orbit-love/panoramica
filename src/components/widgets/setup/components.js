@@ -10,6 +10,7 @@ import Home from "../Home";
 import Member from "../Member";
 import Members from "../Members";
 import EditProject from "../EditProject";
+import EditPrompts from "../EditPrompts";
 import Assistant from "../Assistant";
 import Search from "../Search";
 import Source from "../Source";
@@ -34,6 +35,7 @@ const components = {
   Member: (props) => WithContext(Member, props),
   Members: (props) => WithContext(Members, props),
   EditProject: (props) => WithContext(EditProject, props),
+  EditPrompts: (props) => WithContext(EditPrompts, props),
   User: (props) => WithContext(User, props),
   Assistant: (props) => WithContext(Assistant, props),
   Search: (props) => WithContext(Search, props),
