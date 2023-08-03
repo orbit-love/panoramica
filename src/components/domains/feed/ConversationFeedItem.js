@@ -11,7 +11,6 @@ export default function ConversationFeedItem(props) {
   var { index, activity, community, handlers, term } = props;
 
   const { bookmarks } = useContext(BookmarksContext);
-  const [expanded, setExpanded] = useState(false);
 
   const conversationActivity = community.findActivityById(
     activity.conversationId
@@ -21,6 +20,10 @@ export default function ConversationFeedItem(props) {
   );
 
   const conversation = community.conversations[conversationActivity.id];
+
+  const defaultExpanded =
+    !conversation.children || conversation.children.length === 0;
+  const [expanded, setExpanded] = useState(defaultExpanded);
   const canExpand = conversation?.children?.length > 0;
 
   const onOpen = (e) => {

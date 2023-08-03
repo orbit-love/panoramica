@@ -4,7 +4,7 @@ import PreviewView from "src/components/domains/conversation/views/PreviewView";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 
 export default function ActivityItem(props) {
-  const { activity, community, index, className } = props;
+  const { activity, community, className } = props;
   const [expanded, setExpanded] = useState(false);
 
   const conversationActivity = community.findActivityById(
@@ -21,13 +21,7 @@ export default function ActivityItem(props) {
   };
 
   var defaultClassName = classnames(
-    "group/menu flex flex-col py-6 px-6 relative border-b border-b-gray-300 dark:border-b-gray-700",
-    {
-      "hover:bg-gray-100 hover:bg-opacity-50 dark:hover:bg-gray-800 dark:hover:bg-opacity-40":
-        index % 2 === 0,
-      "bg-gray-100 hover:bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-50 dark:hover:bg-opacity-90":
-        index % 2 === 1,
-    }
+    "group/menu bg-gray-50 hover:bg-gray-100 hover:bg-opacity-70 dark:bg-gray-800 dark:bg-opacity-50 flex flex-col p-6 my-6 relative rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 hover:dark:bg-opacity-70"
   );
 
   return (

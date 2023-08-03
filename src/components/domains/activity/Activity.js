@@ -88,7 +88,11 @@ export default function Activity({
         <div className="text-secondary text-sm text-right whitespace-nowrap">
           <Since />
           {linkTimestamp && onClickTimestamp && (
-            <Link className="hover:underline" href={onClickTimestamp(activity)}>
+            <Link
+              className="hover:underline"
+              href={onClickTimestamp(activity)}
+              onClick={(e) => e.stopPropagation()}
+            >
               <Timestamp />
             </Link>
           )}

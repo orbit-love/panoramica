@@ -9,7 +9,7 @@ import { prepareVectorStore } from "src/integrations/pinecone";
 
 import SessionContext from "src/components/context/SessionContext";
 import GraphConnection from "src/data/graph/Connection";
-import ActivityPage from "app/projects/[id]/[activityId]/ActivityPage";
+import ConversationPage from "app/projects/[id]/[activityId]/ConversationPage";
 import { getEverything } from "src/data/graph/queries";
 import { demoSession } from "src/auth";
 import { aiReady, orbitImportReady } from "src/integrations/ready";
@@ -46,7 +46,7 @@ export default async function Page({ params }) {
 
   return (
     <SessionContext session={props.session}>
-      <ActivityPage {...props} />
+      <ConversationPage {...props} />
     </SessionContext>
   );
 }

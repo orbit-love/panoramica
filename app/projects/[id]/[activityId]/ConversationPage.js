@@ -7,43 +7,13 @@ import Link from "next/link";
 import { ProjectContext } from "src/components/context/ProjectContext";
 import Community from "src/models/Community";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
-import ActivityItem from "src/components/domains/public/ActivityItem";
+import SimilarConversations from "src/components/domain/public/SimilarConversations";
 
 import Themed from "src/components/context/Themed";
 import SourceAction from "src/components/domains/conversation/SourceAction";
 import utils from "src/utils";
 
-const SimilarConversations = ({
-  project,
-  community,
-  handlers,
-  similarConversations,
-}) => {
-  // filter out and limit the number we show
-  var scoreThreshold = 0.8;
-  var activities = similarConversations
-    .filter(({ score }) => score > scoreThreshold)
-    .slice(0, 5)
-    .map(({ id }) => community.findActivityById(id));
-
-  return (
-    <div className="text-lg">
-      {activities.map((activity, index) => (
-        <ActivityItem
-          project={project}
-          key={activity.id}
-          index={index}
-          activity={activity}
-          community={community}
-          handlers={handlers}
-          className="pb-6 mb-6 border-b border-gray-200 dark:border-gray-700"
-        />
-      ))}
-    </div>
-  );
-};
-
-export default function ActivityPage({
+export default function ConversationPage({
   project,
   activity,
   similarConversations,
@@ -87,7 +57,7 @@ export default function ActivityPage({
             <div className="flex flex-col space-y-6 w-full sm:max-w-[700px]">
               <div className="flex flex-col justify-between items-start space-y-4 sm:flex-row sm:items-center sm:space-y-0">
                 {activity.summary && (
-                  <div className="text-secondary grow text-2xl font-bold">
+                  <div className="text-secondary grow text-xl font-bold">
                     {activity.summary}
                   </div>
                 )}
@@ -102,7 +72,7 @@ export default function ActivityPage({
                   </div>
                 )}
               </div>
-              <div className="text-lg">
+              <div className="p-6 bg-gray-50 rounded-lg shadow">
                 <FullThreadView
                   project={project}
                   key={activity}
@@ -117,9 +87,7 @@ export default function ActivityPage({
               </div>
               <Back project={project} />
               <div className="flex flex-col py-3 space-y-6 w-full">
-                <div className="text-tertiary text-lg">
-                  Similar Conversations
-                </div>
+                <div className="text-tertiary">Similar Conversations</div>
                 <SimilarConversations
                   project={project}
                   community={community}

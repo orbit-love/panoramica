@@ -83,13 +83,11 @@ export default function SearchConversations(props) {
         )}
       </form>
       {activities.length > 0 && (
-        <div className="sm:dark:border-gray-700 flex flex-col sm:border sm:border-gray-200">
-          <ConversationFeed
-            {...props}
-            term={appliedTerm}
-            activities={activities}
-          />
-        </div>
+        <ConversationFeed
+          {...props}
+          term={appliedTerm}
+          activities={activities}
+        />
       )}
       {!seeAll && numberOfActivitiesBelowThreshold > 0 && (
         <div className="p-6">

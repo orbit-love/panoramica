@@ -19,7 +19,7 @@ export default function PreviewView(props) {
     parentActivity && parentActivity?.id !== conversationActivity?.id;
 
   return (
-    <div className="flex flex-col space-y-1">
+    <div onClick={onExpand} className="flex flex-col space-y-1 cursor-pointer">
       <div className="text-secondary flex flex-col text-sm whitespace-nowrap">
         {showConversation && (
           <ActivityPreview
@@ -102,9 +102,12 @@ const Replies = ({
 }) => {
   const childrenLength = conversation.children?.length || 0;
   return (
-    <div className="text-secondary text-sm">
+    <>
       {childrenLength >= replyMinimum && (
-        <button onClick={onExpand} className="hover:underline">
+        <button
+          onClick={onExpand}
+          className="text-secondary text-sm text-left hover:underline"
+        >
           {childrenLength === 1 && "1 reply"}
           {childrenLength > 1 && `${childrenLength} replies`}
         </button>
@@ -112,6 +115,6 @@ const Replies = ({
       {childrenLength === 0 && showNoReplies && (
         <div className="text-secondary text-sm">0 replies</div>
       )}
-    </div>
+    </>
   );
 };

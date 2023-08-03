@@ -19,7 +19,7 @@ export default function WelcomePage({ project, data }) {
     <Themed>
       <ProjectContext.Provider value={object}>
         <SiteHeader hideLogo />
-        <div className="flex-col py-8 pt-16 space-y-12 h-full sm:flex-row sm:px-6">
+        <div className="flex-col py-8 pt-16 space-y-6 h-full sm:flex-row sm:px-6">
           <div className="flex flex-col space-y-2 text-center">
             <div className="text-3xl font-bold">{project.name}</div>
           </div>
@@ -46,7 +46,7 @@ export default function WelcomePage({ project, data }) {
               )}
               {!showSearch && <div className="font-semibold">AI Assistant</div>}
             </div>
-            <div className="flex flex-col space-y-6 sm:max-w-[700px] sm:self-center w-full">
+            <div className="flex flex-col space-y-2 sm:max-w-[700px] sm:self-center w-full">
               {showSearch && (
                 <SearchConversations project={project} community={community} />
               )}
@@ -56,22 +56,19 @@ export default function WelcomePage({ project, data }) {
             </div>
           </div>
           {showSearch && (
-            <>
-              <div className="flex flex-col space-y-9 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-6">
-                <div className="flex overflow-x-hidden flex-col space-y-4 w-full">
-                  <div className="text-tertiary px-6 text-center">
-                    Recent Conversations
-                  </div>
-                  <div className="sm:self-center sm:max-w-[700px] sm:dark:border-gray-700 flex overflow-y-scroll flex-col h-full sm:border sm:border-gray-200">
-                    <RecentConversations
-                      project={project}
-                      community={community}
-                    />
-                  </div>
+            <div className="flex flex-col space-y-9 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-6">
+              <div className="flex flex-col px-6 w-full">
+                <div className="text-tertiary text-center">
+                  Recent Conversations
+                </div>
+                <div className="sm:self-center sm:max-w-[700px] flex overflow-y-scroll flex-col h-full">
+                  <RecentConversations
+                    project={project}
+                    community={community}
+                  />
                 </div>
               </div>
-              <div className="h-12" />
-            </>
+            </div>
           )}
         </div>
       </ProjectContext.Provider>
