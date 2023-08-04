@@ -84,6 +84,7 @@ export default function Search({
             type="search"
             value={term}
             onChange={onSearchChange}
+            className="!w-full"
           />
           <button type="submit" className="btn">
             {loading && <Loader className="text-white" />}
