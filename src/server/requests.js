@@ -2,15 +2,19 @@ import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { checkApp, authorizeProject } from "src/auth";
 
-export const processRequest = async ({ body, params }, callback) => {
-  var project,
-    user = await checkApp();
-  if (user) {
-    var { id } = params;
-    project = await authorizeProject({ id, user, allowPublic: true });
-    if (!project || user.fake) {
-      return redirect("/");
-    }
+export const processPublicRequest = async ({ body, params }, callback) => {
+  return processRequest({ body, params }, callback, true);
+};
+
+export const processRestrictedRequest = async ({ body, params }, callback) => {
+  return processRequest({ body, params }, callback, false);
+};
+
+const processRequest = async ({ body, params }, callback, allowPublic) => {
+  var user = await checkApp();
+  var project = await getProject({ user, params, allowPublic });
+  if (!project) {
+    return redirect("/");
   }
 
   try {
@@ -24,5 +28,12 @@ export const processRequest = async ({ body, params }, callback) => {
         status: 500,
       }
     );
+  }
+};
+
+const getProject = async ({ user, params, allowPublic }) => {
+  if (user) {
+    var { id } = params;
+    return await authorizeProject({ id, user, allowPublic });
   }
 };
