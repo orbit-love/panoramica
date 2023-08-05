@@ -26,7 +26,7 @@ body input[type="search"],
 body input[type="email"] {
   @apply p-2 font-normal rounded outline-none;
   @apply w-full sm:w-auto;
-  @apply text-gray-800 bg-gray-100 border border-gray-200;
+  @apply text-sm text-gray-800 bg-gray-100 border border-gray-200;
 }
 
 body input[disabled],
@@ -37,5 +37,5 @@ body input[readonly] {
 body select {
   @apply p-2 font-normal rounded outline-none;
   @apply w-full sm:w-auto;
-  @apply text-gray-800 bg-gray-100 border border-gray-200;
+  @apply text-sm text-gray-800 bg-gray-100 border border-gray-200;
 }
