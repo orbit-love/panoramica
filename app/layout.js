@@ -7,7 +7,6 @@ var template = "%s — Panoramica";
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXTAUTH_URL),
-  title: defaultTitle,
   title: {
     template,
     default: defaultTitle,

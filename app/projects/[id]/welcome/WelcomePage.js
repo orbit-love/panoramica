@@ -1,108 +1,37 @@
 "use client";
 
-import React, { useState, useReducer, useEffect } from "react";
-import SiteHeader from "src/components/ui/SiteHeader";
-import {
-  ProjectContext,
-  ProjectDispatchContext,
-} from "src/components/context/ProjectContext";
-import { projectReducer } from "src/reducers";
-import Community from "src/models/Community";
+import React, { useContext } from "react";
+import Link from "next/link";
 
-import Themed from "src/components/context/Themed";
+import { ProjectContext } from "src/components/context/ProjectContext";
 import SearchConversations from "src/components/domain/public/SearchConversations";
 import RecentConversations from "src/components/domain/public/RecentConversations";
-import PublicAssistant from "src/components/domain/public/PublicAssistant";
-import { getPrompts } from "src/data/client/fetches/prompts";
 
-export default function WelcomePage({ project, data }) {
-  const community = new Community({ result: data });
-  const initialObject = { project, community, prompts: [] };
-  const [object, dispatch] = useReducer(projectReducer, initialObject);
-
-  const [showSearch, setShowSearch] = useState(true);
-
-  useEffect(() => {
-    getPrompts({
-      project,
-      type: "Public",
-      onSuccess: ({ result: { prompts } }) => {
-        dispatch({
-          type: "updatePrompts",
-          prompts,
-        });
-      },
-    });
-  }, [project, dispatch]);
+export default function WelcomePage() {
+  const { project, community } = useContext(ProjectContext);
 
   return (
-    <Themed>
-      <ProjectContext.Provider value={object}>
-        <ProjectDispatchContext.Provider value={dispatch}>
-          <SiteHeader hideLogo />
-          <div className="flex-col py-8 pt-16 space-y-6 h-full sm:flex-row sm:px-6">
-            <div className="flex flex-col space-y-2 text-center">
-              <div className="text-3xl font-bold">{project.name}</div>
-            </div>
-            <div className="flex flex-col items-center space-y-4">
-              <div className="text-tertiary flex px-6 space-x-4 text-center">
-                {showSearch && (
-                  <div className="font-semibold">Search Conversations</div>
-                )}
-                {!showSearch && (
-                  <button
-                    className="hover:underline"
-                    onClick={() => setShowSearch(true)}
-                  >
-                    Search Conversations
-                  </button>
-                )}
-                {showSearch && (
-                  <button
-                    className="hover:underline"
-                    onClick={() => setShowSearch(false)}
-                  >
-                    AI Assistant
-                  </button>
-                )}
-                {!showSearch && (
-                  <div className="font-semibold">AI Assistant</div>
-                )}
-              </div>
-              <div className="flex flex-col space-y-2 sm:max-w-[700px] sm:self-center w-full">
-                {showSearch && (
-                  <SearchConversations
-                    project={project}
-                    community={community}
-                  />
-                )}
-                {!showSearch && (
-                  <PublicAssistant
-                    project={project}
-                    community={community}
-                    prompts={object.prompts}
-                  />
-                )}
-              </div>
-            </div>
-            {showSearch && (
-              <div className="flex flex-col space-y-9 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-6">
-                <div className="flex flex-col px-6 w-full">
-                  <div className="text-tertiary text-center">
-                    Recent Conversations
-                  </div>
-                  <div className="sm:self-center sm:max-w-[700px] flex overflow-y-scroll flex-col h-full">
-                    <RecentConversations
-                      project={project}
-                      community={community}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </ProjectDispatchContext.Provider>
-      </ProjectContext.Provider>
-    </Themed>
+    <>
+      <div className="flex flex-col items-center mb-4 space-y-4">
+        <div className="text-tertiary flex px-6 space-x-4 text-center">
+          <div className="font-semibold">Search Conversations</div>
+          <Link
+            className="hover:underline"
+            href={`/projects/${project.id}/welcome/assistant`}
+          >
+            AI Assistant
+          </Link>
+        </div>
+        <div className="flex flex-col space-y-2 sm:max-w-[700px] sm:self-center w-full">
+          <SearchConversations project={project} community={community} />
+        </div>
+      </div>
+      <div className="flex flex-col px-6 w-full">
+        <div className="text-tertiary text-center">Recent Conversations</div>
+        <div className="sm:self-center sm:max-w-[700px] flex overflow-y-scroll flex-col h-full">
+          <RecentConversations project={project} community={community} />
+        </div>
+      </div>
+    </>
   );
 }

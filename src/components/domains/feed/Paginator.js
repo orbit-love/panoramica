@@ -2,6 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 
 const pageSize = 10;
 
+class FakeObserver {
+  observe() {}
+  unobserve() {}
+}
+
 export default function Paginated(props) {
   const { activities, eachActivity } = props;
   const containerRef = useRef();
@@ -12,8 +17,15 @@ export default function Paginated(props) {
   const [items, setItems] = useState(firstPageOfItems);
   const [lastElement, setLastElement] = useState(null);
 
+  var Observer;
+  if (typeof window === "undefined") {
+    Observer = FakeObserver;
+  } else {
+    Observer = IntersectionObserver;
+  }
+
   const observer = useRef(
-    new IntersectionObserver((entries) => {
+    new Observer((entries) => {
       const target = entries[0];
       if (target.isIntersecting) {
         if (page <= totalPages) {

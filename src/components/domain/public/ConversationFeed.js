@@ -10,7 +10,7 @@ export default function ConversationFeed({
   limit = 25,
 }) {
   const onClickTimestamp = (activity) =>
-    `/projects/${project.id}/${activity.conversationId}`;
+    `/projects/${project.id}/welcome/${activity.conversationId}`;
   const handlers = {
     onCLickMember: () => {},
     onClickChannel: () => {},
