@@ -3,7 +3,6 @@ import { getCsrfToken } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
 
-import SessionContext from "src/components/context/SessionContext";
 import HomePage from "app/HomePage";
 
 export default async function Page() {
@@ -13,11 +12,7 @@ export default async function Page() {
   if (session?.user) {
     redirect("/dashboard");
   }
-  return (
-    <SessionContext session={session}>
-      <HomePage {...props} />
-    </SessionContext>
-  );
+  return <HomePage {...props} />;
 }
 
 export async function getProps() {
