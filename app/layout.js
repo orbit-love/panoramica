@@ -3,8 +3,7 @@ import "styles/globals.css";
 import { ApolloWrapper } from "src/graphql/apollo-wrapper";
 import SessionContext from "src/components/context/SessionContext";
 import Icons from "src/components/context/Icons";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "app/api/auth/[...nextauth]/route";
+import { getSession } from "src/auth";
 
 var description = "Expand conversational landscapes with AI";
 var defaultTitle = "Panoramica";
@@ -20,11 +19,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const demoSite = !!process.env.DEMO_SITE;
-  var session = await getServerSession(authOptions);
-  if (!session && demoSite) {
-    session = demoSession();
-  }
+  const session = await getSession();
 
   return (
     <Icons>

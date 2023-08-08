@@ -8,7 +8,7 @@ const typeDefs = gql`
   }
 
   type User {
-    id: ID
+    id: ID!
     email: String
     admin: Boolean
     projects: [Project!]!
@@ -21,17 +21,18 @@ const typeDefs = gql`
   }
 
   type Project {
-    id: ID
+    id: ID!
+    name: String!
     demo: Boolean
-    name: String
     membersConnection(first: Int!, after: Cursor): MembersConnection!
     activitiesConnection(first: Int!, after: Cursor): ActivitiesConnection!
     user: User!
     searchMember(value: String): [Member]
+    activitySources: [String]
   }
 
   type Activity {
-    id: ID
+    id: ID!
     actor: String!
     actorName: String
     globalActor: String
@@ -58,9 +59,12 @@ const typeDefs = gql`
   }
 
   type Member {
-    id: ID
-    globalActor: String
+    id: String!
+    globalActor: String!
+    globalActorName: String!
+    activityCount: Int!
     activitiesConnection(first: Int!, after: Cursor): ActivitiesConnection!
+    connectionCount: Int!
   }
 
   type MemberEdge {

@@ -27,7 +27,6 @@ import {
   BookmarksContext,
   BookmarksDispatchContext,
 } from "src/components/context/BookmarksContext";
-import Community from "src/models/Community";
 import Themed from "src/components/context/Themed";
 import { ThemeContext } from "src/components/context/ThemeContext";
 import { projectReducer, bookmarksReducer } from "src/reducers";
@@ -45,9 +44,8 @@ const Dockview = ({ onReady }) => {
   );
 };
 
-export default function ProjectPage({ project, data }) {
-  const community = new Community({ result: data });
-  const initialObject = { project, community, prompts: [] };
+export default function ProjectPage({ project }) {
+  const initialObject = { project, prompts: [] };
   const [object, dispatch] = useReducer(projectReducer, initialObject);
 
   const [bookmarks, bookmarksDispatch] = useReducer(bookmarksReducer, {

@@ -27,17 +27,28 @@ const resolvers = {
     },
   },
   Member: {
-    activitiesConnection: async (parent, args, contextValue, info) => {
-      console.log(parent, args);
+    activityCount: async (parent, args, contextValue, info) => {
       const graphConnection = new GraphConnection();
-      const { id: memberId } = parent;
+      const { memberId, projectId } = parent;
+      const { records } = await graphConnection.run(
+        `MATCH (p:Project { id: $projectId })
+            WITH p
+          MATCH (p)-[:OWNS]->(a:Activity)<-[:DID]-(m:Member { globalActor: $memberId })
+          RETURN count(a) AS count`,
+        { projectId, memberId }
+      );
+      return records[0].get("count").low;
+    },
+    activitiesConnection: async (parent, args, contextValue, info) => {
+      const graphConnection = new GraphConnection();
+      const { memberId, projectId } = parent;
       const { first, after } = args;
       if (first < 0) throw new Error("first must be positive");
 
       const { records } = await graphConnection.run(
         `MATCH (p:Project { id: $projectId })
             WITH p
-          MATCH (p)-[:OWNS]->(a:Activity)<-[:DID]-(m:Member { id: $memberId })
+          MATCH (p)-[:OWNS]->(a:Activity)<-[:DID]-(m:Member { globalActor: $memberId })
             WITH a
           RETURN a
             ORDER BY a.timestampInt DESC
@@ -49,6 +60,28 @@ const resolvers = {
         return { ...activity };
       });
       return toEdges(activities, first);
+    },
+    connectionCount: async (parent, args, contextValue, info) => {
+      const graphConnection = new GraphConnection();
+      const { memberId, projectId } = parent;
+      const { records } = await graphConnection.run(
+        `MATCH (p:Project { id: $projectId })
+            WITH p
+          MATCH (p)-[:OWNS]->(a:Activity)<-[:DID]-(m:Member { globalActor: $memberId })
+            WITH a
+            MATCH (a)-[:MENTIONS]->(outgoingMention:Member)
+              MERGE (m)-[:KNOWS]->(outgoingMention)
+            MATCH (m:incomingMention)-[:DID]->(a)-[:MENTIONS]->(m)
+              MERGE (m)-[:KNOWS]->(incomingMention)
+            MATCH (a)-[:REPLIES_TO]->(parent)<-[:DID]-(outgoingReply:Member)
+              MERGE (m)-[:KNOWS]->(outgoingReply)
+            MATCH (m:incomingReply)-[:DID]->(:Activity)-[:REPLIES_TO]->(a)
+              MERGE (m)-[:KNOWS]->(incomingReply)
+            MATCH (m)-[:KNOWS]->(another:Member)
+            RETURN count(another) AS count`,
+        { projectId, memberId }
+      );
+      return records[0].get("count").low;
     },
   },
   Project: {
@@ -68,7 +101,15 @@ const resolvers = {
         { projectId }
       );
       var members = records.map((record) => {
-        return record.get("m").properties;
+        var member = record.get("m").properties;
+        var memberId = member.globalActor;
+        // add the projectId to the object so that it can
+        // be used in queries deeper in the graph
+        return {
+          ...member,
+          projectId,
+          memberId,
+        };
       });
       return toEdges(members, first);
     },
@@ -92,9 +133,26 @@ const resolvers = {
       var activities = records.map((record) => {
         var activity = record.get("a").properties;
         var member = record.get("m").properties;
-        return { ...activity, member };
+        return {
+          ...activity,
+          projectId,
+          member: { ...member, memberId: member.globalActor, projectId },
+        };
       });
       return toEdges(activities, first);
+    },
+    activitySources: async (parent, args, contextValue, info) => {
+      const graphConnection = new GraphConnection();
+      const { id: projectId } = parent;
+      const { records } = await graphConnection.run(
+        `MATCH (p:Project { id: $projectId })
+            WITH p
+          MATCH (p)-[:OWNS]->(a:Activity)
+            WITH DISTINCT(a.source) AS source
+          RETURN source`,
+        { projectId }
+      );
+      return records.map((record) => record.get("source"));
     },
   },
 };
@@ -122,7 +180,6 @@ const whereClause = (id, user) => {
 const selectClause = {
   id: true,
   name: true,
-
   demo: true,
   user: {
     select: {

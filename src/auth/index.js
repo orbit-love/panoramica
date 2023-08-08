@@ -6,6 +6,15 @@ import jwt from "jsonwebtoken";
 
 const secret = process.env.NEXTAUTH_SECRET;
 
+export const getSession = async () => {
+  const demoSite = !!process.env.DEMO_SITE;
+  var session = await getServerSession(authOptions);
+  if (!session && demoSite) {
+    session = demoSession();
+  }
+  return session;
+};
+
 export const demoSession = () => ({
   expire: "1",
   user: {

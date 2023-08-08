@@ -1,9 +1,7 @@
 import React from "react";
 import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth/next";
 import { gql } from "graphql-tag";
-import { authOptions } from "app/api/auth/[...nextauth]/route";
-import { demoSession } from "src/auth";
+import { getSession } from "src/auth";
 import DashboardPage from "app/dashboard/DashboardPage";
 import { getClient } from "src/graphql/apollo-client";
 
@@ -11,7 +9,9 @@ export const metadata = {
   title: "Dashboard",
 };
 
-const query = gql`
+export const dynamic = "force-dynamic";
+
+const LOAD_PROJECTS = gql`
   query {
     projects {
       id
@@ -23,22 +23,19 @@ const query = gql`
   }
 `;
 
-export const dynamic = "force-dynamic";
-
 export default async function Page() {
-  const demoSite = !!process.env.DEMO_SITE;
-  var session = await getServerSession(authOptions);
+  const session = await getSession();
   if (!session) {
-    if (demoSite) session = demoSession();
-    else redirect("/");
+    redirect("/");
   }
 
   const {
     data: { projects },
   } = await getClient().query({
-    query,
+    query: LOAD_PROJECTS,
   });
 
+  const demoSite = !!process.env.DEMO_SITE;
   const props = {
     projects,
     demoSite,
