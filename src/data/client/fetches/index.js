@@ -74,6 +74,34 @@ export async function postEmbeddings({ project, setLoading, onSuccess }) {
   }
 }
 
+export async function putDocumentation({
+  project,
+  body,
+  setLoading,
+  onSuccess,
+}) {
+  if (aiReady(project)) {
+    makeRequest({
+      url: `/api/projects/${project.id}/documentation/update`,
+      method: "PUT",
+      body,
+      onSuccess,
+      setLoading,
+    });
+  }
+}
+
+export async function deleteDocumentation({ project, setLoading, onSuccess }) {
+  if (aiReady(project)) {
+    makeRequest({
+      url: `/api/projects/${project.id}/documentation/delete`,
+      method: "DELETE",
+      onSuccess,
+      setLoading,
+    });
+  }
+}
+
 export async function getSimilarConversations({
   project,
   activityId,

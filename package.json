@@ -25,6 +25,7 @@
     "axios": "^1.4.0",
     "classnames": "^2.3.2",
     "compromise": "^14.9.0",
+    "crawler": "^1.4.0",
     "dockview": "^1.7.6",
     "encoding": "^0.1.13",
     "js-tiktoken": "^1.0.7",
@@ -47,7 +48,8 @@
     "remark-gfm": "^3.0.1",
     "remark-github": "^11.2.4",
     "remark-parse": "^10.0.2",
-    "remark-rehype": "^10.1.0"
+    "remark-rehype": "^10.1.0",
+    "turndown": "^7.1.2"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.2",

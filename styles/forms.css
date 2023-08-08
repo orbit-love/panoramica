@@ -8,15 +8,10 @@ body .btn {
   @apply w-full sm:w-auto;
 }
 
-body .btn-light {
-  @apply flex-1 py-2 px-4 whitespace-nowrap rounded-md outline-none select-none;
-
-  @apply bg-gray-100 dark:bg-gray-700;
-  @apply text-gray-800 dark:text-gray-100;
-  @apply w-full sm:w-auto;
-
-  @apply opacity-90;
-  @apply hover:opacity-100;
+body button[disabled] {
+  @apply opacity-70;
+  @apply hover:opacity-70;
+  cursor: not-allowed;
 }
 
 body textarea,

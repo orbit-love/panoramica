@@ -4,9 +4,10 @@ import {
   prepareVectorStore,
 } from "src/integrations/pinecone";
 import utils from "src/utils";
+import TurndownService from "turndown";
 
-function embeddedContent(activity) {
-  var str = utils.stripHtmlTags(activity.textHtml);
+function cleanHtmlForEmbedding(htmlString) {
+  var str = utils.stripHtmlTags(htmlString);
   str = utils.stripMentions(str);
   str = utils.stripLinks(str);
   str = utils.stripEmojis(str);
@@ -14,28 +15,37 @@ function embeddedContent(activity) {
   return str.replace(/\s+/g, " ").trim();
 }
 
+function embeddedActivityContent(activity) {
+  return cleanHtmlForEmbedding(activity.textHtml);
+}
+
 export const toPageContent = (activities) => {
-  return activities.map(embeddedContent).join(" ");
+  return activities.map(embeddedActivityContent).join(" ");
 };
 
-export const deleteEmbeddings = async ({ project }) => {
-  var pineconeIndex = await getPineconeIndex({ project });
-  var projectId = project.id;
-  var namespace = `project-${projectId}`;
+const deleteEmbedding = async ({ pineconeIndex, namespace }) => {
   await pineconeIndex.delete1({
     deleteAll: true,
     namespace,
   });
-  var namespaceConversations = `project-conversations-${projectId}`;
-  await pineconeIndex.delete1({
-    deleteAll: true,
-    namespace: namespaceConversations,
+};
+
+export const deleteEmbeddings = async ({ project }) => {
+  var pineconeIndex = await getPineconeIndex({ project });
+  await deleteEmbedding({ pineconeIndex, namespace: `project-${projectId}` });
+  await deleteEmbedding({
+    pineconeIndex,
+    namespace: `project-conversations-${projectId}`,
+  });
+  await deleteEmbedding({
+    pineconeIndex,
+    namespace: `project-documentation-${projectId}`,
   });
 };
 
 export const createEmbeddings = async ({ project, activities }) => {
   var docs = activities.map((activity) => {
-    const pageContent = embeddedContent(activity);
+    const pageContent = embeddedActivityContent(activity);
     var doc = new Document({
       pageContent,
       metadata: {
@@ -103,4 +113,55 @@ export const createConversationEmbeddings = async ({
   var ids = docs.map(({ metadata }) => metadata.id);
   await pineconeStore.addDocuments(docs, ids);
   console.log(`Uploaded ${docs.length} docs to Pinecone`);
+};
+
+// conversations is a map of conversation ids and activities
+// activities should be sorted in chronologically ascending order
+export const createDocumentationEmbeddings = async ({ project, pages }) => {
+  const docs = [];
+  const turndownService = new TurndownService({ headingStyle: "atx" });
+
+  for (let page of pages) {
+    if (!page.url) continue;
+    const id = page.url.trim().replace(/\/$/, "");
+    // create the pageContent for the activities
+    const pageContent = cleanHtmlForEmbedding(page.body);
+    // add a contentLength for query-time filtering
+    const contentLength = pageContent.length;
+    // Time at which the documentation was indexed. Too old could mean outdated
+    const timestamp = utils.truncateDateToDay(Date.now());
+
+    // if no content is left, don't index the doc
+    if (contentLength > 0) {
+      docs.push({
+        pageContent,
+        metadata: {
+          id,
+          title: page.title,
+          // Keeping the markdown body so that it can be used as context for the LLM
+          // The context would then be richer with links, headings and more
+          // TODO: Also summarize with AI
+          markdown: turndownService.turndown(page.body),
+          contentLength,
+          timestamp,
+        },
+      });
+    }
+  }
+
+  const namespace = `project-documentation-${project.id}`;
+  const pineconeStore = await prepareVectorStore({ project, namespace });
+
+  // pass in the document ids for upserts to avoid duplicates
+  var ids = docs.map(({ metadata }) => metadata.id);
+  await pineconeStore.addDocuments(docs, ids);
+  console.log(`Uploaded ${docs.length} documentation pages to Pinecone`);
+};
+
+export const deleteDocumentationEmbeddings = async ({ project }) => {
+  var pineconeIndex = await getPineconeIndex({ project });
+  await deleteEmbedding({
+    pineconeIndex,
+    namespace: `project-documentation-${project.id}`,
+  });
 };

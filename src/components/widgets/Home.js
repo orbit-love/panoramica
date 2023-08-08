@@ -23,7 +23,7 @@ import Modal from "src/components/ui/Modal";
 import ThemeSelector from "src/components/ui/ThemeSelector";
 import Loader from "src/components/domains/ui/Loader";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
-import { orbitImportReady } from "src/integrations/ready";
+import { aiReady, orbitImportReady } from "src/integrations/ready";
 import { useSession } from "next-auth/react";
 
 export default function Home(props) {
@@ -164,6 +164,14 @@ export default function Home(props) {
     e.preventDefault();
     addWidget("edit-prompts", "EditPrompts", {
       title: "Edit Prompts",
+      position: newPanelPosition(),
+    });
+  };
+
+  const onClickEmbedDocumentation = (e) => {
+    e.preventDefault();
+    addWidget("embed-documentation", "EmbedDocumentation", {
+      title: "Embed Documentation",
       position: newPanelPosition(),
     });
   };
@@ -343,6 +351,14 @@ export default function Home(props) {
                         API Settings
                       </button>
                     </>
+                  )}
+                  {aiReady(project) && (
+                    <button
+                      className="hover:underline"
+                      onClick={onClickEmbedDocumentation}
+                    >
+                      Embed Documentation
+                    </button>
                   )}
                   <button
                     className="hover:underline"

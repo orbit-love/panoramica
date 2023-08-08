@@ -50,6 +50,10 @@ const tabComponents = {
     var icon = <FontAwesomeIcon icon="gear" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
+  EmbedDocumentation: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="gear" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
   User: ({ api }) => {
     var icon = <FontAwesomeIcon icon="user" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
