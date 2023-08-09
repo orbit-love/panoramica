@@ -135,7 +135,7 @@ export default function Home(props) {
           />
         )}
         {imported && (
-          <div className="flex flex-col items-start space-y-6">
+          <div className="flex flex-col items-start space-y-4">
             <Search newPanelPosition={newPanelPosition} addWidget={addWidget} />
             <Explore
               addWidget={addWidget}

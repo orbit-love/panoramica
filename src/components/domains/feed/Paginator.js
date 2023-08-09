@@ -5,21 +5,14 @@ class FakeObserver {
   unobserve() {}
 }
 
-export default function Paginated({
+export default function Paginator({
   activities,
   eachActivity,
-  first,
-  after,
   setFirst,
-  setAfter,
-  hasNextPage,
+  pageInfo,
 }) {
   const containerRef = useRef();
-
-  // const firstPageOfItems = activities.slice(0, pageSize);
-  // const totalPages = Math.floor(activities.length / pageSize);
-  // const [page, setPage] = useState(1);
-  // const [items, setItems] = useState(firstPageOfItems);
+  const { hasNextPage } = pageInfo;
   const [lastElement, setLastElement] = useState(null);
 
   var Observer;
@@ -34,15 +27,11 @@ export default function Paginated({
       const target = entries[0];
       if (target.isIntersecting) {
         if (hasNextPage) {
-          setAfter((after) => after + 1);
+          setFirst((first) => first + 10);
         }
       }
     })
   );
-
-  // useEffect(() => {
-  //   setItems(activities.slice(0, pageSize * (page + 1)));
-  // }, [activities, page]);
 
   useEffect(() => {
     const currentElement = lastElement;
@@ -62,7 +51,7 @@ export default function Paginated({
   return (
     <div ref={containerRef}>
       {activities.map((activity, index) => (
-        <div key={activity.id} ref={!hasNextPage ? setLastElement : null}>
+        <div key={activity.id} ref={hasNextPage ? setLastElement : null}>
           {eachActivity({ activity, index })}
         </div>
       ))}

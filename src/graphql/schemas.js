@@ -42,6 +42,8 @@ const typeDefs = gql`
     globalActor: String
     globalActorName: String
     source: String
+    sourceId: String
+    sourceParentId: String
     sourceChannel: String
     sourceType: String
     text: String

@@ -1,0 +1,13 @@
+#import "src/graphql/fragments/ActivityFields.gql"
+fragment ForActivityFeed on Activity {
+  ...ActivityFields
+  conversation {
+    ...ActivityFields
+    descendants(options: { sort: { timestamp: ASC } }) {
+      ...ActivityFields
+      parent {
+        id
+      }
+    }
+  }
+}

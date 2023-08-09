@@ -1,26 +1,13 @@
-#import "src/graphql/fragments/ActivityFields.gql"
+#import "src/graphql/fragments/MemberActivitiesConnection.gql"
 query ($projectId: ID!, $memberId: ID!, $first: Int!, $after: String!) {
   projects(where: { id: $projectId }) {
     members(where: { id: $memberId }) {
       activitiesConnection(
         first: $first
         after: $after
-        sort: { node: { timestamp: DESC } }
+        sort: { node: { timestampInt: DESC } }
       ) {
-        edges {
-          node {
-            ...ActivityFields
-            conversation {
-              ...ActivityFields
-              descendants {
-                ...ActivityFields
-                parent {
-                  id
-                }
-              }
-            }
-          }
-        }
+        ...MemberActivitiesConnection
       }
     }
   }

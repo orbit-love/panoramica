@@ -20,7 +20,11 @@ export default function Source({ project, params, api, handlers }) {
   const query = source ? GetActivitiesWithSourceQuery : GetActivitiesQuery;
   const {
     data: {
-      projects: [{ activitiesConnection }],
+      projects: [
+        {
+          activitiesConnection: { edges, pageInfo },
+        },
+      ],
     },
   } = useSuspenseQuery(query, {
     variables: {
@@ -31,7 +35,7 @@ export default function Source({ project, params, api, handlers }) {
     },
   });
 
-  const activities = activitiesConnection.edges.map((edge) => edge.node);
+  const activities = edges.map((edge) => edge.node);
 
   const {
     data: {
@@ -60,10 +64,8 @@ export default function Source({ project, params, api, handlers }) {
         project={project}
         activities={activities}
         handlers={handlers}
-        first={first}
-        after={after}
-        setAfter={setAfter}
         setFirst={setFirst}
+        pageInfo={pageInfo}
       />
     </Frame>
   );

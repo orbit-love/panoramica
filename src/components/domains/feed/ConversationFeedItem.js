@@ -17,9 +17,9 @@ export default function ConversationFeedItem(props) {
     (bookmark) => bookmark.activityId === conversation.id
   );
 
-  const defaultExpanded = conversation.descendants.length === 0;
+  const defaultExpanded = conversation.descendants.length === 1;
   const [expanded, setExpanded] = useState(defaultExpanded);
-  const canExpand = conversation.descendants.length > 0;
+  const canExpand = conversation.descendants.length > 1;
 
   const onOpen = (e) => {
     handlers.onClickActivity(e, conversation);

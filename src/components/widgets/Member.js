@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Frame, Header } from "src/components/widgets";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
@@ -20,10 +20,15 @@ export default function Member({ project, params, handlers }) {
     data: {
       projects: [
         {
-          members: [{ activitiesConnection }],
+          members: [
+            {
+              activitiesConnection: { edges, pageInfo },
+            },
+          ],
         },
       ],
     },
+    fetchMore,
   } = useSuspenseQuery(GetActivitiesQuery, {
     variables: {
       projectId,
@@ -33,7 +38,16 @@ export default function Member({ project, params, handlers }) {
     },
   });
 
-  const activities = activitiesConnection.edges.map((edge) => edge.node);
+  useEffect(() => {
+    fetchMore({
+      variables: {
+        first,
+        after,
+      },
+    });
+  }, [first, after, fetchMore]);
+
+  const activities = edges.map((edge) => edge.node);
 
   return (
     <Frame>
@@ -58,6 +72,7 @@ export default function Member({ project, params, handlers }) {
           after={after}
           setFirst={setFirst}
           setAfter={setAfter}
+          pageInfo={pageInfo}
         />
       </div>
     </Frame>

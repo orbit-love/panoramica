@@ -10,15 +10,12 @@ export default function ConversationFeed({
   activities,
   handlers,
   term,
-  first,
-  after,
-  hasNextPage,
+  pageInfo,
   setFirst,
-  setAfter,
 }) {
   // if multiple activities are in the same conversation, only show
   // the first one that is passed in the array; this allows callers
-  // to specific the activity they want shown in the preview
+  // to specify the activity they want shown in the preview
   var conversationIds = activities.map((a) => a.conversation.id);
   activities = activities.filter((activity, index) => {
     return conversationIds.indexOf(activity.conversation.id) === index;
@@ -28,11 +25,8 @@ export default function ConversationFeed({
     <div className="border-t border-gray-300 dark:border-gray-700">
       <Paginator
         activities={activities}
-        first={first}
-        after={after}
         setFirst={setFirst}
-        setAfter={setAfter}
-        hasNextPage={hasNextPage}
+        pageInfo={pageInfo}
         eachActivity={({ activity, index }) => (
           <ConversationFeedItem
             project={project}
