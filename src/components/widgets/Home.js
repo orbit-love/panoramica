@@ -16,12 +16,10 @@ import Settings from "./Home/Settings";
 
 const GET_ACTIVITIES = gql`
   query ($projectId: ID!) {
-    project(id: $projectId) {
-      id
+    projects(where: { id: $projectId }) {
       activitiesConnection(first: 1) {
         edges {
           node {
-            id
             source
           }
         }
@@ -68,33 +66,25 @@ export default function Home(props) {
     resetLayout({ project, containerApi });
   }, [project, containerApi]);
 
-  const fetchProject = useCallback(async () => {
-    getProject({
-      project,
-      setLoading,
-      onSuccess: ({ result }) => {
-        // const community = new Community({ result });
-        // dispatch({ type: "updated", community });
-      },
-    });
-  }, [project, dispatch]);
-
   const { id: projectId } = project;
-  const { data } = useSuspenseQuery(GET_ACTIVITIES, {
+  const {
+    data: {
+      projects: [{ activitiesConnection }],
+    },
+  } = useSuspenseQuery(GET_ACTIVITIES, {
     variables: {
       projectId,
     },
   });
 
-  const activities =
-    data?.project?.activitiesConnection?.edges?.map((edge) => edge.node) || [];
+  const activities = activitiesConnection.edges.map((edge) => edge.node);
   const imported = activities.length > 0;
 
   // don't set loading since this happens in the background
   const refreshProject = useCallback(async () => {
-    await putProjectRefresh({ project, onSuccess: fetchProject });
+    await putProjectRefresh({ project, onSuccess: () => {} });
     console.log("Project refreshed");
-  }, [project, fetchProject]);
+  }, [project]);
 
   // refresh the project every minute to fetch new data
   useEffect(() => {

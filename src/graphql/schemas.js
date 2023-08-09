@@ -2,79 +2,57 @@ import { gql } from "graphql-tag";
 
 const typeDefs = gql`
   type Query {
-    user: User
-    projects: [Project]
-    project(id: ID!): Project
+    prismaUser: PrismaUser
+    prismaProjects: [PrismaProject]
+    prismaProject(id: ID!): PrismaProject
   }
 
-  type User {
+  type PrismaUser {
     id: ID!
     email: String
     admin: Boolean
-    projects: [Project!]!
   }
 
-  scalar Cursor
-
-  type PageInfo {
-    hasNextPage: Boolean!
+  type PrismaProject {
+    id: ID!
+    name: String!
+    demo: Boolean
+    prismaUser: PrismaUser!
   }
 
   type Project {
     id: ID!
+    activities: [Activity!]! @relationship(type: "OWNS", direction: OUT)
+    members: [Member!]! @relationship(type: "OWNS", direction: OUT)
+    sources: [String!]! @customResolver(requires: ["id"])
+    sourceChannels(source: String!): [SourceChannel!]!
+      @customResolver(requires: ["id"])
+  }
+
+  type SourceChannel {
     name: String!
-    demo: Boolean
-    membersConnection(first: Int!, after: Cursor): MembersConnection!
-    activitiesConnection(first: Int!, after: Cursor): ActivitiesConnection!
-    user: User!
-    searchMember(value: String): [Member]
-    activitySources: [String]
+    activityCount: Int!
+    lastActivityAt: String!
   }
 
   type Activity {
     id: ID!
-    actor: String!
-    actorName: String
-    globalActor: String
-    globalActorName: String
+    text: String
     timestamp: String!
     timestampInt: Int!
-    url: String
     source: String!
-    sourceId: String!
-    sourceChannel: String
-    sourceType: String
-    text: String
-    member: Member!
-  }
-
-  type ActivityEdge {
-    cursor: Cursor!
-    node: Activity!
-  }
-
-  type ActivitiesConnection {
-    edges: [ActivityEdge!]!
-    pageInfo: PageInfo!
+    sourceChannel: String!
+    member: Member! @relationship(type: "DID", direction: IN)
+    mentions: [Member!]! @relationship(type: "MENTIONS", direction: OUT)
+    parent: Activity @relationship(type: "REPLIES_TO", direction: OUT)
+    replies: Activity @relationship(type: "REPLIES_TO", direction: IN)
   }
 
   type Member {
-    id: String!
+    id: ID! @alias(property: "globalActor")
     globalActor: String!
     globalActorName: String!
-    activityCount: Int!
-    activitiesConnection(first: Int!, after: Cursor): ActivitiesConnection!
-    connectionCount: Int!
-  }
-
-  type MemberEdge {
-    cursor: Cursor!
-    node: Member!
-  }
-
-  type MembersConnection {
-    edges: [MemberEdge!]!
-    pageInfo: PageInfo!
+    activities: [Activity!]! @relationship(type: "DID", direction: OUT)
   }
 `;
 export default typeDefs;

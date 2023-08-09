@@ -7,11 +7,11 @@ import ProjectPage from "app/projects/[id]/ProjectPage";
 
 const GET_PROJECT = gql`
   query ($id: ID!) {
-    project(id: $id) {
+    prismaProject(id: $id) {
       id
       name
       demo
-      user {
+      prismaUser {
         email
       }
     }
@@ -20,7 +20,7 @@ const GET_PROJECT = gql`
 
 const getProject = async (id) => {
   const {
-    data: { project },
+    data: { prismaProject: project },
   } = await getClient().query({
     query: GET_PROJECT,
     variables: {

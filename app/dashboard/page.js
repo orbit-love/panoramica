@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 
 const LOAD_PROJECTS = gql`
   query {
-    projects {
+    prismaProjects {
       id
       name
       user {
@@ -30,7 +30,7 @@ export default async function Page() {
   }
 
   const {
-    data: { projects },
+    data: { prismaProjects: projects },
   } = await getClient().query({
     query: LOAD_PROJECTS,
   });

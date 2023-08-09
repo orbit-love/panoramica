@@ -1,13 +1,13 @@
-import GraphConnection from "src/data/graph/Connection";
 import { prisma } from "src/data/db";
+import GraphConnection from "src/data/graph/Connection";
 
 const resolvers = {
   Query: {
-    user: async (parent, args, contextValue, info) => {
+    prismaUser: async (parent, args, contextValue, info) => {
       const { user } = contextValue;
       return user;
     },
-    projects: async (parent, args, contextValue, info) => {
+    prismaProjects: async (parent, args, contextValue, info) => {
       const { user } = contextValue;
       var projects = await prisma.project.findMany({
         select: selectClause,
@@ -16,132 +16,19 @@ const resolvers = {
 
       return projects;
     },
-    project: async (parent, args, contextValue, info) => {
+    prismaProject: async (parent, args, contextValue, info) => {
       const { user } = contextValue;
       const { id } = args;
       const project = await prisma.project.findFirst({
         select: selectClause,
         where: whereClause(id, user),
       });
+      project.prismaUser = project.user;
       return project;
     },
   },
-  Member: {
-    activityCount: async (parent, args, contextValue, info) => {
-      const graphConnection = new GraphConnection();
-      const { memberId, projectId } = parent;
-      const { records } = await graphConnection.run(
-        `MATCH (p:Project { id: $projectId })
-            WITH p
-          MATCH (p)-[:OWNS]->(a:Activity)<-[:DID]-(m:Member { globalActor: $memberId })
-          RETURN count(a) AS count`,
-        { projectId, memberId }
-      );
-      return records[0].get("count").low;
-    },
-    activitiesConnection: async (parent, args, contextValue, info) => {
-      const graphConnection = new GraphConnection();
-      const { memberId, projectId } = parent;
-      const { first, after } = args;
-      if (first < 0) throw new Error("first must be positive");
-
-      const { records } = await graphConnection.run(
-        `MATCH (p:Project { id: $projectId })
-            WITH p
-          MATCH (p)-[:OWNS]->(a:Activity)<-[:DID]-(m:Member { globalActor: $memberId })
-            WITH a
-          RETURN a
-            ORDER BY a.timestampInt DESC
-            SKIP ${after || 0}`,
-        { projectId, memberId }
-      );
-      var activities = records.map((record) => {
-        var activity = record.get("a").properties;
-        return { ...activity };
-      });
-      return toEdges(activities, first);
-    },
-    connectionCount: async (parent, args, contextValue, info) => {
-      const graphConnection = new GraphConnection();
-      const { memberId, projectId } = parent;
-      const { records } = await graphConnection.run(
-        `MATCH (p:Project { id: $projectId })
-            WITH p
-          MATCH (p)-[:OWNS]->(a:Activity)<-[:DID]-(m:Member { globalActor: $memberId })
-            WITH a
-            MATCH (a)-[:MENTIONS]->(outgoingMention:Member)
-              MERGE (m)-[:KNOWS]->(outgoingMention)
-            MATCH (m:incomingMention)-[:DID]->(a)-[:MENTIONS]->(m)
-              MERGE (m)-[:KNOWS]->(incomingMention)
-            MATCH (a)-[:REPLIES_TO]->(parent)<-[:DID]-(outgoingReply:Member)
-              MERGE (m)-[:KNOWS]->(outgoingReply)
-            MATCH (m:incomingReply)-[:DID]->(:Activity)-[:REPLIES_TO]->(a)
-              MERGE (m)-[:KNOWS]->(incomingReply)
-            MATCH (m)-[:KNOWS]->(another:Member)
-            RETURN count(another) AS count`,
-        { projectId, memberId }
-      );
-      return records[0].get("count").low;
-    },
-  },
   Project: {
-    membersConnection: async (parent, args, contextValue, info) => {
-      const graphConnection = new GraphConnection();
-      const { id: projectId } = parent;
-      const { first, after } = args;
-      if (first < 0) throw new Error("first must be positive");
-
-      const { records } = await graphConnection.run(
-        `MATCH (p:Project { id: $projectId })
-            WITH p
-          MATCH (p)-[:OWNS]->(m:Member)
-            RETURN m
-            ORDER BY m.id
-            SKIP ${after || 0}`,
-        { projectId }
-      );
-      var members = records.map((record) => {
-        var member = record.get("m").properties;
-        var memberId = member.globalActor;
-        // add the projectId to the object so that it can
-        // be used in queries deeper in the graph
-        return {
-          ...member,
-          projectId,
-          memberId,
-        };
-      });
-      return toEdges(members, first);
-    },
-    activitiesConnection: async (parent, args, contextValue, info) => {
-      const graphConnection = new GraphConnection();
-      const { id: projectId } = parent;
-      const { first, after } = args;
-      if (first < 0) throw new Error("first must be positive");
-
-      const { records } = await graphConnection.run(
-        `MATCH (p:Project { id: $projectId })
-            WITH p
-          MATCH (p)-[:OWNS]->(a:Activity)
-            WITH a
-          MATCH (a)<-[:DID]-(m:Member)
-          RETURN a, m
-            ORDER BY a.timestampInt DESC
-            SKIP ${after || 0}`,
-        { projectId }
-      );
-      var activities = records.map((record) => {
-        var activity = record.get("a").properties;
-        var member = record.get("m").properties;
-        return {
-          ...activity,
-          projectId,
-          member: { ...member, memberId: member.globalActor, projectId },
-        };
-      });
-      return toEdges(activities, first);
-    },
-    activitySources: async (parent, args, contextValue, info) => {
+    async sources(parent) {
       const graphConnection = new GraphConnection();
       const { id: projectId } = parent;
       const { records } = await graphConnection.run(
@@ -153,6 +40,34 @@ const resolvers = {
         { projectId }
       );
       return records.map((record) => record.get("source"));
+    },
+    async sourceChannels(parent, args) {
+      const graphConnection = new GraphConnection();
+      const { id: projectId } = parent;
+      const { source } = args;
+      const { records } = await graphConnection.run(
+        `MATCH (p:Project { id: $projectId })
+            WITH p
+          MATCH (p)-[:OWNS]->(a:Activity)
+            WHERE a.source = $source
+            WITH
+              DISTINCT(a.sourceChannel) AS name
+            WITH name
+              MATCH (p)-[:OWNS]->(a:Activity {sourceChannel: name})
+            WITH name,
+                COUNT(a) AS activityCount,
+                MAX(a.timestamp) AS lastActivityAt
+          RETURN name, activityCount, lastActivityAt
+          ORDER BY lastActivityAt DESC`,
+        { projectId, source }
+      );
+      return records
+        .map((record) => ({
+          name: record.get("name"),
+          activityCount: record.get("activityCount").low,
+          lastActivityAt: record.get("lastActivityAt"),
+        }))
+        .filter((record) => record.name);
     },
   },
 };

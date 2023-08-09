@@ -7,16 +7,15 @@ import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 const GET_MEMBERS = gql`
   query ($projectId: ID!) {
-    project(id: $projectId) {
-      id
-      name
+    projects(where: { id: $projectId }) {
       membersConnection(first: 250) {
         edges {
-          cursor
           node {
-            id
             globalActor
             globalActorName
+            activitiesAggregate {
+              count
+            }
           }
         }
       }
@@ -33,14 +32,20 @@ export default function Members({ project, addWidget }) {
   };
 
   const { id: projectId } = project;
-  const { data } = useSuspenseQuery(GET_MEMBERS, {
+  const {
+    data: {
+      projects: [{ membersConnection }],
+    },
+  } = useSuspenseQuery(GET_MEMBERS, {
     variables: {
       projectId,
     },
   });
 
-  const members =
-    data?.project?.membersConnection?.edges?.map((edge) => edge.node) || [];
+  var members = membersConnection.edges.map((edge) => edge.node);
+  members = members.sort((a, b) => {
+    return b.activitiesAggregate.count - a.activitiesAggregate.count;
+  });
 
   return (
     <Frame>
@@ -53,7 +58,7 @@ export default function Members({ project, addWidget }) {
           <CompactMember
             key={member.globalActor}
             member={member}
-            metrics={false}
+            metrics={true}
             onClick={onClickMember(member)}
           />
         ))}

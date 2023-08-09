@@ -65,17 +65,17 @@ export default function ProjectPage({ project }) {
     });
   }, [project, bookmarksDispatch]);
 
-  useEffect(() => {
-    getPrompts({
-      project,
-      onSuccess: ({ result: { prompts } }) => {
-        dispatch({
-          type: "updatePrompts",
-          prompts,
-        });
-      },
-    });
-  }, [project, dispatch]);
+  // useEffect(() => {
+  //   getPrompts({
+  //     project,
+  //     onSuccess: ({ result: { prompts } }) => {
+  //       dispatch({
+  //         type: "updatePrompts",
+  //         prompts,
+  //       });
+  //     },
+  //   });
+  // }, [project, dispatch]);
 
   const onReady = useCallback(
     (event) => {

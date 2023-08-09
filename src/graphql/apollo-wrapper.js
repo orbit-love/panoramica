@@ -16,9 +16,6 @@ if (process.env.NODE_ENV === "development") {
   loadErrorMessages();
 }
 
-import { defaultDataIdFromObject } from "@apollo/client";
-import { relayStylePagination } from "@apollo/client/utilities";
-
 function makeClient() {
   const httpLink = new HttpLink({
     uri: process.env.NEXT_PUBLIC_URL_SERVER_GRAPHQL,
@@ -26,26 +23,7 @@ function makeClient() {
   });
 
   return new NextSSRApolloClient({
-    cache: new NextSSRInMemoryCache({
-      typePolicies: {
-        Project: {
-          fields: {
-            activitiesConnection: relayStylePagination(),
-            membersConnection: relayStylePagination(),
-          },
-        },
-        Member: {
-          fields: {
-            activitiesConnection: relayStylePagination(),
-          },
-        },
-      },
-      // dataIdFromObject(responseObject) {
-      //   var id = defaultDataIdFromObject(responseObject);
-      //   console.log("JOSH", id, responseObject);
-      //   return id;
-      // },
-    }),
+    cache: new NextSSRInMemoryCache({}),
     link:
       typeof window === "undefined"
         ? ApolloLink.from([

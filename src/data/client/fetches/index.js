@@ -42,14 +42,12 @@ export async function getJWT({ onSuccess, setLoading }) {
 }
 
 export async function putProjectImport({ project, onSuccess, setLoading }) {
-  if (orbitImportReady(project)) {
-    makeRequest({
-      url: `/api/projects/${project.id}/import`,
-      method: "PUT",
-      onSuccess,
-      setLoading,
-    });
-  }
+  makeRequest({
+    url: `/api/projects/${project.id}/import`,
+    method: "PUT",
+    onSuccess,
+    setLoading,
+  });
 }
 
 export async function putProjectRefresh({ project, setLoading, onSuccess }) {

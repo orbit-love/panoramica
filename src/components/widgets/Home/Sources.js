@@ -5,10 +5,8 @@ import utils from "src/utils";
 
 const GET_SOURCES = gql`
   query ($projectId: ID!) {
-    project(id: $projectId) {
-      id
-      name
-      activitySources
+    projects(where: { id: $projectId }) {
+      sources
     }
   }
 `;
@@ -17,13 +15,15 @@ export default function Sources({ project, handlers, newPanelPosition }) {
   const { onClickSource } = handlers;
 
   const { id: projectId } = project;
-  const { data } = useSuspenseQuery(GET_SOURCES, {
+  const {
+    data: {
+      projects: [{ sources }],
+    },
+  } = useSuspenseQuery(GET_SOURCES, {
     variables: {
       projectId,
     },
   });
-
-  const sources = data?.project?.activitySources || [];
 
   return (
     <div className="flex flex-col items-start w-full">

@@ -161,7 +161,7 @@ export async function syncActivities({ tx, project, activities }) {
           UNWIND batch AS mention
             MATCH
               (p)-[:OWNS]->(m:Member   { globalActor: mention.globalActor }),
-              (p)-[:OWNS]->(a:Activity { activityId: mention.activityId })
+              (p)-[:OWNS]->(a:Activity { id: mention.activityId })
             MERGE (a)-[r:MENTIONS]-(m)`,
     { mentions, projectId }
   );
