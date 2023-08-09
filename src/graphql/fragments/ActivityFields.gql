@@ -1,0 +1,13 @@
+fragment ActivityFields on Activity {
+  id
+  source
+  sourceChannel
+  sourceType
+  text
+  textHtml
+  timestamp
+  member {
+    globalActor
+    globalActorName
+  }
+}

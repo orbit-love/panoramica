@@ -13,6 +13,9 @@ const resolvers = {
         select: selectClause,
         where: whereClause(null, user),
       });
+      for (let project of projects) {
+        project.prismaUser = project.user;
+      }
 
       return projects;
     },

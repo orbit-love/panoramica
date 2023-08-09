@@ -16,7 +16,7 @@ const LOAD_PROJECTS = gql`
     prismaProjects {
       id
       name
-      user {
+      prismaUser {
         email
       }
     }

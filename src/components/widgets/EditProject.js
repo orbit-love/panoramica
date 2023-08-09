@@ -76,30 +76,30 @@ export default function EditProject({ project, dispatch }) {
           onDelete={() => router.push("/")}
         />
 
-        {(orbitImportReady(project) || aiReady(project)) && (
-          <div className="text-tertiary flex flex-col items-start py-6 space-y-1">
-            <div className="flex items-center my-2 space-x-2 text-lg font-thin">
-              <div>Actions</div>
-              {loading && <Loader />}
-            </div>
-            {orbitImportReady(project) && (
-              <>
-                <button className="hover:underline" onClick={refreshProject}>
-                  Import latest data from Orbit
-                </button>
-                <button className="hover:underline" onClick={importProject}>
-                  Reimport all data from Orbit
-                </button>
-              </>
-            )}
-
-            {aiReady(project) && (
-              <button className="hover:underline" onClick={createEmbeddings}>
-                Load embeddings into vector store
-              </button>
-            )}
+        {/* {(orbitImportReady(project) || aiReady(project)) && ( */}
+        <div className="text-tertiary flex flex-col items-start py-6 space-y-1">
+          <div className="flex items-center my-2 space-x-2 text-lg font-thin">
+            <div>Actions</div>
+            {loading && <Loader />}
           </div>
-        )}
+          {/* {orbitImportReady(project) && ( */}
+          <>
+            <button className="hover:underline" onClick={refreshProject}>
+              Import latest data from Orbit
+            </button>
+            <button className="hover:underline" onClick={importProject}>
+              Reimport all data from Orbit
+            </button>
+          </>
+          {/* )} */}
+
+          {aiReady(project) && (
+            <button className="hover:underline" onClick={createEmbeddings}>
+              Load embeddings into vector store
+            </button>
+          )}
+        </div>
+        {/* )} */}
       </div>
     </Frame>
   );

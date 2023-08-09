@@ -1,38 +1,13 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { gql } from "graphql-tag";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import { Frame, Header } from "src/components/widgets";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
-
-const GET_ACTIVITIES = gql`
-  query ($projectId: ID!, $first: Int!, $after: String!) {
-    projects(where: { id: $projectId }) {
-      activitiesConnection(first: $first, after: $after) {
-        edges {
-          node {
-            id
-            source
-            timestamp
-            text
-          }
-        }
-      }
-    }
-  }
-`;
-
-const GET_SOURCE_CHANNELS = gql`
-  query ($projectId: ID!, $source: String!) {
-    projects(where: { id: $projectId }) {
-      sourceChannels(source: $source) {
-        name
-      }
-    }
-  }
-`;
+import GetActivitiesQuery from "./Source/GetActivities.gql";
+import GetActivitiesWithSourceQuery from "./Source/GetActivitiesWithSource.gql";
+import GetSourceChannelsQuery from "./Source/GetSourceChannels.gql";
 
 export default function Source({ project, params, api, handlers }) {
   var { source } = params;
@@ -42,15 +17,17 @@ export default function Source({ project, params, api, handlers }) {
   const [after, setAfter] = useState("");
   const { id: projectId } = project;
 
+  const query = source ? GetActivitiesWithSourceQuery : GetActivitiesQuery;
   const {
     data: {
       projects: [{ activitiesConnection }],
     },
-  } = useSuspenseQuery(GET_ACTIVITIES, {
+  } = useSuspenseQuery(query, {
     variables: {
       projectId,
       first,
       after,
+      ...(source && { source }),
     },
   });
 
@@ -60,7 +37,7 @@ export default function Source({ project, params, api, handlers }) {
     data: {
       projects: [{ sourceChannels }],
     },
-  } = useSuspenseQuery(GET_SOURCE_CHANNELS, {
+  } = useSuspenseQuery(GetSourceChannelsQuery, {
     variables: {
       projectId,
       source: source || "no-source",
@@ -79,15 +56,15 @@ export default function Source({ project, params, api, handlers }) {
           </button>
         )}
       </Header>
-      {activities.length}
-      {/* <ConversationFeed
+      <ConversationFeed
         project={project}
         activities={activities}
-        community={community}
         handlers={handlers}
+        first={first}
+        after={after}
         setAfter={setAfter}
         setFirst={setFirst}
-      /> */}
+      />
     </Frame>
   );
 }

@@ -8,30 +8,37 @@ import ConversationFeedItem from "src/components/domains/feed/ConversationFeedIt
 export default function ConversationFeed({
   project,
   activities,
-  community,
   handlers,
   term,
+  first,
+  after,
+  hasNextPage,
+  setFirst,
+  setAfter,
 }) {
   // if multiple activities are in the same conversation, only show
   // the first one that is passed in the array; this allows callers
   // to specific the activity they want shown in the preview
-  var conversationIds = activities.map((a) => a.conversationId);
+  var conversationIds = activities.map((a) => a.conversation.id);
   activities = activities.filter((activity, index) => {
-    return conversationIds.indexOf(activity.conversationId) === index;
+    return conversationIds.indexOf(activity.conversation.id) === index;
   });
 
   return (
     <div className="border-t border-gray-300 dark:border-gray-700">
       <Paginator
         activities={activities}
-        community={community}
+        first={first}
+        after={after}
+        setFirst={setFirst}
+        setAfter={setAfter}
+        hasNextPage={hasNextPage}
         eachActivity={({ activity, index }) => (
           <ConversationFeedItem
             project={project}
             key={activity.id}
             index={index}
             activity={activity}
-            community={community}
             handlers={handlers}
             term={term}
           />

@@ -5,36 +5,32 @@ import Activity from "src/components/domains/activity/Activity";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 
 export default function PreviewView(props) {
-  let { activity, community, handlers, onExpand, term } = props;
+  let { activity, handlers, onExpand, term } = props;
   let { onClickMember } = handlers;
 
-  const conversation = community.conversations[activity.id];
-  const conversationActivity = community.findActivityById(
-    activity.conversationId
-  );
-  const parentActivity = community.findActivityById(activity.parentId);
+  const conversation = activity.conversation;
+  const descendants = conversation.descendants;
+  const parent = descendants.find((a) => a.id === activity.parent?.id);
+  const replies = descendants.filter((a) => a.parent?.id === activity.id);
 
-  const showConversation = activity.id !== conversationActivity?.id;
-  const showParent =
-    parentActivity && parentActivity?.id !== conversationActivity?.id;
+  const showConversation = activity.id !== conversation.id;
+  const showParent = parent && parent.id !== conversation.id;
 
   return (
     <div onClick={onExpand} className="flex flex-col space-y-1 cursor-pointer">
       <div className="text-secondary flex flex-col text-sm whitespace-nowrap">
         {showConversation && (
           <ActivityPreview
-            activity={conversationActivity}
-            conversation={community.conversations[conversationActivity.id]}
-            community={community}
+            activity={conversation}
+            descendants={descendants}
             onClickMember={onClickMember}
             onExpand={onExpand}
           />
         )}
         {showParent && (
           <ActivityPreview
-            activity={parentActivity}
-            conversation={community.conversations[parentActivity.id]}
-            community={community}
+            activity={parent}
+            descendants={descendants}
             onClickMember={onClickMember}
             onExpand={onExpand}
           />
@@ -43,7 +39,6 @@ export default function PreviewView(props) {
       <div>
         <Activity
           activity={activity}
-          community={community}
           handlers={handlers}
           showSourceChannel
           showSourceIcon
@@ -52,9 +47,9 @@ export default function PreviewView(props) {
           linkTimestamp={true}
         />
         <Replies
-          conversation={conversation}
+          replies={replies}
           onExpand={onExpand}
-          showNoReplies={!showConversation}
+          showZeroReplies={!showConversation}
         />
       </div>
     </div>
@@ -63,20 +58,17 @@ export default function PreviewView(props) {
 
 const ActivityPreview = ({
   activity,
-  conversation,
-  community,
+  descendants,
   onClickMember,
   onExpand,
 }) => {
+  var replies = descendants.filter((a) => a.parent?.id === activity.id);
   return (
     <div className="flex flex-col">
       <div className="flex items-center space-x-1">
         <div className="flex shrink-0 items-center space-x-1">
           <FontAwesomeIcon icon="reply" className="text-xs" />
-          <NameAndIcon
-            member={community.findMemberByActivity(activity)}
-            onClick={onClickMember}
-          />
+          <NameAndIcon member={activity.member} onClick={onClickMember} />
         </div>
         <button
           onClick={onExpand}
@@ -85,34 +77,32 @@ const ActivityPreview = ({
           {activity.text}
         </button>
       </div>
-      <Replies
-        conversation={conversation}
-        onExpand={onExpand}
-        replyMinimum={2}
-      />
+      <Replies replies={replies} onExpand={onExpand} replyMinimum={2} />
     </div>
   );
 };
 
 const Replies = ({
-  conversation,
+  replies,
   onExpand,
   replyMinimum = 1,
-  showNoReplies = true,
+  showZeroReplies = true,
 }) => {
-  const childrenLength = conversation.children?.length || 0;
+  // we need to know if a reply is already showing
+  var replyCount = replies.length || 0;
+  replyCount = replyCount > 0 ? replyCount - 1 : replyCount;
   return (
     <>
-      {childrenLength >= replyMinimum && (
+      {replyCount >= replyMinimum && (
         <button
           onClick={onExpand}
           className="text-secondary text-sm text-left hover:underline"
         >
-          {childrenLength === 1 && "1 reply"}
-          {childrenLength > 1 && `${childrenLength} replies`}
+          {replyCount === 1 && "1 more reply"}
+          {replyCount > 1 && `${replyCount} more replies`}
         </button>
       )}
-      {childrenLength === 0 && showNoReplies && (
+      {replyCount === 0 && showZeroReplies && (
         <div className="text-secondary text-sm">0 replies</div>
       )}
     </>

@@ -1,20 +1,25 @@
 import React, { useState, useRef, useEffect } from "react";
 
-const pageSize = 10;
-
 class FakeObserver {
   observe() {}
   unobserve() {}
 }
 
-export default function Paginated(props) {
-  const { activities, eachActivity } = props;
+export default function Paginated({
+  activities,
+  eachActivity,
+  first,
+  after,
+  setFirst,
+  setAfter,
+  hasNextPage,
+}) {
   const containerRef = useRef();
 
-  const firstPageOfItems = activities.slice(0, pageSize);
-  const totalPages = Math.floor(activities.length / pageSize);
-  const [page, setPage] = useState(1);
-  const [items, setItems] = useState(firstPageOfItems);
+  // const firstPageOfItems = activities.slice(0, pageSize);
+  // const totalPages = Math.floor(activities.length / pageSize);
+  // const [page, setPage] = useState(1);
+  // const [items, setItems] = useState(firstPageOfItems);
   const [lastElement, setLastElement] = useState(null);
 
   var Observer;
@@ -28,16 +33,16 @@ export default function Paginated(props) {
     new Observer((entries) => {
       const target = entries[0];
       if (target.isIntersecting) {
-        if (page <= totalPages) {
-          setPage((prevPage) => prevPage + 1);
+        if (hasNextPage) {
+          setAfter((after) => after + 1);
         }
       }
     })
   );
 
-  useEffect(() => {
-    setItems(activities.slice(0, pageSize * (page + 1)));
-  }, [activities, page]);
+  // useEffect(() => {
+  //   setItems(activities.slice(0, pageSize * (page + 1)));
+  // }, [activities, page]);
 
   useEffect(() => {
     const currentElement = lastElement;
@@ -56,19 +61,12 @@ export default function Paginated(props) {
 
   return (
     <div ref={containerRef}>
-      {items.map((activity, index) => (
-        <div
-          key={activity.id}
-          ref={
-            index === items.length - 1 && page <= totalPages
-              ? setLastElement
-              : null
-          }
-        >
+      {activities.map((activity, index) => (
+        <div key={activity.id} ref={!hasNextPage ? setLastElement : null}>
           {eachActivity({ activity, index })}
         </div>
       ))}
-      {page - 1 === totalPages && <p className="my-5 text-center">♥</p>}
+      {!hasNextPage && <p className="my-5 text-center">♥</p>}
     </div>
   );
 }

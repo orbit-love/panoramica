@@ -19,7 +19,6 @@ function highlightSearchTerm(string, searchTerm) {
 
 export default function Activity({
   activity,
-  community,
   showSourceIcon,
   showSourceChannel,
   linkTimestamp,
@@ -29,7 +28,7 @@ export default function Activity({
 }) {
   var { onClickMember, onClickChannel, onClickActivity, onClickTimestamp } =
     handlers;
-  var member = community.findMemberByActivity(activity);
+  var member = activity.member;
   var renderHtml = activity.textHtml?.length > 0;
   var { source, sourceChannel } = activity;
 
@@ -99,12 +98,7 @@ export default function Activity({
           {linkTimestamp && !onClickTimestamp && (
             <button
               className="hover:underline"
-              onClick={(e) =>
-                onClickActivity(
-                  e,
-                  community.findActivityById(activity.conversationId)
-                )
-              }
+              onClick={(e) => onClickActivity(e, activity.conversation)}
               target="_blank"
               rel="noreferrer"
             >

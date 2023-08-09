@@ -4,27 +4,8 @@ import { Frame, Header } from "src/components/widgets";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import CompactConnections from "src/components/domains/member/Connections";
-import { gql } from "graphql-tag";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-
-const GET_ACTIVITIES = gql`
-  query ($projectId: ID!, $memberId: ID!, $first: Int!, $after: String!) {
-    projects(where: { id: $projectId }) {
-      members(where: { id: $memberId }) {
-        activitiesConnection(first: $first, after: $after) {
-          edges {
-            node {
-              id
-              source
-              timestamp
-              text
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import GetActivitiesQuery from "./Member/GetActivities.gql";
 
 export default function Member({ project, params, handlers }) {
   var { member } = params;
@@ -43,7 +24,7 @@ export default function Member({ project, params, handlers }) {
         },
       ],
     },
-  } = useSuspenseQuery(GET_ACTIVITIES, {
+  } = useSuspenseQuery(GetActivitiesQuery, {
     variables: {
       projectId,
       memberId,
@@ -69,13 +50,15 @@ export default function Member({ project, params, handlers }) {
             onClickConnection(e, member, connection)
           }
         /> */}
-        {activities.length}
-        {/* <ConversationFeed
+        <ConversationFeed
           project={project}
           activities={activities}
-          community={community}
           handlers={handlers}
-        /> */}
+          first={first}
+          after={after}
+          setFirst={setFirst}
+          setAfter={setAfter}
+        />
       </div>
     </Frame>
   );

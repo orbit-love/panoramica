@@ -84,12 +84,12 @@ export async function syncActivities({ tx, project, activities }) {
         UNWIND batch AS activity
           MATCH (p)-[:OWNS]->(a1:Activity { id: activity.id }), (p)-[:OWNS]->(a2:Activity)
             WHERE a1.sourceParentId = a2.sourceId
-            MERGE (a1)-[r:REPLIES_TO]->(a2)
-          SET a1.parentId = a2.id
-          SET a1:Reply`,
+              MERGE (a1)-[r:REPLIES_TO]->(a2)
+              SET a1.parentId = a2.id
+              SET a1:Reply`,
     { activities, projectId }
   );
-  console.log("Memgraph: Added (a:Activity)-[:REPLIES_TO]->(p:Activity) edges");
+  console.log("Memgraph: Connected (a:Activity)-[:REPLIES_TO]->(p:Activity)");
 
   // assign conversationId to the farthest ancestor of each activity or that activity itself
   // apply the :Conversation label if the farthest ancestor is the activity itself
@@ -101,12 +101,13 @@ export async function syncActivities({ tx, project, activities }) {
           WITH activity, ancestor, reduce(acc = ancestor, n in nodes(path) | CASE WHEN n.timestamp < acc.timestamp THEN n ELSE acc END) as conversationStarter
             ORDER BY conversationStarter.timestamp
           WITH activity, HEAD(COLLECT(conversationStarter.id)) as conversationId
-            SET activity.conversationId = conversationId
-          WITH activity WHERE activity.id = conversationId
-            SET activity:Conversation`,
+            MATCH (conversation:Activity { id: conversationId })
+          WITH activity, conversation
+            MERGE (activity)-[:PART_OF]->(conversation)
+            SET conversation:Conversation`,
     { activities, projectId }
   );
-  console.log("Memgraph: Added activity.conversationId");
+  console.log("Memgraph: Connected (a:Activity)-[:PART_OF]->(c:Conversation)");
 
   // create (:Member) nodes for each unique globalActor
   await tx.run(

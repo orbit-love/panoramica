@@ -37,15 +37,24 @@ const typeDefs = gql`
 
   type Activity {
     id: ID!
+    actor: String
+    actorName: String
+    globalActor: String
+    globalActorName: String
+    source: String
+    sourceChannel: String
+    sourceType: String
     text: String
-    timestamp: String!
-    timestampInt: Int!
-    source: String!
-    sourceChannel: String!
+    textHtml: String
+    timestamp: String
+    timestampInt: Int
+    url: String
     member: Member! @relationship(type: "DID", direction: IN)
     mentions: [Member!]! @relationship(type: "MENTIONS", direction: OUT)
+    conversation: Activity! @relationship(type: "PART_OF", direction: OUT)
     parent: Activity @relationship(type: "REPLIES_TO", direction: OUT)
-    replies: Activity @relationship(type: "REPLIES_TO", direction: IN)
+    replies: [Activity!]! @relationship(type: "REPLIES_TO", direction: IN)
+    descendants: [Activity!]! @relationship(type: "PART_OF", direction: IN)
   }
 
   type Member {

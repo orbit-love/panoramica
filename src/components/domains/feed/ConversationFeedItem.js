@@ -8,26 +8,21 @@ import Toolbar from "src/components/domains/conversation/Toolbar";
 import { BookmarksContext } from "src/components/context/BookmarksContext";
 
 export default function ConversationFeedItem(props) {
-  var { index, activity, community, handlers, term } = props;
+  var { index, activity, handlers, term } = props;
 
   const { bookmarks } = useContext(BookmarksContext);
 
-  const conversationActivity = community.findActivityById(
-    activity.conversationId
-  );
+  const conversation = activity.conversation;
   const bookmark = bookmarks?.find(
-    (bookmark) => bookmark.activityId === conversationActivity.id
+    (bookmark) => bookmark.activityId === conversation.id
   );
 
-  const conversation = community.conversations[conversationActivity.id];
-
-  const defaultExpanded =
-    !conversation.children || conversation.children.length === 0;
+  const defaultExpanded = conversation.descendants.length === 0;
   const [expanded, setExpanded] = useState(defaultExpanded);
-  const canExpand = conversation?.children?.length > 0;
+  const canExpand = conversation.descendants.length > 0;
 
   const onOpen = (e) => {
-    handlers.onClickActivity(e, conversationActivity);
+    handlers.onClickActivity(e, conversation);
   };
 
   const onExpand = () => {
@@ -51,16 +46,12 @@ export default function ConversationFeedItem(props) {
       )}
     >
       {expanded && (
-        <FullThreadView
-          {...props}
-          activity={conversationActivity}
-          term={term}
-        />
+        <FullThreadView {...props} activity={conversation} term={term} />
       )}
       {!expanded && <PreviewView onExpand={onExpand} {...props} />}
       <Toolbar
         {...props}
-        activity={conversationActivity}
+        activity={conversation}
         canExpand={canExpand}
         expanded={expanded}
         setExpanded={setExpanded}

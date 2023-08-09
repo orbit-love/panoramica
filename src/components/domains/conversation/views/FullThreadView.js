@@ -3,36 +3,35 @@ import classnames from "classnames";
 import Activity from "src/components/domains/activity/Activity";
 
 export default function FullThreadView(props) {
+  var { activity } = props;
+  return <FullThreadViewInner {...props} descendants={activity.descendants} />;
+}
+
+function FullThreadViewInner(props) {
   let {
     activity,
-    community,
+    descendants,
     depth = 0,
     handlers,
     term,
     linkAllTimestamps,
   } = props;
 
-  var conversation = community.conversations[activity.id];
-  var parentActivity = community.findActivityById(activity.parentId);
+  const parent = descendants.find((a) => a.id === activity.parent?.id);
+  const replies = descendants.filter((a) => a.parent?.id === activity.id);
 
   // If this is a reply, show the time difference between this activity and either
   // the previous sibling or the parent activity
   var timeDisplay = activity.timestamp;
-  if (depth > 0 && parentActivity) {
-    var parentConversation = community.conversations[parentActivity.id];
-    var index = parentConversation.children.indexOf(activity.id);
-    var previousSiblingId = parentConversation.children[index - 1];
-    var previousSibling = community.findActivityById(previousSiblingId);
+  if (depth > 0 && parent) {
+    var index = replies.map((a) => a.id).indexOf(activity.id);
+    var previousSibling = replies[index - 1];
     if (previousSibling) {
       timeDisplay = [previousSibling.timestamp, activity.timestamp];
     } else {
-      timeDisplay = [parentActivity.timestamp, activity.timestamp];
+      timeDisplay = [parent.timestamp, activity.timestamp];
     }
   }
-
-  var childActivities = conversation.children
-    ?.map((id) => community.activities.find((a) => a.id === id))
-    ?.filter((a) => a);
 
   return (
     <div
@@ -42,7 +41,6 @@ export default function FullThreadView(props) {
     >
       <Activity
         activity={activity}
-        community={community}
         handlers={handlers}
         showSourceChannel={depth === 0}
         showSourceIcon={depth === 0}
@@ -50,16 +48,15 @@ export default function FullThreadView(props) {
         timeDisplay={timeDisplay}
         term={term}
       />
-      {childActivities?.map((childActivity, index) => {
-        var { id } = childActivity;
+      {replies.map((reply) => {
+        var { id } = reply;
         return (
-          <FullThreadView
+          <FullThreadViewInner
             key={id}
-            activity={childActivity}
-            community={community}
+            activity={reply}
+            descendants={descendants}
             depth={depth + 1}
             handlers={handlers}
-            lastChild={index === childActivities.length - 1}
             term={term}
             linkAllTimestamps={linkAllTimestamps}
           />
