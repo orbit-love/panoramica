@@ -1,0 +1,9 @@
+query ($projectId: ID!, $source: String!) {
+  projects(where: { id: $projectId }) {
+    sourceChannels(source: $source) {
+      name
+      activityCount
+      lastActivityAt
+    }
+  }
+}

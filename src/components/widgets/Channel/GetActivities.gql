@@ -1,11 +1,14 @@
 #import "src/graphql/fragments/ProjectActivitiesConnection.gql"
-query ($projectId: ID!, $source: String!, $first: Int!, $after: String) {
+query (
+  $projectId: ID!
+  $first: Int!
+  $source: String!
+  $sourceChannel: String!
+) {
   projects(where: { id: $projectId }) {
     activitiesConnection(
       first: $first
-      after: $after
-      where: { node: { source: $source } }
-      sort: { node: { timestamp: DESC } }
+      where: { node: { source: $source, sourceChannel: $sourceChannel } }
     ) {
       ...ProjectActivitiesConnection
     }

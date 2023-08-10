@@ -19,6 +19,7 @@ function highlightSearchTerm(string, searchTerm) {
 
 export default function Activity({
   activity,
+  conversation,
   showSourceIcon,
   showSourceChannel,
   linkTimestamp,
@@ -98,7 +99,7 @@ export default function Activity({
           {linkTimestamp && !onClickTimestamp && (
             <button
               className="hover:underline"
-              onClick={(e) => onClickActivity(e, activity.conversation)}
+              onClick={(e) => onClickActivity(e, conversation)}
               target="_blank"
               rel="noreferrer"
             >

@@ -39,6 +39,7 @@ export default function PreviewView(props) {
       <div>
         <Activity
           activity={activity}
+          conversation={conversation}
           handlers={handlers}
           showSourceChannel
           showSourceIcon

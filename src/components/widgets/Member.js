@@ -1,53 +1,37 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import { Frame, Header } from "src/components/widgets";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import CompactConnections from "src/components/domains/member/Connections";
-import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import GetActivitiesQuery from "./Member/GetActivities.gql";
 
 export default function Member({ project, params, handlers }) {
   var { member } = params;
   var { onClickConnection } = handlers;
 
-  const [first, setFirst] = useState(10);
-  const [after, setAfter] = useState("");
-
   const { globalActor: memberId } = member;
   const { id: projectId } = project;
-  const {
-    data: {
-      projects: [
-        {
-          members: [
-            {
-              activitiesConnection: { edges, pageInfo },
-            },
-          ],
-        },
-      ],
-    },
-    fetchMore,
-  } = useSuspenseQuery(GetActivitiesQuery, {
-    variables: {
-      projectId,
-      memberId,
-      first,
-      after,
-    },
-  });
 
-  useEffect(() => {
-    fetchMore({
-      variables: {
-        first,
-        after,
+  const query = GetActivitiesQuery;
+  const variables = {
+    projectId,
+    memberId,
+  };
+
+  const findEdges = ({
+    projects: [
+      {
+        members: [
+          {
+            activitiesConnection: { edges, pageInfo },
+          },
+        ],
       },
-    });
-  }, [first, after, fetchMore]);
-
-  const activities = edges.map((edge) => edge.node);
+    ],
+  }) => {
+    return [edges, pageInfo];
+  };
 
   return (
     <Frame>
@@ -65,14 +49,11 @@ export default function Member({ project, params, handlers }) {
           }
         /> */}
         <ConversationFeed
-          project={project}
-          activities={activities}
+          findEdges={findEdges}
           handlers={handlers}
-          first={first}
-          after={after}
-          setFirst={setFirst}
-          setAfter={setAfter}
-          pageInfo={pageInfo}
+          project={project}
+          query={query}
+          variables={variables}
         />
       </div>
     </Frame>

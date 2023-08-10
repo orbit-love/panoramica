@@ -13,29 +13,12 @@ export default function Source({ project, params, api, handlers }) {
   var { source } = params;
   var { onClickChannels } = handlers;
 
-  const [first, setFirst] = useState(10);
-  const [after, setAfter] = useState("");
   const { id: projectId } = project;
-
   const query = source ? GetActivitiesWithSourceQuery : GetActivitiesQuery;
-  const {
-    data: {
-      projects: [
-        {
-          activitiesConnection: { edges, pageInfo },
-        },
-      ],
-    },
-  } = useSuspenseQuery(query, {
-    variables: {
-      projectId,
-      first,
-      after,
-      ...(source && { source }),
-    },
-  });
-
-  const activities = edges.map((edge) => edge.node);
+  const variables = {
+    projectId,
+    ...(source && { source }),
+  };
 
   const {
     data: {
@@ -61,11 +44,10 @@ export default function Source({ project, params, api, handlers }) {
         )}
       </Header>
       <ConversationFeed
-        project={project}
-        activities={activities}
         handlers={handlers}
-        setFirst={setFirst}
-        pageInfo={pageInfo}
+        project={project}
+        query={query}
+        variables={variables}
       />
     </Frame>
   );

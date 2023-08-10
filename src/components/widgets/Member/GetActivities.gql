@@ -1,5 +1,5 @@
 #import "src/graphql/fragments/MemberActivitiesConnection.gql"
-query ($projectId: ID!, $memberId: ID!, $first: Int!, $after: String!) {
+query ($projectId: ID!, $memberId: ID!, $first: Int!, $after: String) {
   projects(where: { id: $projectId }) {
     members(where: { id: $memberId }) {
       activitiesConnection(

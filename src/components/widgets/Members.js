@@ -1,29 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CompactMember from "src/components/domains/member/Member";
 import { Frame, Header } from "src/components/widgets";
 import { addMemberWidget } from "src/components/widgets/setup/widgets";
 import { gql } from "graphql-tag";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-
-const GET_MEMBERS = gql`
-  query ($projectId: ID!) {
-    projects(where: { id: $projectId }) {
-      membersConnection(first: 250) {
-        edges {
-          node {
-            globalActor
-            globalActorName
-            activitiesAggregate {
-              count
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import GetMembersQuery from "./Members/GetMembers.gql";
 
 export default function Members({ project, addWidget }) {
+  const [first, setFirst] = useState(100);
+
   let onClickMember = (member) => {
     return (e) => {
       e.stopPropagation();
@@ -34,15 +19,33 @@ export default function Members({ project, addWidget }) {
   const { id: projectId } = project;
   const {
     data: {
-      projects: [{ membersConnection }],
+      projects: [
+        {
+          membersConnection: {
+            edges,
+            pageInfo: { hasNextPage },
+            totalCount,
+          },
+        },
+      ],
     },
-  } = useSuspenseQuery(GET_MEMBERS, {
+    fetchMore,
+  } = useSuspenseQuery(GetMembersQuery, {
     variables: {
       projectId,
+      first,
     },
   });
 
-  var members = membersConnection.edges.map((edge) => edge.node);
+  useEffect(() => {
+    fetchMore({
+      variables: {
+        first,
+      },
+    });
+  }, [first, fetchMore]);
+
+  var members = edges.map((edge) => edge.node);
   members = members.sort((a, b) => {
     return b.activitiesAggregate.count - a.activitiesAggregate.count;
   });
@@ -50,18 +53,36 @@ export default function Members({ project, addWidget }) {
   return (
     <Frame>
       <Header>
-        <div className="text-lg">Members</div>
-        <div className="">{members.length}</div>
+        <div className="flex justify-between items-baseline w-full">
+          <div className="text-lg">Members</div>
+          <div className="">
+            Showing {members.length}/{totalCount}
+          </div>
+        </div>
       </Header>
-      <div className="flex flex-col px-6">
-        {members.map((member) => (
-          <CompactMember
-            key={member.globalActor}
-            member={member}
-            metrics={true}
-            onClick={onClickMember(member)}
-          />
-        ))}
+      <div className="flex flex-col px-6 space-y-4">
+        <div className="flex flex-col">
+          {members.map((member) => (
+            <CompactMember
+              key={member.globalActor}
+              member={member}
+              metrics={true}
+              onClick={onClickMember(member)}
+            />
+          ))}
+        </div>
+        {hasNextPage && (
+          <div className="flex justify-center">
+            <button
+              className="btn !w-auto text-sm"
+              onClick={() => setFirst(first + 100)}
+            >
+              Load more
+            </button>
+          </div>
+        )}
+        {!hasNextPage && <p className="my-5 text-center">♥</p>}
+        <div />
       </div>
     </Frame>
   );

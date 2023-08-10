@@ -3,13 +3,28 @@ import classnames from "classnames";
 import Activity from "src/components/domains/activity/Activity";
 
 export default function FullThreadView(props) {
-  var { activity } = props;
-  return <FullThreadViewInner {...props} descendants={activity.descendants} />;
+  // activity is also passed in but we don't use it
+  // the activity represents the message that was clicked on
+  // but for the thread rendering purposes we start at the top
+  var { conversation } = props;
+
+  // this component provides the same value for conversation
+  // descendants at all levels of the thread; that information
+  // is used to connect parents and replies
+  return (
+    <FullThreadViewInner
+      {...props}
+      activity={conversation}
+      conversation={conversation}
+      descendants={conversation?.descendants}
+    />
+  );
 }
 
 function FullThreadViewInner(props) {
   let {
     activity,
+    conversation,
     descendants,
     depth = 0,
     handlers,
@@ -41,6 +56,7 @@ function FullThreadViewInner(props) {
     >
       <Activity
         activity={activity}
+        conversation={conversation}
         handlers={handlers}
         showSourceChannel={depth === 0}
         showSourceIcon={depth === 0}
@@ -54,6 +70,7 @@ function FullThreadViewInner(props) {
           <FullThreadViewInner
             key={id}
             activity={reply}
+            conversation={conversation}
             descendants={descendants}
             depth={depth + 1}
             handlers={handlers}

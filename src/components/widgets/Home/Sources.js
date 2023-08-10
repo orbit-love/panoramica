@@ -1,15 +1,7 @@
 import React from "react";
-import { gql } from "graphql-tag";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import GetSourcesQuery from "./GetSources.gql";
 import utils from "src/utils";
-
-const GET_SOURCES = gql`
-  query ($projectId: ID!) {
-    projects(where: { id: $projectId }) {
-      sources
-    }
-  }
-`;
 
 export default function Sources({ project, handlers, newPanelPosition }) {
   const { onClickSource } = handlers;
@@ -19,7 +11,7 @@ export default function Sources({ project, handlers, newPanelPosition }) {
     data: {
       projects: [{ sources }],
     },
-  } = useSuspenseQuery(GET_SOURCES, {
+  } = useSuspenseQuery(GetSourcesQuery, {
     variables: {
       projectId,
     },

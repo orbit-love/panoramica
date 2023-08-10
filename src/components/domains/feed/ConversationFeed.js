@@ -1,22 +1,47 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import Paginator from "src/components/domains/feed/Paginator";
 import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
 
-// this component transforms a list of activities into the most recent
-// activity for each unique conversation
+const findActivitiesConnectionEdges = ({
+  projects: [
+    {
+      activitiesConnection: { edges, pageInfo },
+    },
+  ],
+}) => {
+  return [edges, pageInfo];
+};
+
 export default function ConversationFeed({
   project,
-  activities,
+  query,
+  variables,
   handlers,
   term,
-  pageInfo,
-  setFirst,
+  findEdges = findActivitiesConnectionEdges,
 }) {
-  // if multiple activities are in the same conversation, only show
-  // the first one that is passed in the array; this allows callers
-  // to specify the activity they want shown in the preview
-  var conversationIds = activities.map((a) => a.conversation.id);
+  const [first, setFirst] = useState(10);
+
+  const { data, fetchMore } = useSuspenseQuery(query, {
+    variables: { ...variables, first },
+  });
+
+  const [edges, pageInfo] = findEdges(data);
+
+  useEffect(() => {
+    fetchMore({
+      variables: {
+        first,
+      },
+    });
+  }, [first, fetchMore]);
+
+  var activities = edges.map((edge) => edge.node);
+
+  // keep only the first activity in a conversation
+  const conversationIds = activities.map((a) => a.conversation.id);
   activities = activities.filter((activity, index) => {
     return conversationIds.indexOf(activity.conversation.id) === index;
   });

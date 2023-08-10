@@ -4,20 +4,8 @@ import SourceIcon from "src/components/domains/activity/SourceIcon";
 import { Frame, Header } from "src/components/widgets";
 import utils from "src/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { gql } from "graphql-tag";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-
-const GET_SOURCE_CHANNELS = gql`
-  query ($projectId: ID!, $source: String!) {
-    projects(where: { id: $projectId }) {
-      sourceChannels(source: $source) {
-        name
-        activityCount
-        lastActivityAt
-      }
-    }
-  }
-`;
+import GetSourceChannelsQuery from "./Channels/GetSourceChannels.gql";
 
 export default function Channels({ project, params, handlers }) {
   var { source } = params;
@@ -28,10 +16,10 @@ export default function Channels({ project, params, handlers }) {
     data: {
       projects: [{ sourceChannels }],
     },
-  } = useSuspenseQuery(GET_SOURCE_CHANNELS, {
+  } = useSuspenseQuery(GetSourceChannelsQuery, {
     variables: {
       projectId,
-      source: source,
+      source,
     },
   });
 

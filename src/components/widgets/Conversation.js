@@ -121,6 +121,7 @@ export default function Conversation({
           </div>
           <FullThreadView
             activity={activity}
+            conversation={activity}
             community={community}
             handlers={handlers}
           />
