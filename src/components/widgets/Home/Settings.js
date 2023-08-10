@@ -34,6 +34,7 @@ export default function Settings({
       position: newPanelPosition(),
     });
   };
+
   const onClickUser = (e) => {
     e.preventDefault();
     addWidget("user", "User", {

@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect, useState, Suspense } from "react";
+import React, { useCallback, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { gql } from "graphql-tag";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import { Frame, resetLayout } from "src/components/widgets";
-import { putProjectRefresh, getProject } from "src/data/client/fetches";
-import Loader from "src/components/domains/ui/Loader";
+import { putProjectRefresh } from "src/data/client/fetches";
 import { useSession } from "next-auth/react";
 
 import Sources from "./Home/Sources";
@@ -13,24 +11,10 @@ import Search from "./Home/Search";
 import Setup from "./Home/Setup";
 import Explore from "./Home/Explore";
 import Settings from "./Home/Settings";
-
-const GET_ACTIVITIES = gql`
-  query ($projectId: ID!) {
-    projects(where: { id: $projectId }) {
-      activitiesConnection(first: 1) {
-        edges {
-          node {
-            source
-          }
-        }
-      }
-    }
-  }
-`;
+import GetActivityCountQuery from "./Home/GetActivityCount.gql";
 
 export default function Home(props) {
   const { project, dispatch, api, containerApi, addWidget, handlers } = props;
-  const [loading, setLoading] = useState(false);
 
   var user,
     { data: session } = useSession();
@@ -68,17 +52,18 @@ export default function Home(props) {
 
   const { id: projectId } = project;
   const {
-    data: {
-      projects: [{ activitiesConnection }],
-    },
-  } = useSuspenseQuery(GET_ACTIVITIES, {
+    data: { projects },
+    refetch,
+  } = useSuspenseQuery(GetActivityCountQuery, {
     variables: {
       projectId,
     },
   });
 
-  const activities = activitiesConnection.edges.map((edge) => edge.node);
-  const imported = activities.length > 0;
+  const imported =
+    projects.length > 0 &&
+    projects[0].activitiesConnection &&
+    projects[0].activitiesConnection.totalCount > 0;
 
   // don't set loading since this happens in the background
   const refreshProject = useCallback(async () => {
@@ -98,7 +83,7 @@ export default function Home(props) {
     }
   }, [imported, refreshProject]);
 
-  const Header = ({ project, loading }) => {
+  const Header = ({ project }) => {
     return (
       <div className="py-2 px-6">
         <div className="flex items-center py-2 w-full whitespace-nowrap">
@@ -112,11 +97,6 @@ export default function Home(props) {
             />
           </div>
           <div className="mx-auto" />
-          {loading && (
-            <div className="pl-2 font-normal">
-              <Loader />
-            </div>
-          )}
         </div>
       </div>
     );
@@ -124,14 +104,15 @@ export default function Home(props) {
 
   return (
     <Frame>
-      <Header project={project} loading={loading} />
+      <Header project={project} />
       <div className="flex flex-col pt-1 px-6">
         {!imported && (
           <Setup
             project={project}
             dispatch={dispatch}
-            loading={loading}
-            setLoading={setLoading}
+            addWidget={addWidget}
+            newPanelPosition={newPanelPosition}
+            refetch={refetch}
           />
         )}
         {imported && (

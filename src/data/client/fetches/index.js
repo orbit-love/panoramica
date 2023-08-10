@@ -10,6 +10,7 @@ export const makeRequest = ({
   method = "GET",
   body,
   onSuccess,
+  onFailure,
   setLoading,
 }) => {
   setLoading && setLoading(true);
@@ -19,14 +20,15 @@ export const makeRequest = ({
     body,
   })
     .then((res) => res.json())
-    .then(handleResult({ onSuccess, setLoading }));
+    .then(handleResult({ onSuccess, onFailure, setLoading }));
 };
 
 const handleResult =
-  ({ onSuccess, setLoading }) =>
+  ({ onSuccess, onFailure, setLoading }) =>
   async ({ result, message }) => {
     if (message) {
       console.log(message);
+      onFailure && onFailure({ message });
     } else {
       await onSuccess({ result });
     }
@@ -41,11 +43,17 @@ export async function getJWT({ onSuccess, setLoading }) {
   makeRequest({ url: `/api/user/jwt`, onSuccess, setLoading });
 }
 
-export async function putProjectImport({ project, onSuccess, setLoading }) {
+export async function putProjectImport({
+  project,
+  onSuccess,
+  onFailure,
+  setLoading,
+}) {
   makeRequest({
     url: `/api/projects/${project.id}/import`,
     method: "PUT",
     onSuccess,
+    onFailure,
     setLoading,
   });
 }

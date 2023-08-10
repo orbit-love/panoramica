@@ -1,28 +1,15 @@
 import React from "react";
-import { gql } from "graphql-tag";
 import { getClient } from "src/graphql/apollo-client";
 import { redirect } from "next/navigation";
 import { getSession } from "src/auth";
 import ProjectPage from "app/projects/[id]/ProjectPage";
-
-const GET_PROJECT = gql`
-  query ($id: ID!) {
-    prismaProject(id: $id) {
-      id
-      name
-      demo
-      prismaUser {
-        email
-      }
-    }
-  }
-`;
+import GetProjectQuery from "./GetProject.gql";
 
 const getProject = async (id) => {
   const {
     data: { prismaProject: project },
   } = await getClient().query({
-    query: GET_PROJECT,
+    query: GetProjectQuery,
     variables: {
       id,
     },

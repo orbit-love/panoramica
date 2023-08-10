@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import CompactMember from "src/components/domains/member/Member";
 import { Frame, Header } from "src/components/widgets";
 import { addMemberWidget } from "src/components/widgets/setup/widgets";
-import { gql } from "graphql-tag";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import GetMembersQuery from "./Members/GetMembers.gql";
 

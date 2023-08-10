@@ -1,0 +1,9 @@
+query {
+  prismaProjects {
+    id
+    name
+    prismaUser {
+      email
+    }
+  }
+}

@@ -102,7 +102,8 @@ export async function syncActivities({ tx, project, activities }) {
             ORDER BY conversationStarter.timestamp
           WITH activity, HEAD(COLLECT(conversationStarter.id)) as conversationId
             MATCH (conversation:Activity { id: conversationId })
-          WITH activity, conversation
+          WITH activity, conversation, conversationId
+            SET activity.conversationId = conversationId
             MERGE (activity)-[:PART_OF]->(conversation)
             SET conversation:Conversation`,
     { activities, projectId }

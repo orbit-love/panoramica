@@ -99,6 +99,11 @@ const selectClause = {
   id: true,
   name: true,
   demo: true,
+  workspace: true,
+  url: true,
+  pineconeApiEnv: true,
+  pineconeIndexName: true,
+  modelName: true,
   user: {
     select: {
       email: true,

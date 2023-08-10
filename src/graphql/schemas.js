@@ -17,6 +17,11 @@ const typeDefs = gql`
     id: ID!
     name: String!
     demo: Boolean
+    url: String
+    modelName: String
+    workspace: String
+    pineconeApiEnv: String
+    pineconeIndexName: String
     prismaUser: PrismaUser!
   }
 
@@ -51,6 +56,7 @@ const typeDefs = gql`
     timestamp: String
     timestampInt: Int
     url: String
+    project: Project! @relationship(type: "OWNS", direction: IN)
     member: Member! @relationship(type: "DID", direction: IN)
     mentions: [Member!]! @relationship(type: "MENTIONS", direction: OUT)
     conversation: Activity! @relationship(type: "PART_OF", direction: OUT)
@@ -63,6 +69,7 @@ const typeDefs = gql`
     id: ID! @alias(property: "globalActor")
     globalActor: String!
     globalActorName: String!
+    project: Project! @relationship(type: "OWNS", direction: IN)
     activities: [Activity!]! @relationship(type: "DID", direction: OUT)
   }
 `;

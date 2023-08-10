@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
 const WithErrorBoundary = ({ children }) => {

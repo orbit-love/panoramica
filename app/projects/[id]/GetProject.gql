@@ -1,0 +1,15 @@
+query ($id: ID!) {
+  prismaProject(id: $id) {
+    id
+    name
+    demo
+    url
+    modelName
+    workspace
+    pineconeApiEnv
+    pineconeIndexName
+    prismaUser {
+      email
+    }
+  }
+}

@@ -32,6 +32,9 @@ function FullThreadViewInner(props) {
     linkAllTimestamps,
   } = props;
 
+  // use the descendants of the conversation to find the parent and replies
+  // of the current activity - this information is not fetched at query time
+  // because the depth is arbitrary
   const parent = descendants.find((a) => a.id === activity.parent?.id);
   const replies = descendants.filter((a) => a.parent?.id === activity.id);
 
