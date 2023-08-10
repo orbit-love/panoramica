@@ -1,16 +1,14 @@
 "use client";
 
 import React, { useContext } from "react";
-import { useRouter } from "next/navigation";
-
 import { ProjectContext } from "src/components/context/ProjectContext";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import SimilarConversations from "src/components/domain/public/SimilarConversations";
 import SourceAction from "src/components/domains/conversation/SourceAction";
+import Link from "next/link";
 import utils from "src/utils";
 
 export default function ConversationPage({ activity }) {
-  const router = useRouter();
   const { project } = useContext(ProjectContext);
 
   const conversation = activity.conversation;
@@ -24,12 +22,12 @@ export default function ConversationPage({ activity }) {
   };
 
   const Back = () => (
-    <button
-      onClick={() => router.back()}
+    <Link
       className="btn font-semibold !w-24 !flex-none text-center text-sm"
+      href={`/projects/${project.id}/welcome`}
     >
       Back
-    </button>
+    </Link>
   );
 
   return (
