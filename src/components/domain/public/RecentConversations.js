@@ -8,6 +8,7 @@ export default function RecentConversations({ project, handlers }) {
   const query = GetRecentConversationsQuery;
   const variables = {
     projectId,
+    minDescendants: 5,
   };
 
   const eachActivity = ({ activity }) => (
@@ -21,7 +22,7 @@ export default function RecentConversations({ project, handlers }) {
 
   return (
     <ConversationFeed
-      className="flex flex-col space-y-4"
+      className="flex flex-col px-6 mb-12 space-y-6"
       eachActivity={eachActivity}
       query={query}
       variables={variables}

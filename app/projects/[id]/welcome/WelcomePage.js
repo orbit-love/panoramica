@@ -20,7 +20,7 @@ export default function WelcomePage() {
   return (
     <>
       <div className="flex flex-col items-center mb-4 space-y-4">
-        <div className="text-tertiary flex px-6 space-x-4 text-center">
+        <div className="text-tertiary flex px-6 space-x-4 text-lg text-center">
           <div className="font-semibold">Search Conversations</div>
           <Link
             className="hover:underline"
@@ -34,8 +34,8 @@ export default function WelcomePage() {
         </div>
       </div>
       <div className="flex flex-col px-6 w-full">
-        <div className="text-tertiary mb-6 text-center">
-          Recent Conversations
+        <div className="text-tertiary mb-6 text-lg text-center">
+          Trending Conversations
         </div>
         <div className="sm:self-center sm:max-w-[700px] flex overflow-y-scroll flex-col h-full">
           <RecentConversations project={project} handlers={handlers} />

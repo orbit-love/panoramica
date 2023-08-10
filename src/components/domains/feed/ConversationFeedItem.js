@@ -35,7 +35,7 @@ export default function ConversationFeedItem(props) {
   return (
     <div
       className={classnames(
-        "group/menu flex flex-col py-6 px-6 relative border-b border-b-gray-300 dark:border-b-gray-700",
+        "group/menu flex flex-col px-6 relative border-b border-b-gray-300 dark:border-b-gray-700",
         {
           "hover:bg-gray-100 hover:bg-opacity-50 dark:hover:bg-gray-800 dark:hover:bg-opacity-40":
             index % 2 === 0,
@@ -46,12 +46,14 @@ export default function ConversationFeedItem(props) {
       )}
     >
       {expanded && (
-        <FullThreadView
-          {...props}
-          activity={activity}
-          conversation={conversation}
-          term={term}
-        />
+        <div className="py-6">
+          <FullThreadView
+            {...props}
+            activity={activity}
+            conversation={conversation}
+            term={term}
+          />
+        </div>
       )}
       {!expanded && <PreviewView onExpand={onExpand} {...props} />}
       <Toolbar

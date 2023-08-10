@@ -20,7 +20,7 @@ export default async function WelcomeLayout({ params, children }) {
   }
 
   return (
-    <Providers project={project}>
+    <Providers project={project} session={session}>
       <SiteHeader hideLogo />
       <div className="flex-col items-center pt-16 space-y-4 sm:flex-row sm:px-6">
         <div className="text-3xl font-bold text-center">

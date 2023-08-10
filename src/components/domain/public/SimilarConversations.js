@@ -2,7 +2,7 @@ import React from "react";
 import ActivityItem from "src/components/domains/public/ActivityItem";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import GetSimilarConversationsQuery from "./GetSimilarConversations.gql";
-import GetActivitiesByIdsQuery from "./GetActivitiesByIds.gql";
+import GetActivitiesByIdsQuery from "src/components/domains/search/GetActivitiesByIds.gql";
 
 export default function SimilarConversations({ project, activity, handlers }) {
   const { id: projectId } = project;

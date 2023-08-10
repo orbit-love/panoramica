@@ -17,7 +17,10 @@ export default function PreviewView(props) {
   const showParent = parent && parent.id !== conversation.id;
 
   return (
-    <div onClick={onExpand} className="flex flex-col space-y-1 cursor-pointer">
+    <div
+      onClick={onExpand}
+      className="flex flex-col py-6 space-y-1 cursor-pointer"
+    >
       <div className="text-secondary flex flex-col text-sm whitespace-nowrap">
         {showConversation && (
           <ActivityPreview
@@ -91,7 +94,6 @@ const Replies = ({
 }) => {
   // we need to know if a reply is already showing
   var replyCount = replies.length || 0;
-  replyCount = replyCount > 0 ? replyCount - 1 : replyCount;
   return (
     <>
       {replyCount >= replyMinimum && (
@@ -99,8 +101,8 @@ const Replies = ({
           onClick={onExpand}
           className="text-secondary text-sm text-left hover:underline"
         >
-          {replyCount === 1 && "1 more reply"}
-          {replyCount > 1 && `${replyCount} more replies`}
+          {replyCount === 1 && "1 reply"}
+          {replyCount > 1 && `${replyCount} replies`}
         </button>
       )}
       {replyCount === 0 && showZeroReplies && (

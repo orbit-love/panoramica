@@ -1,41 +1,11 @@
-import React, { useRef, useCallback, useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useCallback } from "react";
 
-import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import { Frame, saveLayout } from "src/components/widgets";
-import Loader from "../domains/ui/Loader";
+import SearchComponent from "src/components/domains/search/Search";
+import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
 
-export default function Search({
-  project,
-  community,
-  api,
-  containerApi,
-  handlers,
-}) {
-  var searchRef = useRef();
+export default function Search({ project, api, containerApi, handlers }) {
   const initialTerm = api.title === "Search" ? "" : api.title;
-
-  const [loading, setLoading] = useState(false);
-  const [docs, setDocs] = useState({ result: [] });
-  const [term, setTerm] = useState(initialTerm); // tracks the input box
-  const [appliedTerm, setAppliedTerm] = useState(initialTerm);
-  const [seeAll, setSeeAll] = useState(false);
-
-  const fetchSearch = useCallback(async () => {
-    setLoading(true);
-    setSeeAll(false);
-    fetch(`/api/projects/${project.id}/search?q=${term}`)
-      .then((res) => res.json())
-      .then(({ result, message }) => {
-        if (message) {
-          alert(message);
-        } else {
-          setAppliedTerm(term);
-          setDocs({ result });
-        }
-        setLoading(false);
-      });
-  }, [term, project]);
 
   const updateTitle = useCallback(
     (appliedTerm) => {
@@ -47,68 +17,40 @@ export default function Search({
     [project, api, containerApi]
   );
 
-  useEffect(() => {
-    updateTitle(appliedTerm);
-  }, [appliedTerm, updateTitle]);
+  const onChange = useCallback(
+    (appliedTerm) => {
+      updateTitle(appliedTerm);
+    },
+    [updateTitle]
+  );
 
-  useEffect(() => {
-    searchRef.current.focus();
-    if (term) {
-      fetchSearch();
-    }
-  }, []);
-
-  const onSearchSubmit = (e) => {
-    e.preventDefault();
-    fetchSearch();
+  const renderResults = ({ activities, appliedTerm }) => {
+    return (
+      <div className="flex flex-col space-y-0">
+        {activities.map((activity) => (
+          <ConversationFeedItem
+            key={activity.id}
+            activity={activity}
+            project={project}
+            handlers={handlers}
+            term={appliedTerm}
+          />
+        ))}
+      </div>
+    );
   };
-
-  const onSearchChange = (e) => {
-    setTerm(e.target.value);
-  };
-
-  // filter out docs that aren't likely to be good results
-  var scoreThreshold = 0.76;
-  var activities = docs.result
-    .filter(({ score }) => seeAll || score > scoreThreshold)
-    .map(({ id }) => community.findActivityById(id));
-  var numberOfActivitiesBelowThreshold = docs.result.length - activities.length;
 
   return (
     <Frame>
-      <div className="flex flex-col mt-6 space-y-2">
-        <form onSubmit={onSearchSubmit} className="flex pb-4 px-6 space-x-2">
-          <input
-            ref={searchRef}
-            required
-            type="search"
-            value={term}
-            onChange={onSearchChange}
-            className="!w-full"
-          />
-          <button type="submit" className="btn">
-            {loading && <Loader className="text-white" />}
-            {!loading && <FontAwesomeIcon icon="search" />}
-          </button>
-        </form>
-        <ConversationFeed
+      <div className="my-6">
+        <SearchComponent
+          initialTerm={initialTerm}
           project={project}
-          activities={activities}
-          community={community}
-          term={appliedTerm}
-          handlers={handlers}
-        />
-        {!seeAll && numberOfActivitiesBelowThreshold > 0 && (
-          <div className="p-6">
-            <button
-              className="text-tertiary hover:underline"
-              title="See potentially less relevant results"
-              onClick={() => setSeeAll(true)}
-            >
-              See {numberOfActivitiesBelowThreshold} more with lower relevance
-            </button>
-          </div>
-        )}
+          renderResults={renderResults}
+          onChange={onChange}
+          scoreThreshold={0.75}
+          immediatelyVisibleResults={10}
+        ></SearchComponent>
       </div>
     </Frame>
   );

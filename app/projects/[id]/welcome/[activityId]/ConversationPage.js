@@ -46,7 +46,7 @@ export default function ConversationPage({ activity }) {
             </SourceAction>
           )}
         </div>
-        <div className="dark:bg-gray-950 py-4 px-6 w-full bg-gray-50 rounded-lg shadow">
+        <div className="dark:bg-opacity-50 py-4 px-6 w-full bg-gray-50 rounded-lg shadow dark:bg-gray-800">
           <FullThreadView
             project={project}
             key={activity}
@@ -61,7 +61,7 @@ export default function ConversationPage({ activity }) {
         </div>
         <Back />
         <div className="flex flex-col space-y-6 w-full">
-          <div className="text-tertiary">Similar Conversations</div>
+          <div className="text-tertiary text-lg">Similar Conversations</div>
           <React.Suspense fallback={<div>Loading...</div>}>
             <SimilarConversations
               project={project}

@@ -10,8 +10,7 @@ import { projectReducer } from "src/reducers";
 
 import Themed from "src/components/context/Themed";
 
-export default async function Providers({ children, ...props }) {
-  const { project } = props;
+export default async function Providers({ project, session, children }) {
   const initialObject = { project, prompts: [] };
   const [object, dispatch] = useReducer(projectReducer, initialObject);
 
@@ -19,7 +18,7 @@ export default async function Providers({ children, ...props }) {
     <Themed>
       <ProjectContext.Provider value={object}>
         <ProjectDispatchContext.Provider value={dispatch}>
-          <SessionContext session={props.session}>{children}</SessionContext>
+          <SessionContext session={session}>{children}</SessionContext>
         </ProjectDispatchContext.Provider>
       </ProjectContext.Provider>
     </Themed>
