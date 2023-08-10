@@ -1,6 +1,7 @@
 import { prisma } from "src/data/db";
 import GraphConnection from "src/data/graph/Connection";
 import getSimilarConversations from "src/graphql/resolvers/getSimilarConversations";
+import searchConversations from "src/graphql/resolvers/searchConversations";
 
 const resolvers = {
   Query: {
@@ -72,6 +73,18 @@ const resolvers = {
           lastActivityAt: record.get("lastActivityAt"),
         }))
         .filter((record) => record.name);
+    },
+    async searchConversations(parent, args) {
+      const { id: projectId } = parent;
+      const { query } = args;
+      if (query === "do-not-search") {
+        return [];
+      } else {
+        return searchConversations({
+          projectId,
+          query,
+        });
+      }
     },
   },
   Activity: {

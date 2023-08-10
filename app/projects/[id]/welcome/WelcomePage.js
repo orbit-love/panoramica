@@ -34,7 +34,9 @@ export default function WelcomePage() {
         </div>
       </div>
       <div className="flex flex-col px-6 w-full">
-        <div className="text-tertiary text-center">Recent Conversations</div>
+        <div className="text-tertiary mb-6 text-center">
+          Recent Conversations
+        </div>
         <div className="sm:self-center sm:max-w-[700px] flex overflow-y-scroll flex-col h-full">
           <RecentConversations project={project} handlers={handlers} />
         </div>

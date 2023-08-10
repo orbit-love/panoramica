@@ -1,8 +1,8 @@
 import React from "react";
 import ActivityItem from "src/components/domains/public/ActivityItem";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-import GetSimilarConversations from "./GetSimilarConversations.gql";
-import GetActivitiesByIds from "./GetActivitiesByIds.gql";
+import GetSimilarConversationsQuery from "./GetSimilarConversations.gql";
+import GetActivitiesByIdsQuery from "./GetActivitiesByIds.gql";
 
 export default function SimilarConversations({ project, activity, handlers }) {
   const { id: projectId } = project;
@@ -16,7 +16,7 @@ export default function SimilarConversations({ project, activity, handlers }) {
         },
       ],
     },
-  } = useSuspenseQuery(GetSimilarConversations, {
+  } = useSuspenseQuery(GetSimilarConversationsQuery, {
     variables: { projectId, activityId },
   });
 
@@ -32,7 +32,7 @@ export default function SimilarConversations({ project, activity, handlers }) {
     data: {
       projects: [{ activities }],
     },
-  } = useSuspenseQuery(GetActivitiesByIds, {
+  } = useSuspenseQuery(GetActivitiesByIdsQuery, {
     variables: { projectId, ids },
   });
 

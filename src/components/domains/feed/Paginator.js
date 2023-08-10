@@ -11,7 +11,6 @@ export default function Paginator({
   setFirst,
   pageInfo,
 }) {
-  const containerRef = useRef();
   const { hasNextPage } = pageInfo;
   const [lastElement, setLastElement] = useState(null);
 
@@ -49,13 +48,13 @@ export default function Paginator({
   }, [lastElement]);
 
   return (
-    <div ref={containerRef}>
+    <>
       {activities.map((activity, index) => (
         <div key={activity.id} ref={hasNextPage ? setLastElement : null}>
           {eachActivity({ activity, index })}
         </div>
       ))}
       {!hasNextPage && <p className="my-5 text-center">♥</p>}
-    </div>
+    </>
   );
 }

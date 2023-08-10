@@ -18,7 +18,7 @@ export default function ActivityItem({ activity, className, term, handlers }) {
   };
 
   var defaultClassName = classnames(
-    "group/menu bg-gray-50 hover:bg-gray-100 hover:bg-opacity-70 dark:bg-gray-800 dark:bg-opacity-50 flex flex-col p-6 my-6 relative rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 hover:dark:bg-opacity-70"
+    "group/menu bg-gray-50 hover:bg-gray-100 hover:bg-opacity-70 dark:bg-gray-800 dark:bg-opacity-50 flex flex-col p-6 relative rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 hover:dark:bg-opacity-70"
   );
   const viewProps = {
     activity,

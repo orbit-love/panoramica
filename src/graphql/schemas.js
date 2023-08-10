@@ -32,6 +32,8 @@ const typeDefs = gql`
     sources: [String!]! @customResolver(requires: ["id"])
     sourceChannels(source: String!): [SourceChannel!]!
       @customResolver(requires: ["id"])
+    searchConversations(query: String!): [SearchResult!]!
+      @customResolver(requires: ["id"])
   }
 
   type SourceChannel {
@@ -40,7 +42,7 @@ const typeDefs = gql`
     lastActivityAt: String!
   }
 
-  type SimilarConversation {
+  type SearchResult {
     id: ID!
     score: Float!
   }
@@ -62,8 +64,7 @@ const typeDefs = gql`
     timestampInt: Int
     url: String
     summary: String
-    similarConversations: [SimilarConversation!]!
-      @customResolver(requires: ["id"])
+    similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
     project: Project! @relationship(type: "OWNS", direction: IN)
     member: Member! @relationship(type: "DID", direction: IN)
     mentions: [Member!]! @relationship(type: "MENTIONS", direction: OUT)
