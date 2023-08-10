@@ -20,7 +20,9 @@ export default function ConversationFeed({
   variables,
   handlers,
   term,
+  eachActivity,
   findEdges = findActivitiesConnectionEdges,
+  className = "border-t border-gray-300 dark:border-gray-700",
 }) {
   const [first, setFirst] = useState(10);
 
@@ -29,6 +31,19 @@ export default function ConversationFeed({
   });
 
   const [edges, pageInfo] = findEdges(data);
+
+  if (!eachActivity) {
+    eachActivity = ({ activity, index }) => (
+      <ConversationFeedItem
+        project={project}
+        key={activity.id}
+        index={index}
+        activity={activity}
+        handlers={handlers}
+        term={term}
+      />
+    );
+  }
 
   useEffect(() => {
     fetchMore({
@@ -47,21 +62,12 @@ export default function ConversationFeed({
   });
 
   return (
-    <div className="border-t border-gray-300 dark:border-gray-700">
+    <div className={className}>
       <Paginator
         activities={activities}
         setFirst={setFirst}
         pageInfo={pageInfo}
-        eachActivity={({ activity, index }) => (
-          <ConversationFeedItem
-            project={project}
-            key={activity.id}
-            index={index}
-            activity={activity}
-            handlers={handlers}
-            term={term}
-          />
-        )}
+        eachActivity={eachActivity}
       />
     </div>
   );

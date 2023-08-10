@@ -6,6 +6,8 @@ fragment ActivityFields on Activity {
   text
   textHtml
   timestamp
+  summary
+  url
   member {
     globalActor
     globalActorName

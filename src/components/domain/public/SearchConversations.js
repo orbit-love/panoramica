@@ -2,10 +2,9 @@ import React, { useState, useCallback, useRef } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "src/components/domains/ui/Loader";
-import ConversationFeed from "src/components/domain/public/ConversationFeed";
+import ActivityItem from "src/components/domains/public/ActivityItem";
 
-export default function SearchConversations(props) {
-  const { community, project } = props;
+export default function SearchConversations({ project, handlers }) {
   var searchRef = useRef();
 
   const [loading, setLoading] = useState(false);
@@ -82,13 +81,15 @@ export default function SearchConversations(props) {
           </button>
         )}
       </form>
-      {activities.length > 0 && (
-        <ConversationFeed
-          {...props}
-          term={appliedTerm}
-          activities={activities}
-        />
-      )}
+      {activities.length > 0 &&
+        activities.map((activity) => (
+          <ActivityItem
+            key={activity.id}
+            activity={activity}
+            project={project}
+            handlers={handlers}
+          />
+        ))}
       {!seeAll && numberOfActivitiesBelowThreshold > 0 && (
         <div className="p-6">
           <button

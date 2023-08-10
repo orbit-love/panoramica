@@ -1,0 +1,7 @@
+query ($id: ID!) {
+  prismaProject(id: $id) {
+    id
+    name
+    demo
+  }
+}

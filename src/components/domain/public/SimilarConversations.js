@@ -1,28 +1,50 @@
 import React from "react";
 import ActivityItem from "src/components/domains/public/ActivityItem";
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import GetSimilarConversations from "./GetSimilarConversations.gql";
+import GetActivitiesByIds from "./GetActivitiesByIds.gql";
 
-export default function SimilarConversations({
-  project,
-  community,
-  handlers,
-  similarConversations,
-}) {
+export default function SimilarConversations({ project, activity, handlers }) {
+  const { id: projectId } = project;
+  const { id: activityId } = activity;
+
+  const {
+    data: {
+      projects: [
+        {
+          activities: [{ similarConversations }],
+        },
+      ],
+    },
+  } = useSuspenseQuery(GetSimilarConversations, {
+    variables: { projectId, activityId },
+  });
+
   // filter out and limit the number we show
-  var scoreThreshold = 0.8;
-  var activities = similarConversations
+  const scoreThreshold = 0.8;
+  var filteredConversations = similarConversations
     .filter(({ score }) => score > scoreThreshold)
-    .slice(0, 5)
-    .map(({ id }) => community.findActivityById(id));
+    .slice(0, 5);
 
+  var ids = filteredConversations.map(({ id }) => id);
+
+  const {
+    data: {
+      projects: [{ activities }],
+    },
+  } = useSuspenseQuery(GetActivitiesByIds, {
+    variables: { projectId, ids },
+  });
+
+  const conversation = activity;
   return (
     <>
-      {activities.map((activity, index) => (
+      {activities.map((activity) => (
         <ActivityItem
-          project={project}
           key={activity.id}
-          index={index}
+          project={project}
           activity={activity}
-          community={community}
+          conversation={conversation}
           handlers={handlers}
         />
       ))}

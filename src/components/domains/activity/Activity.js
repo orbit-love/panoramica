@@ -90,7 +90,7 @@ export default function Activity({
           {linkTimestamp && onClickTimestamp && (
             <Link
               className="hover:underline"
-              href={onClickTimestamp(activity)}
+              href={onClickTimestamp(activity, conversation)}
               onClick={(e) => e.stopPropagation()}
             >
               <Timestamp />

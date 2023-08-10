@@ -40,6 +40,11 @@ const typeDefs = gql`
     lastActivityAt: String!
   }
 
+  type SimilarConversation {
+    id: ID!
+    score: Float!
+  }
+
   type Activity {
     id: ID!
     actor: String
@@ -56,6 +61,9 @@ const typeDefs = gql`
     timestamp: String
     timestampInt: Int
     url: String
+    summary: String
+    similarConversations: [SimilarConversation!]!
+      @customResolver(requires: ["id"])
     project: Project! @relationship(type: "OWNS", direction: IN)
     member: Member! @relationship(type: "DID", direction: IN)
     mentions: [Member!]! @relationship(type: "MENTIONS", direction: OUT)

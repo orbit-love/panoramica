@@ -1,22 +1,31 @@
 import React from "react";
-import ConversationFeed from "src/components/domain/public/ConversationFeed";
+import ConversationFeed from "src/components/domains/feed/ConversationFeed";
+import GetRecentConversationsQuery from "./GetRecentConversations.gql";
+import ActivityItem from "src/components/domains/public/ActivityItem";
 
-export default function RecentConversations(props) {
-  const { community } = props;
+export default function RecentConversations({ project, handlers }) {
+  const { id: projectId } = project;
+  const query = GetRecentConversationsQuery;
+  const variables = {
+    projectId,
+  };
 
-  const conversationIds = community.activities.map((a) => a.conversationId);
-  var activities = community.activities.filter((activity, index) => {
-    return conversationIds.indexOf(activity.conversationId) === index;
-  });
+  const eachActivity = ({ activity }) => (
+    <ActivityItem
+      key={activity.id}
+      project={project}
+      activity={activity}
+      handlers={handlers}
+    />
+  );
 
-  // filter out conversations with no replies
-  activities = activities.filter((activity) => {
-    const conversationActivity = community.findActivityById(
-      activity.conversationId
-    );
-    const conversation = community.conversations[conversationActivity.id];
-    return conversation?.children?.length > 0;
-  });
-
-  return <ConversationFeed {...props} activities={activities} />;
+  return (
+    <ConversationFeed
+      className=""
+      eachActivity={eachActivity}
+      query={query}
+      variables={variables}
+      handlers={handlers}
+    />
+  );
 }

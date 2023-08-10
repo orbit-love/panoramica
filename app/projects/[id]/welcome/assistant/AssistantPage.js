@@ -11,7 +11,7 @@ import PublicAssistant from "src/components/domain/public/PublicAssistant";
 import { getPrompts } from "src/data/client/fetches/prompts";
 
 export default function AssistantPage() {
-  const { project, community, prompts } = useContext(ProjectContext);
+  const { project, prompts } = useContext(ProjectContext);
   const dispatch = useContext(ProjectDispatchContext);
 
   useEffect(() => {
@@ -32,7 +32,6 @@ export default function AssistantPage() {
       <div className="text-tertiary flex px-6 space-x-4 text-center">
         <Link
           className="hover:underline"
-          onClick={() => setShowSearch(true)}
           href={`/projects/${project.id}/welcome`}
         >
           Search Conversations
@@ -40,11 +39,7 @@ export default function AssistantPage() {
         <div className="font-semibold">AI Assistant</div>
       </div>
       <div className="flex flex-col space-y-2 sm:max-w-[700px] sm:self-center w-full">
-        <PublicAssistant
-          project={project}
-          community={community}
-          prompts={prompts}
-        />
+        <PublicAssistant project={project} prompts={prompts} />
       </div>
     </div>
   );

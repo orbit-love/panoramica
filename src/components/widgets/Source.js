@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 

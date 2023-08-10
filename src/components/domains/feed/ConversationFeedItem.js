@@ -9,7 +9,8 @@ import Toolbar from "src/components/domains/conversation/Toolbar";
 export default function ConversationFeedItem(props) {
   var { index, activity, handlers, term } = props;
 
-  const { bookmarks } = useContext(BookmarksContext);
+  const bookmarksContext = useContext(BookmarksContext);
+  const bookmarks = bookmarksContext?.bookmarks;
 
   const conversation = activity.conversation;
   const bookmark = bookmarks?.find(

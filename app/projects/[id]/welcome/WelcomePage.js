@@ -2,13 +2,20 @@
 
 import React, { useContext } from "react";
 import Link from "next/link";
-
 import { ProjectContext } from "src/components/context/ProjectContext";
 import SearchConversations from "src/components/domain/public/SearchConversations";
 import RecentConversations from "src/components/domain/public/RecentConversations";
 
 export default function WelcomePage() {
-  const { project, community } = useContext(ProjectContext);
+  const { project } = useContext(ProjectContext);
+
+  const onClickTimestamp = (_, conversation) =>
+    `/projects/${project.id}/welcome/${conversation.id}`;
+  const handlers = {
+    onCLickMember: () => {},
+    onClickChannel: () => {},
+    onClickTimestamp,
+  };
 
   return (
     <>
@@ -23,13 +30,13 @@ export default function WelcomePage() {
           </Link>
         </div>
         <div className="flex flex-col space-y-2 sm:max-w-[700px] sm:self-center w-full">
-          <SearchConversations project={project} community={community} />
+          <SearchConversations project={project} handlers={handlers} />
         </div>
       </div>
       <div className="flex flex-col px-6 w-full">
         <div className="text-tertiary text-center">Recent Conversations</div>
         <div className="sm:self-center sm:max-w-[700px] flex overflow-y-scroll flex-col h-full">
-          <RecentConversations project={project} community={community} />
+          <RecentConversations project={project} handlers={handlers} />
         </div>
       </div>
     </>

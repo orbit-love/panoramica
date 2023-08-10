@@ -1,13 +1,14 @@
 import { prisma } from "src/data/db";
 import GraphConnection from "src/data/graph/Connection";
+import getSimilarConversations from "src/graphql/resolvers/getSimilarConversations";
 
 const resolvers = {
   Query: {
-    prismaUser: async (parent, args, contextValue, info) => {
+    prismaUser: async (parent, args, contextValue) => {
       const { user } = contextValue;
       return user;
     },
-    prismaProjects: async (parent, args, contextValue, info) => {
+    prismaProjects: async (parent, args, contextValue) => {
       const { user } = contextValue;
       var projects = await prisma.project.findMany({
         select: selectClause,
@@ -19,7 +20,7 @@ const resolvers = {
 
       return projects;
     },
-    prismaProject: async (parent, args, contextValue, info) => {
+    prismaProject: async (parent, args, contextValue) => {
       const { user } = contextValue;
       const { id } = args;
       const project = await prisma.project.findFirst({
@@ -71,6 +72,21 @@ const resolvers = {
           lastActivityAt: record.get("lastActivityAt"),
         }))
         .filter((record) => record.name);
+    },
+  },
+  Activity: {
+    async similarConversations(parent) {
+      const { id: activityId, project, descendants } = parent;
+      if (!project || !descendants) {
+        // these fields must be included in the query
+        return null;
+      }
+      const { id: projectId } = project;
+      return getSimilarConversations({
+        projectId,
+        activityId,
+        descendants,
+      });
     },
   },
 };

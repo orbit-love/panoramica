@@ -1,0 +1,17 @@
+query ($projectId: ID!, $activityId: ID!) {
+  projects(where: { id: $projectId }) {
+    activities(where: { id: $activityId }) {
+      similarConversations {
+        id
+        score
+      }
+      project {
+        id
+      }
+      descendants {
+        id
+        textHtml
+      }
+    }
+  }
+}
