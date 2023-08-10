@@ -130,6 +130,7 @@ export default function Conversation({
           {project.modelName && (
             <Chat
               project={project}
+              community={community}
               subContext={subContext}
               examplePrompts={prompts}
             />

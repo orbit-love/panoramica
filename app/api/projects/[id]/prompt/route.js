@@ -4,7 +4,10 @@ import { StreamingTextResponse } from "ai";
 
 import { checkApp, authorizeProject } from "src/auth";
 
-import { getAnswerStream } from "src/integrations/ai/answer";
+import {
+  getFunctionAnswer,
+  getAnswerStreamFromFunctionOutput,
+} from "src/integrations/ai/answer";
 
 export async function POST(request, context) {
   const user = await checkApp();
@@ -15,7 +18,7 @@ export async function POST(request, context) {
   var { id } = context.params;
 
   // Alternating messages from Human and AI
-  var { chat, subContext } = await request.json();
+  var { chat, subContext, previousFunctionOutput } = await request.json();
 
   // q is supposedely the last question from the Human
   var q = chat.pop();
@@ -36,26 +39,42 @@ export async function POST(request, context) {
       );
     }
 
-    const stream = await getAnswerStream({
-      project,
-      chat,
-      q,
-      subContext,
-    });
+    if (previousFunctionOutput) {
+      const stream = await getAnswerStreamFromFunctionOutput({
+        project,
+        chat,
+        q,
+        subContext,
+        functionOutput: previousFunctionOutput,
+      });
 
-    if (!stream) {
-      return NextResponse.json(
-        {
-          message:
-            "Sorry, we couldn't process your request because the traffic is currently too high",
-        },
-        {
-          status: 429,
-        }
-      );
+      if (stream) {
+        return new StreamingTextResponse(stream);
+      }
+    } else {
+      const result = await getFunctionAnswer({
+        project,
+        chat,
+        q,
+        subContext,
+      });
+
+      if (result) {
+        return NextResponse.json({
+          result,
+        });
+      }
     }
 
-    return new StreamingTextResponse(stream);
+    return NextResponse.json(
+      {
+        message:
+          "Sorry, we couldn't process your request because the traffic is currently too high",
+      },
+      {
+        status: 429,
+      }
+    );
   } catch (err) {
     console.log(err);
     return NextResponse.json(

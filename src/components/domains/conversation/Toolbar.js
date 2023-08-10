@@ -12,12 +12,13 @@ export default function Toolbar({
   canExpand,
   expanded,
   bookmark,
+  minimal = false,
 }) {
   const expandIcon = expanded ? "chevron-up" : "chevron-down";
   const buttonClasses = "hover:text-tertiary";
   return (
     <div className="group-hover/menu:flex bg-opacity-80 hidden absolute bottom-3 right-6 py-[0.25rem] px-5 space-x-4 bg-gray-200 border-gray-300 rounded-full border dark:bg-gray-900 dark:border-gray-700">
-      <SimilarAction activity={activity} />
+      {!minimal && <SimilarAction activity={activity} />}
       <BookmarkAction
         project={project}
         activity={activity}
@@ -30,11 +31,11 @@ export default function Toolbar({
           <FontAwesomeIcon icon={expandIcon} />
         </button>
       )}
-      {
+      {!minimal && (
         <button onClick={onOpen} className={buttonClasses}>
           <FontAwesomeIcon icon="arrow-right" />
         </button>
-      }
+      )}
     </div>
   );
 }

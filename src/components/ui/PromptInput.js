@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "../domains/ui/Loader";
 
 export default function PromptInput(props) {
-  let { prompt, fetchPrompt, setPrompt, disabled, placeholder, loading } =
+  let { prompt, callFunction, setPrompt, disabled, placeholder, loading } =
     props;
   let textareaRef = useRef();
   let formRef = useRef();
@@ -18,7 +18,7 @@ export default function PromptInput(props) {
   return (
     <form
       ref={formRef}
-      onSubmit={fetchPrompt}
+      onSubmit={callFunction}
       onKeyDown={onKeyDown}
       className="flex flex-col space-y-3 w-full"
     >

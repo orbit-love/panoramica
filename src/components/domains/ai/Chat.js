@@ -1,14 +1,15 @@
 import React, { useState, useCallback, useRef } from "react";
-import classnames from "classnames";
 
 import ErrorBoundary from "src/components/widgets/base/ErrorBoundary";
 import PromptInput from "src/components/ui/PromptInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PromptPicker from "./PromptPicker";
 import { AIMessage, HumanMessage } from "src/components/domains/ai";
+import FunctionOutput from "./FunctionOutput";
 
 export default function Chat({
   project,
+  community,
   subContext,
   examplePrompts,
   placeholder,
@@ -19,6 +20,7 @@ export default function Chat({
   let [streaming, setStreaming] = useState(false);
   let [messages, setMessages] = useState([]);
   let [error, setError] = useState("");
+  let [functionOutput, setFunctionOutput] = useState();
 
   // An odd length means we're waiting for the AI to start streaming an answer
   let loading = messages.length % 2 === 1;
@@ -28,6 +30,7 @@ export default function Chat({
   };
 
   const reset = () => {
+    setFunctionOutput(undefined);
     setStreaming(false);
     setError("");
     setMessages([]);
@@ -52,18 +55,17 @@ export default function Chat({
     [setPrompt]
   );
 
-  const fetchPrompt = async (e) => {
-    e.preventDefault();
-    if (prompt === "") return;
+  const cancelPromptWithMessage = (message) => {
+    popMessage();
+    setError(message || "Sorry, something went wrong. Please try again.");
+  };
 
-    messageRef.current.scrollIntoView({});
-
-    // Append the prompt into the messages and clear it from the input
-    appendMessage(prompt);
-    setPrompt("");
-    setError("");
-
-    const payload = { subContext, chat: [...messages, prompt] };
+  const fetchPrompt = async (previousFunctionOutput) => {
+    const payload = {
+      subContext,
+      chat: [...messages, prompt],
+      previousFunctionOutput,
+    };
 
     var response = await fetch(`/api/projects/${project.id}/prompt`, {
       body: JSON.stringify(payload),
@@ -75,11 +77,13 @@ export default function Chat({
     });
 
     if (!response.ok) {
-      popMessage();
-      const data = await response.json();
-      setError(
-        data.message || "Sorry, something went wrong. Please try again."
-      );
+      try {
+        const data = await response.json();
+        cancelPromptWithMessage(data.message);
+      } catch (err) {
+        console.log(err);
+        cancelPromptWithMessage();
+      }
       return;
     }
 
@@ -95,10 +99,52 @@ export default function Chat({
       if (done) break;
       // Progressively complete the last response
       streamToMessages(text);
-      messageRef.current.scrollIntoView({});
+      messageRef.current?.scrollIntoView({});
     }
 
     setStreaming(false);
+  };
+
+  const callFunction = async (e) => {
+    e.preventDefault();
+
+    if (prompt === "") return;
+
+    messageRef.current?.scrollIntoView({});
+
+    // Append the prompt into the messages and clear it from the input
+    appendMessage(prompt);
+    setPrompt("");
+    setError("");
+    setFunctionOutput(undefined);
+
+    const payload = { subContext, chat: [...messages, prompt] };
+    const response = await fetch(`/api/projects/${project.id}/prompt`, {
+      body: JSON.stringify(payload),
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+
+    try {
+      const data = await response.json();
+      if (!response.ok) {
+        return cancelPromptWithMessage(data.message);
+      }
+
+      const result = data.result;
+      if (result.name === "answer") {
+        return appendMessage(result.output);
+      }
+
+      setFunctionOutput(result);
+      fetchPrompt(result);
+    } catch (err) {
+      console.log(err);
+      cancelPromptWithMessage();
+    }
   };
 
   placeholder =
@@ -146,13 +192,18 @@ export default function Chat({
               </AIMessage>
             </div>
           )}
-
           {error && <div className="py-4 text-red-500">{error}</div>}
-
+          {functionOutput && (
+            <FunctionOutput
+              project={project}
+              community={community}
+              functionOutput={functionOutput}
+            />
+          )}
           <PromptInput
             prompt={prompt}
             setPrompt={setPrompt}
-            fetchPrompt={fetchPrompt}
+            callFunction={callFunction}
             disabled={loading || streaming}
             loading={loading}
           />

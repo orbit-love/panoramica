@@ -8,7 +8,7 @@ import Toolbar from "src/components/domains/conversation/Toolbar";
 import { BookmarksContext } from "src/components/context/BookmarksContext";
 
 export default function ConversationFeedItem(props) {
-  var { index, activity, community, handlers, term } = props;
+  var { index, activity, community, handlers, minimal, term } = props;
 
   const { bookmarks } = useContext(BookmarksContext);
 
@@ -29,7 +29,6 @@ export default function ConversationFeedItem(props) {
   const onOpen = (e) => {
     handlers.onClickActivity(e, conversationActivity);
   };
-
   const onExpand = () => {
     let selection = window.getSelection().toString();
     if (canExpand && selection.length <= 0) {
@@ -66,6 +65,7 @@ export default function ConversationFeedItem(props) {
         setExpanded={setExpanded}
         onOpen={onOpen}
         onExpand={onExpand}
+        minimal={minimal}
         bookmark={bookmark}
       />
     </div>

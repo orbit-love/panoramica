@@ -141,7 +141,7 @@ export const createDocumentationEmbeddings = async ({ project, pages }) => {
           // Keeping the markdown body so that it can be used as context for the LLM
           // The context would then be richer with links, headings and more
           // TODO: Also summarize with AI
-          markdown: turndownService.turndown(page.body),
+          body: turndownService.turndown(page.body),
           contentLength,
           timestamp,
         },

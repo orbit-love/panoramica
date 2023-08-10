@@ -10,6 +10,7 @@ export default function ConversationFeed({
   activities,
   community,
   handlers,
+  minimal,
   term,
 }) {
   // if multiple activities are in the same conversation, only show
@@ -33,6 +34,7 @@ export default function ConversationFeed({
             activity={activity}
             community={community}
             handlers={handlers}
+            minimal={minimal}
             term={term}
           />
         )}
