@@ -23,7 +23,7 @@ export default function List({ projects, projectUrl }) {
               <span>{project.name}</span>
             </Link>
           </div>
-          {user?.admin && <span>{`${project.user.email}`}</span>}
+          {user?.admin && <span>{`${project.prismaUser.email}`}</span>}
         </div>
       ))}
     </div>

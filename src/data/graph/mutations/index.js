@@ -1,18 +1,26 @@
 import utils from "src/utils";
 
-export async function mergeProject({ project, tx }) {
+export async function mergeProject({ project, user, tx }) {
   const projectId = project.id;
+  const { id: userId, email } = user;
 
   // merge project node
-  await tx.run(`MERGE (p:Project { id: $projectId }) RETURN p`, { projectId });
+  await tx.run(
+    `MERGE (p:Project { id: $projectId })
+      WITH p
+      MERGE (p)<-[:CREATED]-(u:User { id: $userId })
+      WITH u
+        SET u.email = $email`,
+    { projectId, userId, email }
+  );
   console.log("Memgraph: Created project");
 }
 
-export async function setupProject({ project, tx }) {
-  await mergeProject({ project, tx });
+export async function setupProject({ project, user, tx }) {
+  await mergeProject({ project, user, tx });
 
   const projectId = project.id;
-  // delete previous nodes and relationships
+  // delete existing nodes and relationships
   await tx.run(
     `MATCH (p:Project { id: $projectId })-[*..4]->(n)
         DETACH DELETE n`,
@@ -24,7 +32,9 @@ export async function setupProject({ project, tx }) {
 // set up constraints and indexes for memgraph
 export async function setupConstraints({ tx }) {
   // ensure only one project with the same id is ever created
-  await tx.run(`CREATE CONSTRAINT ON (p:Parent) ASSERT p.id IS UNIQUE`);
+  await tx.run(`CREATE CONSTRAINT ON (p:Project) ASSERT p.id IS UNIQUE`);
+  // ensure only one user id is ever created
+  await tx.run(`CREATE CONSTRAINT ON (u:User) ASSERT u.id IS UNIQUE`);
   // create indices for faster lookups
   await tx.run(`CREATE INDEX ON :Project(id)`);
   await tx.run(`CREATE INDEX ON :Member(globalActor)`);
@@ -34,7 +44,7 @@ export async function setupConstraints({ tx }) {
   console.log("Memgraph: Created constraints");
 }
 
-export async function syncActivities({ tx, project, activities }) {
+export async function syncActivities({ tx, project, user, activities }) {
   const projectId = project.id;
 
   for (let activity of activities) {

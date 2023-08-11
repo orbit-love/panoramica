@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     // delete data from the graph
     await graphConnection.run(
       `MATCH (p:Project { id: $projectId })-[*..4]->(n)
-        DETACH DELETE n`,
+        DETACH DELETE p, n`,
       { projectId }
     );
 

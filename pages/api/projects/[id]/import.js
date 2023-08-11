@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     }
 
     await session.writeTransaction(async (tx) => {
-      await setupProject({ tx, project });
+      await setupProject({ tx, project, user });
     });
 
     // import a maximum of 1,000 activities; start at page 1

@@ -1,5 +1,7 @@
 import { prisma } from "src/data/db";
 import { check, redirect, authorizeProject } from "src/auth";
+import { graph } from "src/data/db";
+import { mergeProject } from "src/data/graph/mutations";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
@@ -41,6 +43,12 @@ export default async function handler(req, res) {
         pineconeApiEnv: body.pineconeApiEnv,
         pineconeIndexName: body.pineconeIndexName,
       },
+    });
+
+    // sync any changes to the graph
+    const session = graph.session();
+    await session.writeTransaction(async (tx) => {
+      await mergeProject({ tx, project, user });
     });
 
     res.status(200).json({ result: { project } });

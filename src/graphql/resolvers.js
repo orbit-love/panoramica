@@ -116,9 +116,6 @@ const whereClause = (id, user) => {
       {
         user: { email: user.email },
       },
-      {
-        demo: true,
-      },
     ];
   }
   return where;
@@ -135,21 +132,8 @@ const selectClause = {
   modelName: true,
   user: {
     select: {
+      id: true,
       email: true,
     },
   },
-};
-
-const toEdges = (nodes, first) => {
-  var hasNextPage = nodes.length > first;
-  nodes = nodes.slice(0, first);
-  return {
-    edges: nodes.map((node) => ({
-      cursor: node.id,
-      node,
-    })),
-    pageInfo: {
-      hasNextPage,
-    },
-  };
 };

@@ -3,6 +3,7 @@ query {
     id
     name
     prismaUser {
+      id
       email
     }
   }
