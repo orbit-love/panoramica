@@ -21,17 +21,15 @@ export default function FullThreadView(props) {
   );
 }
 
-function FullThreadViewInner(props) {
-  let {
-    activity,
-    conversation,
-    descendants,
-    depth = 0,
-    handlers,
-    term,
-    linkAllTimestamps,
-  } = props;
-
+function FullThreadViewInner({
+  activity,
+  conversation,
+  descendants,
+  depth = 0,
+  handlers,
+  term,
+  linkAllTimestamps,
+}) {
   // use the descendants of the conversation to find the parent and replies
   // of the current activity - this information is not fetched at query time
   // because the depth is arbitrary

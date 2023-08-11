@@ -1,10 +1,7 @@
-import React, { useState } from "react";
-import { createPortal } from "react-dom";
+import React from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import Modal from "src/components/ui/Modal";
-import ThemeSelector from "src/components/ui/ThemeSelector";
+import ThemeAction from "src/components/domains/bookmarks/ThemeAction";
 
 export default function Settings({
   project,
@@ -13,12 +10,6 @@ export default function Settings({
   resetWidgets,
   user,
 }) {
-  const [editingTheme, setEditingTheme] = useState(false);
-
-  const toggleEditingTheme = () => {
-    setEditingTheme(!editingTheme);
-  };
-
   const onClickEditPrompts = (e) => {
     e.preventDefault();
     addWidget("edit-prompts", "EditPrompts", {
@@ -70,15 +61,13 @@ export default function Settings({
             Edit Prompts
           </button>
           {user && (
-            <>
-              <button className="hover:underline" onClick={onClickUser}>
-                API Settings
-              </button>
-            </>
+            <button className="hover:underline" onClick={onClickUser}>
+              API Settings
+            </button>
           )}
-          <button className="hover:underline" onClick={toggleEditingTheme}>
-            Change Theme
-          </button>
+          <ThemeAction>
+            <div className="cursor-pointer hover:underline">Change Theme</div>
+          </ThemeAction>
           <button className="hover:underline" onClick={resetWidgets}>
             Reset Layout
           </button>
@@ -91,13 +80,6 @@ export default function Settings({
           </Link>
         </div>
       </div>
-      {editingTheme &&
-        createPortal(
-          <Modal title="Change Theme" close={toggleEditingTheme}>
-            <ThemeSelector />
-          </Modal>,
-          document.body
-        )}
     </>
   );
 }

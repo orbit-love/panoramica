@@ -11,12 +11,10 @@ import SourceAction from "../domains/conversation/SourceAction";
 
 export default function Conversation({
   project,
-  community,
   api,
   containerApi,
   params,
   handlers,
-  dispatch,
   prompts,
 }) {
   var { activity } = params;
@@ -75,12 +73,11 @@ export default function Conversation({
       }
       // update the summary on the activity object and in the project context
       activity.summary = allText.length > 0 ? allText : defaultSummary;
-      dispatch({ type: "updated", community });
       setLastSummary(activity.summary);
     } catch (e) {
       console.error(e);
     }
-  }, [project, activity, setLastSummary, defaultSummary, community, dispatch]);
+  }, [project, activity, setLastSummary, defaultSummary]);
 
   useEffect(() => {
     if (!activity.summary) {
@@ -122,7 +119,6 @@ export default function Conversation({
           <FullThreadView
             activity={activity}
             conversation={activity}
-            community={community}
             handlers={handlers}
           />
         </div>
