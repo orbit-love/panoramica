@@ -2,7 +2,13 @@ import React from "react";
 import NumberStats from "src/components/domains/member/NumberStats";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 
-export default function CompactMember({ member, metrics, onClick }) {
+export default function CompactMember({
+  member,
+  metrics,
+  activityCount,
+  connectionCount,
+  onClick,
+}) {
   return (
     <button onClick={onClick} className="group flex justify-between space-x-1">
       <div className="flex items-center space-x-1">
@@ -11,8 +17,8 @@ export default function CompactMember({ member, metrics, onClick }) {
       <div className="mx-auto" />
       {metrics && (
         <NumberStats
-          activityCount={member.activitiesAggregate.count}
-          connectionCount={0}
+          activityCount={activityCount}
+          connectionCount={connectionCount}
         />
       )}
     </button>

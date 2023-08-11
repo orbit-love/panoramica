@@ -183,6 +183,64 @@ export async function syncActivities({ tx, project, user, activities }) {
     mentions.length
   );
 
+  // for every member that did an activity in the batch
+  // find all the places they replied to or mentioned another member
+  // and merge an edge between them, adding the activities to the edge
+  // the activity ids are a set and so this is idempotent, whereas just
+  // incrementing the weight would not be; at the end, set the weight
+  // and the lastInteractedAt timestamp
+  // this is undirected so that there is only one edge between two people and
+  // to create a directional version messaged / messagedBy, only the
+  // MERGE (m1)-[k:MESSAGED]-(m2) part needs a direction into m2
+  const mergeMessagedEdge = async ({ tx, match }) => {
+    return await tx.run(
+      `MATCH (p:Project { id: $projectId })
+        WITH p, $activities AS batch
+          UNWIND batch AS activity
+            MATCH
+              (p)-[:OWNS]->(a:Activity { id: activity.activityId })
+            WITH a
+              MATCH (a)<-[:DID]-(m1:Member)
+            WITH m1
+              ${match}
+              WHERE m1 <> m2
+              MATCH (a1)-[:PART_OF]->(c:Activity)
+              MERGE (m1)-[k:MESSAGED]-(m2)
+              ON CREATE SET k.activities = [a1.id],
+                            k.conversations = [c.id],
+                            k.activityCount = 1,
+                            k.conversationCount = 1,
+                            k.lastInteractedAt = a1.timestamp
+              ON MATCH SET k.activities = CASE
+                                          WHEN NOT a1.id IN k.activities THEN k.activities + a1.id
+                                          ELSE k.activities
+                                          END,
+                           k.conversations = CASE
+                                          WHEN NOT c.id IN k.conversations THEN k.conversations + c.id
+                                          ELSE k.conversations
+                                          END,
+                           k.activityCount = SIZE(k.activities),
+                           k.conversationCount = SIZE(k.conversations),
+                           k.lastInteractedAt = CASE
+                                                WHEN k.lastInteractedAt IS NULL OR a1.timestamp > k.lastInteractedAt THEN a1.timestamp
+                                                ELSE k.lastInteractedAt
+                                                END`,
+      { activities, projectId }
+    );
+  };
+
+  const matchByReply = `MATCH (m1)-[:DID]->(a1:Activity)-[:REPLIES_TO]->(a2:Activity)<-[:DID]-(m2:Member)`;
+  await mergeMessagedEdge({ tx, match: matchByReply });
+  console.log(
+    "Memgraph: Created (:Member)-[:MESSAGED]-(:Member) edges for replies"
+  );
+
+  const matchByMention = `MATCH (m1)-[:DID]->(a1:Activity)-[:MENTIONS]->(m2:Member)`;
+  await mergeMessagedEdge({ tx, match: matchByMention });
+  console.log(
+    "Memgraph: Created (:Member)-[:MESSAGED]-(:Member) edges for mentions"
+  );
+
   const finalResult = await tx.run(
     `MATCH (p:Project { id: $projectId })
       WITH p, $activities AS batch

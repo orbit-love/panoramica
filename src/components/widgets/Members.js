@@ -44,8 +44,7 @@ export default function Members({ project, addWidget }) {
     });
   }, [first, fetchMore]);
 
-  var members = edges.map((edge) => edge.node);
-  members = members.sort((a, b) => {
+  const sortedEdges = edges.sort(({ node: a }, { node: b }) => {
     return b.activitiesAggregate.count - a.activitiesAggregate.count;
   });
 
@@ -55,18 +54,20 @@ export default function Members({ project, addWidget }) {
         <div className="flex justify-between items-baseline w-full">
           <div className="text-lg">Members</div>
           <div className="">
-            Showing {members.length}/{totalCount}
+            Showing {edges.length}/{totalCount}
           </div>
         </div>
       </Header>
       <div className="flex flex-col px-6 space-y-4">
         <div className="flex flex-col">
-          {members.map((member) => (
+          {sortedEdges.map(({ node: member }) => (
             <CompactMember
               key={member.globalActor}
               member={member}
               metrics={true}
               onClick={onClickMember(member)}
+              activityCount={member.activitiesAggregate.count}
+              connectionCount={member.messagedWithConnection.totalCount}
             />
           ))}
         </div>

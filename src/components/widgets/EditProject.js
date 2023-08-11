@@ -78,7 +78,7 @@ export default function EditProject({ project, dispatch }) {
             {orbitImportReady(project) && (
               <>
                 <button className="hover:underline" onClick={refreshProject}>
-                  Import latest data from Orbit
+                  Refresh latest data from Orbit
                 </button>
                 <button className="hover:underline" onClick={importProject}>
                   Reimport all data from Orbit

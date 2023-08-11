@@ -127,12 +127,27 @@ const typeDefs = gql`
     descendants: [Activity!]! @relationship(type: "PART_OF", direction: IN)
   }
 
+  interface Messaged @relationshipProperties {
+    activities: [String!]!
+    activityCount: Int!
+    conversations: [String!]!
+    conversationCount: Int!
+    lastInteractedAt: String!
+  }
+
   type Member @query(read: false, aggregate: false) @mutation(operations: []) {
     id: ID! @alias(property: "globalActor")
     globalActor: String!
     globalActorName: String!
     project: Project! @relationship(type: "OWNS", direction: IN)
     activities: [Activity!]! @relationship(type: "DID", direction: OUT)
+    messagedWith: [Member!]!
+      @relationship(
+        type: "MESSAGED"
+        direction: IN
+        queryDirection: DEFAULT_UNDIRECTED
+        properties: "Messaged"
+      )
   }
 `;
 export default typeDefs;

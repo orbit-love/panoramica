@@ -8,6 +8,9 @@ query ($projectId: ID!, $first: Int!, $after: String) {
           activitiesAggregate {
             count
           }
+          messagedWithConnection {
+            totalCount
+          }
         }
       }
       pageInfo {

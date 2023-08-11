@@ -19,20 +19,6 @@ export default function Member({ project, params, handlers }) {
     memberId,
   };
 
-  const findEdges = ({
-    projects: [
-      {
-        members: [
-          {
-            activitiesConnection: { edges, pageInfo },
-          },
-        ],
-      },
-    ],
-  }) => {
-    return [edges, pageInfo];
-  };
-
   return (
     <Frame>
       <Header>
@@ -41,13 +27,13 @@ export default function Member({ project, params, handlers }) {
         </div>
       </Header>
       <div className="flex flex-col space-y-3">
-        {/* <CompactConnections
+        <CompactConnections
+          project={project}
           member={member}
-          community={community}
           onClick={(e, member, connection) =>
             onClickConnection(e, member, connection)
           }
-        /> */}
+        />
         <ConversationFeed
           findEdges={findEdges}
           handlers={handlers}
@@ -59,3 +45,17 @@ export default function Member({ project, params, handlers }) {
     </Frame>
   );
 }
+
+const findEdges = ({
+  projects: [
+    {
+      members: [
+        {
+          activitiesConnection: { edges, pageInfo },
+        },
+      ],
+    },
+  ],
+}) => {
+  return [edges, pageInfo];
+};
