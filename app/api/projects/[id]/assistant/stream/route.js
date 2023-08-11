@@ -4,10 +4,7 @@ import { StreamingTextResponse } from "ai";
 
 import { checkApp, authorizeProject } from "src/auth";
 
-import {
-  getFunctionAnswer,
-  getAnswerStreamFromFunctionOutput,
-} from "src/integrations/ai/answer";
+import { getAnswerStreamFromFunctionOutput } from "src/integrations/ai/answer";
 
 export async function POST(request, context) {
   const user = await checkApp();
@@ -39,31 +36,16 @@ export async function POST(request, context) {
       );
     }
 
-    if (previousFunctionOutput) {
-      const stream = await getAnswerStreamFromFunctionOutput({
-        project,
-        chat,
-        q,
-        subContext,
-        functionOutput: previousFunctionOutput,
-      });
+    const stream = await getAnswerStreamFromFunctionOutput({
+      project,
+      chat,
+      q,
+      subContext,
+      functionOutput: previousFunctionOutput,
+    });
 
-      if (stream) {
-        return new StreamingTextResponse(stream);
-      }
-    } else {
-      const result = await getFunctionAnswer({
-        project,
-        chat,
-        q,
-        subContext,
-      });
-
-      if (result) {
-        return NextResponse.json({
-          result,
-        });
-      }
+    if (stream) {
+      return new StreamingTextResponse(stream);
     }
 
     return NextResponse.json(

@@ -60,14 +60,14 @@ export default function Chat({
     setError(message || "Sorry, something went wrong. Please try again.");
   };
 
-  const fetchPrompt = async (previousFunctionOutput) => {
+  const streamAssistantAnswer = async (previousFunctionOutput) => {
     const payload = {
       subContext,
       chat: [...messages, prompt],
       previousFunctionOutput,
     };
 
-    var response = await fetch(`/api/projects/${project.id}/prompt`, {
+    var response = await fetch(`/api/projects/${project.id}/assistant/stream`, {
       body: JSON.stringify(payload),
       method: "POST",
       headers: {
@@ -119,14 +119,17 @@ export default function Chat({
     setFunctionOutput(undefined);
 
     const payload = { subContext, chat: [...messages, prompt] };
-    const response = await fetch(`/api/projects/${project.id}/prompt`, {
-      body: JSON.stringify(payload),
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      `/api/projects/${project.id}/assistant/function`,
+      {
+        body: JSON.stringify(payload),
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     try {
       const data = await response.json();
@@ -140,7 +143,7 @@ export default function Chat({
       }
 
       setFunctionOutput(result);
-      fetchPrompt(result);
+      streamAssistantAnswer(result);
     } catch (err) {
       console.log(err);
       cancelPromptWithMessage();

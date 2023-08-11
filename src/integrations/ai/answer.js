@@ -62,7 +62,6 @@ const callLLM = async ({
     streaming: streaming,
   });
 
-  console.log(formattedPrompt);
   if (streaming) {
     const { stream, handlers } = LangChainStream();
     const prompt = PromptTemplate.fromTemplate(promptTemplate);
@@ -107,13 +106,15 @@ export const getFunctionAnswer = async ({ project, q, chat, subContext }) => {
     promptArgs,
     promptTemplate: FUNCTION_PROMPT_TEMPLATE,
   });
-
   if (!result) {
+    // Rate Limit issue
     return;
   }
 
   const functionOutput = await executeFunction({ project, input: result });
-  !functionOutput && console.log("No function output");
+  if (!functionOutput) {
+    throw new Error(`[Assistant] Could not execute the function: ${result}`);
+  }
 
   return functionOutput;
 };

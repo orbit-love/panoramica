@@ -26,7 +26,7 @@ export default function PromptInput(props) {
         className="flex relative flex-1 items-stretch h-full md:flex-col"
         role="presentation"
       >
-        <div className="flex flex-col w-full py-[10px] flex-grow md:py-4 md:pl-4 relative border border-black/10 bg-gray-100 dark:border-gray-900/50 dark:bg-gray-800 rounded-md shadow-xs dark:shadow-xs">
+        <div className="flex flex-col w-full py-[10px] flex-grow md:py-4 md:pl-4 relative border border-gray/10 bg-gray-100 dark:border-gray-900/50 dark:bg-gray-800 rounded-md shadow-xs dark:shadow-xs">
           <textarea
             ref={textareaRef}
             value={prompt}

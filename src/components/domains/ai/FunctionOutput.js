@@ -9,11 +9,11 @@ export default function FunctionOutput({ project, community, functionOutput }) {
     const activities = docs.map(({ id }) => community.findActivityById(id));
     const handlers = { onClickMember: () => {} };
     return (
-      <div className="mt-4 flex-col space-y-1">
+      <div className="mt-1 flex-col space-y-1">
         <h4 className="text-tertiary">
           Conversations added to the current context
         </h4>
-        <small>Search term: "{searchTerm}"</small>
+        <small className="block pb-1">Search term: "{searchTerm}"</small>
         <ConversationFeed
           project={project}
           activities={activities}
@@ -27,9 +27,9 @@ export default function FunctionOutput({ project, community, functionOutput }) {
 
   const documentationContext = (searchTerm, docs) => {
     return (
-      <div className="mt-4">
+      <div className="my-1">
         <h4 className="text-tertiary">
-          Documentation Pages added to the current context:
+          Documentation pages in the current context:
         </h4>
         <small>Search term: "{searchTerm}"</small>
         <ul className="flex-col mt-4">
@@ -46,9 +46,12 @@ export default function FunctionOutput({ project, community, functionOutput }) {
   };
 
   return (
-    <div className="p-4 rounded-lg shadow mb-1">
+    <div className="px-4 py-2 rounded-t-lg border-t-1 bg-gray-50 dark:bg-gray-900">
       <div className="flex justify-center">
-        <button className="text-tertiary" onClick={(_) => setClosed(!closed)}>
+        <button
+          className="w-full text-tertiary"
+          onClick={(_) => setClosed(!closed)}
+        >
           {closed && <FontAwesomeIcon icon="fa-chevron-up" />}
           {!closed && <FontAwesomeIcon icon="fa-chevron-down" />}
         </button>

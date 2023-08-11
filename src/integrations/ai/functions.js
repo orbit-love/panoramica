@@ -7,17 +7,17 @@ import { PROJECT_CONVERSATIONS_CONTEXT_INTRO } from "./templates";
 const SIMILARY_SCORE_THRESHOLD = 0.78;
 
 export const executeFunction = async ({ project, input }) => {
-  console.log(`[LLM Function] received input: ${input}`);
+  console.log(`[Assistant] Executing function: ${input}`);
   let jsonFunction;
   try {
     jsonFunction = JSON.parse(input);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return;
   }
 
   if (!jsonFunction.name || !jsonFunction.args) {
-    console.log("Malformed JSON function");
+    console.error("[Assistant] Malformed JSON function");
     return;
   }
 
@@ -42,6 +42,8 @@ export const executeFunction = async ({ project, input }) => {
           await searchDocumentation(project, jsonFunction.args[1]),
         ],
       };
+    default:
+      console.error(`[Assistant] Unknown Function name: ${jsonFunction.name}`);
   }
 };
 
