@@ -4,7 +4,8 @@ import { getSession } from "src/auth";
 import { redirect } from "next/navigation";
 import SiteHeader from "src/components/ui/SiteHeader";
 import Link from "next/link";
-import { getClient } from "src/graphql/apollo-client";
+import { getWelcomeClient as getClient } from "src/graphql/apollo-client";
+import { ApolloWelcomeWrapper } from "src/graphql/apollo-wrapper";
 import GetProjectQuery from "./GetProject.gql";
 
 export async function generateMetadata({ params }) {
@@ -14,40 +15,46 @@ export async function generateMetadata({ params }) {
 
 export default async function WelcomeLayout({ params, children }) {
   const project = await getProject(params.id);
-  const session = await getSession();
-  if (!session || !project.demo) {
+  if (!project.demo) {
     redirect("/");
   }
 
+  // the session is just for the header
+  const session = await getSession();
+
   return (
-    <Providers project={project} session={session}>
-      <SiteHeader hideLogo>
-        <Link
-          href={`/projects/${project.id}`}
-          target="_blank"
-          className="hover:underline"
-        >
-          Manage Project
-        </Link>
-      </SiteHeader>
-      <div className="flex-col items-center pt-16 space-y-4 sm:flex-row sm:px-6">
-        <div className="text-3xl font-bold text-center">
+    <ApolloWelcomeWrapper>
+      <Providers project={project} session={session}>
+        <SiteHeader hideLogo>
           <Link
-            href={`/projects/${project.id}/welcome`}
+            href={`/projects/${project.id}`}
+            target="_blank"
             className="hover:underline"
           >
-            {project.name}
+            Manage Project
           </Link>
+        </SiteHeader>
+        <div className="flex-col items-center pt-16 space-y-4 sm:flex-row sm:px-6">
+          <div className="text-3xl font-bold text-center">
+            <Link
+              href={`/projects/${project.id}/welcome`}
+              className="hover:underline"
+            >
+              {project.name}
+            </Link>
+          </div>
+          {children}
         </div>
-        {children}
-      </div>
-    </Providers>
+      </Providers>
+    </ApolloWelcomeWrapper>
   );
 }
 
 const getProject = async (id) => {
   const {
-    data: { prismaProject: project },
+    data: {
+      projects: [project],
+    },
   } = await getClient().query({
     query: GetProjectQuery,
     variables: {

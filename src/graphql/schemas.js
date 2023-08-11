@@ -1,25 +1,29 @@
 import { gql } from "graphql-tag";
 
 const typeDefs = gql`
-  extend schema @authentication
+  extend schema @authentication @subscription(operations: [])
 
   type JWT @jwt {
     roles: [String!]!
   }
 
-  type Query @exclude {
+  type Query {
     prismaUser: PrismaUser
     prismaProjects: [PrismaProject]
     prismaProject(id: ID!): PrismaProject
   }
 
-  type PrismaUser @exclude {
+  type PrismaUser
+    @query(read: false, aggregate: false)
+    @mutation(operations: []) {
     id: ID!
     email: String
     admin: Boolean
   }
 
-  type PrismaProject @exclude {
+  type PrismaProject
+    @query(read: false, aggregate: false)
+    @mutation(operations: []) {
     id: ID!
     name: String!
     demo: Boolean
@@ -67,6 +71,8 @@ const typeDefs = gql`
       ]
     ) {
     id: ID!
+    name: String!
+    demo: Boolean!
     activities: [Activity!]! @relationship(type: "OWNS", direction: OUT)
     members: [Member!]! @relationship(type: "OWNS", direction: OUT)
     sources: [String!]! @customResolver(requires: ["id"])
@@ -77,18 +83,24 @@ const typeDefs = gql`
       @customResolver(requires: ["id"])
   }
 
-  type SourceChannel @exclude {
+  type SourceChannel
+    @query(read: false, aggregate: false)
+    @mutation(operations: []) {
     name: String!
     activityCount: Int!
     lastActivityAt: String!
   }
 
-  type SearchResult @exclude {
+  type SearchResult
+    @query(read: false, aggregate: false)
+    @mutation(operations: []) {
     id: ID!
     score: Float!
   }
 
-  type Activity @exclude {
+  type Activity
+    @query(read: false, aggregate: false)
+    @mutation(operations: []) {
     id: ID!
     actor: String
     actorName: String
@@ -115,7 +127,7 @@ const typeDefs = gql`
     descendants: [Activity!]! @relationship(type: "PART_OF", direction: IN)
   }
 
-  type Member @exclude {
+  type Member @query(read: false, aggregate: false) @mutation(operations: []) {
     id: ID! @alias(property: "globalActor")
     globalActor: String!
     globalActorName: String!

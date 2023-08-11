@@ -16,32 +16,43 @@ if (process.env.NODE_ENV === "development") {
   loadErrorMessages();
 }
 
-function makeClient() {
-  const httpLink = new HttpLink({
-    uri: process.env.NEXT_PUBLIC_URL_SERVER_GRAPHQL,
-    credentials: "same-origin",
-  });
+function buildClient(uri) {
+  return function makeClient() {
+    const httpLink = new HttpLink({
+      uri,
+      credentials: "same-origin",
+    });
 
-  return new NextSSRApolloClient({
-    cache: new NextSSRInMemoryCache({}),
-    link:
-      typeof window === "undefined"
-        ? ApolloLink.from([
-            // in a SSR environment, if you use multipart features like
-            // @defer, you need to decide how to handle these.
-            // This strips all interfaces with a `@defer` directive from your queries.
-            new SSRMultipartLink({
-              stripDefer: true,
-            }),
-            httpLink,
-          ])
-        : httpLink,
-  });
+    return new NextSSRApolloClient({
+      cache: new NextSSRInMemoryCache({}),
+      link:
+        typeof window === "undefined"
+          ? ApolloLink.from([
+              // in a SSR environment, if you use multipart features like
+              // @defer, you need to decide how to handle these.
+              // This strips all interfaces with a `@defer` directive from your queries.
+              new SSRMultipartLink({
+                stripDefer: true,
+              }),
+              httpLink,
+            ])
+          : httpLink,
+    });
+  };
 }
 
-export function ApolloWrapper({ children }) {
+export function ApolloBaseWrapper({ children }) {
+  var uri = process.env.NEXT_PUBLIC_URL_SERVER_GRAPHQL;
   return (
-    <ApolloNextAppProvider makeClient={makeClient}>
+    <ApolloNextAppProvider makeClient={buildClient(uri)}>
+      {children}
+    </ApolloNextAppProvider>
+  );
+}
+export function ApolloWelcomeWrapper({ children }) {
+  var uri = process.env.NEXT_PUBLIC_URL_SERVER_WELCOME_GRAPHQL;
+  return (
+    <ApolloNextAppProvider makeClient={buildClient(uri)}>
       {children}
     </ApolloNextAppProvider>
   );

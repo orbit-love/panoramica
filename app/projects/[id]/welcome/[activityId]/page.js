@@ -1,12 +1,12 @@
 import React from "react";
 import { redirect } from "next/navigation";
-import { getClient } from "src/graphql/apollo-client";
+import { getWelcomeClient as getClient } from "src/graphql/apollo-client";
 import ConversationPage from "app/projects/[id]/welcome/[activityId]/ConversationPage";
 import GetConversationQuery from "./GetConversation.gql";
 
 export async function generateMetadata({ params }) {
-  const { activityId } = params;
-  const activity = await getConversation({ id: activityId });
+  const { id: projectId, activityId } = params;
+  const activity = await getConversation({ projectId, activityId });
   if (activity) {
     const title = activity.summary || activity.text.slice(0, 50);
     return {
@@ -16,23 +16,28 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Page({ params }) {
-  const { activityId } = params;
-  const activity = await getConversation({ id: activityId });
+  const { id: projectId, activityId } = params;
+  const activity = await getConversation({ projectId, activityId });
   if (!activity) {
     redirect("/");
   }
   return <ConversationPage activity={activity} />;
 }
 
-const getConversation = async ({ id }) => {
+const getConversation = async ({ projectId, activityId }) => {
   const {
     data: {
-      activities: [activity],
+      projects: [
+        {
+          activities: [activity],
+        },
+      ],
     },
   } = await getClient().query({
     query: GetConversationQuery,
     variables: {
-      id,
+      activityId,
+      projectId,
     },
   });
   return activity;

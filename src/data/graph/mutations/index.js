@@ -1,17 +1,18 @@
 import utils from "src/utils";
 
 export async function mergeProject({ project, user, tx }) {
-  const projectId = project.id;
+  const { id: projectId, name, demo } = project;
   const { id: userId, email } = user;
 
   // merge project node
   await tx.run(
     `MERGE (p:Project { id: $projectId })
       WITH p
+      SET p.demo = $demo, p.name = $name
       MERGE (p)<-[:CREATED]-(u:User { id: $userId })
       WITH u
         SET u.email = $email`,
-    { projectId, userId, email }
+    { projectId, userId, email, demo, name }
   );
   console.log("Memgraph: Created project");
 }

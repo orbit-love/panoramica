@@ -1,5 +1,5 @@
 query ($id: ID!) {
-  prismaProject(id: $id) {
+  projects(where: { id: $id }) {
     id
     name
     demo

@@ -1,6 +1,5 @@
 import React from "react";
 import "styles/globals.css";
-import { ApolloWrapper } from "src/graphql/apollo-wrapper";
 import SessionContext from "src/components/context/SessionContext";
 import Icons from "src/components/context/Icons";
 import { getSession } from "src/auth";
@@ -23,13 +22,11 @@ export default async function RootLayout({ children }) {
 
   return (
     <Icons>
-      <ApolloWrapper>
-        <SessionContext session={session}>
-          <html>
-            <body>{children}</body>
-          </html>
-        </SessionContext>
-      </ApolloWrapper>
+      <SessionContext session={session}>
+        <html>
+          <body>{children}</body>
+        </html>
+      </SessionContext>
     </Icons>
   );
 }
