@@ -1,0 +1,14 @@
+query ($projectId: ID!, $memberId: ID!, $connectionId: ID!) {
+  projects(where: { id: $projectId }) {
+    members(where: { id: $memberId }) {
+      messagedWithConnection(where: { node: { id: $connectionId } }) {
+        edges {
+          activityCount
+          conversations
+          conversationCount
+          lastInteractedAt
+        }
+      }
+    }
+  }
+}

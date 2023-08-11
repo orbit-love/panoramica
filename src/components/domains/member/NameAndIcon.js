@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function NameAndIcon({ member, onClick }) {
+export default function NameAndIcon({ member, hideActor, onClick }) {
   if (!member) {
     return <div>No member!</div>;
   }
@@ -19,7 +19,7 @@ export default function NameAndIcon({ member, onClick }) {
         <span className="group-hover:underline font-semibold">
           {member.globalActorName || member.globalActor}
         </span>
-        {member.globalActorName && (
+        {!hideActor && member.globalActorName && (
           <span className="text-sm text-gray-400 dark:text-gray-600">
             {" "}
             {member.globalActor}
