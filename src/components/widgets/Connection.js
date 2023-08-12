@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import TimeAgo from "react-timeago";
 
-import { Frame, Header } from "src/components/widgets";
+import { Frame } from "src/components/widgets";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
 import GetActivityIdsQuery from "./Connection/GetActivityIds.gql";

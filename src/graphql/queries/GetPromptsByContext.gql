@@ -1,0 +1,9 @@
+query ($projectId: ID!, $context: String!) {
+  projects(where: { id: $projectId }) {
+    prompts(where: { context: $context }) {
+      context
+      label
+      prompt
+    }
+  }
+}

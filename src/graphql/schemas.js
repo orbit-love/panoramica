@@ -50,14 +50,23 @@ const typeDefs = gql`
         }
       ]
     ) {
-    id: ID!
+    id: ID! @id
     email: String!
     projects: [Project!]! @relationship(type: "CREATED", direction: OUT)
+    bookmarks: [Activity!]! @relationship(type: "BOOKMARKS", direction: OUT)
+  }
+
+  type Prompt {
+    id: ID! @id
+    context: String!
+    label: String!
+    prompt: String!
+    project: Project! @relationship(type: "OWNS", direction: IN)
   }
 
   type Project
     @query(aggregate: false)
-    @mutation(operations: [])
+    @mutation(operations: [CREATE, UPDATE, DELETE])
     @authorization(
       filter: [
         {
@@ -70,13 +79,14 @@ const typeDefs = gql`
         }
       ]
     ) {
-    id: ID!
+    id: ID! @id
     name: String!
     demo: Boolean!
     activities: [Activity!]! @relationship(type: "OWNS", direction: OUT)
     members: [Member!]! @relationship(type: "OWNS", direction: OUT)
     sources: [String!]! @customResolver(requires: ["id"])
     creator: User! @relationship(type: "CREATED", direction: IN)
+    prompts: [Prompt!]! @relationship(type: "OWNS", direction: OUT)
     sourceChannels(source: String!): [SourceChannel!]!
       @customResolver(requires: ["id"])
     searchConversations(query: String!): [SearchResult!]!
@@ -101,7 +111,7 @@ const typeDefs = gql`
   type Activity
     @query(read: false, aggregate: false)
     @mutation(operations: []) {
-    id: ID!
+    id: ID! @id
     actor: String
     actorName: String
     globalActor: String

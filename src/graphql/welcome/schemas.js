@@ -18,8 +18,25 @@ const typeDefs = gql`
     name: String!
     demo: Boolean!
     activities: [Activity!]! @relationship(type: "OWNS", direction: OUT)
+    prompts: [Prompt!]! @relationship(type: "OWNS", direction: OUT)
     searchConversations(query: String!): [SearchResult!]!
       @customResolver(requires: ["id"])
+  }
+
+  type Prompt
+    @authorization(
+      filter: [
+        {
+          requireAuthentication: false
+          operations: [READ]
+          where: { node: { context: "Public" } }
+        }
+      ]
+    ) {
+    id: ID! @id
+    context: String!
+    label: String!
+    prompt: String!
   }
 
   type SearchResult @query(read: false, aggregate: false) {

@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import classnames from "classnames";
 
 import { Frame, saveLayout } from "src/components/widgets";
@@ -8,6 +9,7 @@ import useResizeCallback from "src/hooks/useResizeCallback";
 import BookmarkAction from "../domains/bookmarks/BookmarkAction";
 import SimilarAction from "../domains/conversation/SimilarAction";
 import SourceAction from "../domains/conversation/SourceAction";
+import GetPromptsByContextQuery from "src/graphql/queries/GetPromptsByContext.gql";
 
 export default function Conversation({
   project,
@@ -15,7 +17,6 @@ export default function Conversation({
   containerApi,
   params,
   handlers,
-  prompts,
 }) {
   var { activity } = params;
   let [lastSummary, setLastSummary] = useState(api.title);
@@ -41,8 +42,18 @@ export default function Conversation({
     updateTitle(lastSummary);
   }, [lastSummary, updateTitle]);
 
-  // filter to only show conversation prompts
-  prompts = prompts.filter((prompt) => prompt.type === "Conversation");
+  const { id: projectId } = project;
+  const context = "Conversation";
+  const {
+    data: {
+      projects: [{ prompts }],
+    },
+  } = useSuspenseQuery(GetPromptsByContextQuery, {
+    variables: {
+      projectId,
+      context,
+    },
+  });
 
   const defaultSummary = activity.text.slice(0, 50);
 

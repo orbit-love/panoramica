@@ -9,9 +9,6 @@ export const projectReducer = (
     case "updateProject": {
       return { ...object, project };
     }
-    case "updatePrompts": {
-      return { ...object, prompts };
-    }
   }
 };
 

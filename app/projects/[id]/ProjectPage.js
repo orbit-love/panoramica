@@ -18,7 +18,6 @@ import {
   saveLayout,
 } from "src/components/widgets";
 import { getBookmarks } from "src/data/client/fetches/bookmarks";
-import { getPrompts } from "src/data/client/fetches/prompts";
 import {
   ProjectContext,
   ProjectDispatchContext,
@@ -45,7 +44,7 @@ const Dockview = ({ onReady }) => {
 };
 
 export default function ProjectPage({ project }) {
-  const initialObject = { project, prompts: [] };
+  const initialObject = { project };
   const [object, dispatch] = useReducer(projectReducer, initialObject);
 
   const [bookmarks, bookmarksDispatch] = useReducer(bookmarksReducer, {
@@ -64,18 +63,6 @@ export default function ProjectPage({ project }) {
       },
     });
   }, [project, bookmarksDispatch]);
-
-  // useEffect(() => {
-  //   getPrompts({
-  //     project,
-  //     onSuccess: ({ result: { prompts } }) => {
-  //       dispatch({
-  //         type: "updatePrompts",
-  //         prompts,
-  //       });
-  //     },
-  //   });
-  // }, [project, dispatch]);
 
   const onReady = useCallback(
     (event) => {
