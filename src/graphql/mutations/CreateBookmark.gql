@@ -1,0 +1,28 @@
+#import "src/graphql/fragments/ForActivityFeed.gql"
+mutation ($activityId: ID!, $createdAt: String!, $createdAtInt: Float!) {
+  updateUsers(
+    update: {
+      bookmarks: {
+        connectOrCreate: {
+          where: { node: { id: $activityId } }
+          onCreate: {
+            edge: { createdAt: $createdAt, createdAtInt: $createdAtInt }
+            node: {}
+          }
+        }
+      }
+    }
+  ) {
+    users {
+      bookmarksConnection(where: { node: { id: $activityId } }) {
+        edges {
+          createdAt
+          createdAtInt
+          node {
+            ...ForActivityFeed
+          }
+        }
+      }
+    }
+  }
+}

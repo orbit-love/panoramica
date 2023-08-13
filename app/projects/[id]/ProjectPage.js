@@ -7,6 +7,7 @@ import React, {
   useContext,
   useEffect,
 } from "react";
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { Orientation, DockviewReact } from "dockview";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -17,7 +18,6 @@ import {
   loadDefaultLayout,
   saveLayout,
 } from "src/components/widgets";
-import { getBookmarks } from "src/data/client/fetches/bookmarks";
 import {
   ProjectContext,
   ProjectDispatchContext,
@@ -29,6 +29,7 @@ import {
 import Themed from "src/components/context/Themed";
 import { ThemeContext } from "src/components/context/ThemeContext";
 import { projectReducer, bookmarksReducer } from "src/reducers";
+import GetBookmarksQuery from "src/graphql/queries/GetBookmarks.gql";
 
 const Dockview = ({ onReady }) => {
   const { dockviewTheme } = useContext(ThemeContext);
@@ -47,22 +48,25 @@ export default function ProjectPage({ project }) {
   const initialObject = { project };
   const [object, dispatch] = useReducer(projectReducer, initialObject);
 
+  const { id: projectId } = project;
+  const {
+    data: {
+      users: [
+        {
+          bookmarksConnection: { edges: bookmarksResult },
+        },
+      ],
+    },
+  } = useSuspenseQuery(GetBookmarksQuery, {
+    variables: {
+      projectId,
+    },
+  });
+
   const [bookmarks, bookmarksDispatch] = useReducer(bookmarksReducer, {
-    bookmarks: [],
+    bookmarks: bookmarksResult,
   });
   const [containerApi, setContainerApi] = useState(null);
-
-  useEffect(() => {
-    getBookmarks({
-      project,
-      onSuccess: ({ result: { bookmarks } }) => {
-        bookmarksDispatch({
-          type: "setBookmarks",
-          bookmarks,
-        });
-      },
-    });
-  }, [project, bookmarksDispatch]);
 
   const onReady = useCallback(
     (event) => {

@@ -1,0 +1,18 @@
+#import "src/graphql/fragments/ForActivityFeed.gql"
+query ($projectId: ID!) {
+  users {
+    bookmarksConnection(
+      sort: { edge: { createdAtInt: DESC } }
+      where: { node: { project: { id: $projectId } } }
+    ) {
+      edges {
+        createdAt
+        createdAtInt
+        node {
+          id
+          ...ForActivityFeed
+        }
+      }
+    }
+  }
+}

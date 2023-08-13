@@ -35,9 +35,14 @@ const typeDefs = gql`
     prismaUser: PrismaUser!
   }
 
+  interface Bookmarked @relationshipProperties {
+    createdAt: String!
+    createdAtInt: Float!
+  }
+
   type User
     @query(aggregate: false)
-    @mutation(operations: [])
+    @mutation(operations: [UPDATE])
     @authorization(
       filter: [
         {
@@ -53,7 +58,8 @@ const typeDefs = gql`
     id: ID! @id
     email: String!
     projects: [Project!]! @relationship(type: "CREATED", direction: OUT)
-    bookmarks: [Activity!]! @relationship(type: "BOOKMARKS", direction: OUT)
+    bookmarks: [Activity!]!
+      @relationship(type: "BOOKMARKS", direction: OUT, properties: "Bookmarked")
   }
 
   type Prompt {

@@ -20,9 +20,7 @@ export default function Explore({ newPanelPosition, addWidget, handlers }) {
     });
   };
 
-  // const { bookmarks } = useContext(BookmarksContext);
-  // todo graphql load
-  const bookmarks = [];
+  const { bookmarks } = useContext(BookmarksContext);
 
   return (
     <div className="flex flex-col items-start w-full">
@@ -47,24 +45,22 @@ export default function Explore({ newPanelPosition, addWidget, handlers }) {
       <button onClick={onClickAssistant}>Assistant</button>
       <button onClick={onClickBookmarks}>Bookmarks ({bookmarks.length})</button>
       <div className="flex flex-col items-start w-full whitespace-nowrap">
-        {bookmarks
-          .map(({ activityId }) => community.findActivityById(activityId))
-          .map((activity) => (
-            <div
-              key={activity.id}
-              className="group flex items-center space-x-1 w-full text-sm text-left text-gray-400 text-ellipsis cursor-pointer dark:text-gray-500"
-              onClick={(e) =>
-                onClickActivity(e, activity, {
-                  position: newPanelPosition(),
-                })
-              }
-            >
-              <SourceIcon activity={activity} className="text-xs" />
-              <div className="group-hover:underline overflow-x-hidden w-full text-ellipsis">
-                {activity.summary || activity.text.slice(0, 50)}
-              </div>
+        {bookmarks.map(({ node: activity }) => (
+          <div
+            key={activity.id}
+            className="group flex items-center space-x-1 w-full text-sm text-left text-gray-400 text-ellipsis cursor-pointer dark:text-gray-500"
+            onClick={(e) =>
+              onClickActivity(e, activity, {
+                position: newPanelPosition(),
+              })
+            }
+          >
+            <SourceIcon activity={activity} className="text-xs" />
+            <div className="group-hover:underline overflow-x-hidden w-full text-ellipsis">
+              {activity.summary || activity.text.slice(0, 50)}
             </div>
-          ))}
+          </div>
+        ))}
       </div>
     </div>
   );

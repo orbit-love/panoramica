@@ -10,11 +10,11 @@ export default function ConversationFeedItem(props) {
   var { index, activity, handlers, term } = props;
 
   const bookmarksContext = useContext(BookmarksContext);
-  const bookmarks = bookmarksContext?.bookmarks;
+  const bookmarks = bookmarksContext.bookmarks;
 
   const conversation = activity.conversation;
-  const bookmark = bookmarks?.find(
-    (bookmark) => bookmark.activityId === conversation.id
+  const bookmark = bookmarks.find(
+    (bookmark) => bookmark.node.id === conversation.id
   );
 
   const defaultExpanded = conversation.descendants.length === 1;

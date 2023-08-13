@@ -1,57 +1,65 @@
 import React, { useCallback, useContext } from "react";
+import { useMutation } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   BookmarksContext,
   BookmarksDispatchContext,
 } from "src/components/context/BookmarksContext";
-import {
-  postCreateBookmark,
-  deleteBookmark,
-} from "src/data/client/fetches/bookmarks";
-import { useSession } from "next-auth/react";
+import CreateBookmarkMutation from "src/graphql/mutations/CreateBookmark.gql";
+import DeleteBookmarkMutation from "src/graphql/mutations/DeleteBookmark.gql";
 
-export default function BookmarkAction({ project, activity, className }) {
+export default function BookmarkAction({ activity, className }) {
   const { bookmarks } = useContext(BookmarksContext);
   const dispatch = useContext(BookmarksDispatchContext);
 
-  var bookmark = bookmarks?.find(
-    (bookmark) => bookmark.activityId === activity.id
-  );
+  var bookmark = bookmarks.find((bookmark) => bookmark.node.id === activity.id);
 
   const bookmarkIcon = bookmark ? "bookmark" : ["far", "bookmark"];
 
-  const onBookmark = useCallback(() => {
+  const [createBookmark] = useMutation(CreateBookmarkMutation);
+  const [deleteBookmark] = useMutation(DeleteBookmarkMutation);
+
+  const onBookmark = useCallback(async () => {
+    const { id: activityId } = activity;
     if (bookmark) {
-      deleteBookmark({
-        project,
-        activity,
-        onSuccess: () => {
-          dispatch({
-            type: "removeBookmark",
-            bookmark,
-          });
+      await deleteBookmark({
+        variables: {
+          activityId,
         },
+      });
+      dispatch({
+        type: "removeBookmark",
+        bookmark,
       });
     } else {
-      postCreateBookmark({
-        project,
-        activity,
-        onSuccess: ({ result }) => {
-          const { bookmark } = result;
-          dispatch({
-            type: "addBookmark",
-            bookmark,
-          });
+      const createdAt = new Date();
+      const createdAtInt = Date.parse(createdAt);
+      const {
+        data: {
+          updateUsers: {
+            users: [
+              {
+                bookmarksConnection: {
+                  edges: [bookmark],
+                },
+              },
+            ],
+          },
+        },
+      } = await createBookmark({
+        variables: {
+          activityId,
+          createdAt,
+          createdAtInt,
         },
       });
+      dispatch({
+        type: "addBookmark",
+        bookmark,
+      });
     }
-  }, [project, dispatch, bookmark, activity]);
-
-  var { data: session } = useSession();
-  if (!session || !session.user || session.user.fake) {
-    return <> </>;
-  }
+  }, [dispatch, bookmark, activity, createBookmark, deleteBookmark]);
 
   return (
     <button
