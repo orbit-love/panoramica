@@ -1,7 +1,0 @@
-mutation ($activityId: ID!) {
-  updateUsers(delete: { bookmarks: { where: { node: { id: $activityId } } } }) {
-    info {
-      nodesDeleted
-    }
-  }
-}

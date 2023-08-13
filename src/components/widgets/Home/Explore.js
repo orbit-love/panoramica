@@ -50,7 +50,7 @@ export default function Explore({ newPanelPosition, addWidget, handlers }) {
             key={activity.id}
             className="group flex items-center space-x-1 w-full text-sm text-left text-gray-400 text-ellipsis cursor-pointer dark:text-gray-500"
             onClick={(e) =>
-              onClickActivity(e, activity, {
+              onClickActivity(e, activity.conversation, {
                 position: newPanelPosition(),
               })
             }

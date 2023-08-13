@@ -6,8 +6,8 @@ import {
   BookmarksContext,
   BookmarksDispatchContext,
 } from "src/components/context/BookmarksContext";
-import CreateBookmarkMutation from "src/graphql/mutations/CreateBookmark.gql";
-import DeleteBookmarkMutation from "src/graphql/mutations/DeleteBookmark.gql";
+import ConnectBookmarkMutation from "src/graphql/mutations/ConnectBookmark.gql";
+import DisconnectBookmarkMutation from "src/graphql/mutations/DisconnectBookmark.gql";
 
 export default function BookmarkAction({ activity, className }) {
   const { bookmarks } = useContext(BookmarksContext);
@@ -17,13 +17,13 @@ export default function BookmarkAction({ activity, className }) {
 
   const bookmarkIcon = bookmark ? "bookmark" : ["far", "bookmark"];
 
-  const [createBookmark] = useMutation(CreateBookmarkMutation);
-  const [deleteBookmark] = useMutation(DeleteBookmarkMutation);
+  const [connectBookmark] = useMutation(ConnectBookmarkMutation);
+  const [disconnectBookmark] = useMutation(DisconnectBookmarkMutation);
 
   const onBookmark = useCallback(async () => {
     const { id: activityId } = activity;
     if (bookmark) {
-      await deleteBookmark({
+      await disconnectBookmark({
         variables: {
           activityId,
         },
@@ -47,7 +47,7 @@ export default function BookmarkAction({ activity, className }) {
             ],
           },
         },
-      } = await createBookmark({
+      } = await connectBookmark({
         variables: {
           activityId,
           createdAt,
@@ -59,7 +59,7 @@ export default function BookmarkAction({ activity, className }) {
         bookmark,
       });
     }
-  }, [dispatch, bookmark, activity, createBookmark, deleteBookmark]);
+  }, [dispatch, bookmark, activity, connectBookmark, disconnectBookmark]);
 
   return (
     <button

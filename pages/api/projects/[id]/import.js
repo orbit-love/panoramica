@@ -36,7 +36,7 @@ export default async function handler(req, res) {
 
     // import a maximum of 1,000 activities; start at page 1
     const page = 1;
-    const pageLimit = 20;
+    const pageLimit = 5;
 
     const handleRecords = async (records) => {
       // this is a quick and dirty way to remove duplicate sourceId from

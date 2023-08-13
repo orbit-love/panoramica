@@ -1,0 +1,9 @@
+mutation ($activityId: ID!) {
+  updateUsers(
+    disconnect: { bookmarks: { where: { node: { id: $activityId } } } }
+  ) {
+    info {
+      nodesDeleted
+    }
+  }
+}

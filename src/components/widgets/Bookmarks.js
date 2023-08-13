@@ -6,7 +6,8 @@ import { Frame, Header } from "src/components/widgets";
 import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
 
 export default function Bookmarks({ project, api, handlers }) {
-  const { bookmarks } = useContext(BookmarksContext);
+  var { bookmarks } = useContext(BookmarksContext);
+  bookmarks = bookmarks.sort((a, b) => b.createdAtInt - a.createdAtInt);
 
   return (
     <Frame>

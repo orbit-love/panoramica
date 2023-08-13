@@ -75,7 +75,7 @@ export default function Home(props) {
   useEffect(() => {
     if (imported) {
       var interval = setInterval(() => {
-        refreshProject();
+        // refreshProject();
       }, 60 * 1000);
       return () => {
         clearInterval(interval);

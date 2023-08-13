@@ -198,7 +198,7 @@ export async function syncActivities({ tx, project, user, activities }) {
         WITH p, $activities AS batch
           UNWIND batch AS activity
             MATCH
-              (p)-[:OWNS]->(a:Activity { id: activity.activityId })
+              (p)-[:OWNS]->(a:Activity { id: activity.id })
             WITH a
               MATCH (a)<-[:DID]-(m1:Member)
             WITH m1
