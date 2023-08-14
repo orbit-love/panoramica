@@ -47,7 +47,7 @@ export default function EditProject({ project, dispatch }) {
 
   return (
     <Frame>
-      <div className="px-6 mt-4 mb-6 ">
+      <div className="px-6 mt-4 mb-6">
         <p className="font-semibold">Embed your product Documentation</p>
         <p className="">
           This will empower the assistant with some understanding of your
@@ -56,7 +56,7 @@ export default function EditProject({ project, dispatch }) {
 
         <form
           method="POST"
-          className="mt-4 flex flex-col space-y-4"
+          className="flex flex-col mt-4 space-y-4"
           onSubmit={onSubmit}
         >
           {status && <div className="pb-4 text-green-500">{status}</div>}
@@ -65,7 +65,8 @@ export default function EditProject({ project, dispatch }) {
           <div className="flex flex-col space-y-1">
             <label htmlFor="start-url">Start URL</label>
             <small>
-              We'll crawl and embed your documentation starting from this URL.
+              We&apos;ll crawl and embed your documentation starting from this
+              URL.
             </small>
             <input
               type="text"
@@ -80,8 +81,8 @@ export default function EditProject({ project, dispatch }) {
           <div className="flex flex-col space-y-1">
             <label htmlFor="root-url">Root URL</label>
             <small>
-              On each page, we'll visit linked pages under this root URL. You
-              can leave it empty to use the start URL as the root.
+              On each page, we&apos;ll visit linked pages under this root URL.
+              You can leave it empty to use the start URL as the root.
             </small>
             <input
               type="text"

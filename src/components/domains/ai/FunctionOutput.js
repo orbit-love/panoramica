@@ -9,11 +9,13 @@ export default function FunctionOutput({ project, community, functionOutput }) {
     const activities = docs.map(({ id }) => community.findActivityById(id));
     const handlers = { onClickMember: () => {} };
     return (
-      <div className="mt-1 flex-col space-y-1">
+      <div className="flex-col mt-1 space-y-1">
         <h4 className="text-tertiary">
           Conversations added to the current context
         </h4>
-        <small className="block pb-1">Search term: "{searchTerm}"</small>
+        <small className="block pb-1">
+          Search term: &quot;{searchTerm}&quot;
+        </small>
         <ConversationFeed
           project={project}
           activities={activities}
@@ -31,11 +33,11 @@ export default function FunctionOutput({ project, community, functionOutput }) {
         <h4 className="text-tertiary">
           Documentation pages in the current context:
         </h4>
-        <small>Search term: "{searchTerm}"</small>
+        <small>Search term: &quot;{searchTerm}&quot;</small>
         <ul className="flex-col mt-4">
           {docs.map(({ url, title }) => (
             <li key={url}>
-              <a href={url} className="underline font-light">
+              <a href={url} className="font-light underline">
                 {title}
               </a>
             </li>
@@ -46,17 +48,17 @@ export default function FunctionOutput({ project, community, functionOutput }) {
   };
 
   return (
-    <div className="px-4 py-2 rounded-t-lg border-t-1 bg-gray-50 dark:bg-gray-900">
+    <div className="border-t-1 py-2 px-4 bg-gray-50 rounded-t-lg dark:bg-gray-900">
       <div className="flex justify-center">
         <button
-          className="w-full text-tertiary"
+          className="text-tertiary w-full"
           onClick={(_) => setClosed(!closed)}
         >
           {closed && <FontAwesomeIcon icon="fa-chevron-up" />}
           {!closed && <FontAwesomeIcon icon="fa-chevron-down" />}
         </button>
       </div>
-      <div className="max-h-40 overflow-y-auto">
+      <div className="overflow-y-auto max-h-40">
         {!closed &&
           functionOutput.name === "search_conversations" &&
           conversationsContext(functionOutput.args[0], functionOutput.output)}
