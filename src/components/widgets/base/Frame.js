@@ -3,7 +3,6 @@ import { createPortal } from "react-dom";
 
 import { WidgetContext } from "src/components/context/WidgetContext";
 import ScrollManager from "src/components/widgets/base/ScrollManager";
-import ErrorBoundary from "src/components/widgets/base/ErrorBoundary";
 import Modal from "src/components/ui/Modal";
 
 export default function Frame({ fullWidth, children }) {
@@ -24,20 +23,16 @@ export default function Frame({ fullWidth, children }) {
 
   if (api.isActive && fullscreen) {
     return createPortal(
-      <ErrorBoundary>
-        <Modal title={api.title} close={exitFullscreen} fullHeight>
-          {children}
-        </Modal>
-      </ErrorBoundary>,
+      <Modal title={api.title} close={exitFullscreen} fullHeight>
+        {children}
+      </Modal>,
       document.body
     );
   }
 
   return (
-    <ErrorBoundary>
-      <ScrollManager isActive={isActive} fullWidth={fullWidth}>
-        {children}
-      </ScrollManager>
-    </ErrorBoundary>
+    <ScrollManager isActive={isActive} fullWidth={fullWidth}>
+      {children}
+    </ScrollManager>
   );
 }

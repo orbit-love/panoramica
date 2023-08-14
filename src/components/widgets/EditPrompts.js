@@ -1,18 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { putUpdatePrompts } from "src/data/client/fetches/prompts";
-import Frame from "./base/Frame";
+import React, { useState, useCallback } from "react";
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import { useMutation } from "@apollo/client";
 
-export default function EditPrompts({ project, prompts, dispatch }) {
+import Frame from "./base/Frame";
+import GetPromptsQuery from "src/graphql/queries/GetPrompts.gql";
+import SetPromptsMutation from "./EditPrompts/SetPrompts.gql";
+import DeletePromptsMutation from "./EditPrompts/DeletePrompts.gql";
+
+export default function EditPrompts({ project }) {
+  const { id: projectId } = project;
+  const {
+    data: {
+      projects: [{ prompts }],
+    },
+  } = useSuspenseQuery(GetPromptsQuery, {
+    variables: {
+      projectId,
+    },
+  });
+
   const [items, setItems] = useState(prompts);
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    setItems(prompts);
-  }, [prompts]);
-
   const handleAdd = () => {
     setMessage("");
-    setItems([...items, { type: "Public", label: "", prompt: "" }]);
+    setItems([...items, { context: "Public", label: "", prompt: "" }]);
   };
 
   const handleRemove = (index) => {
@@ -42,19 +54,31 @@ export default function EditPrompts({ project, prompts, dispatch }) {
     setItems(newItems);
   };
 
-  const handleSaveChanges = () => {
-    putUpdatePrompts({
-      project,
-      prompts: items,
-      onSuccess: ({ result: { prompts } }) => {
-        dispatch({
-          type: "updatePrompts",
-          prompts,
-        });
-        setMessage("Changes saved!");
+  const [savePrompts] = useMutation(SetPromptsMutation);
+  const [deletePrompts] = useMutation(DeletePromptsMutation);
+
+  const handleSaveChanges = useCallback(async () => {
+    const { name, demo, id } = project;
+    const projectInput = {
+      project: {
+        connectOrCreate: {
+          onCreate: { node: { name, demo } },
+          where: { node: { id } },
+        },
       },
-    });
-  };
+    };
+
+    const input = items.map(({ context, label, prompt }) => ({
+      context,
+      label,
+      prompt,
+      ...projectInput,
+    }));
+
+    await deletePrompts({ variables: { projectId: id } });
+    await savePrompts({ variables: { input } });
+    setMessage("Changes saved!");
+  }, [project, items, savePrompts, deletePrompts, setMessage]);
 
   return (
     <Frame fullWidth>
@@ -122,8 +146,8 @@ function ListItem({ item, onChange, index }) {
     <div className="flex flex-col space-y-2">
       <div className="flex space-x-2">
         <select
-          value={item.type}
-          onChange={(e) => onChange(index, "type", e.target.value)}
+          value={item.context}
+          onChange={(e) => onChange(index, "context", e.target.value)}
         >
           <option>Conversation</option>
           <option>Global</option>

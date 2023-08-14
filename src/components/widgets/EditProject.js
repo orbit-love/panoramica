@@ -5,10 +5,8 @@ import { Frame } from "src/components/widgets";
 import {
   putProjectImport,
   postEmbeddings,
-  getProject,
   putProjectRefresh,
 } from "src/data/client/fetches";
-import Community from "src/models/Community";
 import Edit from "src/components/domains/project/Edit";
 import Loader from "src/components/domains/ui/Loader";
 import { aiReady, orbitImportReady } from "src/integrations/ready";
@@ -29,26 +27,16 @@ export default function EditProject({ project, dispatch }) {
     });
   }, [project, setLoading]);
 
-  const fetchProject = useCallback(async () => {
-    getProject({
-      project,
-      setLoading,
-      onSuccess: ({ result }) => {
-        const community = new Community({ result });
-        dispatch({ type: "updated", community });
-        setStatus("Success: data has been updated.");
-      },
-    });
-  }, [project, setLoading, dispatch]);
-
   const importProject = useCallback(async () => {
     setStatus("");
     putProjectImport({
       project,
       setLoading,
-      onSuccess: fetchProject,
+      onSuccess: () => {
+        setStatus("Success: data has been re-imported.");
+      },
     });
-  }, [project, setLoading, fetchProject]);
+  }, [project, setLoading]);
 
   const refreshProject = useCallback(async () => {
     setStatus("");
@@ -56,9 +44,11 @@ export default function EditProject({ project, dispatch }) {
     putProjectRefresh({
       project,
       setLoading,
-      onSuccess: fetchProject,
+      onSuccess: () => {
+        setStatus("Success: data has been refreshed.");
+      },
     });
-  }, [project, setLoading, fetchProject]);
+  }, [project, setLoading]);
 
   return (
     <Frame>
@@ -73,11 +63,12 @@ export default function EditProject({ project, dispatch }) {
             dispatch({ type: "updateProject", project });
             setStatus("Update successful.");
           }}
-          onDelete={() => router.push("/")}
+          onDelete={() => router.push("/dashboard")}
         />
 
         {(orbitImportReady(project) || aiReady(project)) && (
           <div className="text-tertiary flex flex-col items-start py-6 space-y-1">
+            {status && <div className="pb-2 text-green-500">{status}</div>}
             <div className="flex items-center my-2 space-x-2 text-lg font-thin">
               <div>Actions</div>
               {loading && <Loader />}
@@ -85,7 +76,7 @@ export default function EditProject({ project, dispatch }) {
             {orbitImportReady(project) && (
               <>
                 <button className="hover:underline" onClick={refreshProject}>
-                  Import latest data from Orbit
+                  Refresh latest data from Orbit
                 </button>
                 <button className="hover:underline" onClick={importProject}>
                   Reimport all data from Orbit

@@ -1,56 +1,26 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { createPortal } from "react-dom";
+import React, { useCallback, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useHotkeys } from "react-hotkeys-hook";
-import Link from "next/link";
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
-import { BookmarksContext } from "src/components/context/BookmarksContext";
 import { Frame, resetLayout } from "src/components/widgets";
-import {
-  putProjectImport,
-  putProjectRefresh,
-  getProject,
-} from "src/data/client/fetches";
-import utils from "src/utils";
-import Community from "src/models/Community";
-import Modal from "src/components/ui/Modal";
-import ThemeSelector from "src/components/ui/ThemeSelector";
-import Loader from "src/components/domains/ui/Loader";
-import SourceIcon from "src/components/domains/activity/SourceIcon";
-import { aiReady, orbitImportReady } from "src/integrations/ready";
+import { putProjectRefresh } from "src/data/client/fetches";
 import { useSession } from "next-auth/react";
 
+import Sources from "./Home/Sources";
+import Search from "./Home/Search";
+import Setup from "./Home/Setup";
+import Explore from "./Home/Explore";
+import Settings from "./Home/Settings";
+import GetActivityCountQuery from "./Home/GetActivityCount.gql";
+
 export default function Home(props) {
-  let searchRef = useRef();
-  const {
-    project,
-    community,
-    dispatch,
-    api,
-    containerApi,
-    addWidget,
-    handlers,
-  } = props;
-  const { bookmarks } = useContext(BookmarksContext);
-  const { onClickSource, onClickActivity } = handlers;
-  const [loading, setLoading] = useState(false);
-  const [editingTheme, setEditingTheme] = useState(false);
+  const { project, dispatch, api, containerApi, addWidget, handlers } = props;
 
   var user,
     { data: session } = useSession();
   if (session && session.user && !session.user.fake) {
     user = session.user;
   }
-
-  const toggleEditingTheme = () => {
-    setEditingTheme(!editingTheme);
-  };
 
   // for opening new panels, either place them in the group to
   // the immediate right or open a new group on the right
@@ -76,127 +46,45 @@ export default function Home(props) {
     api.group.api.setConstraints({ minimumWidth: 175, maximumWidth: 250 });
   }, [api]);
 
-  useHotkeys(
-    "/",
-    (e) => {
-      e.preventDefault();
-      searchRef.current.focus();
-    },
-    []
-  );
-
   const resetWidgets = useCallback(() => {
     resetLayout({ project, containerApi });
   }, [project, containerApi]);
 
-  const fetchProject = useCallback(async () => {
-    getProject({
-      project,
-      setLoading,
-      onSuccess: ({ result }) => {
-        const community = new Community({ result });
-        dispatch({ type: "updated", community });
-      },
-    });
-  }, [project, dispatch]);
+  const { id: projectId } = project;
+  const {
+    data: { projects },
+    refetch,
+  } = useSuspenseQuery(GetActivityCountQuery, {
+    variables: {
+      projectId,
+    },
+  });
 
-  const importProject = useCallback(async () => {
-    putProjectImport({
-      project,
-      setLoading,
-      onSuccess: fetchProject,
-    });
-  }, [project, setLoading, fetchProject]);
-
-  // prepare to render
-  const empty = community?.activities?.length === 0;
+  const imported =
+    projects.length > 0 &&
+    projects[0].activitiesConnection &&
+    projects[0].activitiesConnection.totalCount > 0;
 
   // don't set loading since this happens in the background
   const refreshProject = useCallback(async () => {
-    await putProjectRefresh({ project, onSuccess: fetchProject });
+    await putProjectRefresh({ project, onSuccess: () => {} });
     console.log("Project refreshed");
-  }, [project, fetchProject]);
+  }, [project]);
 
   // refresh the project every minute to fetch new data
   useEffect(() => {
-    if (!empty) {
+    if (imported) {
       var interval = setInterval(() => {
-        refreshProject();
+        // refreshProject();
       }, 60 * 1000);
       return () => {
         clearInterval(interval);
       };
     }
-  }, [empty, refreshProject]);
+  }, [imported, refreshProject]);
 
-  const onSearchSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      var term = searchRef.current.value;
-      var id = term ? `search-${term}` : "search";
-      addWidget(id, "Search", {
-        title: term || "Search",
-        position: newPanelPosition(),
-      });
-      searchRef.current.value = "";
-      searchRef.current.blur();
-    },
-    [addWidget, newPanelPosition]
-  );
-
-  const onClickBookmarks = (e) => {
-    e.preventDefault();
-    addWidget("bookmarks", "Bookmarks", {
-      title: "Bookmarks",
-      position: newPanelPosition(),
-    });
-  };
-
-  const onClickEditProject = (e) => {
-    e.preventDefault();
-    addWidget("edit-project", "EditProject", {
-      title: "Edit Project",
-      position: newPanelPosition(),
-    });
-  };
-
-  const onClickEditPrompts = (e) => {
-    e.preventDefault();
-    addWidget("edit-prompts", "EditPrompts", {
-      title: "Edit Prompts",
-      position: newPanelPosition(),
-    });
-  };
-
-  const onClickEmbedDocumentation = (e) => {
-    e.preventDefault();
-    addWidget("embed-documentation", "EmbedDocumentation", {
-      title: "Embed Documentation",
-      position: newPanelPosition(),
-    });
-  };
-
-  const onClickUser = (e) => {
-    e.preventDefault();
-    addWidget("user", "User", {
-      title: "User",
-      position: newPanelPosition(),
-    });
-  };
-  const onClickAssistant = () => {
-    addWidget("prompt", "Assistant", {
-      title: "Assistant",
-      position: newPanelPosition(),
-    });
-  };
-
-  var sources = [];
-  if (community) {
-    sources = community.getSources({});
-  }
-
-  return (
-    <Frame>
+  const Header = ({ project }) => {
+    return (
       <div className="py-2 px-6">
         <div className="flex items-center py-2 w-full whitespace-nowrap">
           <div className="overflow-hidden font-semibold text-ellipsis">
@@ -209,187 +97,48 @@ export default function Home(props) {
             />
           </div>
           <div className="mx-auto" />
-          {loading && (
-            <div className="pl-2 font-normal">
-              <Loader />
-            </div>
-          )}
         </div>
       </div>
+    );
+  };
+
+  return (
+    <Frame>
+      <Header project={project} />
       <div className="flex flex-col pt-1 px-6">
-        {!loading && empty && !orbitImportReady(project) && (
-          <p>
-            The project has been created. Provide in the settings a workspace
-            slug and an API key to import data from Orbit. You can also use
-            Panoramicaʼs API to push your data.
-          </p>
+        {!imported && (
+          <Setup
+            project={project}
+            dispatch={dispatch}
+            addWidget={addWidget}
+            newPanelPosition={newPanelPosition}
+            refetch={refetch}
+          />
         )}
-        {!loading && empty && orbitImportReady(project) && (
-          <div className="flex flex-col space-y-6">
-            <p>
-              The project has been created. Click the button to fetch data from
-              Orbit. This is a one-time operation and takes up to 60 seconds.
-            </p>
-            <button className="btn" onClick={importProject}>
-              Import
-            </button>
+        {imported && (
+          <div className="flex flex-col items-start space-y-4">
+            <Search newPanelPosition={newPanelPosition} addWidget={addWidget} />
+            <Explore
+              addWidget={addWidget}
+              handlers={handlers}
+              newPanelPosition={newPanelPosition}
+            />
+            <Sources
+              handlers={handlers}
+              newPanelPosition={newPanelPosition}
+              project={project}
+            />
+            <Settings
+              addWidget={addWidget}
+              newPanelPosition={newPanelPosition}
+              project={project}
+              resetWidgets={resetWidgets}
+              user={user}
+            />
           </div>
-        )}
-        {community && !empty && (
-          <>
-            <div className="flex flex-col items-start space-y-6">
-              <div className="flex flex-col items-start space-y-2">
-                <form onSubmit={onSearchSubmit} className="flex space-x-2">
-                  <input
-                    type="search"
-                    ref={searchRef}
-                    placeholder="Search..."
-                    className="!w-full"
-                  />
-                  <button className="btn" type="submit">
-                    <FontAwesomeIcon icon="search" />
-                  </button>
-                </form>
-              </div>
-              <div className="flex flex-col items-start w-full">
-                <div className="text-tertiary pb-1 font-semibold">Explore</div>
-                <button
-                  onClick={(e) =>
-                    onClickSource(e, null, { position: newPanelPosition() })
-                  }
-                >
-                  All Activity
-                </button>
-                <button
-                  onClick={() =>
-                    addWidget("members", "Members", {
-                      title: "Members",
-                      position: newPanelPosition(),
-                    })
-                  }
-                >
-                  Member List
-                </button>
-                <button onClick={onClickAssistant}>Assistant</button>
-                <button onClick={onClickBookmarks}>
-                  Bookmarks ({bookmarks.length})
-                </button>
-                <div className="flex flex-col items-start w-full whitespace-nowrap">
-                  {bookmarks
-                    .map(({ activityId }) =>
-                      community.findActivityById(activityId)
-                    )
-                    .map((activity) => (
-                      <div
-                        key={activity.id}
-                        className="group flex items-center space-x-1 w-full text-sm text-left text-gray-400 text-ellipsis cursor-pointer dark:text-gray-500"
-                        onClick={(e) =>
-                          onClickActivity(e, activity, {
-                            position: newPanelPosition(),
-                          })
-                        }
-                      >
-                        <SourceIcon activity={activity} className="text-xs" />
-                        <div className="group-hover:underline overflow-x-hidden w-full text-ellipsis">
-                          {activity.summary || activity.text.slice(0, 50)}
-                        </div>
-                      </div>
-                    ))}
-                </div>
-                <div className="text-tertiary pt-2 font-semibold">Sources</div>
-                {sources.map((source) => (
-                  <div className="flex flex-col" key={source}>
-                    <button
-                      className="flex items-center space-x-1"
-                      onClick={(e) =>
-                        onClickSource(e, source, {
-                          position: newPanelPosition(),
-                        })
-                      }
-                    >
-                      <div>{utils.titleize(source)}</div>
-                    </button>
-                  </div>
-                ))}
-                {project.demo && (
-                  <>
-                    <div className="text-tertiary pt-2 font-semibold">
-                      Portal
-                    </div>
-                    <div className="flex flex-col items-start">
-                      <Link
-                        target="_blank"
-                        href={`/projects/${project.id}/welcome`}
-                        prefetch={false}
-                        className="hover:underline"
-                      >
-                        <FontAwesomeIcon icon="arrow-up-right-from-square" />{" "}
-                        View Site
-                      </Link>
-                    </div>
-                  </>
-                )}
-                <div className="text-tertiary pb-1 pt-2 font-semibold">
-                  Settings
-                </div>
-                <div className="flex flex-col items-start text-sm text-gray-400 dark:text-gray-500">
-                  <button
-                    className="hover:underline"
-                    onClick={onClickEditProject}
-                  >
-                    Project Settings
-                  </button>
-                  <button
-                    className="hover:underline"
-                    onClick={onClickEditPrompts}
-                  >
-                    Edit Prompts
-                  </button>
-                  {user && (
-                    <>
-                      <button className="hover:underline" onClick={onClickUser}>
-                        API Settings
-                      </button>
-                    </>
-                  )}
-                  {aiReady(project) && (
-                    <button
-                      className="hover:underline"
-                      onClick={onClickEmbedDocumentation}
-                    >
-                      Embed Documentation
-                    </button>
-                  )}
-                  <button
-                    className="hover:underline"
-                    onClick={toggleEditingTheme}
-                  >
-                    Change Theme
-                  </button>
-                  <button className="hover:underline" onClick={resetWidgets}>
-                    Reset Layout
-                  </button>
-                  <Link
-                    className="hover:underline"
-                    prefetch={false}
-                    href={`/dashboard`}
-                  >
-                    Exit to Dashboard
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </>
         )}
         <div className="my-auto" />
       </div>
-      {editingTheme &&
-        createPortal(
-          <Modal title="Change Theme" close={toggleEditingTheme}>
-            <ThemeSelector />
-          </Modal>,
-          document.body
-        )}
     </Frame>
   );
 }

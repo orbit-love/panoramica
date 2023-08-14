@@ -1,18 +1,27 @@
 import utils from "src/utils";
 
-export async function mergeProject({ project, tx }) {
-  const projectId = project.id;
+export async function mergeProject({ project, user, tx }) {
+  const { id: projectId, name, demo } = project;
+  const { id: userId, email } = user;
 
   // merge project node
-  await tx.run(`MERGE (p:Project { id: $projectId }) RETURN p`, { projectId });
+  await tx.run(
+    `MERGE (p:Project { id: $projectId })
+      WITH p
+      SET p.demo = $demo, p.name = $name
+      MERGE (p)<-[:CREATED]-(u:User { id: $userId })
+      WITH u
+        SET u.email = $email`,
+    { projectId, userId, email, demo, name }
+  );
   console.log("Memgraph: Created project");
 }
 
-export async function setupProject({ project, tx }) {
-  await mergeProject({ project, tx });
+export async function setupProject({ project, user, tx }) {
+  await mergeProject({ project, user, tx });
 
   const projectId = project.id;
-  // delete previous nodes and relationships
+  // delete existing nodes and relationships
   await tx.run(
     `MATCH (p:Project { id: $projectId })-[*..4]->(n)
         DETACH DELETE n`,
@@ -24,7 +33,9 @@ export async function setupProject({ project, tx }) {
 // set up constraints and indexes for memgraph
 export async function setupConstraints({ tx }) {
   // ensure only one project with the same id is ever created
-  await tx.run(`CREATE CONSTRAINT ON (p:Parent) ASSERT p.id IS UNIQUE`);
+  await tx.run(`CREATE CONSTRAINT ON (p:Project) ASSERT p.id IS UNIQUE`);
+  // ensure only one user id is ever created
+  await tx.run(`CREATE CONSTRAINT ON (u:User) ASSERT u.id IS UNIQUE`);
   // create indices for faster lookups
   await tx.run(`CREATE INDEX ON :Project(id)`);
   await tx.run(`CREATE INDEX ON :Member(globalActor)`);
@@ -34,7 +45,7 @@ export async function setupConstraints({ tx }) {
   console.log("Memgraph: Created constraints");
 }
 
-export async function syncActivities({ tx, project, activities }) {
+export async function syncActivities({ tx, project, user, activities }) {
   const projectId = project.id;
 
   for (let activity of activities) {
@@ -84,12 +95,12 @@ export async function syncActivities({ tx, project, activities }) {
         UNWIND batch AS activity
           MATCH (p)-[:OWNS]->(a1:Activity { id: activity.id }), (p)-[:OWNS]->(a2:Activity)
             WHERE a1.sourceParentId = a2.sourceId
-            MERGE (a1)-[r:REPLIES_TO]->(a2)
-          SET a1.parentId = a2.id
-          SET a1:Reply`,
+              MERGE (a1)-[r:REPLIES_TO]->(a2)
+              SET a1.parentId = a2.id
+              SET a1:Reply`,
     { activities, projectId }
   );
-  console.log("Memgraph: Added (a:Activity)-[:REPLIES_TO]->(p:Activity) edges");
+  console.log("Memgraph: Connected (a:Activity)-[:REPLIES_TO]->(p:Activity)");
 
   // assign conversationId to the farthest ancestor of each activity or that activity itself
   // apply the :Conversation label if the farthest ancestor is the activity itself
@@ -101,12 +112,14 @@ export async function syncActivities({ tx, project, activities }) {
           WITH activity, ancestor, reduce(acc = ancestor, n in nodes(path) | CASE WHEN n.timestamp < acc.timestamp THEN n ELSE acc END) as conversationStarter
             ORDER BY conversationStarter.timestamp
           WITH activity, HEAD(COLLECT(conversationStarter.id)) as conversationId
+            MATCH (conversation:Activity { id: conversationId })
+          WITH activity, conversation, conversationId
             SET activity.conversationId = conversationId
-          WITH activity WHERE activity.id = conversationId
-            SET activity:Conversation`,
+            MERGE (activity)-[:PART_OF]->(conversation)
+            SET conversation:Conversation`,
     { activities, projectId }
   );
-  console.log("Memgraph: Added activity.conversationId");
+  console.log("Memgraph: Connected (a:Activity)-[:PART_OF]->(c:Conversation)");
 
   // create (:Member) nodes for each unique globalActor
   await tx.run(
@@ -161,13 +174,71 @@ export async function syncActivities({ tx, project, activities }) {
           UNWIND batch AS mention
             MATCH
               (p)-[:OWNS]->(m:Member   { globalActor: mention.globalActor }),
-              (p)-[:OWNS]->(a:Activity { activityId: mention.activityId })
+              (p)-[:OWNS]->(a:Activity { id: mention.activityId })
             MERGE (a)-[r:MENTIONS]-(m)`,
     { mentions, projectId }
   );
   console.log(
     "Memgraph: Created (:Activity)-[:MENTIONS]-(:Activity) edges - ",
     mentions.length
+  );
+
+  // for every member that did an activity in the batch
+  // find all the places they replied to or mentioned another member
+  // and merge an edge between them, adding the activities to the edge
+  // the activity ids are a set and so this is idempotent, whereas just
+  // incrementing the weight would not be; at the end, set the weight
+  // and the lastInteractedAt timestamp
+  // this is undirected so that there is only one edge between two people and
+  // to create a directional version messaged / messagedBy, only the
+  // MERGE (m1)-[k:MESSAGED]-(m2) part needs a direction into m2
+  const mergeMessagedEdge = async ({ tx, match }) => {
+    return await tx.run(
+      `MATCH (p:Project { id: $projectId })
+        WITH p, $activities AS batch
+          UNWIND batch AS activity
+            MATCH
+              (p)-[:OWNS]->(a:Activity { id: activity.id })
+            WITH a
+              MATCH (a)<-[:DID]-(m1:Member)
+            WITH m1
+              ${match}
+              WHERE m1 <> m2
+              MATCH (a1)-[:PART_OF]->(c:Activity)
+              MERGE (m1)-[k:MESSAGED]-(m2)
+              ON CREATE SET k.activities = [a1.id],
+                            k.conversations = [c.id],
+                            k.activityCount = 1,
+                            k.conversationCount = 1,
+                            k.lastInteractedAt = a1.timestamp
+              ON MATCH SET k.activities = CASE
+                                          WHEN NOT a1.id IN k.activities THEN k.activities + a1.id
+                                          ELSE k.activities
+                                          END,
+                           k.conversations = CASE
+                                          WHEN NOT c.id IN k.conversations THEN k.conversations + c.id
+                                          ELSE k.conversations
+                                          END,
+                           k.activityCount = SIZE(k.activities),
+                           k.conversationCount = SIZE(k.conversations),
+                           k.lastInteractedAt = CASE
+                                                WHEN k.lastInteractedAt IS NULL OR a1.timestamp > k.lastInteractedAt THEN a1.timestamp
+                                                ELSE k.lastInteractedAt
+                                                END`,
+      { activities, projectId }
+    );
+  };
+
+  const matchByReply = `MATCH (m1)-[:DID]->(a1:Activity)-[:REPLIES_TO]->(a2:Activity)<-[:DID]-(m2:Member)`;
+  await mergeMessagedEdge({ tx, match: matchByReply });
+  console.log(
+    "Memgraph: Created (:Member)-[:MESSAGED]-(:Member) edges for replies"
+  );
+
+  const matchByMention = `MATCH (m1)-[:DID]->(a1:Activity)-[:MENTIONS]->(m2:Member)`;
+  await mergeMessagedEdge({ tx, match: matchByMention });
+  console.log(
+    "Memgraph: Created (:Member)-[:MESSAGED]-(:Member) edges for mentions"
   );
 
   const finalResult = await tx.run(

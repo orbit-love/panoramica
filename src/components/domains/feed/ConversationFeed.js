@@ -1,43 +1,75 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import Paginator from "src/components/domains/feed/Paginator";
 import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
 
-// this component transforms a list of activities into the most recent
-// activity for each unique conversation
+const findActivitiesConnectionEdges = ({
+  projects: [
+    {
+      activitiesConnection: { edges, pageInfo },
+    },
+  ],
+}) => {
+  return [edges, pageInfo];
+};
+
 export default function ConversationFeed({
   project,
-  activities,
-  community,
+  query,
+  variables,
   handlers,
   minimal,
   term,
+  eachActivity,
+  findEdges = findActivitiesConnectionEdges,
+  className = "border-t border-gray-300 dark:border-gray-700",
 }) {
-  // if multiple activities are in the same conversation, only show
-  // the first one that is passed in the array; this allows callers
-  // to specific the activity they want shown in the preview
-  var conversationIds = activities.map((a) => a.conversationId);
+  const [first, setFirst] = useState(10);
+
+  const { data, fetchMore } = useSuspenseQuery(query, {
+    variables: { ...variables, first },
+  });
+
+  const [edges, pageInfo] = findEdges(data);
+
+  if (!eachActivity) {
+    eachActivity = ({ activity, index }) => (
+      <ConversationFeedItem
+        project={project}
+        key={activity.id}
+        index={index}
+        activity={activity}
+        handlers={handlers}
+        minimal={minimal}
+        term={term}
+      />
+    );
+  }
+
+  useEffect(() => {
+    fetchMore({
+      variables: {
+        first,
+      },
+    });
+  }, [first, fetchMore]);
+
+  var activities = edges.map((edge) => edge.node);
+
+  // keep only the first activity in a conversation
+  const conversationIds = activities.map((a) => a.conversation.id);
   activities = activities.filter((activity, index) => {
-    return conversationIds.indexOf(activity.conversationId) === index;
+    return conversationIds.indexOf(activity.conversation.id) === index;
   });
 
   return (
-    <div className="border-t border-gray-300 dark:border-gray-700">
+    <div className={className}>
       <Paginator
         activities={activities}
-        community={community}
-        eachActivity={({ activity, index }) => (
-          <ConversationFeedItem
-            project={project}
-            key={activity.id}
-            index={index}
-            activity={activity}
-            community={community}
-            handlers={handlers}
-            minimal={minimal}
-            term={term}
-          />
-        )}
+        setFirst={setFirst}
+        pageInfo={pageInfo}
+        eachActivity={eachActivity}
       />
     </div>
   );

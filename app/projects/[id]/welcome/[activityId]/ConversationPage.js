@@ -1,44 +1,54 @@
 "use client";
 
 import React, { useContext } from "react";
-import { useRouter } from "next/navigation";
-
 import { ProjectContext } from "src/components/context/ProjectContext";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
-import SimilarConversations from "src/components/domain/public/SimilarConversations";
+import SimilarConversations from "src/components/domains/search/SimilarConversations";
 import SourceAction from "src/components/domains/conversation/SourceAction";
+import ActivityItem from "src/components/domains/welcome/ActivityItem";
+import Link from "next/link";
 import utils from "src/utils";
 
-export default function ConversationPage({ activity, similarConversations }) {
-  const router = useRouter();
-  const { project, community } = useContext(ProjectContext);
+export default function ConversationPage({ activity }) {
+  const { project } = useContext(ProjectContext);
 
-  const onClickTimestamp = (activity) =>
-    `/projects/${project.id}/welcome/${activity.conversationId}`;
-  const onClickTimestampWithAnchor = (activity) =>
-    `/projects/${project.id}/welcome/${activity.conversationId}#${activity.id}`;
+  const conversation = activity.conversation;
+  const onClickTimestamp = (_, conversation) =>
+    `/projects/${project.id}/welcome/${conversation.id}`;
+  const onClickTimestampWithAnchor = (conversation, activity) =>
+    `/projects/${project.id}/welcome/${conversation.id}#${activity.id}`;
   const handlers = {
     onCLickMember: () => {},
     onClickChannel: () => {},
   };
 
   const Back = () => (
-    <button
-      onClick={() => router.back()}
+    <Link
       className="btn font-semibold !w-24 !flex-none text-center text-sm"
+      href={`/projects/${project.id}/welcome`}
     >
       Back
-    </button>
+    </Link>
   );
+
+  const renderResults = ({ activities }) =>
+    activities.map((activity) => (
+      <ActivityItem
+        key={activity.id}
+        project={project}
+        activity={activity}
+        conversation={activity}
+        handlers={{ ...handlers, onClickTimestamp }}
+      />
+    ));
 
   return (
     <div className="flex flex-col items-center py-4">
       <div className="flex flex-col items-center space-y-6 sm:max-w-[700px] w-full">
-        <div className="flex flex-col justify-center items-center px-6 space-x-2 space-y-2 w-full sm:flex-row sm:items-center sm:px-0">
-          <div className="text-secondary grow text-xl font-bold">
-            {activity.summary}
+        <div className="flex flex-col justify-center items-center px-6 space-x-2 space-y-2 w-full whitespace-nowrap sm:flex-row sm:items-center sm:px-0">
+          <div className="text-secondary overflow-hidden grow mt-3 text-xl font-bold text-ellipsis">
+            {activity.summary || activity.text.slice(0, 100)}
           </div>
-          <Back />
           {activity.url && (
             <SourceAction
               activity={activity}
@@ -48,12 +58,12 @@ export default function ConversationPage({ activity, similarConversations }) {
             </SourceAction>
           )}
         </div>
-        <div className="py-4 px-6 w-full bg-gray-50 rounded-lg shadow">
+        <div className="dark:bg-opacity-50 py-4 px-6 w-full bg-gray-50 rounded-lg shadow dark:bg-gray-800">
           <FullThreadView
             project={project}
             key={activity}
             activity={activity}
-            community={community}
+            conversation={conversation}
             handlers={{
               ...handlers,
               onClickTimestamp: onClickTimestampWithAnchor,
@@ -63,13 +73,14 @@ export default function ConversationPage({ activity, similarConversations }) {
         </div>
         <Back />
         <div className="flex flex-col space-y-6 w-full">
-          <div className="text-tertiary">Similar Conversations</div>
-          <SimilarConversations
-            project={project}
-            community={community}
-            handlers={{ ...handlers, onClickTimestamp }}
-            similarConversations={similarConversations}
-          />
+          <div className="text-tertiary text-lg">Similar Conversations</div>
+          <React.Suspense fallback={<div>Loading...</div>}>
+            <SimilarConversations
+              project={project}
+              activity={activity}
+              renderResults={renderResults}
+            />
+          </React.Suspense>
         </div>
         <Back />
       </div>

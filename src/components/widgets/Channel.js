@@ -2,29 +2,30 @@ import React from "react";
 import { Frame, Header } from "src/components/widgets";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
-import utils from "src/utils";
+import GetActivitiesQuery from "./Channel/GetActivities.gql";
 
-export default function Channel({ project, community, params, handlers }) {
+export default function Channel({ project, params, handlers }) {
   var { source, sourceChannel } = params;
 
-  var activities = community.activities.filter(
-    (activity) =>
-      activity.source === source && activity.sourceChannel === sourceChannel
-  );
+  const { id: projectId } = project;
+  const query = GetActivitiesQuery;
+  const variables = {
+    projectId,
+    source,
+    sourceChannel,
+  };
 
   return (
     <Frame>
-      {source && (
-        <Header>
-          {source && <SourceIcon activity={{ source }} />}
-          <div>{sourceChannel}</div>
-        </Header>
-      )}
+      <Header>
+        {source && <SourceIcon activity={{ source }} />}
+        <div>{sourceChannel}</div>
+      </Header>
       <ConversationFeed
-        project={project}
-        activities={activities}
-        community={community}
         handlers={handlers}
+        project={project}
+        query={query}
+        variables={variables}
       />
     </Frame>
   );

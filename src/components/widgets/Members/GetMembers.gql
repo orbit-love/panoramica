@@ -1,0 +1,22 @@
+query ($projectId: ID!, $first: Int!, $after: String) {
+  projects(where: { id: $projectId }) {
+    membersConnection(first: $first, after: $after) {
+      edges {
+        node {
+          globalActor
+          globalActorName
+          activitiesAggregate {
+            count
+          }
+          messagedWithConnection {
+            totalCount
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+      }
+      totalCount
+    }
+  }
+}

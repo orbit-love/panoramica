@@ -25,6 +25,7 @@ import {
   ProjectDispatchContext,
 } from "src/components/context/ProjectContext";
 import { addWidget, clickHandlers } from "src/components/widgets/setup/widgets";
+import ErrorBoundary from "src/components/widgets/base/ErrorBoundary";
 
 const components = {
   Bookmarks: (props) => WithContext(Bookmarks, props),
@@ -56,14 +57,16 @@ const WithContext = (Component, props) => {
   var addWidgetFunc = addWidget(props);
   const widgetContext = { api: props.api, addWidget: addWidgetFunc };
   return (
-    <WidgetContext.Provider value={widgetContext}>
-      <Component
-        {...props}
-        addWidget={addWidgetFunc}
-        {...projectContext}
-        dispatch={projectDispatch}
-        handlers={clickHandlers(addWidgetFunc)}
-      />
-    </WidgetContext.Provider>
+    <ErrorBoundary>
+      <WidgetContext.Provider value={widgetContext}>
+        <Component
+          {...props}
+          addWidget={addWidgetFunc}
+          {...projectContext}
+          dispatch={projectDispatch}
+          handlers={clickHandlers(addWidgetFunc)}
+        />
+      </WidgetContext.Provider>
+    </ErrorBoundary>
   );
 };

@@ -4,16 +4,20 @@ import { Frame, Header } from "src/components/widgets";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import CompactConnections from "src/components/domains/member/Connections";
+import GetActivitiesQuery from "./Member/GetActivities.gql";
 
-export default function Member({ project, community, params, handlers }) {
+export default function Member({ project, params, handlers }) {
   var { member } = params;
   var { onClickConnection } = handlers;
 
-  // for each conversation, render the latest activity that involves the member
-  // as a starting point for exploring the conversation
-  var activities = community.activities.filter(
-    (activity) => activity.globalActor === member.globalActor
-  );
+  const { globalActor: memberId } = member;
+  const { id: projectId } = project;
+
+  const query = GetActivitiesQuery;
+  const variables = {
+    projectId,
+    memberId,
+  };
 
   return (
     <Frame>
@@ -24,19 +28,34 @@ export default function Member({ project, community, params, handlers }) {
       </Header>
       <div className="flex flex-col space-y-3">
         <CompactConnections
+          project={project}
           member={member}
-          community={community}
           onClick={(e, member, connection) =>
             onClickConnection(e, member, connection)
           }
         />
         <ConversationFeed
-          project={project}
-          activities={activities}
-          community={community}
+          findEdges={findEdges}
           handlers={handlers}
+          project={project}
+          query={query}
+          variables={variables}
         />
       </div>
     </Frame>
   );
 }
+
+const findEdges = ({
+  projects: [
+    {
+      members: [
+        {
+          activitiesConnection: { edges, pageInfo },
+        },
+      ],
+    },
+  ],
+}) => {
+  return [edges, pageInfo];
+};

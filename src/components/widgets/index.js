@@ -25,19 +25,6 @@ export const loadDefaultLayout = (api) => {
     title: "Home",
   });
 
-  api.addPanel({
-    id: "all-activity",
-    component: "Source",
-    tabComponent: "Source",
-    title: "All Activity",
-    position: {
-      direction: "right",
-    },
-    params: {
-      source: null,
-    },
-  });
-
   // set the size of the home panel, give it constraints, and lock it
   homePanel.api.setSize({ width: 275 });
   homePanel.group.api.setConstraints({ minimumWidth: 175, maximumWidth: 250 });

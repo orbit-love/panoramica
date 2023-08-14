@@ -31,12 +31,12 @@ export default async function handler(req, res) {
     }
 
     await session.writeTransaction(async (tx) => {
-      await setupProject({ tx, project });
+      await setupProject({ tx, project, user });
     });
 
     // import a maximum of 1,000 activities; start at page 1
     const page = 1;
-    const pageLimit = 10;
+    const pageLimit = 5;
 
     const handleRecords = async (records) => {
       // this is a quick and dirty way to remove duplicate sourceId from
@@ -68,7 +68,10 @@ export default async function handler(req, res) {
     console.log("Successfully imported activities");
   } catch (err) {
     console.log("Could not import activities", err);
-    return res.status(500).json({ message: "Could not import activities" });
+    return res.status(500).json({
+      message:
+        "Snap! The project import failed. Please edit the project settings and verify that a valid Orbit workspace id and API key have been provided.",
+    });
   } finally {
     session.close();
   }

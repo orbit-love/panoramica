@@ -6,12 +6,13 @@ import utils from "src/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function CompactConnection({
-  member,
   connectedMember,
-  connection,
+  lastInteractedAt,
+  member,
   onClick,
+  conversationCount,
+  activityCount,
 }) {
-  var [outgoing, incoming, lastInteraction] = connection;
   return (
     <button
       key={connectedMember.id}
@@ -24,16 +25,19 @@ export default function CompactConnection({
         <NameAndIcon member={connectedMember} onClick={() => {}} />
       </div>
       <div className="mx-auto"></div>
-      <div title="Number of interactions" className="text-secondary">
+      <TimeAgo
+        className="ml-6 text-gray-400 dark:text-gray-600"
+        date={lastInteractedAt}
+        title={`Last interacted on ${utils.formatDate(lastInteractedAt)}`}
+      />
+      <div
+        title={`Messaged ${activityCount} times across ${conversationCount} conversations`}
+        className="text-secondary"
+      >
         <FontAwesomeIcon icon="comment" flip="horizontal" />
         &nbsp;
-        {outgoing + incoming}
+        <span title={activityCount}>{conversationCount}</span>
       </div>
-      <TimeAgo
-        className="text-secondary ml-6"
-        date={lastInteraction}
-        title={`Last interacted on ${utils.formatDate(lastInteraction)}`}
-      />
     </button>
   );
 }

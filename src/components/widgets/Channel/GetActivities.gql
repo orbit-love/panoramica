@@ -1,0 +1,16 @@
+#import "src/graphql/fragments/ProjectActivitiesConnection.gql"
+query (
+  $projectId: ID!
+  $first: Int!
+  $source: String!
+  $sourceChannel: String!
+) {
+  projects(where: { id: $projectId }) {
+    activitiesConnection(
+      first: $first
+      where: { node: { source: $source, sourceChannel: $sourceChannel } }
+    ) {
+      ...ProjectActivitiesConnection
+    }
+  }
+}

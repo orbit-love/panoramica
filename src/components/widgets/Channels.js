@@ -4,36 +4,31 @@ import SourceIcon from "src/components/domains/activity/SourceIcon";
 import { Frame, Header } from "src/components/widgets";
 import utils from "src/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import GetSourceChannelsQuery from "./Channels/GetSourceChannels.gql";
 
-export default function Channels({ community, params, handlers }) {
+export default function Channels({ project, params, handlers }) {
   var { source } = params;
   var { onClickChannel } = handlers;
 
-  var sourceChannels = community.getSourceChannels({ source });
-
-  var channelMetadatas = sourceChannels
-    .map((sourceChannel) => {
-      var activities = community.activities.filter(
-        (activity) =>
-          activity.source === source && activity.sourceChannel === sourceChannel
-      );
-      var lastActivity = activities[0]?.timestamp;
-      return { count: activities.length, source, sourceChannel, lastActivity };
-    })
-    .sort((a, b) => {
-      var aa = new Date(a.lastActivity);
-      var bb = new Date(b.lastActivity);
-      return bb - aa;
-    });
+  const { id: projectId } = project;
+  const {
+    data: {
+      projects: [{ sourceChannels }],
+    },
+  } = useSuspenseQuery(GetSourceChannelsQuery, {
+    variables: {
+      projectId,
+      source,
+    },
+  });
 
   return (
     <Frame>
-      {source && (
-        <Header>
-          {source && <SourceIcon activity={{ source }} />}
-          <div>{utils.titleize(source)}</div>
-        </Header>
-      )}
+      <Header>
+        {source && <SourceIcon activity={{ source }} />}
+        <div>{utils.titleize(source)}</div>
+      </Header>
       <div className="flex flex-col items-start pl-2 px-6">
         <table className="border-spacing-x-2 table w-full whitespace-nowrap border-separate">
           <tbody>
@@ -44,23 +39,21 @@ export default function Channels({ community, params, handlers }) {
               <td>Channel</td>
               <td>Last Active</td>
             </tr>
-            {channelMetadatas.map(
-              ({ count, source, sourceChannel, lastActivity }, index) => (
-                <tr
-                  key={sourceChannel}
-                  onClick={(e) => onClickChannel(e, source, sourceChannel)}
-                  className="group text-secondary cursor-pointer"
-                >
-                  <td className="text-right">{count}</td>
-                  <td>
-                    <div className="group-hover:underline hover:underline">
-                      {utils.displayChannel(sourceChannel)}
-                    </div>
-                  </td>
-                  <td>{utils.formatDateShort(lastActivity)}</td>
-                </tr>
-              )
-            )}
+            {sourceChannels.map(({ name, activityCount, lastActivityAt }) => (
+              <tr
+                key={name}
+                onClick={(e) => onClickChannel(e, source, name)}
+                className="group text-secondary cursor-pointer"
+              >
+                <td className="text-right">{activityCount}</td>
+                <td>
+                  <div className="group-hover:underline hover:underline">
+                    {utils.displayChannel(name)}
+                  </div>
+                </td>
+                <td>{utils.formatDateShort(lastActivityAt)}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

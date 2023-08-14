@@ -1,0 +1,5 @@
+mutation ($projectId: ID!) {
+  deletePrompts(where: { project: { id: $projectId } }) {
+    nodesDeleted
+  }
+}

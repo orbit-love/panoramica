@@ -1,53 +1,63 @@
 import React, { useState } from "react";
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import CompactConnection from "src/components/domains/member/Connection";
+import GetMessagedWithQuery from "./GetMessagedWith.gql";
 
-export default function CompactConnections({ member, community, onClick }) {
+export default function CompactConnections({ project, member, onClick }) {
   const [expanded, setExpanded] = useState(false);
-  const connections = community.findConnections(member) || {};
 
-  const sortByFields = (a, b) => {
-    var lastInteractionA = connections[a.globalActor][2];
-    var lastInteractionB = connections[b.globalActor][2];
+  const { globalActor: memberId } = member;
+  const { id: projectId } = project;
 
-    // last resort, sort by name
-    var nameSort = 0,
-      nameA = a.globalActorName?.toLowerCase(),
-      nameB = b.globalActorName?.toLowerCase();
-    if (nameA < nameB) {
-      nameSort = -1;
-    }
-    if (nameA > nameB) {
-      nameSort = 1;
-    }
-    return lastInteractionB - lastInteractionA || nameSort;
-  };
-
-  var connectedMembers = Object.keys(connections)
-    .map((globalActor) => community.findMemberByGlobalActor(globalActor))
-    .sort(sortByFields);
+  const {
+    data: {
+      projects: [
+        {
+          members: [
+            {
+              messagedWithConnection: { edges: messagedWith },
+            },
+          ],
+        },
+      ],
+    },
+  } = useSuspenseQuery(GetMessagedWithQuery, {
+    variables: { memberId, projectId },
+  });
 
   const limit = 10;
-  var connectedMembersSlice = expanded
-    ? connectedMembers
-    : connectedMembers.slice(0, limit);
+  var messagedWithSlice = expanded
+    ? messagedWith
+    : messagedWith.slice(0, limit);
 
   return (
     <>
-      {connectedMembers.length > 0 && (
+      {messagedWithSlice.length > 0 && (
         <div className="flex flex-col px-6 space-y-3">
           <div className="flex flex-col pb-2">
-            <div className="text-tertiary pb-1 font-light">Connections</div>
+            <div className="text-tertiary pb-1 font-light">Messaged With</div>
             <div className="flex flex-col">
-              {connectedMembersSlice.map((connectedMember) => (
-                <CompactConnection
-                  key={connectedMember.globalActor}
-                  member={member}
-                  connectedMember={connectedMember}
-                  connection={connections[connectedMember.globalActor]}
-                  onClick={onClick}
-                />
-              ))}
-              {!expanded && connectedMembers.length > limit && (
+              {messagedWithSlice.map(
+                ({
+                  node: connectedMember,
+                  activities: activityIds,
+                  lastInteractedAt,
+                  activityCount,
+                  conversationCount,
+                }) => (
+                  <CompactConnection
+                    key={connectedMember.globalActor}
+                    member={member}
+                    connectedMember={connectedMember}
+                    activityCount={activityCount}
+                    conversationCount={conversationCount}
+                    lastInteractedAt={lastInteractedAt}
+                    activityIds={activityIds}
+                    onClick={onClick}
+                  />
+                )
+              )}
+              {!expanded && messagedWith.length > limit && (
                 <button
                   className="text-tertiary mt-1 font-light text-left hover:underline"
                   onClick={() => setExpanded(true)}

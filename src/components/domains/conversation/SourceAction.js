@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import utils from "src/utils";
+import SourceIcon from "src/components/domains/activity/SourceIcon";
 
 export default function SourceAction({ children, activity, className }) {
   return (
@@ -13,7 +13,7 @@ export default function SourceAction({ children, activity, className }) {
           target="_blank"
           className={className}
         >
-          <FontAwesomeIcon icon="external-link" /> {children}
+          <SourceIcon activity={activity} /> {children}
         </Link>
       )}
     </>

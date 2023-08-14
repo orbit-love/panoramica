@@ -1,5 +1,8 @@
 import React from "react";
 import "styles/globals.css";
+import SessionContext from "src/components/context/SessionContext";
+import Icons from "src/components/context/Icons";
+import { getSession } from "src/auth";
 
 var description = "Expand conversational landscapes with AI";
 var defaultTitle = "Panoramica";
@@ -14,10 +17,16 @@ export const metadata = {
   description,
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const session = await getSession();
+
   return (
-    <html>
-      <body>{children}</body>
-    </html>
+    <Icons>
+      <SessionContext session={session}>
+        <html>
+          <body>{children}</body>
+        </html>
+      </SessionContext>
+    </Icons>
   );
 }

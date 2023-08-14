@@ -1,20 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 
-const pageSize = 10;
-
 class FakeObserver {
   observe() {}
   unobserve() {}
 }
 
-export default function Paginated(props) {
-  const { activities, eachActivity } = props;
-  const containerRef = useRef();
-
-  const firstPageOfItems = activities.slice(0, pageSize);
-  const totalPages = Math.floor(activities.length / pageSize);
-  const [page, setPage] = useState(1);
-  const [items, setItems] = useState(firstPageOfItems);
+export default function Paginator({
+  activities,
+  eachActivity,
+  setFirst,
+  pageInfo,
+}) {
+  const { hasNextPage } = pageInfo;
   const [lastElement, setLastElement] = useState(null);
 
   var Observer;
@@ -28,16 +25,12 @@ export default function Paginated(props) {
     new Observer((entries) => {
       const target = entries[0];
       if (target.isIntersecting) {
-        if (page <= totalPages) {
-          setPage((prevPage) => prevPage + 1);
+        if (hasNextPage) {
+          setFirst((first) => first + 10);
         }
       }
     })
   );
-
-  useEffect(() => {
-    setItems(activities.slice(0, pageSize * (page + 1)));
-  }, [activities, page]);
 
   useEffect(() => {
     const currentElement = lastElement;
@@ -55,20 +48,13 @@ export default function Paginated(props) {
   }, [lastElement]);
 
   return (
-    <div ref={containerRef}>
-      {items.map((activity, index) => (
-        <div
-          key={activity.id}
-          ref={
-            index === items.length - 1 && page <= totalPages
-              ? setLastElement
-              : null
-          }
-        >
+    <>
+      {activities.map((activity, index) => (
+        <div key={activity.id} ref={hasNextPage ? setLastElement : null}>
           {eachActivity({ activity, index })}
         </div>
       ))}
-      {page - 1 === totalPages && <p className="my-5 text-center">♥</p>}
-    </div>
+      {!hasNextPage && <p className="my-5 text-center">♥</p>}
+    </>
   );
 }

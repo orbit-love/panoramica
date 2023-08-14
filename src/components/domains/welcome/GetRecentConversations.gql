@@ -1,0 +1,13 @@
+#import "src/graphql/fragments/ProjectActivitiesConnection.gql"
+query ($projectId: ID!, $first: Int!, $after: String, $minDescendants: Int!) {
+  projects(where: { id: $projectId }) {
+    activitiesConnection(
+      first: $first
+      after: $after
+      where: { node: { descendantsAggregate: { count_GTE: $minDescendants } } }
+      sort: { node: { timestampInt: DESC } }
+    ) {
+      ...ProjectActivitiesConnection
+    }
+  }
+}

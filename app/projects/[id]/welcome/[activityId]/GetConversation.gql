@@ -1,0 +1,8 @@
+#import "src/graphql/fragments/ForActivityFeed.gql"
+query ($projectId: ID!, $activityId: ID!) {
+  projects(where: { id: $projectId }) {
+    activities(where: { id: $activityId }) {
+      ...ForActivityFeed
+    }
+  }
+}

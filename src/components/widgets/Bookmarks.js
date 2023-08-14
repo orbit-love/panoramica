@@ -3,14 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { BookmarksContext } from "src/components/context/BookmarksContext";
 import { Frame, Header } from "src/components/widgets";
-import ConversationFeed from "src/components/domains/feed/ConversationFeed";
+import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
 
-export default function Bookmarks({ project, community, api, handlers }) {
-  const { bookmarks } = useContext(BookmarksContext);
-
-  const activities = bookmarks.map((bookmark) =>
-    community.findActivityById(bookmark.activityId)
-  );
+export default function Bookmarks({ project, api, handlers }) {
+  var { bookmarks } = useContext(BookmarksContext);
+  bookmarks = bookmarks.sort((a, b) => b.createdAtInt - a.createdAtInt);
 
   return (
     <Frame>
@@ -20,16 +17,16 @@ export default function Bookmarks({ project, community, api, handlers }) {
           <div>{api.title}</div>
         </div>
         <div className="flex-grow" />
-        <div>{activities?.length}</div>
+        <div>{bookmarks.length}</div>
       </Header>
-      {activities && (
-        <ConversationFeed
+      {bookmarks.map(({ node: activity }) => (
+        <ConversationFeedItem
+          key={activity.id}
+          activity={activity}
           project={project}
-          activities={activities}
-          community={community}
           handlers={handlers}
         />
-      )}
+      ))}
     </Frame>
   );
 }

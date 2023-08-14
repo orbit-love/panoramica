@@ -400,7 +400,7 @@ export const getAPIData = async ({
   apiKey,
   project,
   page = 1,
-  pageLimit = 20,
+  pageLimit = 1,
   handleRecords,
   allData = [],
 }) => {
@@ -445,6 +445,7 @@ export const getAPIData = async ({
             prisma,
             project,
             page: page + 1,
+            pageLimit,
             allData,
             handleRecords,
           })

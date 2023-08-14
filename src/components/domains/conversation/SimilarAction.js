@@ -8,7 +8,7 @@ export default function SimilarAction({ activity, className }) {
     var summary = activity.summary || activity.text.slice(0, 50);
     addWidget(`similar-${activity.id}`, "Similar", {
       title: `Similar to ${summary}`,
-      activityId: activity.id,
+      activity,
     });
   }, [activity, addWidget]);
 

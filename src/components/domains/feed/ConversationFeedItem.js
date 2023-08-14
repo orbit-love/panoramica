@@ -1,33 +1,28 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useContext } from "react";
 import classnames from "classnames";
 
+import { BookmarksContext } from "src/components/context/BookmarksContext";
 import PreviewView from "src/components/domains/conversation/views/PreviewView";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import Toolbar from "src/components/domains/conversation/Toolbar";
 
-import { BookmarksContext } from "src/components/context/BookmarksContext";
-
 export default function ConversationFeedItem(props) {
-  var { index, activity, community, handlers, minimal, term } = props;
+  var { index, activity, handlers, minimal, term } = props;
 
-  const { bookmarks } = useContext(BookmarksContext);
+  const bookmarksContext = useContext(BookmarksContext);
+  const bookmarks = bookmarksContext.bookmarks;
 
-  const conversationActivity = community.findActivityById(
-    activity.conversationId
+  const conversation = activity.conversation;
+  const bookmark = bookmarks.find(
+    (bookmark) => bookmark.node.id === conversation.id
   );
-  const bookmark = bookmarks?.find(
-    (bookmark) => bookmark.activityId === conversationActivity.id
-  );
 
-  const conversation = community.conversations[conversationActivity.id];
-
-  const defaultExpanded =
-    !conversation.children || conversation.children.length === 0;
+  const defaultExpanded = conversation.descendants.length === 1;
   const [expanded, setExpanded] = useState(defaultExpanded);
-  const canExpand = conversation?.children?.length > 0;
+  const canExpand = conversation.descendants.length > 1;
 
   const onOpen = (e) => {
-    handlers.onClickActivity(e, conversationActivity);
+    handlers.onClickActivity(e, conversation);
   };
   const onExpand = () => {
     let selection = window.getSelection().toString();
@@ -39,7 +34,7 @@ export default function ConversationFeedItem(props) {
   return (
     <div
       className={classnames(
-        "group/menu flex flex-col py-6 px-6 relative border-b border-b-gray-300 dark:border-b-gray-700",
+        "group/menu flex flex-col relative border-b border-b-gray-300 dark:border-b-gray-700",
         {
           "hover:bg-gray-100 hover:bg-opacity-50 dark:hover:bg-gray-800 dark:hover:bg-opacity-40":
             index % 2 === 0,
@@ -52,14 +47,15 @@ export default function ConversationFeedItem(props) {
       {expanded && (
         <FullThreadView
           {...props}
-          activity={conversationActivity}
+          activity={activity}
+          conversation={conversation}
           term={term}
         />
       )}
       {!expanded && <PreviewView onExpand={onExpand} {...props} />}
       <Toolbar
         {...props}
-        activity={conversationActivity}
+        activity={conversation}
         canExpand={canExpand}
         expanded={expanded}
         setExpanded={setExpanded}
