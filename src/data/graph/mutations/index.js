@@ -4,17 +4,41 @@ export async function mergeProject({ project, user, tx }) {
   const { id: projectId, name, demo } = project;
   const { id: userId, email } = user;
 
-  // merge project node
+  // merge a node for the user
+  await tx.run(
+    `MERGE (u:User { id: $userId })
+       SET u.email = $email`,
+    { userId, email }
+  );
+  console.log("Memgraph: Merged (User)");
+
+  // merge a node for the project
   await tx.run(
     `MERGE (p:Project { id: $projectId })
-      WITH p
-      SET p.demo = $demo, p.name = $name
-      MERGE (p)<-[:CREATED]-(u:User { id: $userId })
-      WITH u
-        SET u.email = $email`,
-    { projectId, userId, email, demo, name }
+      SET p.demo = $demo, p.name = $name`,
+    { projectId, demo, name }
   );
-  console.log("Memgraph: Created project");
+  console.log("Memgraph: Merged (Project)");
+
+  // connect the user and the project if the project has no
+  // existing user connection - otherwise don't - this avoids
+  // creating an edge when an admin user needs to repair a project
+  const { records } = await tx.run(
+    `MATCH (p:Project { id: $projectId })-[:CREATED]-(u:User)
+     RETURN u`,
+    { projectId, userId }
+  );
+  if (records.length === 0) {
+    // merge project and user nodes
+    await tx.run(
+      `MATCH (p:Project { id: $projectId })
+       MATCH (u:User { id: $userId })
+       WITH p, u
+         MERGE (p)<-[:CREATED]-(u)`,
+      { projectId, userId }
+    );
+    console.log("Memgraph: Merged (Project)<-[:CREATED]-(User)");
+  }
 }
 
 export async function setupProject({ project, user, tx }) {

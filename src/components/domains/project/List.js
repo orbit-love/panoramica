@@ -35,15 +35,12 @@ export default function List({ projects, projectUrl }) {
               <span>{project.name}</span>
             </Link>
           </div>
+          <button className="underline" onClick={() => importProject(project)}>
+            Repair
+          </button>
           {user.admin && (
             <div className="flex space-x-4">
               <span>{`${project.prismaUser.email}`}</span>
-              <button
-                className="underline"
-                onClick={() => importProject(project)}
-              >
-                Repair
-              </button>
             </div>
           )}
         </div>
