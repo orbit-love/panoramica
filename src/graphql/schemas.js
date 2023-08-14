@@ -43,23 +43,21 @@ const typeDefs = gql`
   type User
     @query(aggregate: false)
     @mutation(operations: [UPDATE])
-    @authorization(
-      filter: [
-        {
-          where: {
-            OR: [
-              { jwt: { roles_INCLUDES: "admin" } }
-              { node: { id: "$jwt.sub" } }
-            ]
-          }
-        }
-      ]
-    ) {
+    @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) {
     id: ID! @id
     email: String!
     projects: [Project!]! @relationship(type: "CREATED", direction: OUT)
     bookmarks: [Activity!]!
       @relationship(type: "BOOKMARKS", direction: OUT, properties: "Bookmarked")
+  }
+
+  type UserVisibleToAdmin
+    @node(labels: ["User"])
+    @query(aggregate: false)
+    @authorization(filter: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+    id: ID! @id
+    email: String!
+    projects: [Project!]! @relationship(type: "CREATED", direction: OUT)
   }
 
   type Prompt {
