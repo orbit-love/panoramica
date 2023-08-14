@@ -50,20 +50,20 @@ export default function Home(props) {
     resetLayout({ project, containerApi });
   }, [project, containerApi]);
 
-  const { id: projectId } = project;
-  const {
-    data: { projects },
-    refetch,
-  } = useSuspenseQuery(GetActivityCountQuery, {
-    variables: {
-      projectId,
-    },
-  });
+  // const { id: projectId } = project;
+  // const {
+  //   data: { projects },
+  //   refetch,
+  // } = useSuspenseQuery(GetActivityCountQuery, {
+  //   variables: {
+  //     projectId,
+  //   },
+  // });
 
-  const imported =
-    projects.length > 0 &&
-    projects[0].activitiesConnection &&
-    projects[0].activitiesConnection.totalCount > 0;
+  const imported = true;
+  // projects.length > 0 &&
+  // projects[0].activitiesConnection &&
+  // projects[0].activitiesConnection.totalCount > 0;
 
   // don't set loading since this happens in the background
   const refreshProject = useCallback(async () => {
