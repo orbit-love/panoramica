@@ -9,7 +9,6 @@ import FunctionOutput from "./FunctionOutput";
 
 export default function Chat({
   project,
-  community,
   subContext,
   examplePrompts,
   placeholder,
@@ -197,11 +196,7 @@ export default function Chat({
           )}
           {error && <div className="py-4 text-red-500">{error}</div>}
           {functionOutput && (
-            <FunctionOutput
-              project={project}
-              community={community}
-              functionOutput={functionOutput}
-            />
+            <FunctionOutput project={project} functionOutput={functionOutput} />
           )}
           <PromptInput
             prompt={prompt}

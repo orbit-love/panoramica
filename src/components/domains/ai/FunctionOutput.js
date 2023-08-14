@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import ConversationFeed from "../feed/ConversationFeed";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function FunctionOutput({ project, community, functionOutput }) {
+export default function FunctionOutput({ project, functionOutput }) {
   const [closed, setClosed] = useState(false);
 
   const conversationsContext = (searchTerm, docs) => {
-    const activities = docs.map(({ id }) => community.findActivityById(id));
+    // const activities = docs.map(({ id }) => community.findActivityById(id));
+    const activities = [];
     const handlers = { onClickMember: () => {} };
     return (
       <div className="flex-col mt-1 space-y-1">
@@ -19,7 +20,6 @@ export default function FunctionOutput({ project, community, functionOutput }) {
         <ConversationFeed
           project={project}
           activities={activities}
-          community={community}
           handlers={handlers}
           minimal={true}
         />
