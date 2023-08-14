@@ -18,9 +18,7 @@ export default function SiteHeader({ hideLogo, children }) {
   return (
     <>
       <nav
-        className={classnames(`flex py-3 px-6 w-full whitespace-nowrap`, {
-          absolute: hideLogo,
-        })}
+        className={classnames(`flex py-3 px-6 w-full whitespace-nowrap`, {})}
       >
         <Link href="/" passHref>
           <div className="flex items-center p-1 space-x-3">

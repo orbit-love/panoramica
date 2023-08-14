@@ -1,10 +1,15 @@
 import React from "react";
-import ActivityItem from "src/components/domains/public/ActivityItem";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import GetSimilarConversationsQuery from "./GetSimilarConversations.gql";
 import GetActivitiesByIdsQuery from "src/components/domains/search/GetActivitiesByIds.gql";
 
-export default function SimilarConversations({ project, activity, handlers }) {
+export default function SimilarConversations({
+  project,
+  activity,
+  renderResults,
+  scoreThreshold = 0.75,
+  maxResults = 5,
+}) {
   const { id: projectId } = project;
   const { id: activityId } = activity;
 
@@ -21,10 +26,9 @@ export default function SimilarConversations({ project, activity, handlers }) {
   });
 
   // filter out and limit the number we show
-  const scoreThreshold = 0.8;
   var filteredConversations = similarConversations
     .filter(({ score }) => score > scoreThreshold)
-    .slice(0, 5);
+    .slice(0, maxResults);
 
   var ids = filteredConversations.map(({ id }) => id);
 
@@ -36,18 +40,5 @@ export default function SimilarConversations({ project, activity, handlers }) {
     variables: { projectId, ids },
   });
 
-  const conversation = activity;
-  return (
-    <>
-      {activities.map((activity) => (
-        <ActivityItem
-          key={activity.id}
-          project={project}
-          activity={activity}
-          conversation={conversation}
-          handlers={handlers}
-        />
-      ))}
-    </>
-  );
+  return <>{activities.length > 0 && renderResults({ activities })}</>;
 }

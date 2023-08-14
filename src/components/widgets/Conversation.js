@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import classnames from "classnames";
+import Link from "next/link";
 
 import { Frame, saveLayout } from "src/components/widgets";
 import Chat from "src/components/domains/ai/Chat";
@@ -10,6 +11,7 @@ import BookmarkAction from "../domains/bookmarks/BookmarkAction";
 import SimilarAction from "../domains/conversation/SimilarAction";
 import SourceAction from "../domains/conversation/SourceAction";
 import GetPromptsByContextQuery from "src/graphql/queries/GetPromptsByContext.gql";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Conversation({
   project,
@@ -113,15 +115,24 @@ export default function Conversation({
         })}
       >
         <div
-          className={classnames("py-4 px-6 w-full max-w-xl", {
+          className={classnames("pt-4 w-full max-w-xl", {
             "overflow-y-scroll": !flexCol,
           })}
         >
-          <div className="flex justify-between items-center pb-4 mb-4 border-b border-gray-300 dark:border-gray-800">
+          <div className="flex justify-between items-center pb-4 px-6 border-b border-gray-300 dark:border-gray-800">
             <div onClick={fetchSummary} className="font-semibold">
               {activity.summary}
             </div>
             <div className="text-tertiary flex space-x-3">
+              {project.demo && (
+                <Link
+                  href={`/projects/${project.id}/welcome/${activity.id}`}
+                  target="_blank"
+                  title="View on public site"
+                >
+                  <FontAwesomeIcon icon="external-link" />
+                </Link>
+              )}
               <SourceAction activity={activity} />
               <SimilarAction activity={activity} />
               <BookmarkAction project={project} activity={activity} />

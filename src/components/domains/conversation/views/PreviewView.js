@@ -17,10 +17,7 @@ export default function PreviewView(props) {
   const showParent = parent && parent.id !== conversation.id;
 
   return (
-    <div
-      onClick={onExpand}
-      className="flex flex-col py-6 space-y-1 cursor-pointer"
-    >
+    <div onClick={onExpand} className="flex flex-col p-6 cursor-pointer">
       <div className="text-secondary flex flex-col text-sm whitespace-nowrap">
         {showConversation && (
           <ActivityPreview

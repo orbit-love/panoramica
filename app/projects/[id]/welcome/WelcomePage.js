@@ -20,10 +20,10 @@ export default function WelcomePage() {
   return (
     <>
       <div className="flex flex-col items-center mb-4 space-y-4">
-        <div className="text-tertiary flex px-6 space-x-4 text-lg text-center">
+        <div className="flex px-6 space-x-4 text-lg text-center">
           <div className="font-semibold">Search Conversations</div>
           <Link
-            className="hover:underline"
+            className="text-tertiary hover:underline"
             href={`/projects/${project.id}/welcome/assistant`}
           >
             AI Assistant

@@ -12,12 +12,14 @@ export default function FullThreadView(props) {
   // descendants at all levels of the thread; that information
   // is used to connect parents and replies
   return (
-    <FullThreadViewInner
-      {...props}
-      activity={conversation}
-      conversation={conversation}
-      descendants={conversation?.descendants}
-    />
+    <div className="p-6">
+      <FullThreadViewInner
+        {...props}
+        activity={conversation}
+        conversation={conversation}
+        descendants={conversation?.descendants}
+      />
+    </div>
   );
 }
 

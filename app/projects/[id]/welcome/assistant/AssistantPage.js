@@ -11,9 +11,9 @@ export default function AssistantPage() {
 
   return (
     <div className="flex flex-col items-center space-y-4">
-      <div className="text-tertiary flex px-6 space-x-4 text-lg text-center">
+      <div className="flex px-6 space-x-4 text-lg text-center">
         <Link
-          className="hover:underline"
+          className="text-tertiary hover:underline"
           href={`/projects/${project.id}/welcome`}
         >
           Search Conversations

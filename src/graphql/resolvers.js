@@ -92,7 +92,12 @@ const resolvers = {
       const { id: activityId, project, descendants } = parent;
       if (!project || !descendants) {
         // these fields must be included in the query
-        return null;
+        return [
+          {
+            id: "Please include project.id, descendants.id, and descendants.textHtml in the selection.",
+            score: 0.0,
+          },
+        ];
       }
       const { id: projectId } = project;
       return getSimilarConversations({

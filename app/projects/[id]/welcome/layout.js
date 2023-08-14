@@ -34,7 +34,7 @@ export default async function WelcomeLayout({ params, children }) {
             Manage Project
           </Link>
         </SiteHeader>
-        <div className="flex-col items-center pt-16 space-y-4 sm:flex-row sm:px-6">
+        <div className="flex-col items-center space-y-4 sm:flex-row sm:px-6">
           <div className="text-3xl font-bold text-center">
             <Link
               href={`/projects/${project.id}/welcome`}
