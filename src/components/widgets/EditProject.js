@@ -5,10 +5,8 @@ import { Frame } from "src/components/widgets";
 import {
   putProjectImport,
   postEmbeddings,
-  getProject,
   putProjectRefresh,
 } from "src/data/client/fetches";
-import Community from "src/models/Community";
 import Edit from "src/components/domains/project/Edit";
 import Loader from "src/components/domains/ui/Loader";
 import { aiReady, orbitImportReady } from "src/integrations/ready";
