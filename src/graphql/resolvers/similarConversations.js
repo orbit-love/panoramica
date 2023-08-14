@@ -1,6 +1,6 @@
 import { prisma } from "src/data/db";
-import { prepareVectorStore } from "src/integrations/pinecone";
-import { toPageContent } from "src/integrations/pinecone/embeddings";
+// import { prepareVectorStore } from "src/integrations/pinecone";
+// import { toPageContent } from "src/integrations/pinecone/embeddings";
 
 const getSimilarConversations = async ({
   projectId,
@@ -10,6 +10,10 @@ const getSimilarConversations = async ({
   const project = await prisma.project.findFirst({
     where: { id: projectId },
   });
+
+  if (true) {
+    return [];
+  }
 
   var q = toPageContent(descendants);
 

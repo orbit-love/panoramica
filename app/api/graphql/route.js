@@ -46,14 +46,14 @@ const server = async () => {
   return apolloServer;
 };
 
-const getLoggedInUser = async (req, res) => {
-  const session = await getServerSession(req, res, authOptions);
+const getLoggedInUser = async () => {
+  const session = await getServerSession(authOptions);
   return session?.user;
 };
 
 const handler = startServerAndCreateNextHandler(await server(), {
-  context: async (req, res) => {
-    const user = await getLoggedInUser(req, res);
+  context: async () => {
+    const user = await getLoggedInUser();
     var token;
     if (user) {
       var roles = user.admin ? ["admin"] : [];
@@ -61,12 +61,10 @@ const handler = startServerAndCreateNextHandler(await server(), {
       token = jwt.sign(payload, secret);
     }
     return {
-      req,
-      res,
       token,
       user,
     };
   },
 });
 
-export default handler;
+export { handler as GET, handler as POST };
