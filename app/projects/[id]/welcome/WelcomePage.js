@@ -3,8 +3,8 @@
 import React, { useContext } from "react";
 import Link from "next/link";
 import { ProjectContext } from "src/components/context/ProjectContext";
-import SearchConversations from "src/components/domain/public/SearchConversations";
-import RecentConversations from "src/components/domain/public/RecentConversations";
+import SearchConversations from "src/components/domains/welcome/SearchConversations";
+import RecentConversations from "src/components/domains/welcome/RecentConversations";
 
 export default function WelcomePage() {
   const { project } = useContext(ProjectContext);

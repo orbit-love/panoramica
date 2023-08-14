@@ -1,7 +1,7 @@
 import React from "react";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import GetRecentConversationsQuery from "./GetRecentConversations.gql";
-import ActivityItem from "src/components/domains/public/ActivityItem";
+import ActivityItem from "src/components/domains/welcome/ActivityItem";
 
 export default function RecentConversations({ project, handlers }) {
   const { id: projectId } = project;

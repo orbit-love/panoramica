@@ -1,5 +1,5 @@
 import React from "react";
-import ActivityItem from "src/components/domains/public/ActivityItem";
+import ActivityItem from "src/components/domains/welcome/ActivityItem";
 import Search from "src/components/domains/search/Search";
 
 export default function SearchConversations({ project, handlers }) {

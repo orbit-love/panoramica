@@ -4,7 +4,7 @@ import React, { useContext } from "react";
 import Link from "next/link";
 
 import { ProjectContext } from "src/components/context/ProjectContext";
-import PublicAssistant from "src/components/domain/public/PublicAssistant";
+import PublicAssistant from "src/components/domains/welcome/PublicAssistant";
 
 export default function AssistantPage() {
   const { project } = useContext(ProjectContext);

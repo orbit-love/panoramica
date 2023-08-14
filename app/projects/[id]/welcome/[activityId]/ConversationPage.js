@@ -5,7 +5,7 @@ import { ProjectContext } from "src/components/context/ProjectContext";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import SimilarConversations from "src/components/domains/search/SimilarConversations";
 import SourceAction from "src/components/domains/conversation/SourceAction";
-import ActivityItem from "src/components/domains/public/ActivityItem";
+import ActivityItem from "src/components/domains/welcome/ActivityItem";
 import Link from "next/link";
 import utils from "src/utils";
 
