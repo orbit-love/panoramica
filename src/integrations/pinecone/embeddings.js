@@ -31,6 +31,7 @@ const deleteEmbedding = async ({ pineconeIndex, namespace }) => {
 };
 
 export const deleteEmbeddings = async ({ project }) => {
+  const projectId = project.id;
   var pineconeIndex = await getPineconeIndex({ project });
   await deleteEmbedding({ pineconeIndex, namespace: `project-${projectId}` });
   await deleteEmbedding({

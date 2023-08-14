@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
   const { id } = req.query;
   try {
-    var project = await authorizeProject({ id, user, res });
+    var project = await authorizeProject({ id, user });
     var projectId = project.id;
     if (!project) {
       return;

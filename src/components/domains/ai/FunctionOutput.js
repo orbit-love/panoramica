@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import ConversationFeed from "../feed/ConversationFeed";
+import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ConversationFeedItem from "../feed/ConversationFeedItem";
+import GetActivitiesByIdsQuery from "src/components/domains/search/GetActivitiesByIds.gql";
 
 export default function FunctionOutput({ project, functionOutput }) {
   const [closed, setClosed] = useState(false);
 
-  const conversationsContext = (searchTerm, docs) => {
-    // const activities = docs.map(({ id }) => community.findActivityById(id));
-    const activities = [];
+  const conversationsContext = async (searchTerm, activities) => {
     const handlers = { onClickMember: () => {} };
     return (
       <div className="flex-col mt-1 space-y-1">
@@ -17,12 +17,14 @@ export default function FunctionOutput({ project, functionOutput }) {
         <small className="block pb-1">
           Search term: &quot;{searchTerm}&quot;
         </small>
-        <ConversationFeed
-          project={project}
-          activities={activities}
-          handlers={handlers}
-          minimal={true}
-        />
+        {activities.map((activity) => (
+          <ConversationFeedItem
+            key={activity.id}
+            activity={activity}
+            project={project}
+            handlers={handlers}
+          />
+        ))}
       </div>
     );
   };
@@ -47,6 +49,20 @@ export default function FunctionOutput({ project, functionOutput }) {
     );
   };
 
+  const { id: projectId } = project;
+  const docs =
+    functionOutput.name === "search_conversations"
+      ? functionOutput.output
+      : functionOutput.output[1];
+  const ids = docs.map(({ id }) => id);
+  const {
+    data: {
+      projects: [{ activities }],
+    },
+  } = useSuspenseQuery(GetActivitiesByIdsQuery, {
+    variables: { projectId, ids },
+  });
+
   return (
     <div className="border-t-1 py-2 px-4 bg-gray-50 rounded-t-lg dark:bg-gray-900">
       <div className="flex justify-center">
@@ -61,17 +77,14 @@ export default function FunctionOutput({ project, functionOutput }) {
       <div className="overflow-y-auto max-h-40">
         {!closed &&
           functionOutput.name === "search_conversations" &&
-          conversationsContext(functionOutput.args[0], functionOutput.output)}
+          conversationsContext(functionOutput.args[0], activities)}
         {!closed &&
           functionOutput.name === "search_documentation" &&
           documentationContext(functionOutput.args[0], functionOutput.output)}
         {!closed &&
           functionOutput.name === "search_conversations_and_documentation" && (
             <>
-              {conversationsContext(
-                functionOutput.args[0],
-                functionOutput.output[0]
-              )}
+              {conversationsContext(functionOutput.args[0], activities)}
               <div className="mt-4"></div>
               {documentationContext(
                 functionOutput.args[1],
