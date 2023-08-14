@@ -34,6 +34,7 @@ const server = async () => {
 
   const apolloServer = new ApolloServer({
     schema,
+    introspection: true,
     plugins: [
       ApolloServerPluginLandingPageGraphQLPlayground({
         settings: {
@@ -69,5 +70,3 @@ const handler = startServerAndCreateNextHandler(await server(), {
 });
 
 export default handler;
-
-// export { handler as GET, handler as POST };

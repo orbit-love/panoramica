@@ -28,6 +28,7 @@ const server = async () => {
   const schema = await neoSchema.getSchema();
   const apolloServer = new ApolloServer({
     schema,
+    introspection: true,
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground({})],
   });
   return apolloServer;
