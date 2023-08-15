@@ -44,7 +44,7 @@ export default function Members({ project, addWidget }) {
     });
   }, [first, fetchMore]);
 
-  const sortedEdges = edges.sort(({ node: a }, { node: b }) => {
+  const sortedEdges = [...edges].sort(({ node: a }, { node: b }) => {
     return b.activitiesAggregate.count - a.activitiesAggregate.count;
   });
 
