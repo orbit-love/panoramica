@@ -36,7 +36,7 @@ export default function PromptInput(props) {
             disabled={disabled ? "disabled" : ""}
             onChange={(e) => setPrompt(e.target.value)}
           />
-          <div className="enabled:bg-brand-purple absolute top-3 right-4 transition-colors disabled:text-gray-400 disabled:opacity-40 md:top-5 md:pl-8">
+          <div className="enabled:bg-brand-purple absolute top-2 right-4 transition-colors disabled:text-gray-400 disabled:opacity-40 md:top-4 md:pl-8">
             <button
               type="submit"
               className="btn h-16 !px-6 !bg-tertiary opacity-80 hover:opacity-90"

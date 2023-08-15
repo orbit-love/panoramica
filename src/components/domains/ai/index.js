@@ -18,7 +18,7 @@ export const ChatMessage = ({ icon, classes, children }) => {
 };
 
 export const AIMessage = ({ children }) => {
-  var classes = "bg-gray-50 dark:bg-gray-900";
+  var classes = "bg-gray-50 dark:bg-gray-950";
   var icon = "robot";
   return (
     <ChatMessage icon={icon} classes={classes}>

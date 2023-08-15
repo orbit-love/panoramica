@@ -16,9 +16,9 @@ export default function PublicAssistant({ project }) {
     },
   });
 
-  var placeholder = `Hi! I'm an AI Assistant here to help you navigate the ${project.name}.`;
+  var placeholder = `Hi! I'm an AI Assistant here to help you navigate ${project.name}.`;
   return (
-    <div className="flex flex-col justify-end h-[calc(100vh-180px)]">
+    <div className="flex flex-col justify-end h-[calc(100vh-200px)]">
       <Chat
         project={project}
         examplePrompts={prompts}
