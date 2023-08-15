@@ -371,9 +371,12 @@ const getFields = async ({ project, activity, included }) => {
 
   // if no actor was found, use the global member information
   if (!typeFields.actor) {
-    typeFields.actor = member.attributes.slug;
-    typeFields.actorName = member.attributes.name || member.attributes.slug;
+    typeFields.actor = slug;
+    typeFields.actorName = name || slug;
   }
+
+  const globalActor = slug;
+  const globalActorName = name || slug;
 
   // default text should be overridden by typeFields
   let text = "";
@@ -384,8 +387,8 @@ const getFields = async ({ project, activity, included }) => {
     sourceType,
     text,
     ...typeFields,
-    globalActor: slug,
-    globalActorName: name,
+    globalActor,
+    globalActorName,
     projectId: project.id,
     tags: properties,
     url: activity_link,
