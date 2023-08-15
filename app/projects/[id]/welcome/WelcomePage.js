@@ -33,11 +33,11 @@ export default function WelcomePage() {
           <SearchConversations project={project} handlers={handlers} />
         </div>
       </div>
-      <div className="flex flex-col px-6 w-full">
+      <div className="flex flex-col w-full">
         <div className="text-tertiary mb-6 text-lg text-center">
           Trending Conversations
         </div>
-        <div className="sm:self-center sm:max-w-[700px] flex overflow-y-scroll flex-col h-full">
+        <div className="sm:self-center sm:w-[650px]">
           <RecentConversations project={project} handlers={handlers} />
         </div>
       </div>

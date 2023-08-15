@@ -29,11 +29,7 @@ export default function ActivityItem({ activity, className, term, handlers }) {
 
   return (
     <div className={className || defaultClassName}>
-      {expanded && (
-        <div className="py-6">
-          <FullThreadView {...viewProps} />
-        </div>
-      )}
+      {expanded && <FullThreadView {...viewProps} />}
       {!expanded && <PreviewView onExpand={onExpand} {...viewProps} />}
     </div>
   );

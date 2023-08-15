@@ -17,7 +17,7 @@ export default function Search({
   const { id: projectId } = project;
   var searchRef = useRef();
 
-  const [term, setTerm] = useState(initialTerm);
+  const [term, setTerm] = useState(initialTerm || "");
   const [appliedTerm, setAppliedTerm] = useState(initialTerm);
   const [seeAll, setSeeAll] = useState(false);
 

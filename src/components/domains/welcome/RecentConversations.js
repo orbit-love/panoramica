@@ -22,7 +22,7 @@ export default function RecentConversations({ project, handlers }) {
 
   return (
     <ConversationFeed
-      className="flex flex-col px-6 mb-12 space-y-6"
+      className="flex flex-col mb-12 space-y-6"
       eachActivity={eachActivity}
       query={query}
       variables={variables}
