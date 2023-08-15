@@ -3,7 +3,7 @@ fragment ForActivityFeed on Activity {
   ...ActivityFields
   conversation {
     ...ActivityFields
-    descendants(options: { sort: { timestamp: ASC } }) {
+    descendants(options: { sort: { timestampInt: ASC } }) {
       ...ActivityFields
       parent {
         id

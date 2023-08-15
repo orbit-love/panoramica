@@ -11,7 +11,7 @@ export default class Connection {
     var session = this.driver.session();
     // console.time(`Graph Query ${id}`);
     var result = await session.run(query, params);
-    session.close();
+    await session.close();
     // console.timeEnd(`Graph Query ${id}`);
     return result;
   }
