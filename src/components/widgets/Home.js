@@ -84,6 +84,14 @@ export default function Home(props) {
     }
   }, [imported, refreshProject]);
 
+  const onClickEditProject = (e) => {
+    e.preventDefault();
+    addWidget("edit-project", "EditProject", {
+      title: "Edit Project",
+      position: newPanelPosition(),
+    });
+  };
+
   const Header = ({ project }) => {
     return (
       <div className="py-2 px-6">
@@ -144,6 +152,14 @@ export default function Home(props) {
           )}
         </ErrorBoundary>
         <div>
+          <div>
+            <a
+              className="cursor-pointer hover:underline"
+              onClick={onClickEditProject}
+            >
+              Edit Settings
+            </a>
+          </div>
           <Link className="hover:underline" href={`/projects`}>
             Exit
           </Link>

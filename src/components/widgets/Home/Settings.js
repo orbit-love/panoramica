@@ -19,14 +19,6 @@ export default function Settings({
     });
   };
 
-  const onClickEditProject = (e) => {
-    e.preventDefault();
-    addWidget("edit-project", "EditProject", {
-      title: "Edit Project",
-      position: newPanelPosition(),
-    });
-  };
-
   const onClickUser = (e) => {
     e.preventDefault();
     addWidget("user", "User", {
@@ -63,9 +55,6 @@ export default function Settings({
       <div className="flex flex-col items-start w-full">
         <div className="text-tertiary pb-1 pt-2 font-semibold">Settings</div>
         <div className="flex flex-col items-start">
-          <button className="hover:underline" onClick={onClickEditProject}>
-            Project Settings
-          </button>
           <button className="hover:underline" onClick={onClickEditPrompts}>
             Edit Prompts
           </button>

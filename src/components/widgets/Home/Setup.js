@@ -27,14 +27,6 @@ export default function Setup({
     });
   }, [project, setLoading, refetch, addWidget, newPanelPosition]);
 
-  const onClickEditProject = (e) => {
-    e.preventDefault();
-    addWidget("edit-project", "EditProject", {
-      title: "Edit Project",
-      position: newPanelPosition(),
-    });
-  };
-
   return (
     <div className="flex flex-col space-y-4">
       {!orbitImportReady(project) && (
@@ -57,17 +49,6 @@ export default function Setup({
           {error && <div className="my-4 text-red-500">{error}</div>}
         </div>
       )}
-      <div>
-        <div className="text-tertiary text-lg">Options</div>
-        <div>
-          <a
-            className="cursor-pointer hover:underline"
-            onClick={onClickEditProject}
-          >
-            Edit Settings
-          </a>
-        </div>
-      </div>
     </div>
   );
 }
