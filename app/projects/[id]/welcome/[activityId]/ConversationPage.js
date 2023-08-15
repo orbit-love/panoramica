@@ -15,7 +15,7 @@ export default function ConversationPage({ activity }) {
   const conversation = activity.conversation;
   const onClickTimestamp = (_, conversation) =>
     `/projects/${project.id}/welcome/${conversation.id}`;
-  const onClickTimestampWithAnchor = (conversation, activity) =>
+  const onClickTimestampWithAnchor = (activity, conversation) =>
     `/projects/${project.id}/welcome/${conversation.id}#${activity.id}`;
   const handlers = {
     onCLickMember: () => {},
