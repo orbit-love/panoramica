@@ -23,11 +23,17 @@ export default async function handler(req, res) {
     }
 
     const allData = [];
+    var pageLimit = 10;
     let { url, apiKey, workspace } = project;
 
-    // if a url is not provided, use the default
-    if (!url) {
+    if (url) {
+      // if a url is provided, allow the url to control how much
+      // data is imported via timeframe or other filters
+      pageLimit = 100;
+    } else {
+      // if a url is not provided, generate it
       url = getAPIUrl({ workspace });
+      pageLimit = 10;
     }
 
     await session.writeTransaction(async (tx) => {
@@ -36,7 +42,6 @@ export default async function handler(req, res) {
 
     // import a maximum of 1,000 activities; start at page 1
     const page = 1;
-    const pageLimit = 5;
 
     const handleRecords = async (records) => {
       // this is a quick and dirty way to remove duplicate sourceId from
