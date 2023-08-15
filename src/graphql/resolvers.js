@@ -94,7 +94,7 @@ const resolvers = {
         // these fields must be included in the query
         return [
           {
-            id: "Please include project.id, descendants.id, and descendants.textHtml in the selection.",
+            id: "Please add project.id, descendants.id, and descendants.textHtml to the activity selection.",
             score: 0.0,
           },
         ];
