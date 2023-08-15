@@ -53,7 +53,7 @@ export default function FunctionOutput({ project, functionOutput }) {
   const docs =
     functionOutput.name === "search_conversations"
       ? functionOutput.output
-      : functionOutput.output[1];
+      : functionOutput.output[1] || [];
   const ids = docs.map(({ id }) => id);
   const {
     data: {
