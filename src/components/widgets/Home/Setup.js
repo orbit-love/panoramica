@@ -68,8 +68,8 @@ export default function Setup({
             Edit Project Settings
           </a>
         </div>
-        <Link className="hover:underline" prefetch={false} href={`/dashboard`}>
-          Back to Dashboard
+        <Link className="hover:underline" href="/projects">
+          Exit
         </Link>
       </div>
     </div>

@@ -3,11 +3,11 @@ import { redirect } from "next/navigation";
 import { getBaseClient as getClient } from "src/graphql/apollo-client";
 import { ApolloBaseWrapper } from "src/graphql/apollo-wrapper";
 import { getSession } from "src/auth";
-import DashboardPage from "app/dashboard/DashboardPage";
+import ProjectsPage from "app/projects/ProjectsPage";
 import LoadProjectsQuery from "./LoadProjects.gql";
 
 export const metadata = {
-  title: "Dashboard",
+  title: "Projects",
 };
 
 export const dynamic = "force-dynamic";
@@ -33,7 +33,7 @@ export default async function Page() {
 
   return (
     <ApolloBaseWrapper>
-      <DashboardPage {...props} />
+      <ProjectsPage {...props} />
     </ApolloBaseWrapper>
   );
 }

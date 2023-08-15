@@ -8,9 +8,9 @@ import HomePage from "app/HomePage";
 export default async function Page() {
   const props = await getProps();
   const { session } = props;
-  // redirect to the dashboard if the user is already logged in
+  // redirect to the projects view if the user is already logged in
   if (session?.user) {
-    redirect("/dashboard");
+    redirect("/projects");
   }
   return <HomePage {...props} />;
 }

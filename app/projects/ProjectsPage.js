@@ -7,7 +7,7 @@ import New from "src/components/domains/project/New";
 import List from "src/components/domains/project/List";
 import Themed from "src/components/context/Themed";
 
-export default function DashboardPage({ demoSite, projects }) {
+export default function ProjectsPage({ demoSite, projects }) {
   return (
     <Themed>
       <SiteHeader />

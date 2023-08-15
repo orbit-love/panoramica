@@ -88,12 +88,8 @@ export default function Settings({
           <button className="hover:underline" onClick={resetWidgets}>
             Reset Layout
           </button>
-          <Link
-            className="hover:underline"
-            prefetch={false}
-            href={`/dashboard`}
-          >
-            Exit to Dashboard
+          <Link className="hover:underline" prefetch={false} href={`/projects`}>
+            Exit
           </Link>
         </div>
       </div>

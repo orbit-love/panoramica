@@ -63,7 +63,7 @@ export default function EditProject({ project, dispatch }) {
             dispatch({ type: "updateProject", project });
             setStatus("Update successful.");
           }}
-          onDelete={() => router.push("/dashboard")}
+          onDelete={() => router.push("/projects")}
         />
 
         {(orbitImportReady(project) || aiReady(project)) && (
