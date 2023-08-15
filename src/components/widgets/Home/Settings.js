@@ -62,7 +62,7 @@ export default function Settings({
       )}
       <div className="flex flex-col items-start w-full">
         <div className="text-tertiary pb-1 pt-2 font-semibold">Settings</div>
-        <div className="flex flex-col items-start text-sm text-gray-400 dark:text-gray-500">
+        <div className="flex flex-col items-start">
           <button className="hover:underline" onClick={onClickEditProject}>
             Project Settings
           </button>
@@ -88,9 +88,6 @@ export default function Settings({
           <button className="hover:underline" onClick={resetWidgets}>
             Reset Layout
           </button>
-          <Link className="hover:underline" prefetch={false} href={`/projects`}>
-            Exit
-          </Link>
         </div>
       </div>
     </>

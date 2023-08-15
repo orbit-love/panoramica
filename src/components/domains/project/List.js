@@ -25,24 +25,23 @@ export default function List({ projects, projectUrl }) {
       </div>
       {projects.length === 0 && <div>None</div>}
       {projects.map((project) => (
-        <div className="flex justify-between w-full" key={project.id}>
-          <div className="flex space-x-2">
-            <Link
-              prefetch={false}
-              className="underline"
-              href={projectUrl(project)}
-            >
-              <span>{project.name}</span>
-            </Link>
-          </div>
-          <button className="underline" onClick={() => importProject(project)}>
-            Repair
-          </button>
+        <div className="flex space-x-2 w-full" key={project.id}>
+          <Link
+            prefetch={false}
+            className="underline"
+            href={projectUrl(project)}
+          >
+            <span>{project.name}</span>
+          </Link>
+          <div className="grow" />
           {user.admin && (
             <div className="flex space-x-4">
               <span>{`${project.prismaUser.email}`}</span>
             </div>
           )}
+          <button className="underline" onClick={() => importProject(project)}>
+            Repair
+          </button>
         </div>
       ))}
     </div>

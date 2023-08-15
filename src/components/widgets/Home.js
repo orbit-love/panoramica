@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect } from "react";
+import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
-
-import { Frame, resetLayout } from "src/components/widgets";
-import { putProjectRefresh } from "src/data/client/fetches";
+import ErrorBoundary from "src/components/widgets/base/ErrorBoundary";
 import { useSession } from "next-auth/react";
 
 import Sources from "./Home/Sources";
@@ -11,6 +10,8 @@ import Search from "./Home/Search";
 import Setup from "./Home/Setup";
 import Explore from "./Home/Explore";
 import Settings from "./Home/Settings";
+import { Frame, resetLayout } from "src/components/widgets";
+import { putProjectRefresh } from "src/data/client/fetches";
 import GetActivityCountQuery from "./Home/GetActivityCount.gql";
 
 export default function Home(props) {
@@ -50,20 +51,20 @@ export default function Home(props) {
     resetLayout({ project, containerApi });
   }, [project, containerApi]);
 
-  // const { id: projectId } = project;
-  // const {
-  //   data: { projects },
-  //   refetch,
-  // } = useSuspenseQuery(GetActivityCountQuery, {
-  //   variables: {
-  //     projectId,
-  //   },
-  // });
+  const { id: projectId } = project;
+  const {
+    data: { projects },
+    refetch,
+  } = useSuspenseQuery(GetActivityCountQuery, {
+    variables: {
+      projectId,
+    },
+  });
 
-  const imported = true;
-  // projects.length > 0 &&
-  // projects[0].activitiesConnection &&
-  // projects[0].activitiesConnection.totalCount > 0;
+  const imported =
+    projects.length > 0 &&
+    projects[0].activitiesConnection &&
+    projects[0].activitiesConnection.totalCount > 0;
 
   // don't set loading since this happens in the background
   const refreshProject = useCallback(async () => {
@@ -106,37 +107,47 @@ export default function Home(props) {
     <Frame>
       <Header project={project} />
       <div className="flex flex-col pt-1 px-6">
-        {!imported && (
-          <Setup
-            project={project}
-            dispatch={dispatch}
-            addWidget={addWidget}
-            newPanelPosition={newPanelPosition}
-            refetch={refetch}
-          />
-        )}
-        {imported && (
-          <div className="flex flex-col items-start space-y-4">
-            <Search newPanelPosition={newPanelPosition} addWidget={addWidget} />
-            <Explore
-              addWidget={addWidget}
-              handlers={handlers}
-              newPanelPosition={newPanelPosition}
-            />
-            <Sources
-              handlers={handlers}
-              newPanelPosition={newPanelPosition}
+        <ErrorBoundary>
+          {!imported && (
+            <Setup
               project={project}
-            />
-            <Settings
+              dispatch={dispatch}
               addWidget={addWidget}
               newPanelPosition={newPanelPosition}
-              project={project}
-              resetWidgets={resetWidgets}
-              user={user}
+              refetch={refetch}
             />
-          </div>
-        )}
+          )}
+          {imported && (
+            <div className="flex flex-col items-start space-y-4">
+              <Search
+                newPanelPosition={newPanelPosition}
+                addWidget={addWidget}
+              />
+              <Explore
+                addWidget={addWidget}
+                handlers={handlers}
+                newPanelPosition={newPanelPosition}
+              />
+              <Sources
+                handlers={handlers}
+                newPanelPosition={newPanelPosition}
+                project={project}
+              />
+              <Settings
+                addWidget={addWidget}
+                newPanelPosition={newPanelPosition}
+                project={project}
+                resetWidgets={resetWidgets}
+                user={user}
+              />
+            </div>
+          )}
+        </ErrorBoundary>
+        <div>
+          <Link className="hover:underline" href={`/projects`}>
+            Exit
+          </Link>
+        </div>
         <div className="my-auto" />
       </div>
     </Frame>

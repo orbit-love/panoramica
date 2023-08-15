@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { putProjectImport } from "src/data/client/fetches";
 import { orbitImportReady } from "src/integrations/ready";
-import Link from "next/link";
 import Loader from "src/components/domains/ui/Loader";
 import { addSourceWidget } from "src/components/widgets/setup/widgets";
 
@@ -65,12 +64,9 @@ export default function Setup({
             className="cursor-pointer hover:underline"
             onClick={onClickEditProject}
           >
-            Edit Project Settings
+            Edit Settings
           </a>
         </div>
-        <Link className="hover:underline" href="/projects">
-          Exit
-        </Link>
       </div>
     </div>
   );
