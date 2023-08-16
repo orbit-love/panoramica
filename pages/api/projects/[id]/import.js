@@ -35,6 +35,7 @@ export default async function handler(req, res) {
       url = getAPIUrl({ workspace });
       pageLimit = 10;
     }
+    console.log("Using Import URL ", url);
 
     await session.writeTransaction(async (tx) => {
       await setupProject({ tx, project, user });
