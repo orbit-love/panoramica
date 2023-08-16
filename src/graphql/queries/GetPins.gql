@@ -1,0 +1,14 @@
+#import "src/graphql/fragments/ForActivityFeed.gql"
+query ($projectId: ID!) {
+  projects(where: { id: $projectId }) {
+    pinsConnection(sort: { edge: { createdAtInt: DESC } }) {
+      edges {
+        createdAt
+        createdAtInt
+        node {
+          ...ForActivityFeed
+        }
+      }
+    }
+  }
+}

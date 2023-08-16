@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ProjectContext } from "src/components/context/ProjectContext";
 import SearchConversations from "src/components/domains/welcome/SearchConversations";
 import RecentConversations from "src/components/domains/welcome/RecentConversations";
+import PinnedConversations from "src/components/domains/welcome/PinnedConversations";
 
 export default function WelcomePage() {
   const { project } = useContext(ProjectContext);
@@ -31,6 +32,16 @@ export default function WelcomePage() {
         </div>
         <div className="flex flex-col space-y-2 sm:max-w-[700px] sm:self-center w-full">
           <SearchConversations project={project} handlers={handlers} />
+        </div>
+      </div>
+      <div className="flex flex-col w-full">
+        <div className="text-tertiary mb-6 text-lg text-center">
+          Pinned Conversations
+        </div>
+        <div className="sm:self-center sm:w-[650px]">
+          <React.Suspense fallback={<div className="p-6">Loading...</div>}>
+            <PinnedConversations project={project} handlers={handlers} />
+          </React.Suspense>
         </div>
       </div>
       <div className="flex flex-col w-full">

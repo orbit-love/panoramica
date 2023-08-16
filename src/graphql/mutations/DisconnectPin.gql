@@ -1,0 +1,10 @@
+mutation ($projectId: ID!, $activityId: ID!) {
+  updateProjects(
+    where: { id: $projectId }
+    disconnect: { pins: { where: { node: { id: $activityId } } } }
+  ) {
+    info {
+      nodesDeleted
+    }
+  }
+}

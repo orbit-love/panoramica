@@ -40,6 +40,11 @@ const typeDefs = gql`
     createdAtInt: Float!
   }
 
+  interface Pinned @relationshipProperties {
+    createdAt: String!
+    createdAtInt: Float!
+  }
+
   type User
     @query(aggregate: false)
     @mutation(operations: [UPDATE])
@@ -68,6 +73,11 @@ const typeDefs = gql`
     project: Project! @relationship(type: "OWNS", direction: IN)
   }
 
+  interface Pinned @relationshipProperties {
+    createdAt: String!
+    createdAtInt: Float!
+  }
+
   type Project
     @query(aggregate: false)
     @mutation(operations: [CREATE, UPDATE, DELETE])
@@ -87,6 +97,8 @@ const typeDefs = gql`
     name: String!
     demo: Boolean!
     activities: [Activity!]! @relationship(type: "OWNS", direction: OUT)
+    pins: [Activity!]!
+      @relationship(type: "PINS", direction: OUT, properties: "Pinned")
     members: [Member!]! @relationship(type: "OWNS", direction: OUT)
     sources: [String!]! @customResolver(requires: ["id"])
     creator: User! @relationship(type: "CREATED", direction: IN)

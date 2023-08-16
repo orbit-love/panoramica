@@ -1,0 +1,28 @@
+#import "src/graphql/fragments/ForActivityFeed.gql"
+mutation ($activityId: ID!, $createdAt: String!, $createdAtInt: Float!) {
+  updateProjects(
+    update: {
+      pins: {
+        connectOrCreate: {
+          where: { node: { id: $activityId } }
+          onCreate: {
+            edge: { createdAt: $createdAt, createdAtInt: $createdAtInt }
+            node: {}
+          }
+        }
+      }
+    }
+  ) {
+    projects {
+      pinsConnection(where: { node: { id: $activityId } }) {
+        edges {
+          createdAt
+          createdAtInt
+          node {
+            ...ForActivityFeed
+          }
+        }
+      }
+    }
+  }
+}

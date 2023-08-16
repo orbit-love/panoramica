@@ -3,6 +3,11 @@ import { gql } from "graphql-tag";
 const typeDefs = gql`
   extend schema @mutation(operations: []) @subscription(operations: [])
 
+  interface Pinned @relationshipProperties {
+    createdAt: String!
+    createdAtInt: Float!
+  }
+
   type Project
     @query(aggregate: false)
     @authorization(
@@ -18,6 +23,8 @@ const typeDefs = gql`
     name: String!
     demo: Boolean!
     activities: [Activity!]! @relationship(type: "OWNS", direction: OUT)
+    pins: [Activity!]!
+      @relationship(type: "PINS", direction: OUT, properties: "Pinned")
     prompts: [Prompt!]! @relationship(type: "OWNS", direction: OUT)
     searchConversations(query: String!): [SearchResult!]!
       @customResolver(requires: ["id"])

@@ -8,6 +8,7 @@ import Chat from "src/components/domains/ai/Chat";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import useResizeCallback from "src/hooks/useResizeCallback";
 import BookmarkAction from "../domains/bookmarks/BookmarkAction";
+import PinAction from "../domains/pins/PinAction";
 import SimilarAction from "../domains/conversation/SimilarAction";
 import SourceAction from "../domains/conversation/SourceAction";
 import GetPromptsByContextQuery from "src/graphql/queries/GetPromptsByContext.gql";
@@ -136,6 +137,7 @@ export default function Conversation({
               <SourceAction activity={activity} />
               <SimilarAction activity={activity} />
               <BookmarkAction project={project} activity={activity} />
+              <PinAction project={project} activity={activity} />
             </div>
           </div>
           <FullThreadView
