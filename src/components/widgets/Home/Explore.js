@@ -25,14 +25,16 @@ export default function Explore({ newPanelPosition, addWidget, handlers }) {
   return (
     <div className="flex flex-col items-start w-full">
       <div className="text-tertiary pb-1 font-semibold">Explore</div>
-      <button
+      <div
+        className="cursor-pointer hover:underline"
         onClick={(e) =>
           onClickSource(e, null, { position: newPanelPosition() })
         }
       >
         All Activity
-      </button>
-      <button
+      </div>
+      <div
+        className="cursor-pointer hover:underline"
         onClick={() =>
           addWidget("members", "Members", {
             title: "Members",
@@ -41,9 +43,19 @@ export default function Explore({ newPanelPosition, addWidget, handlers }) {
         }
       >
         Member List
-      </button>
-      <button onClick={onClickAssistant}>Assistant</button>
-      <button onClick={onClickBookmarks}>Bookmarks ({bookmarks.length})</button>
+      </div>
+      <div
+        className="cursor-pointer hover:underline"
+        onClick={onClickAssistant}
+      >
+        Assistant
+      </div>
+      <div
+        className="cursor-pointer hover:underline"
+        onClick={onClickBookmarks}
+      >
+        Bookmarks ({bookmarks.length})
+      </div>
       <div className="flex flex-col items-start w-full whitespace-nowrap">
         {bookmarks.map(({ node: activity }) => (
           <div

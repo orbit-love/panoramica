@@ -55,28 +55,37 @@ export default function Settings({
       <div className="flex flex-col items-start w-full">
         <div className="text-tertiary pb-1 pt-2 font-semibold">Settings</div>
         <div className="flex flex-col items-start">
-          <button className="hover:underline" onClick={onClickEditPrompts}>
+          <div
+            className="cursor-pointer hover:underline"
+            onClick={onClickEditPrompts}
+          >
             Edit Prompts
-          </button>
+          </div>
           {user && (
-            <button className="hover:underline" onClick={onClickUser}>
+            <div
+              className="cursor-pointer hover:underline"
+              onClick={onClickUser}
+            >
               API Settings
-            </button>
+            </div>
           )}
           {aiReady(project) && (
-            <button
-              className="hover:underline"
+            <div
+              className="cursor-pointer hover:underline"
               onClick={onClickEmbedDocumentation}
             >
               Embed Documentation
-            </button>
+            </div>
           )}
           <ThemeAction>
             <div className="cursor-pointer hover:underline">Change Theme</div>
           </ThemeAction>
-          <button className="hover:underline" onClick={resetWidgets}>
+          <div
+            className="cursor-pointer hover:underline"
+            onClick={resetWidgets}
+          >
             Reset Layout
-          </button>
+          </div>
         </div>
       </div>
     </>
