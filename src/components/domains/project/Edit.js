@@ -72,7 +72,7 @@ export default function Edit({
         .then((res) => res.json())
         .then(({ result, message }) => {
           if (result?.project) {
-            setModelApiKey("");
+            setApiKey("");
             setPineconeApiKey("");
             setModelApiKey("");
             onUpdate(result.project);
