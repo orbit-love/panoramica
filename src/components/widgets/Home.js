@@ -73,6 +73,14 @@ export default function Home(props) {
     });
   };
 
+  const onClickApiSettings = (e) => {
+    e.preventDefault();
+    addWidget("user", "User", {
+      title: "User",
+      position: newPanelPosition(),
+    });
+  };
+
   return (
     <Frame>
       <Header project={project} imported={imported} />
@@ -113,7 +121,7 @@ export default function Home(props) {
             </div>
           )}
         </ErrorBoundary>
-        <div>
+        <div className="mt-4">
           <div>
             <a
               className="cursor-pointer hover:underline"
@@ -122,6 +130,14 @@ export default function Home(props) {
               Edit Settings
             </a>
           </div>
+          {user && (
+            <div
+              className="cursor-pointer hover:underline"
+              onClick={onClickApiSettings}
+            >
+              API Settings
+            </div>
+          )}
           <Link className="hover:underline" href={`/projects`}>
             Exit
           </Link>

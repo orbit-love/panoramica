@@ -10,6 +10,10 @@ const UNWANTED_TAGS = [
   'a[href^="#"]',
 ].map((tag) => `body ${tag}`);
 
+const HEADING_TAGS = ["h1", "h2", "h3", "h4", "h5", "h6"].map(
+  (tag) => `body ${tag}`
+);
+
 const MAX_CONNECTIONS = 100;
 
 export const crawl = async ({
@@ -57,9 +61,14 @@ export const crawl = async ({
         }
       });
 
+      const headings = [];
+      $(HEADING_TAGS.join(", ")).map((_, item) =>
+        headings.push($(item).text())
+      );
+
       const body = $("body").html();
 
-      results.push({ url, title, body });
+      results.push({ url, title, headings, body });
 
       $(`body a[href^="${cleanedRootUrl}"]`).each((_, item) => {
         const href = $(item).attr("href");
@@ -84,7 +93,7 @@ export const crawl = async ({
       crawler.on("drain", async function (_) {
         // This is a hack because queueSize doesn't get updated automatically after calling queue in the callback
         // Which means drain would be called and right after the queue could fill up again.
-        // Waiting 100ms should help make sure the queue is totally drained before proceeding
+        // Waiting 100ms should ensure the queue is totally drained before proceeding
         await setTimeout(100);
 
         if (crawler.queueSize === 0) {

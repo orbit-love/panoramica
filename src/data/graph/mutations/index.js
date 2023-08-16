@@ -69,7 +69,7 @@ export async function setupConstraints({ tx }) {
   console.log("Memgraph: Created constraints");
 }
 
-export async function syncActivities({ tx, project, user, activities }) {
+export async function syncActivities({ tx, project, activities }) {
   const projectId = project.id;
 
   for (let activity of activities) {

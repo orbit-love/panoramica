@@ -50,11 +50,19 @@ export default function FunctionOutput({ project, functionOutput }) {
   };
 
   const { id: projectId } = project;
-  const docs =
-    functionOutput.name === "search_conversations"
-      ? functionOutput.output
-      : functionOutput.output[1] || [];
-  const ids = docs.map(({ id }) => id);
+
+  const getActivityDocs = () => {
+    switch (functionOutput.name) {
+      case "search_conversations":
+        return functionOutput.output;
+      case "search_conversations_and_documentation":
+        return functionOutput.output[1];
+      default:
+        return [];
+    }
+  };
+
+  const ids = getActivityDocs().map(({ id }) => id);
   const {
     data: {
       projects: [{ activities }],

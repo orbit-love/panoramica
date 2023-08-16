@@ -12,7 +12,9 @@ export default async function handler(req, res) {
   try {
     var project = await authorizeProject({ id, user, res });
     if (!project) {
-      return;
+      return res.status(404).json({
+        message: "Project not found",
+      });
     }
 
     const activities = req.body.data;
@@ -36,7 +38,7 @@ export default async function handler(req, res) {
     const session = graph.session();
 
     await session.writeTransaction(async (tx) => {
-      await mergeProject({ project, tx });
+      await mergeProject({ project, user, tx });
       await syncActivities({ project, activities, tx });
     });
 

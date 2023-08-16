@@ -125,8 +125,8 @@ export const createDocumentationEmbeddings = async ({ project, pages }) => {
   for (let page of pages) {
     if (!page.url) continue;
     const id = page.url.trim().replace(/\/$/, "");
-    // create the pageContent for the activities
-    const pageContent = cleanHtmlForEmbedding(page.body);
+    // create the pageContent for the docs based on the headings
+    const pageContent = page.headings.map(cleanHtmlForEmbedding).join("\n");
     // add a contentLength for query-time filtering
     const contentLength = pageContent.length;
     // Time at which the documentation was indexed. Too old could mean outdated

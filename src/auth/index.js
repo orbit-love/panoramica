@@ -27,11 +27,11 @@ export const demoSession = () => ({
 const checkJWT = function (req) {
   const authorization = req.headers.authorization || "";
 
-  if (!authorization) {
-    return;
-  }
+  if (!authorization) return;
 
   const token = authorization.split(" ")[1];
+
+  if (!token) return;
 
   try {
     const payload = jwt.verify(token, secret);
@@ -43,15 +43,15 @@ const checkJWT = function (req) {
 
 // res can be null here; if req is null, some errors may appear in the logs
 export const check = async function (req, res) {
+  const user = checkJWT(req);
+  if (user) {
+    return user;
+  }
+
   const session =
     (await getServerSession(req, res, authOptions)) || demoSession();
   if (session?.user) {
     return session.user;
-  }
-
-  const user = checkJWT(req);
-  if (user) {
-    return user;
   }
 
   res.redirect("/");
