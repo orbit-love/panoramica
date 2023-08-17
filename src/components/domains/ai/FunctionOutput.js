@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ConversationFeedItem from "../feed/ConversationFeedItem";
 import GetActivitiesByIdsQuery from "src/components/domains/search/GetActivitiesByIds.gql";
@@ -7,7 +7,7 @@ import GetActivitiesByIdsQuery from "src/components/domains/search/GetActivities
 export default function FunctionOutput({ project, functionOutput }) {
   const [closed, setClosed] = useState(false);
 
-  const conversationsContext = async (searchTerm, activities) => {
+  const conversationsContext = (searchTerm, activities) => {
     const handlers = { onClickMember: () => {} };
     return (
       <div className="flex-col mt-1 space-y-1">
@@ -63,13 +63,12 @@ export default function FunctionOutput({ project, functionOutput }) {
   };
 
   const ids = getActivityDocs().map(({ id }) => id);
-  const {
-    data: {
-      projects: [{ activities }],
-    },
-  } = useSuspenseQuery(GetActivitiesByIdsQuery, {
+
+  const { data } = useQuery(GetActivitiesByIdsQuery, {
     variables: { projectId, ids },
   });
+  if (!data) return null;
+  const activities = data.projects[0].activities;
 
   return (
     <div className="border-t-1 py-2 px-4 bg-gray-50 rounded-t-lg dark:bg-gray-900">
