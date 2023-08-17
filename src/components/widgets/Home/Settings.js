@@ -61,14 +61,6 @@ export default function Settings({
           >
             Edit Prompts
           </div>
-          {user && (
-            <div
-              className="cursor-pointer hover:underline"
-              onClick={onClickUser}
-            >
-              API Settings
-            </div>
-          )}
           {aiReady(project) && (
             <div
               className="cursor-pointer hover:underline"
