@@ -6,6 +6,7 @@ import {
   putProjectImport,
   postEmbeddings,
   putProjectRefresh,
+  postLabelConversations,
 } from "src/data/client/fetches";
 import Edit from "src/components/domains/project/Edit";
 import Loader from "src/components/domains/ui/Loader";
@@ -50,6 +51,32 @@ export default function EditProject({ project, dispatch }) {
     });
   }, [project, setLoading]);
 
+  const labelConversations = useCallback(async () => {
+    setStatus("");
+    var response, cursor;
+    try {
+      setStatus("Conversation labeling starting...");
+      while (!response || cursor) {
+        var response = await postLabelConversations({
+          project,
+          setLoading,
+          body: JSON.stringify({ cursor }),
+          onSuccess: () => {},
+        });
+        if (response.status !== 200) {
+          break;
+        }
+        var { endCursor } = await response.json();
+        cursor = endCursor;
+        setStatus("Conversation labeling at " + cursor);
+      }
+      setStatus("Conversation labeling complete.");
+    } catch (e) {
+      console.error(e);
+      setStatus("Conversation labeling failed.");
+    }
+  }, [project, setLoading]);
+
   return (
     <Frame>
       <div className="px-6 mt-4 mb-6">
@@ -87,6 +114,12 @@ export default function EditProject({ project, dispatch }) {
             {aiReady(project) && (
               <button className="hover:underline" onClick={createEmbeddings}>
                 Load embeddings into vector store
+              </button>
+            )}
+
+            {aiReady(project) && (
+              <button className="hover:underline" onClick={labelConversations}>
+                Label conversations
               </button>
             )}
           </div>

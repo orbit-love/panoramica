@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { putProjectRefresh } from "src/data/client/fetches";
 
 export default function Header({ project, imported }) {
-  const [refresh, setRefresh] = useState(true);
+  const [refresh, setRefresh] = useState(false);
 
   // don't set loading since this happens in the background
   const refreshProject = useCallback(async () => {

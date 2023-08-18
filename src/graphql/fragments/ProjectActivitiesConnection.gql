@@ -7,5 +7,7 @@ fragment ProjectActivitiesConnection on ProjectActivitiesConnection {
   }
   pageInfo {
     hasNextPage
+    startCursor
+    endCursor
   }
 }

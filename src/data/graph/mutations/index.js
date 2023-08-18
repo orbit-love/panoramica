@@ -279,16 +279,3 @@ export async function syncActivities({ tx, project, activities }) {
 
   return activities;
 }
-
-export const updateActivity = async ({ tx, project, activityId, summary }) => {
-  const projectId = project.id;
-
-  await tx.run(
-    `MATCH (p:Project { id: $projectId })
-      WITH p
-        MATCH (p)-[:OWNS]->(a:Activity { id: $activityId })
-        SET a.summary = $summary`,
-    { projectId, activityId, summary }
-  );
-  console.log("Memgraph: Updated activity");
-};

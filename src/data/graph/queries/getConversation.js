@@ -1,3 +1,5 @@
+import utils from "src/utils";
+
 const processRow = (record, index) => {
   var a = record.get("a").properties;
   var b = record.get("b")?.properties;
@@ -12,7 +14,7 @@ const processRow = (record, index) => {
       from: memA.globalActorName,
       to: null,
       timestamp: a.timestamp,
-      text: a.textHtml,
+      text: utils.stripHtmlTags(a.textHtml),
     });
   }
 
@@ -25,7 +27,7 @@ const processRow = (record, index) => {
         replyToMessageId: a.id,
         from: memB.globalActorName,
         to: memA.globalActorName,
-        text: b.textHtml,
+        text: utils.stripHtmlTags(b.textHtml),
         timestamp: b.timestamp,
       });
     }

@@ -1,0 +1,14 @@
+mutation SetActivityProperties(
+  $id: ID!
+  $properties: [ActivityPropertiesCreateFieldInput!]!
+) {
+  updateActivities(where: { id: $id }, create: { properties: $properties }) {
+    activities {
+      properties {
+        name
+        type
+        value
+      }
+    }
+  }
+}

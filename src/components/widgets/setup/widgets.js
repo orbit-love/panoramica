@@ -82,9 +82,12 @@ export function addChannelsWidget(source, addWidget, options = {}) {
 }
 
 export function addActivityWidget(activity, addWidget, options = {}) {
+  const titleProperty = activity.properties?.find(
+    (property) => property.name === "title"
+  );
   addWidget(`activity-${activity.id}`, "Conversation", {
     activity,
-    title: activity.summary || "...",
+    title: titleProperty?.value || "...",
     ...options,
   });
 }
