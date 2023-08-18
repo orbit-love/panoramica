@@ -2,6 +2,7 @@ import React from "react";
 import { Frame } from "src/components/widgets";
 import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
 import SimilarConversations from "src/components/domains/search/SimilarConversations";
+import Loader from "../domains/ui/Loader";
 
 export default function Similar({ project, params, handlers }) {
   const { activity } = params;
@@ -29,7 +30,13 @@ export default function Similar({ project, params, handlers }) {
         <span className="text-tertiary font-light">Similar to:</span>{" "}
         <span className="font-semibold">{summary}</span>
       </div>
-      <React.Suspense fallback={<div className="p-6">Loading...</div>}>
+      <React.Suspense
+        fallback={
+          <div className="p-6">
+            <Loader />
+          </div>
+        }
+      >
         <SimilarConversations
           project={project}
           activity={activity}

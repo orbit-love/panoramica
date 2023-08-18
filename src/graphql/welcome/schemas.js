@@ -51,6 +51,13 @@ const typeDefs = gql`
     score: Float!
   }
 
+  type Property {
+    name: String!
+    type: String!
+    value: String!
+    confidence: Float
+  }
+
   type Activity @query(read: false, aggregate: false) {
     id: ID!
     actor: String
@@ -67,8 +74,6 @@ const typeDefs = gql`
     timestamp: String
     timestampInt: Int
     url: String
-    summary: String
-    similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
     project: Project! @relationship(type: "OWNS", direction: IN)
     member: Member! @relationship(type: "DID", direction: IN)
     mentions: [Member!]! @relationship(type: "MENTIONS", direction: OUT)
@@ -76,6 +81,8 @@ const typeDefs = gql`
     parent: Activity @relationship(type: "REPLIES_TO", direction: OUT)
     replies: [Activity!]! @relationship(type: "REPLIES_TO", direction: IN)
     descendants: [Activity!]! @relationship(type: "PART_OF", direction: IN)
+    properties: [Property!]! @relationship(type: "HAS", direction: OUT)
+    similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
   }
 
   type Member @query(read: false, aggregate: false) {

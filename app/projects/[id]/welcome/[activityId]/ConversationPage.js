@@ -8,6 +8,7 @@ import SourceAction from "src/components/domains/conversation/SourceAction";
 import ActivityItem from "src/components/domains/welcome/ActivityItem";
 import Link from "next/link";
 import utils from "src/utils";
+import Loader from "src/components/domains/ui/Loader";
 
 export default function ConversationPage({ activity }) {
   const { project } = useContext(ProjectContext);
@@ -42,12 +43,18 @@ export default function ConversationPage({ activity }) {
       />
     ));
 
+  const titleProperty = activity.properties?.find(
+    (property) => property.name === "title"
+  );
+
+  const title = titleProperty?.value || activity.text.slice(0, 100);
+
   return (
     <div className="flex flex-col items-center py-4">
       <div className="flex flex-col items-center space-y-6 sm:max-w-[700px] w-full">
         <div className="flex flex-col justify-center items-center px-6 space-x-2 space-y-2 w-full whitespace-nowrap sm:flex-row sm:items-center sm:px-0">
           <div className="text-secondary overflow-hidden grow mt-3 text-xl font-bold text-ellipsis">
-            {activity.summary || activity.text.slice(0, 100)}
+            {title}
           </div>
           {activity.url && (
             <SourceAction
@@ -74,7 +81,13 @@ export default function ConversationPage({ activity }) {
         <Back />
         <div className="flex flex-col space-y-6 w-full">
           <div className="text-tertiary text-lg">Similar Conversations</div>
-          <React.Suspense fallback={<div>Loading...</div>}>
+          <React.Suspense
+            fallback={
+              <div>
+                <Loader />
+              </div>
+            }
+          >
             <SimilarConversations
               project={project}
               activity={activity}

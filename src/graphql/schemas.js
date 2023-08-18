@@ -151,7 +151,6 @@ const typeDefs = gql`
     timestamp: String
     timestampInt: Int
     url: String
-    similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
     project: Project! @relationship(type: "OWNS", direction: IN)
     member: Member! @relationship(type: "DID", direction: IN)
     mentions: [Member!]! @relationship(type: "MENTIONS", direction: OUT)
@@ -168,6 +167,7 @@ const typeDefs = gql`
       temperature: Float
     ): [Property!]! @customResolver(requires: ["id"])
     conversationJson: String! @customResolver(requires: ["id"])
+    similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
   }
 
   interface Messaged @relationshipProperties {
