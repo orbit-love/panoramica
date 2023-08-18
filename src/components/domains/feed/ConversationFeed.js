@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import Paginator from "src/components/domains/feed/Paginator";
 import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
+import Loader from "../ui/Loader";
 
 const findActivitiesConnectionEdges = ({
   projects: [
@@ -27,11 +28,9 @@ export default function ConversationFeed({
 }) {
   const [first, setFirst] = useState(10);
 
-  const { data, fetchMore } = useSuspenseQuery(query, {
+  const { data, loading, fetchMore } = useQuery(query, {
     variables: { ...variables, first },
   });
-
-  const [edges, pageInfo] = findEdges(data);
 
   if (!eachActivity) {
     eachActivity = ({ activity, index }) => (
@@ -54,6 +53,16 @@ export default function ConversationFeed({
       },
     });
   }, [first, fetchMore]);
+
+  if (loading) {
+    return (
+      <div className="px-6">
+        <Loader />
+      </div>
+    );
+  }
+
+  const [edges, pageInfo] = findEdges(data);
 
   var activities = edges.map((edge) => edge.node);
 
