@@ -47,7 +47,7 @@ const resolvers = {
           RETURN source`,
         { projectId }
       );
-      return records.map((record) => record.get("source"));
+      return records.map((record) => record.get("source")) || [];
     },
     async sourceChannels(parent, args) {
       const graphConnection = new GraphConnection();
@@ -69,13 +69,15 @@ const resolvers = {
           ORDER BY lastActivityAt DESC`,
         { projectId, source }
       );
-      return records
-        .map((record) => ({
-          name: record.get("name"),
-          activityCount: record.get("activityCount").low,
-          lastActivityAt: record.get("lastActivityAt"),
-        }))
-        .filter((record) => record.name);
+      return (
+        records
+          .map((record) => ({
+            name: record.get("name"),
+            activityCount: record.get("activityCount").low,
+            lastActivityAt: record.get("lastActivityAt"),
+          }))
+          .filter((record) => record.name) || []
+      );
     },
     async searchConversations(parent, args) {
       const { id: projectId } = parent;
