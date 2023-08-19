@@ -21,10 +21,8 @@ export default function CompactConnection({
       )}
       onClick={(e) => onClick(e, member, connectedMember)}
     >
-      <div className="flex-grow">
-        <NameAndIcon member={connectedMember} onClick={() => {}} />
-      </div>
-      <div className="mx-auto"></div>
+      <NameAndIcon member={connectedMember} onClick={() => {}} />
+      <div className="!mx-auto"></div>
       <TimeAgo
         className="ml-6 text-gray-400 dark:text-gray-600"
         date={lastInteractedAt}

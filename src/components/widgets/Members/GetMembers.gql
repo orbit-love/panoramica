@@ -1,6 +1,6 @@
-query ($projectId: ID!, $first: Int!, $after: String) {
+query ($projectId: ID!, $first: Int!, $after: String, $sort: MemberSort) {
   projects(where: { id: $projectId }) {
-    membersConnection(first: $first, after: $after) {
+    membersConnection(first: $first, after: $after, sort: { node: $sort }) {
       edges {
         node {
           globalActor

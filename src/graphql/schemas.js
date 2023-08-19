@@ -182,6 +182,9 @@ const typeDefs = gql`
     id: ID! @alias(property: "globalActor")
     globalActor: String!
     globalActorName: String!
+    activityCount: Int!
+    conversationCount: Int!
+    messagedWithCount: Int!
     project: Project! @relationship(type: "OWNS", direction: IN)
     activities: [Activity!]! @relationship(type: "DID", direction: OUT)
     messagedWith: [Member!]!

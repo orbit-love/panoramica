@@ -265,6 +265,27 @@ export async function syncActivities({ tx, project, activities }) {
     "Memgraph: Created (:Member)-[:MESSAGED]-(:Member) edges for mentions"
   );
 
+  // update (:Member) nodes with an activity conversation count
+  // it would be better to do it at query time but graphql sorting
+  // doesn't support aggregations and writing a customer resolver
+  // is complicated because of pagination, etc.
+  await tx.run(
+    `MATCH (p:Project { id: $projectId })
+      WITH p, $activities AS batch
+        UNWIND batch AS activity
+        MATCH (p)-[:OWNS]-(m:Member { globalActor: activity.globalActor })
+          WITH m
+            MATCH (m)-[:DID]-(a:Activity)-[:PART_OF]->(c:Conversation)
+          WITH m, count(DISTINCT a.id) as activityCount, count(DISTINCT c.id) as conversationCount
+            OPTIONAL MATCH (m)-[:MESSAGED]-(n:Member)
+            WITH m, activityCount, conversationCount, count(DISTINCT n.globalActor) AS messagedWithCount
+              SET m.activityCount = activityCount,
+              m.conversationCount = conversationCount,
+              m.messagedWithCount = messagedWithCount`,
+    { activities, projectId }
+  );
+  console.log("Memgraph: Updated (:Member) nodes with counts");
+
   const finalResult = await tx.run(
     `MATCH (p:Project { id: $projectId })
       WITH p, $activities AS batch
