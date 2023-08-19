@@ -1,7 +1,7 @@
-query ($projectId: ID!, $memberId: ID!) {
+query ($projectId: ID!, $memberId: ID!, $sort: MessagedSort) {
   projects(where: { id: $projectId }) {
     members(where: { id: $memberId }) {
-      messagedWithConnection(sort: { edge: { lastInteractedAt: DESC } }) {
+      messagedWithConnection(sort: { edge: $sort }) {
         edges {
           activityCount
           activities

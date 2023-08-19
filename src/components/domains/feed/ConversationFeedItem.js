@@ -37,9 +37,9 @@ export default function ConversationFeedItem(props) {
         "group/menu flex flex-col relative border-b border-b-gray-300 dark:border-b-gray-700",
         {
           "hover:bg-gray-100 hover:bg-opacity-50 dark:hover:bg-gray-800 dark:hover:bg-opacity-40":
-            index % 2 === 0,
-          "bg-gray-100 hover:bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-50 dark:hover:bg-opacity-90":
             index % 2 === 1,
+          "bg-gray-100 hover:bg-opacity-50 dark:bg-gray-800 dark:bg-opacity-50 dark:hover:bg-opacity-90":
+            index % 2 === 0,
           "border-l-2 border-tertiary": !!bookmark,
         }
       )}

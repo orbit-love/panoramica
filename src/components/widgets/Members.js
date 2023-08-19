@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 import CompactMember from "src/components/domains/member/Member";
 import { Frame, Header } from "src/components/widgets";
@@ -6,7 +7,6 @@ import { addMemberWidget } from "src/components/widgets/setup/widgets";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import GetMembersQuery from "./Members/GetMembers.gql";
 import Loader from "src/components/domains/ui/Loader";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Members({ project, addWidget }) {
   const pageSize = 50;
@@ -70,52 +70,49 @@ export default function Members({ project, addWidget }) {
     <Frame>
       <Header>
         <div className="flex justify-between items-baseline w-full">
-          <div className="text-lg">Members</div>
-          <div>
-            {totalCount && (
-              <div>
-                Showing {members.length}/{totalCount}
-              </div>
-            )}
+          <div className="text-lg">
+            Members {members.length}/{totalCount}
           </div>
+          {totalCount > 0 && (
+            <div className="flex items-baseline space-x-3 text-sm whitespace-nowrap">
+              <div className="grow" />
+              <div className="text-tertiary">Sort by: </div>
+              <div
+                className={classnames("", {
+                  "cursor-pointer underline text-gray-400":
+                    !sort.conversationCount,
+                  "text-tertiary": sort.conversationCount,
+                })}
+                onClick={() => {
+                  if (!sort.conversationCount)
+                    changeSort({ conversationCount: "DESC" });
+                }}
+              >
+                <FontAwesomeIcon
+                  icon="comment"
+                  flip="horizontal"
+                  className="mr-1"
+                />
+                <span>Conversations</span>
+              </div>
+              <div
+                className={classnames("", {
+                  "cursor-pointer underline text-gray-400":
+                    !sort.messagedWithCount,
+                  "text-tertiary": sort.messagedWithCount,
+                })}
+                onClick={() => {
+                  if (!sort.messagedWithCount)
+                    changeSort({ messagedWithCount: "DESC" });
+                }}
+              >
+                <FontAwesomeIcon icon="right-left" className="mr-1" />
+                <span>Connections</span>
+              </div>
+            </div>
+          )}
         </div>
       </Header>
-      {totalCount > 0 && (
-        <div className="-mt-2 flex px-6 mb-4 space-x-3 text-sm">
-          <div className="grow" />
-          <div className="text-tertiary">Sort by </div>
-          <div
-            className={classnames("", {
-              "cursor-pointer underline text-gray-400": !sort.conversationCount,
-              "text-tertiary": sort.conversationCount,
-            })}
-            onClick={() => {
-              if (!sort.conversationCount)
-                changeSort({ conversationCount: "DESC" });
-            }}
-          >
-            <FontAwesomeIcon
-              icon="comment"
-              flip="horizontal"
-              className="mr-1"
-            />
-            <span>Conversations</span>
-          </div>
-          <div
-            className={classnames("", {
-              "cursor-pointer underline text-gray-400": !sort.messagedWithCount,
-              "text-tertiary": sort.messagedWithCount,
-            })}
-            onClick={() => {
-              if (!sort.messagedWithCount)
-                changeSort({ messagedWithCount: "DESC" });
-            }}
-          >
-            <FontAwesomeIcon icon="right-left" className="mr-1" />
-            <span>Connections</span>
-          </div>
-        </div>
-      )}
       <div className="flex flex-col px-6 space-y-4">
         <div className="flex flex-col">
           {members.map((member) => (
