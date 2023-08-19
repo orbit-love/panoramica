@@ -164,7 +164,14 @@ export const TitleBar = ({
           />
         )}
       </div>
-      <div className="text-tertiary flex space-x-3">
+      <div className="text-tertiary flex space-x-2">
+        <BookmarkAction project={project} activity={activity} />
+        <React.Suspense fallback={<div></div>}>
+          <PinAction project={project} activity={activity} />
+        </React.Suspense>
+        <div />
+        <SimilarAction activity={activity} />
+        <SourceAction activity={activity} />
         {project.demo && (
           <Link
             href={`/projects/${project.id}/welcome/${activity.id}`}
@@ -174,12 +181,6 @@ export const TitleBar = ({
             <FontAwesomeIcon icon="external-link" />
           </Link>
         )}
-        <SourceAction activity={activity} />
-        <SimilarAction activity={activity} />
-        <BookmarkAction project={project} activity={activity} />
-        <React.Suspense fallback={<div></div>}>
-          <PinAction project={project} activity={activity} />
-        </React.Suspense>
       </div>
     </div>
   );
