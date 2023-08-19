@@ -5,9 +5,12 @@ import { WidgetContext } from "src/components/context/WidgetContext";
 export default function SimilarAction({ activity, className }) {
   const { addWidget } = useContext(WidgetContext);
   const onClickSimilarConversations = useCallback(async () => {
-    var summary = activity.summary || activity.text.slice(0, 50);
+    const titleProperty = activity.properties.find(
+      (property) => property.name === "title"
+    );
+    var title = titleProperty?.value || activity.text.slice(0, 50);
     addWidget(`similar-${activity.id}`, "Similar", {
-      title: `Similar to ${summary}`,
+      title,
       activity,
     });
   }, [activity, addWidget]);

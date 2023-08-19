@@ -4,7 +4,7 @@ import ConversationFeedItem from "src/components/domains/feed/ConversationFeedIt
 import SimilarConversations from "src/components/domains/search/SimilarConversations";
 import Loader from "../domains/ui/Loader";
 
-export default function Similar({ project, params, handlers }) {
+export default function Similar({ project, api, params, handlers }) {
   const { activity } = params;
 
   const renderResults = ({ activities }) => {
@@ -22,13 +22,11 @@ export default function Similar({ project, params, handlers }) {
     );
   };
 
-  const summary = activity.summary || activity.text.slice(0, 50);
-
   return (
     <Frame>
       <div className="pt-4 px-6">
         <span className="text-tertiary font-light">Similar to:</span>{" "}
-        <span className="font-semibold">{summary}</span>
+        <span className="font-semibold">{api.title}</span>
       </div>
       <React.Suspense
         fallback={
