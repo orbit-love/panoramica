@@ -8,7 +8,7 @@ export default function ThemeAction({ children }) {
   const [editingTheme, setEditingTheme] = useState(false);
 
   const toggleEditingTheme = () => {
-    setEditingTheme(!editingTheme);
+    setEditingTheme((editingTheme) => !editingTheme);
   };
 
   return (
