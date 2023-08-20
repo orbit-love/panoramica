@@ -4,11 +4,11 @@ import { redirect } from "next/navigation";
 import { getBaseClient as getClient } from "src/graphql/apollo-client";
 import { checkApp, authorizeProject } from "src/auth";
 import GetConversationsQuery from "src/graphql/queries/GetConversations.gql";
-import generateProperties from "src/graphql/resolvers/activity/generateProperties";
-import { propertyDefinitions } from "src/configuration/propertyDefinitions";
+import generatePropertiesFromYaml from "src/graphql/resolvers/activity/generatePropertiesFromYaml";
 import { getBaseClient } from "src/graphql/apollo-client";
 import SetActivityPropertiesMutation from "src/graphql/mutations/SetActivityProperties.gql";
 import DeleteActivityPropertiesMutation from "src/graphql/mutations/DeleteActivityProperties.gql";
+import coreYaml from "src/configuration/definitions/core.yaml";
 
 export async function POST(request, context) {
   const user = await checkApp();
@@ -32,13 +32,6 @@ export async function POST(request, context) {
 
     var projectId = project.id;
 
-    var query = GetConversationsQuery;
-    var variables = {
-      projectId,
-      first: 1,
-      after: cursor || "",
-    };
-
     const {
       data: {
         projects: [
@@ -48,24 +41,33 @@ export async function POST(request, context) {
         ],
       },
     } = await getClient().query({
-      query,
-      variables,
+      query: GetConversationsQuery,
+      variables: {
+        projectId,
+        first: 10,
+        after: cursor || "",
+      },
     });
 
-    // filter out replies
+    // filter out replies and activities that already have properties
     const activities = edges
       .map((edge) => edge.node)
-      .filter((activity) => activity.id === activity.conversationId);
+      .filter((activity) => activity.id === activity.conversationId)
+      .filter((activity) => activity.propertiesConnection.totalCount === 0);
 
-    const definitions = propertyDefinitions;
+    const yaml = coreYaml;
 
     const promises = activities.map(async (activity) => {
       // update the schema via a mutation
       const { id: activityId } = activity;
-      const properties = await generateProperties({
+      const modelName = "gpt-3.5-turbo";
+      const temperature = 0.1;
+      const properties = await generatePropertiesFromYaml({
         projectId,
         activityId,
-        definitions,
+        yaml,
+        modelName,
+        temperature,
       });
 
       // clear the existing properties
@@ -81,7 +83,7 @@ export async function POST(request, context) {
       }));
 
       // set the new ones
-      const mutationResult = await getBaseClient().mutate({
+      await getBaseClient().mutate({
         mutation: SetActivityPropertiesMutation,
         variables: {
           id: activityId,
@@ -89,7 +91,6 @@ export async function POST(request, context) {
         },
       });
 
-      console.log("mutationResult", mutationResult);
       return properties;
     });
 

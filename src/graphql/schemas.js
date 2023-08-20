@@ -166,6 +166,11 @@ const typeDefs = gql`
       modelName: String
       temperature: Float
     ): [Property!]! @customResolver(requires: ["id"])
+    generatePropertiesFromYaml(
+      yaml: String
+      modelName: String
+      temperature: Float
+    ): [Property!]! @customResolver(requires: ["id"])
     conversationJson: String! @customResolver(requires: ["id"])
     similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
   }

@@ -9,6 +9,7 @@ import BookmarkAction from "src/components/domains/bookmarks/BookmarkAction";
 import PinAction from "src/components/domains/pins/PinAction";
 import SimilarAction from "src/components/domains/conversation/SimilarAction";
 import SourceAction from "src/components/domains/conversation/SourceAction";
+import PropertiesAction from "src/components/domains/conversation/PropertiesAction";
 import GetPromptsByContextQuery from "src/graphql/queries/GetPromptsByContext.gql";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -82,14 +83,14 @@ const GeneratedTitleProperty = ({
             .filter((property) => property.name !== "title")
             .concat(titleProperty),
         }));
-      }
 
-      updateActivityProperty({
-        variables: {
-          activityId: activity.id,
-          ...titleProperty,
-        },
-      });
+        updateActivityProperty({
+          variables: {
+            activityId: activity.id,
+            ...titleProperty,
+          },
+        });
+      }
     },
     [setTitle, setActivity, updateActivityProperty, activity]
   );
@@ -105,7 +106,7 @@ const GeneratedTitleProperty = ({
       activityId: activity.id,
       definitions: [titleDefinition],
       modelName: "gpt-3.5-turbo",
-      temperature: 0.3,
+      temperature: 0.1,
     },
   });
 
@@ -152,7 +153,7 @@ export const TitleBar = ({
 }) => {
   return (
     <div className="flex justify-between items-center pb-4 px-6 space-x-2 border-b border-gray-300 dark:border-gray-800">
-      <div className="overflow-hidden whitespace-nowrap">
+      <div>
         {!aiReady(project) && <SimpleTitleProperty activity={activity} />}
         {aiReady(project) && (
           <GeneratedTitleProperty
@@ -171,6 +172,12 @@ export const TitleBar = ({
         </React.Suspense>
         <div />
         <SimilarAction activity={activity} />
+        <PropertiesAction
+          project={project}
+          activity={activity}
+          setActivity={setActivity}
+        />
+        <div />
         <SourceAction activity={activity} />
         {project.demo && (
           <Link

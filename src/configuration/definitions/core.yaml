@@ -1,0 +1,5 @@
+title: Conversation title in 5 words or less
+summary: Conversation summary in 2 sentences or less
+topics: List of topics the conversation is about, formatted as 1-2 word nouns, maximum of 5
+links: List of links that were shared in the conversation
+members: The name of each member in the conversation in the order they appear

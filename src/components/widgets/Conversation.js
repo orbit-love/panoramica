@@ -24,10 +24,11 @@ export default function Conversation({
   );
 
   useEffect(() => {
-    if (title) {
-      api.setTitle(title);
-    }
     if (activity) {
+      api.setTitle(
+        activity.properties.find((property) => property.name === "title")
+          ?.value || title
+      );
       api.updateParameters({ activity });
     }
     saveLayout({ project, containerApi });
