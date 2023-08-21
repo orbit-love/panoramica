@@ -1,14 +1,10 @@
 import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
+import fetch from "node-fetch";
 
 import { getBaseClient as getClient } from "src/graphql/apollo-client";
 import { checkApp, authorizeProject } from "src/auth";
 import GetConversationsQuery from "src/graphql/queries/GetConversations.gql";
-import generatePropertiesFromYaml from "src/graphql/resolvers/activity/generatePropertiesFromYaml";
-import { getBaseClient } from "src/graphql/apollo-client";
-import SetActivityPropertiesMutation from "src/graphql/mutations/SetActivityProperties.gql";
-import DeleteActivityPropertiesMutation from "src/graphql/mutations/DeleteActivityProperties.gql";
-import coreYaml from "src/configuration/definitions/core.yaml";
 
 export async function POST(request, context) {
   const user = await checkApp();
@@ -55,43 +51,18 @@ export async function POST(request, context) {
       .filter((activity) => activity.id === activity.conversationId)
       .filter((activity) => activity.propertiesConnection.totalCount === 0);
 
-    const yaml = coreYaml;
-
     const promises = activities.map(async (activity) => {
-      // update the schema via a mutation
-      const { id: activityId } = activity;
-      const modelName = "gpt-3.5-turbo";
-      const temperature = 0.1;
-      const properties = await generatePropertiesFromYaml({
-        projectId,
-        activityId,
-        yaml,
-        modelName,
-        temperature,
-      });
-
-      // clear the existing properties
-      await getBaseClient().mutate({
-        mutation: DeleteActivityPropertiesMutation,
-        variables: {
-          id: activityId,
-        },
-      });
-
-      const propertiesWithNode = properties.map((property) => ({
-        node: property,
-      }));
-
-      // set the new ones
-      await getBaseClient().mutate({
-        mutation: SetActivityPropertiesMutation,
-        variables: {
-          id: activityId,
-          properties: propertiesWithNode,
-        },
-      });
-
-      return properties;
+      try {
+        const hostName = process.env.NEXTAUTH_URL;
+        const url = `${hostName}/api/projects/${projectId}/${activity.id}/properties`;
+        await fetch(url, {
+          method: "POST",
+        });
+        console.log("Fetched activity properties");
+      } catch (err) {
+        console.log("Error fetching activity properties route", err);
+        throw err;
+      }
     });
 
     await Promise.all(promises);

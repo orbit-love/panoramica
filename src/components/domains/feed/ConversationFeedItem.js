@@ -1,13 +1,23 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import classnames from "classnames";
 
 import { BookmarksContext } from "src/components/context/BookmarksContext";
 import PreviewView from "src/components/domains/conversation/views/PreviewView";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import Toolbar from "src/components/domains/conversation/Toolbar";
+import { postCreateActivityProperties } from "src/data/client/fetches";
 
 export default function ConversationFeedItem(props) {
-  var { index, activity, handlers, minimal, term } = props;
+  var {
+    index,
+    project,
+    activity: initialActivity,
+    handlers,
+    minimal,
+    term,
+  } = props;
+
+  const [activity, setActivity] = useState(initialActivity);
 
   const bookmarksContext = useContext(BookmarksContext);
   const bookmarks = bookmarksContext.bookmarks;
@@ -31,6 +41,25 @@ export default function ConversationFeedItem(props) {
     }
   };
 
+  useEffect(() => {
+    // if the activity has no properties or only 1 property
+    // fire off a request to generate properties
+    if (activity.properties?.length <= 1) {
+      postCreateActivityProperties({
+        project,
+        activity,
+        onSuccess: ({ data }) => {
+          const newProperties = data.properties;
+          setActivity({
+            ...activity,
+            properties: newProperties,
+          });
+          console.log(newProperties);
+        },
+      });
+    }
+  }, [project, activity]);
+
   return (
     <div
       className={classnames(
@@ -44,6 +73,20 @@ export default function ConversationFeedItem(props) {
         }
       )}
     >
+      {activity.properties?.length > 1 && (
+        <div className="flex flex-wrap pt-4 px-6">
+          {activity.properties.map((property, index) => {
+            return (
+              <div key={index} className="m-1">
+                <div className="text-gray-500">
+                  {property.name}:{" "}
+                  <span className="font-semibold">{property.value}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
       {expanded && (
         <FullThreadView
           {...props}

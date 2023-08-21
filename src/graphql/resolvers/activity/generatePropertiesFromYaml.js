@@ -9,7 +9,11 @@ const resolveGeneratePropertiesFromYaml = async ({
   temperature,
 }) => {
   const prompt = (messages) => {
-    return `You are an AI that analyzes conversations and generates properties that describe them. You are given a conversation and a YAML document that contains the properties to generate and the instructions to generate them. Return a new, valid YAML document that replaces the instructions with the generated property values. Imagine that this information will be used by a human to understand, classify, and respond to the conversation.
+    return `You are an AI that analyzes conversations and generates properties that describe them. You are given a conversation in JSON and a YAML document template. The template contains the properties to generate and the instructions. You will return a new, valid YAML document that replaces the instructions with the generated property values. Imagine that this information will be used by a human to understand, classify, and respond to the conversation.
+
+CONVERSATION INPUT:
+
+${messages.map((message) => JSON.stringify(message)).join("\n")}
 
 Here is information about the conversation format to help you understand it.
 
@@ -21,22 +25,20 @@ Here is information about the conversation format to help you understand it.
 - The "timestamp" property contains the timestamp of the message in ISO 8601 format.
 - The "author" property is the name of the person sending the message
 
-CONVERSATION INPUT:
-
-${messages.map((message) => JSON.stringify(message)).join("\n")}
-
 YAML INPUT:
 
 ${yaml}
 
-RULES TO FOLLOW:
+Now, generate a new YAML document based on that input, following these rules:
+
 - Use your understanding of the full conversation to generate the properties
-- Do not add any unnecessary characters or punctuation, e.g. surrounding quotes with strings when it's not required
+- Do not add any unnecessary characters or punctuation, e.g. surrounding quotes with strings, unless required to make the YAML valid
 - Escape any special characters that are required by the YAML specification
 - If a property is a list, put the list items on separate lines and indent them
-- Omit properties that were not evaluated or are empty
+- Omit properties that were not evaluated or are empty, DO NOT RETURN empty properties
+- Do not return any data from the conversation itself, only the generated properties
 
-REMEMBER, ONLY OUTPUT YAML. THE COMPLETED DOCUMENT:`;
+YAML OUTPUT:`;
   };
 
   const text = await generate({
@@ -78,7 +80,9 @@ REMEMBER, ONLY OUTPUT YAML. THE COMPLETED DOCUMENT:`;
     throw new Error(`LLM returned no properties \n\n ${text}\n\n`);
   }
 
-  return properties;
+  // remove any properties that have a name or value of null
+  // these should not be generated but the LLM can return them
+  return properties.filter(({ name, value }) => name && value);
 };
 
 export default resolveGeneratePropertiesFromYaml;

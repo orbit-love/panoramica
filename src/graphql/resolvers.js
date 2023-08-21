@@ -6,6 +6,7 @@ import resolveCompletion from "src/graphql/resolvers/activity/completion";
 import resolveGenerateProperties from "src/graphql/resolvers/activity/generateProperties";
 import resolveGeneratePropertiesFromYaml from "src/graphql/resolvers/activity/generatePropertiesFromYaml";
 import resolveConversationJson from "src/graphql/resolvers/activity/conversationJson";
+import resolvePropertyFilters from "src/graphql/resolvers/project/propertyFilters";
 
 const resolvers = {
   Query: {
@@ -91,6 +92,15 @@ const resolvers = {
           query,
         });
       }
+    },
+    async propertyFilters(parent, args, { resolveTree }) {
+      const projectId = resolveTree.args.where.id;
+      const { source, propertyNames } = args;
+      return resolvePropertyFilters({
+        projectId,
+        propertyNames,
+        source,
+      });
     },
   },
   Activity: {

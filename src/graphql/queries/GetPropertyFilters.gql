@@ -1,0 +1,11 @@
+query ($projectId: ID!, $propertyNames: [String], $source: String) {
+  projects(where: { id: $projectId }) {
+    propertyFilters(propertyNames: $propertyNames, source: $source) {
+      name
+      values {
+        value
+        count
+      }
+    }
+  }
+}

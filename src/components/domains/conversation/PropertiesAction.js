@@ -45,8 +45,6 @@ export default function PropertiesAction({
   );
 }
 
-// this modal is a table of properties styled with tailwind
-// there is a column for the name, type, and value of the property
 const PropertiesModal = ({ project, activity, setActivity }) => {
   const [properties, setProperties] = useState(activity.properties);
 

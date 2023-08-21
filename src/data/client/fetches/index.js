@@ -116,3 +116,11 @@ export async function postCreateActivitiesProperties({ project, body }) {
     body,
   });
 }
+
+export async function postCreateActivityProperties({ project, activity }) {
+  const url = `/api/projects/${project.id}/${activity.id}/properties`;
+  return fetch(url, {
+    method: "POST",
+    headers,
+  });
+}
