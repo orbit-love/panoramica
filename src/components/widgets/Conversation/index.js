@@ -152,7 +152,7 @@ export const TitleBar = ({
   setTitle,
 }) => {
   return (
-    <div className="flex justify-between items-center pb-4 px-6 space-x-2 border-b border-gray-300 dark:border-gray-800">
+    <div className="flex justify-between items-start pb-4 px-6 space-x-2 border-b border-gray-300 dark:border-gray-800">
       <div>
         {!aiReady(project) && <SimpleTitleProperty activity={activity} />}
         {aiReady(project) && (
