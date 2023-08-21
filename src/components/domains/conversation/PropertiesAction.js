@@ -128,7 +128,7 @@ const PropertiesModal = ({ project, activity, setActivity }) => {
           ))}
         </tbody>
       </table>
-      <div className="flex items-center my-6 space-x-2">
+      <div className="flex items-center mt-6 space-x-2">
         <div
           onClick={() => generateProperties()}
           className="text-tertiary cursor-pointer hover:underline"

@@ -11,8 +11,7 @@ const processRow = (record, index) => {
     obj.push({
       messageId: a.id,
       replyToMessageId: null,
-      from: memA.globalActorName,
-      to: null,
+      author: memA.globalActorName,
       timestamp: a.timestamp,
       text: utils.stripHtmlTags(a.textHtml),
     });
@@ -25,8 +24,7 @@ const processRow = (record, index) => {
       obj.push({
         messageId: b.id,
         replyToMessageId: a.id,
-        from: memB.globalActorName,
-        to: memA.globalActorName,
+        author: memB.globalActorName,
         text: utils.stripHtmlTags(b.textHtml),
         timestamp: b.timestamp,
       });
