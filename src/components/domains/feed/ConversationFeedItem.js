@@ -44,21 +44,30 @@ export default function ConversationFeedItem(props) {
   useEffect(() => {
     // if the activity has no properties or only 1 property
     // fire off a request to generate properties
-    if (activity.properties?.length <= 1) {
+    if (conversation.properties?.length <= 1) {
+      console.log(
+        `No properties on ${conversation.id}, making request to generate`
+      );
       postCreateActivityProperties({
         project,
-        activity,
+        activity: conversation,
         onSuccess: ({ data }) => {
           const newProperties = data.properties;
+          console.log(
+            "New Properties fetched " + JSON.stringify(newProperties)
+          );
           setActivity({
             ...activity,
-            properties: newProperties,
+            conversation: {
+              ...conversation,
+              properties: newProperties,
+            },
           });
           console.log(newProperties);
         },
       });
     }
-  }, [project, activity]);
+  }, [project, activity, conversation]);
 
   return (
     <div
@@ -73,9 +82,9 @@ export default function ConversationFeedItem(props) {
         }
       )}
     >
-      {activity.properties?.length > 1 && (
+      {conversation.properties?.length > 1 && (
         <div className="flex flex-wrap pt-4 px-6">
-          {activity.properties.map((property, index) => {
+          {conversation.properties.map((property, index) => {
             return (
               <div key={index} className="m-1">
                 <div className="text-gray-500">

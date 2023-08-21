@@ -5,6 +5,7 @@ import fetch from "node-fetch";
 import { getBaseClient as getClient } from "src/graphql/apollo-client";
 import { checkApp, authorizeProject } from "src/auth";
 import GetConversationsQuery from "src/graphql/queries/GetConversations.gql";
+import { cookies } from "next/headers";
 
 export async function POST(request, context) {
   const user = await checkApp();
@@ -40,7 +41,7 @@ export async function POST(request, context) {
       query: GetConversationsQuery,
       variables: {
         projectId,
-        first: 10,
+        first: 1,
         after: cursor || "",
       },
     });
@@ -49,16 +50,23 @@ export async function POST(request, context) {
     const activities = edges
       .map((edge) => edge.node)
       .filter((activity) => activity.id === activity.conversationId)
-      .filter((activity) => activity.propertiesConnection.totalCount === 0);
+      .filter((activity) => activity.propertiesConnection.totalCount <= 1);
 
     const promises = activities.map(async (activity) => {
       try {
         const hostName = process.env.NEXTAUTH_URL;
         const url = `${hostName}/api/projects/${projectId}/${activity.id}/properties`;
-        await fetch(url, {
+        const response = await fetch(url, {
           method: "POST",
+          headers: { Cookie: cookies().toString() },
         });
-        console.log("Fetched activity properties");
+        console.log(
+          "Fetched properties from URL " +
+            url +
+            " with status " +
+            response.status
+        );
+        return response;
       } catch (err) {
         console.log("Error fetching activity properties route", err);
         throw err;

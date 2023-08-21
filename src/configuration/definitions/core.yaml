@@ -2,7 +2,7 @@ title: Conversation title in 5 words or less; in Title Case; do not use the word
 summary: Conversation summary in 3 sentences or less highlighting questions, answers, facts, and featured discussed
 type: The most applicable type of the conversation chosen from this list - Announcement,Bug Report,Complaint,Feedback,Introduction,Content Share,Promotion,Spam,Suggestion,Recommendation,Support Request,Code Contribution
 topics: List of up to 3 of the most significant topics discussed, formatted as 1-3 word nouns, e.g. "Payment Options" or "Credit Cards"
-entities: List of up to 3 of the most significant places or things discussed, formatted as 1-3 word nouns, e.g. "Stripe" or "KubeCon"
+entities: List of up to 3 of the most significant places or things discussed, formatted as 1-3 word nouns, e.g. "Stripe" or "KubeCon"; do not include people
 links: List of up to 3 of the most significant links shared in the conversation
 statuses: List of up to 3 of the most applicable status indicators for the conversation chosen from this list - new,lotsOfActivity,noRepliesYet,awaitingReply,awaitingAnswer,needsModeration,isSpam,hasAcceptedAnswer,abandoned,complete
 satisfication: If type='Support Question', the satisfaction estimate of the supportee chosen from this list - verySatisfied,satisfied,neutral,unsatisfied,veryUnsatisfied

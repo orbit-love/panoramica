@@ -49,7 +49,7 @@ export default function Source({ project, params, api, handlers }) {
 }
 
 const Filters = ({ project, source }) => {
-  const propertyNames = ["type"];
+  // const propertyNames = ["type"];
   const { id: projectId } = project;
   const {
     data: {
@@ -58,21 +58,25 @@ const Filters = ({ project, source }) => {
   } = useSuspenseQuery(GetPropertyFiltersQuery, {
     variables: {
       projectId,
-      propertyNames,
+      // propertyNames,
       source,
     },
   });
 
+  var keptPropertyFilters = propertyFilters.filter(({ name }) => {
+    return name.endsWith("s");
+  });
+
   return (
     <div className="flex space-x-2">
-      {propertyFilters.map(({ name, values }) => {
+      {keptPropertyFilters.map(({ name, values }) => {
         return (
-          <div key={name} className="flex flex-col px-6 mb-4 space-y-1 text-sm">
+          <div key={name} className="flex flex-col px-6 mb-4 text-sm">
             <div className="font-bold">{name}</div>
             <div className="flex flex-col">
               {values.map(({ value, count }) => {
                 return (
-                  <div key={value} className="flex space-x-1">
+                  <div key={value} className="flex space-x-1 whitespace-nowrap">
                     <div className="text-sm">{value}</div>
                     <div className="text-sm text-gray-500">({count})</div>
                   </div>

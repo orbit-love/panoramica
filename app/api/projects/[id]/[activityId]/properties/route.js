@@ -28,7 +28,7 @@ export async function POST(_, context) {
 
     const projectId = project.id;
     const yaml = coreYaml;
-    const modelName = "gpt-3.5-turbo";
+    const modelName = "gpt-4";
     const temperature = 0.1;
 
     const properties = await generatePropertiesFromYaml({

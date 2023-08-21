@@ -32,16 +32,15 @@ ${yaml}
 Now, generate a new YAML document based on that input, following these rules:
 
 - Use your understanding of the full conversation to generate the properties
-- Do not add any unnecessary characters or punctuation, e.g. surrounding quotes with strings, unless required to make the YAML valid
-- Escape any special characters that are required by the YAML specification
 - If a property is a list, put the list items on separate lines and indent them
 - Omit properties that were not evaluated or are empty, DO NOT RETURN empty properties
 - Do not return any data from the conversation itself, only the generated properties
+- Check that the YAML document is valid before returning it
 
 YAML OUTPUT:`;
   };
 
-  const text = await generate({
+  const [text, finalPrompt] = await generate({
     projectId,
     activityId,
     modelName,
@@ -53,6 +52,7 @@ YAML OUTPUT:`;
 
   try {
     const doc = jsYaml.load(text);
+    if (doc === null) throw new Error("LLM returned null YAML");
 
     for (const [name, value] of Object.entries(doc)) {
       if (Array.isArray(value)) {
@@ -72,11 +72,15 @@ YAML OUTPUT:`;
       }
     }
   } catch (e) {
-    console.error(`LLM returned unparseable YAML \n\n ${text}\n\n`, e);
+    console.error(`LLM returned unparseable YAML \n\n ${text}\n\n`);
+    console.log("Final prompt: \n\n" + finalPrompt + "\n\n");
+    console.log(e);
     throw e;
   }
 
   if (properties.length === 0) {
+    console.error(`LLM returned no properties in YAML \n\n ${text}\n\n`);
+    console.log("Final prompt: \n\n" + finalPrompt + "\n\n");
     throw new Error(`LLM returned no properties \n\n ${text}\n\n`);
   }
 

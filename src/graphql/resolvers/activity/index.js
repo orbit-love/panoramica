@@ -37,6 +37,8 @@ export const generate = async ({
     prompt = prompt(messages);
   }
 
+  console.log(`CALLING LLM for ${activityId}`);
+
   const now = new Date();
   const text = await model.call(prompt);
   const then = new Date();
@@ -48,7 +50,7 @@ export const generate = async ({
     }\n---------------------\n${text}`
   );
   console.log("\n\n");
-  return text;
+  return [text, prompt];
 };
 
 export const expandArrayProperties = (jsonResult) => {
