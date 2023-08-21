@@ -119,7 +119,7 @@ export default function EditProject({ project, dispatch }) {
 
             {aiReady(project) && (
               <button className="hover:underline" onClick={labelConversations}>
-                Label conversations
+                Generate conversation properties
               </button>
             )}
           </div>

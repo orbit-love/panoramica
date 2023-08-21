@@ -171,12 +171,12 @@ export const TitleBar = ({
           <PinAction project={project} activity={activity} />
         </React.Suspense>
         <div />
-        <SimilarAction activity={activity} />
         <PropertiesAction
           project={project}
           activity={activity}
           setActivity={setActivity}
         />
+        <SimilarAction activity={activity} />
         <div />
         <SourceAction activity={activity} />
         {project.demo && (

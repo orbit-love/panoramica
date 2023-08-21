@@ -113,8 +113,8 @@ const PropertiesModal = ({ project, activity, setActivity }) => {
           </tr>
         </thead>
         <tbody>
-          {properties.map((property) => (
-            <tr key={property.name}>
+          {properties.map((property, index) => (
+            <tr key={index}>
               <td className="py-2 px-4 border border-gray-500">
                 <code>{property.name}</code>
               </td>
