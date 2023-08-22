@@ -21,9 +21,9 @@ export default function Sources({ project, handlers, newPanelPosition }) {
     <div className="flex flex-col items-start w-full">
       <div className="text-tertiary font-semibold">Sources</div>
       {sources.map((source) => (
-        <button
+        <div
           key={source}
-          className="flex items-center space-x-1"
+          className="flex items-center space-x-1 cursor-pointer hover:underline"
           onClick={(e) =>
             onClickSource(e, source, {
               position: newPanelPosition(),
@@ -31,7 +31,7 @@ export default function Sources({ project, handlers, newPanelPosition }) {
           }
         >
           <div>{utils.titleize(source)}</div>
-        </button>
+        </div>
       ))}
     </div>
   );

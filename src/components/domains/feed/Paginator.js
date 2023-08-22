@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Loader from "src/components/domains/ui/Loader";
 
 export default function Paginator({

@@ -1,0 +1,25 @@
+mutation ReplaceActivityProperties(
+  $id: ID!
+  $properties: [ActivityPropertiesCreateFieldInput!]!
+) {
+  deleteActivityProperties: updateActivities(
+    where: { id: $id }
+    delete: { properties: {} }
+  ) {
+    info {
+      nodesDeleted
+    }
+  }
+  updateActivityProperties: updateActivities(
+    where: { id: $id }
+    create: { properties: $properties }
+  ) {
+    activities {
+      properties {
+        name
+        type
+        value
+      }
+    }
+  }
+}

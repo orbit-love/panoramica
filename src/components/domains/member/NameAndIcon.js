@@ -15,15 +15,12 @@ export default function NameAndIcon({ member, hideActor, onClick }) {
       onClick={(e) => onClick(e, member)}
       className="flex overflow-hidden items-center space-x-1 cursor-pointer"
     >
-      <div className="text-primary overflow-hidden text-ellipsis whitespace-nowrap">
-        <span className="group-hover:underline font-semibold">
+      <div className="overflow-hidden text-gray-400 text-ellipsis whitespace-nowrap dark:text-gray-600">
+        <span className="text-primary group-hover:underline font-semibold">
           {member.globalActorName || member.globalActor}
         </span>
         {!hideActor && member.globalActorName && (
-          <span className="text-sm text-gray-400 dark:text-gray-600">
-            {" "}
-            {member.globalActor}
-          </span>
+          <span className="text-sm"> {member.globalActor}</span>
         )}
       </div>
     </div>

@@ -7,7 +7,7 @@ export default function Loader({ className }) {
     <FontAwesomeIcon
       icon="circle-notch"
       spin
-      className={classnames({ className, "text-tertiary": !className })}
+      className={classnames(className, { "text-tertiary": !className })}
     />
   );
 }

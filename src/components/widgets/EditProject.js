@@ -6,7 +6,7 @@ import {
   putProjectImport,
   postEmbeddings,
   putProjectRefresh,
-  postLabelConversations,
+  postCreateActivitiesProperties,
 } from "src/data/client/fetches";
 import Edit from "src/components/domains/project/Edit";
 import Loader from "src/components/domains/ui/Loader";
@@ -57,7 +57,7 @@ export default function EditProject({ project, dispatch }) {
     try {
       setStatus("Conversation labeling starting...");
       while (!response || cursor) {
-        var response = await postLabelConversations({
+        var response = await postCreateActivitiesProperties({
           project,
           setLoading,
           body: JSON.stringify({ cursor }),
@@ -119,7 +119,7 @@ export default function EditProject({ project, dispatch }) {
 
             {aiReady(project) && (
               <button className="hover:underline" onClick={labelConversations}>
-                Label conversations
+                Generate conversation properties
               </button>
             )}
           </div>

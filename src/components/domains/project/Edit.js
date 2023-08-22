@@ -166,7 +166,7 @@ export default function Edit({
         <label htmlFor="model-name">Model Name</label>
         <input
           type="text"
-          placeholder="gpt-3.5-turbo-0613"
+          placeholder="gpt-3.5-turbo"
           name="model-name"
           value={modelName}
           onChange={({ target }) => setModelName(target.value)}

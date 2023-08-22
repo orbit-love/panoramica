@@ -36,11 +36,11 @@ export default function Header({ project, imported }) {
 
   return (
     <div className="py-2 px-6">
-      <div className="flex items-center py-2 w-full whitespace-nowrap">
+      <div className="flex items-center py-2 space-x-2 w-full whitespace-nowrap">
         <div className="overflow-hidden font-semibold text-ellipsis">
           {project.name}
         </div>
-        {loading && <Loader className="pl-2 text-green-500" />}
+        {loading && <Loader />}
         {!loading && (
           <div
             title="Auto update every 60s"
@@ -54,7 +54,7 @@ export default function Header({ project, imported }) {
           >
             <FontAwesomeIcon
               icon="circle"
-              className={classnames("pl-2 text-sm", {
+              className={classnames("text-sm", {
                 "text-green-500": refresh,
                 "text-gray-500": !refresh,
               })}

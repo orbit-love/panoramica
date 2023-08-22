@@ -69,7 +69,9 @@ export default function Explore({ newPanelPosition, addWidget, handlers }) {
           >
             <SourceIcon activity={activity} className="text-xs" />
             <div className="group-hover:underline overflow-x-hidden w-full text-ellipsis">
-              {activity.summary || activity.text.slice(0, 50)}
+              {activity.conversation.properties.find(
+                (property) => property.name === "title"
+              )?.value || activity.text.slice(0, 50)}
             </div>
           </div>
         ))}

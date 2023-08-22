@@ -63,8 +63,21 @@ export default function ProjectPage({ project }) {
     },
   });
 
+  const updatedBookmarks = bookmarksResult.map(
+    ({ node: activity, ...props }) => ({
+      node: {
+        ...activity,
+        conversation: {
+          ...activity.conversation.descendants[0],
+          ...activity.conversation,
+        },
+      },
+      ...props,
+    })
+  );
+
   const [bookmarks, bookmarksDispatch] = useReducer(bookmarksReducer, {
-    bookmarks: bookmarksResult,
+    bookmarks: updatedBookmarks,
   });
   const [containerApi, setContainerApi] = useState(null);
 

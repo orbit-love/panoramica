@@ -73,6 +73,21 @@ const typeDefs = gql`
     project: Project! @relationship(type: "OWNS", direction: IN)
   }
 
+  type PropertyFilterOption {
+    value: String!
+    count: Int!
+  }
+
+  type PropertyFilter {
+    name: String!
+    values: [PropertyFilterOption!]!
+  }
+
+  input PropertyFilterInput {
+    source: String
+    sourceChannel: String
+  }
+
   type Project
     @query(aggregate: false)
     @mutation(operations: [CREATE, UPDATE, DELETE])
@@ -98,6 +113,10 @@ const typeDefs = gql`
     sources: [String!]! @customResolver(requires: ["id"])
     creator: User! @relationship(type: "CREATED", direction: IN)
     prompts: [Prompt!]! @relationship(type: "OWNS", direction: OUT)
+    propertyFilters(
+      propertyNames: [String]
+      where: PropertyFilterInput
+    ): [PropertyFilter!]! @customResolver(requires: ["id"])
     sourceChannels(source: String!): [SourceChannel!]!
       @customResolver(requires: ["id"])
     searchConversations(query: String!): [SearchResult!]!
@@ -137,6 +156,7 @@ const typeDefs = gql`
     @mutation(operations: [UPDATE]) {
     id: ID! @id
     conversationId: String
+    isConversation: Boolean
     actor: String
     actorName: String
     globalActor: String
@@ -163,6 +183,11 @@ const typeDefs = gql`
       @customResolver(requires: ["id"])
     generateProperties(
       definitions: [GeneratePropertyInput!]!
+      modelName: String
+      temperature: Float
+    ): [Property!]! @customResolver(requires: ["id"])
+    generatePropertiesFromYaml(
+      yaml: String
       modelName: String
       temperature: Float
     ): [Property!]! @customResolver(requires: ["id"])

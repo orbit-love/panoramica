@@ -1,13 +1,23 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import classnames from "classnames";
 
 import { BookmarksContext } from "src/components/context/BookmarksContext";
 import PreviewView from "src/components/domains/conversation/views/PreviewView";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import Toolbar from "src/components/domains/conversation/Toolbar";
+import { postCreateActivityProperties } from "src/data/client/fetches";
 
 export default function ConversationFeedItem(props) {
-  var { index, activity, handlers, minimal, term } = props;
+  var {
+    index,
+    project,
+    activity: initialActivity,
+    handlers,
+    minimal,
+    term,
+  } = props;
+
+  const [activity, setActivity] = useState(initialActivity);
 
   const bookmarksContext = useContext(BookmarksContext);
   const bookmarks = bookmarksContext.bookmarks;
@@ -30,6 +40,34 @@ export default function ConversationFeedItem(props) {
       setExpanded(!expanded);
     }
   };
+
+  useEffect(() => {
+    // if the activity has no properties or only 1 property
+    // fire off a request to generate properties
+    if (conversation.properties?.length <= 1) {
+      console.log(
+        `No properties on ${conversation.id}, making request to generate`
+      );
+      postCreateActivityProperties({
+        project,
+        activity: conversation,
+        onSuccess: ({ data }) => {
+          const newProperties = data.properties;
+          console.log(
+            "New Properties fetched " + JSON.stringify(newProperties)
+          );
+          setActivity({
+            ...activity,
+            conversation: {
+              ...conversation,
+              properties: newProperties,
+            },
+          });
+          console.log(newProperties);
+        },
+      });
+    }
+  }, [project, activity, conversation]);
 
   return (
     <div

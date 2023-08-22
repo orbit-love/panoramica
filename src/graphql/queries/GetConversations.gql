@@ -9,6 +9,9 @@ query ($projectId: ID!, $first: Int!, $after: String) {
         node {
           id
           conversationId
+          propertiesConnection {
+            totalCount
+          }
         }
       }
       pageInfo {

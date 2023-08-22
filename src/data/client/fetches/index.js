@@ -108,11 +108,19 @@ export async function deleteDocumentation({ project, setLoading, onSuccess }) {
   }
 }
 
-export async function postLabelConversations({ project, body }) {
-  const url = `/api/projects/${project.id}/labels`;
+export async function postCreateActivitiesProperties({ project, body }) {
+  const url = `/api/projects/${project.id}/activities/properties`;
   return fetch(url, {
     method: "POST",
     headers,
     body,
+  });
+}
+
+export async function postCreateActivityProperties({ project, activity }) {
+  const url = `/api/projects/${project.id}/${activity.id}/properties`;
+  return fetch(url, {
+    method: "POST",
+    headers,
   });
 }

@@ -140,7 +140,8 @@ export async function syncActivities({ tx, project, activities }) {
           WITH activity, conversation, conversationId
             SET activity.conversationId = conversationId
             MERGE (activity)-[:PART_OF]->(conversation)
-            SET conversation:Conversation`,
+            SET conversation:Conversation
+            SET conversation.isConversation = true`,
     { activities, projectId }
   );
   console.log("Memgraph: Connected (a:Activity)-[:PART_OF]->(c:Conversation)");

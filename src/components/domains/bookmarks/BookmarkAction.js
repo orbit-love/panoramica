@@ -55,9 +55,20 @@ export default function BookmarkAction({ activity, className }) {
           createdAtInt,
         },
       });
+      const { node: activity } = bookmark;
+      const updatedBookmark = {
+        ...bookmark,
+        node: {
+          ...activity,
+          conversation: {
+            ...activity.conversation.descendants[0],
+            ...activity.conversation,
+          },
+        },
+      };
       dispatch({
         type: "addBookmark",
-        bookmark,
+        bookmark: updatedBookmark,
       });
     }
   }, [dispatch, bookmark, activity, connectBookmark, disconnectBookmark]);

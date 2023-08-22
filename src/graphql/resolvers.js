@@ -4,7 +4,9 @@ import getSimilarConversations from "src/graphql/resolvers/getSimilarConversatio
 import searchConversations from "src/graphql/resolvers/searchConversations";
 import resolveCompletion from "src/graphql/resolvers/activity/completion";
 import resolveGenerateProperties from "src/graphql/resolvers/activity/generateProperties";
+import resolveGeneratePropertiesFromYaml from "src/graphql/resolvers/activity/generatePropertiesFromYaml";
 import resolveConversationJson from "src/graphql/resolvers/activity/conversationJson";
+import resolvePropertyFilters from "src/graphql/resolvers/project/propertyFilters";
 
 const resolvers = {
   Query: {
@@ -91,6 +93,15 @@ const resolvers = {
         });
       }
     },
+    async propertyFilters(parent, args, { resolveTree }) {
+      const projectId = resolveTree.args.where.id;
+      const { propertyNames, where } = args;
+      return resolvePropertyFilters({
+        projectId,
+        propertyNames,
+        where,
+      });
+    },
   },
   Activity: {
     async completion(parent, args, { resolveTree }) {
@@ -113,6 +124,18 @@ const resolvers = {
         projectId,
         activityId,
         definitions,
+        modelName,
+        temperature,
+      });
+    },
+    async generatePropertiesFromYaml(parent, args, { resolveTree }) {
+      const projectId = resolveTree.args.where.id;
+      const { id: activityId } = parent;
+      const { modelName, temperature, yaml } = args;
+      return resolveGeneratePropertiesFromYaml({
+        projectId,
+        activityId,
+        yaml,
         modelName,
         temperature,
       });

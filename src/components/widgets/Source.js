@@ -17,8 +17,8 @@ export default function Source({ project, params, api, handlers }) {
   const query = source ? GetActivitiesWithSourceQuery : GetActivitiesQuery;
   const variables = {
     projectId,
-    ...(source && { source }),
   };
+  const where = source ? [{ source }] : [];
 
   return (
     <Frame>
@@ -39,6 +39,8 @@ export default function Source({ project, params, api, handlers }) {
         project={project}
         query={query}
         variables={variables}
+        where={where}
+        filterPropertyNames={["type", "topics", "statuses"]}
       />
     </Frame>
   );
@@ -57,12 +59,12 @@ const SourceChannelsHeader = ({ project, source, onClickChannels }) => {
     },
   });
   return (
-    <>
+    <div className="pr-3">
       {sourceChannels.length > 0 && (
-        <button className="mr-2" onClick={(e) => onClickChannels(e, source)}>
+        <button onClick={(e) => onClickChannels(e, source)}>
           <FontAwesomeIcon icon="list" />
         </button>
       )}
-    </>
+    </div>
   );
 };

@@ -9,11 +9,12 @@ import BookmarkAction from "src/components/domains/bookmarks/BookmarkAction";
 import PinAction from "src/components/domains/pins/PinAction";
 import SimilarAction from "src/components/domains/conversation/SimilarAction";
 import SourceAction from "src/components/domains/conversation/SourceAction";
+import PropertiesAction from "src/components/domains/conversation/PropertiesAction";
 import GetPromptsByContextQuery from "src/graphql/queries/GetPromptsByContext.gql";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import GenerateConversationProperties from "src/graphql/queries/GenerateConversationProperties.gql";
-import UpdateActivityPropertyMutation from "src/graphql/mutations/UpdateActivityProperty.gql";
+import ReplaceActivityPropertyMutation from "src/graphql/mutations/ReplaceActivityProperty.gql";
 import { titleDefinition } from "src/configuration/propertyDefinitions";
 
 export const ChatArea = ({ project, activity }) => {
@@ -57,7 +58,9 @@ const GeneratedTitleProperty = ({
   setTitle,
   setActivity,
 }) => {
-  const [updateActivityProperty] = useMutation(UpdateActivityPropertyMutation);
+  const [replaceActivityProperty] = useMutation(
+    ReplaceActivityPropertyMutation
+  );
 
   // handle newly generated properties by updating the activity
   // and title state and then persisting with a mutation
@@ -82,16 +85,16 @@ const GeneratedTitleProperty = ({
             ?.filter((property) => property.name !== "title")
             .concat(titleProperty),
         }));
-      }
 
-      updateActivityProperty({
-        variables: {
-          activityId: activity.id,
-          ...titleProperty,
-        },
-      });
+        replaceActivityProperty({
+          variables: {
+            activityId: activity.id,
+            ...titleProperty,
+          },
+        });
+      }
     },
-    [setTitle, setActivity, updateActivityProperty, activity]
+    [setTitle, setActivity, replaceActivityProperty, activity]
   );
 
   // skip the query if title exists and has a value
@@ -104,8 +107,8 @@ const GeneratedTitleProperty = ({
       projectId: project.id,
       activityId: activity.id,
       definitions: [titleDefinition],
-      modelName: "gpt-3.5-turbo",
-      temperature: 0.3,
+      modelName: "gpt-4",
+      temperature: 0.1,
     },
   });
 
@@ -151,8 +154,8 @@ export const TitleBar = ({
   setTitle,
 }) => {
   return (
-    <div className="flex justify-between items-center pb-4 px-6 space-x-2 border-b border-gray-300 dark:border-gray-800">
-      <div className="overflow-hidden whitespace-nowrap">
+    <div className="flex justify-between items-start pb-4 px-6 space-x-2 border-b border-gray-300 dark:border-gray-800">
+      <div>
         {!aiReady(project) && <SimpleTitleProperty activity={activity} />}
         {aiReady(project) && (
           <GeneratedTitleProperty
@@ -170,7 +173,13 @@ export const TitleBar = ({
           <PinAction project={project} activity={activity} />
         </React.Suspense>
         <div />
+        <PropertiesAction
+          project={project}
+          activity={activity}
+          setActivity={setActivity}
+        />
         <SimilarAction activity={activity} />
+        <div />
         <SourceAction activity={activity} />
         {project.demo && (
           <Link
@@ -183,5 +192,24 @@ export const TitleBar = ({
         )}
       </div>
     </div>
+  );
+};
+
+export const Property = ({
+  name,
+  displayName = name,
+  properties: allProperties,
+}) => {
+  const properties = allProperties.filter((property) => property.name === name);
+  const values = properties.map((property) => property.value);
+  return (
+    <>
+      {properties.length > 0 && (
+        <div className="mr-1 text-gray-500">
+          <span>{displayName}: </span>
+          <span className="font-semibold">{values.join(", ")}</span>
+        </div>
+      )}
+    </>
   );
 };

@@ -1,6 +1,5 @@
 var hljs = require("highlight.js");
 var md = require("markdown-it")({
-  html: true,
   linkify: true,
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {

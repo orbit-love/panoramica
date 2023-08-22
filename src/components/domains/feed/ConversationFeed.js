@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classnames from "classnames";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import Paginator from "src/components/domains/feed/Paginator";
 import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
+import Filters from "./Filters";
 
 const findActivitiesConnectionEdges = ({
   projects: [
@@ -18,10 +21,12 @@ export default function ConversationFeed({
   project,
   query,
   variables,
+  where = [],
   handlers,
   minimal,
   term,
   eachActivity,
+  filterPropertyNames,
   findEdges = findActivitiesConnectionEdges,
   className = "border-t border-gray-300 dark:border-gray-700",
 }) {
@@ -29,9 +34,32 @@ export default function ConversationFeed({
   const [activities, setActivities] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
   const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState([]);
+
+  const toWhere = (filters) => {
+    const filterList = filters.map(({ name, value }) => {
+      return {
+        node: {
+          properties: {
+            name,
+            value,
+          },
+        },
+      };
+    });
+    const whereList = where.map((predicate) => {
+      return {
+        node: predicate,
+      };
+    });
+    return {
+      AND: [...filterList, ...whereList],
+    };
+  };
+  const whereInput = toWhere(filters);
 
   const { fetchMore } = useQuery(query, {
-    variables: { ...variables, first },
+    variables: { ...variables, first, where: whereInput },
     onCompleted: (data) => {
       const [edges, pageInfo] = findEdges(data);
       setActivities(edges.map((edge) => edge.node));
@@ -69,15 +97,85 @@ export default function ConversationFeed({
     return conversationIds.indexOf(activity.conversation.id) === index;
   });
 
+  // take the first descendant property and write them into the
+  // otherwise empty conversation object, this is an optimization to
+  // work around an issue with hung queries
+  const updatedActivities = filteredActivities.map((activity) => {
+    return {
+      ...activity,
+      conversation: {
+        ...activity.conversation.descendants[0],
+        ...activity.conversation,
+      },
+    };
+  });
+
+  // transform an array of objects into a single object
+  // with all the properties from each object
+
+  const whereObject = where.reduce((acc, object) => {
+    return { ...acc, ...object };
+  }, {});
+
   return (
-    <div className={className}>
-      <Paginator
-        activities={filteredActivities}
-        setFirst={setFirst}
-        pageInfo={pageInfo}
-        eachActivity={eachActivity}
-        loading={loading}
-      />
-    </div>
+    <>
+      {filterPropertyNames?.length > 0 && (
+        <FilterDisplay
+          project={project}
+          where={whereObject}
+          filters={filters}
+          setFilters={setFilters}
+          propertyNames={filterPropertyNames}
+        />
+      )}
+      <div className={className}>
+        <Paginator
+          activities={updatedActivities}
+          setFirst={setFirst}
+          pageInfo={pageInfo}
+          eachActivity={eachActivity}
+          loading={loading}
+        />
+      </div>
+    </>
   );
 }
+
+const FilterDisplay = ({
+  project,
+  where,
+  filters,
+  setFilters,
+  propertyNames,
+}) => {
+  const [showFilters, setShowFilters] = useState(false);
+
+  return (
+    <>
+      <div
+        className={classnames(
+          "flex absolute top-[1.0em] right-3 flex-col justify-end"
+        )}
+      >
+        <button onClick={() => setShowFilters((showFilters) => !showFilters)}>
+          <FontAwesomeIcon icon="filter" className="text-tertiary" />
+        </button>
+      </div>
+      <div
+        className={classnames({
+          hidden: !showFilters,
+        })}
+      >
+        <React.Suspense fallback={<div />}>
+          <Filters
+            project={project}
+            where={where}
+            filters={filters}
+            setFilters={setFilters}
+            propertyNames={propertyNames}
+          />
+        </React.Suspense>
+      </div>
+    </>
+  );
+};
