@@ -79,7 +79,7 @@ const GeneratedTitleProperty = ({
         setActivity((activity) => ({
           ...activity,
           properties: activity.properties
-            .filter((property) => property.name !== "title")
+            ?.filter((property) => property.name !== "title")
             .concat(titleProperty),
         }));
       }
@@ -114,7 +114,7 @@ const GeneratedTitleProperty = ({
   // of sync with the activity it'll fix it; if the title property is
   // not present, generate it
   useEffect(() => {
-    const titleProperty = activity.properties.find(
+    const titleProperty = activity.properties?.find(
       (property) => property.name === "title"
     );
     if (titleProperty?.value) {

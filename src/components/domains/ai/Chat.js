@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PromptPicker from "./PromptPicker";
 import { AIMessage, HumanMessage } from "src/components/domains/ai";
 import FunctionOutput from "./FunctionOutput";
+import md from "src/markdown";
 
 export default function Chat({
   project,
@@ -17,34 +18,53 @@ export default function Chat({
 
   let [prompt, setPrompt] = useState("");
   let [streaming, setStreaming] = useState(false);
-  let [messages, setMessages] = useState([]);
+  let [history, setHistory] = useState([]);
   let [error, setError] = useState("");
   let [functionOutput, setFunctionOutput] = useState();
 
-  // An odd length means we're waiting for the AI to start streaming an answer
-  let loading = messages.length % 2 === 1;
-
-  const popMessage = () => {
-    setMessages((messages) => messages.slice(0, -1));
+  const appendMessageToHistory = ({ isAi, message }) => {
+    setHistory((history) => {
+      return [
+        ...history,
+        {
+          isAi,
+          processedMessage: md.render(message),
+          rawMessage: message,
+        },
+      ];
+    });
   };
+
+  const streamToHistory = (text) => {
+    setHistory((history) => {
+      const lastMessageObject = history.pop();
+      const rawMessage = lastMessageObject.rawMessage + text;
+      return [
+        ...history,
+        {
+          ...lastMessageObject,
+          rawMessage,
+          processedMessage: md.render(rawMessage),
+        },
+      ];
+    });
+  };
+
+  const rawMessages = () =>
+    history.map((messageObject) => messageObject.rawMessage);
+
+  const popHistory = () => {
+    setHistory((history) => history.slice(0, -1));
+  };
+
+  // An odd length means we're waiting for the AI to start streaming an answer
+  let loading = history.length % 2 === 1;
 
   const reset = () => {
     setFunctionOutput(undefined);
     setStreaming(false);
     setError("");
-    setMessages([]);
-  };
-
-  const appendMessage = (message) => {
-    setMessages((messages) => [...messages, message]);
-  };
-
-  const streamToMessages = (text) => {
-    setMessages((messages) => {
-      const lastMessage = messages.pop();
-
-      return [...messages, lastMessage + text];
-    });
+    setHistory([]);
   };
 
   const pickPrompt = useCallback(
@@ -55,14 +75,14 @@ export default function Chat({
   );
 
   const cancelPromptWithMessage = (message) => {
-    popMessage();
+    popHistory();
     setError(message || "Sorry, something went wrong. Please try again.");
   };
 
   const streamAssistantAnswer = async (previousFunctionOutput) => {
     const payload = {
       subContext,
-      chat: [...messages, prompt],
+      chat: [...rawMessages(), prompt],
       previousFunctionOutput,
     };
 
@@ -87,7 +107,7 @@ export default function Chat({
     }
 
     // Start appending an empty response
-    appendMessage("");
+    appendMessageToHistory({ isAi: true, message: "" });
     setStreaming(true);
 
     const reader = response.body.getReader();
@@ -97,7 +117,7 @@ export default function Chat({
       const text = new TextDecoder("utf-8").decode(value);
       if (done) break;
       // Progressively complete the last response
-      streamToMessages(text);
+      streamToHistory(text);
       messageRef.current?.scrollIntoView({});
     }
 
@@ -112,12 +132,12 @@ export default function Chat({
     messageRef.current?.scrollIntoView({});
 
     // Append the prompt into the messages and clear it from the input
-    appendMessage(prompt);
+    appendMessageToHistory({ isAi: false, message: prompt });
     setPrompt("");
     setError("");
     setFunctionOutput(undefined);
 
-    const payload = { subContext, chat: [...messages, prompt] };
+    const payload = { subContext, chat: [...rawMessages(), prompt] };
     const response = await fetch(
       `/api/projects/${project.id}/assistant/function`,
       {
@@ -138,7 +158,7 @@ export default function Chat({
 
       const result = data.result;
       if (result.name === "answer") {
-        return appendMessage(result.output);
+        return appendMessageToHistory({ isAi: true, message: result.output });
       }
 
       setFunctionOutput(result);
@@ -157,18 +177,20 @@ export default function Chat({
     <ErrorBoundary>
       <div className="flex flex-col h-full">
         <div className="overflow-y-scroll grow pb-8 h-full">
-          {messages.map((message, index) => {
-            const isAi = index % 2 === 1;
-            if (isAi) {
-              return <AIMessage key={index}>{message}</AIMessage>;
-            } else {
-              return <HumanMessage key={index}>{message}</HumanMessage>;
-            }
-          })}
+          {history.map((messageObject, index) =>
+            messageObject.isAi ? (
+              <AIMessage key={index} message={messageObject.processedMessage} />
+            ) : (
+              <HumanMessage
+                key={index}
+                message={messageObject.processedMessage}
+              />
+            )
+          )}
           <div ref={messageRef} />
         </div>
         <div className="flex relative flex-col pt-2 px-4 pb-6">
-          {messages.length > 0 && (
+          {history.length > 0 && (
             <div className="-mt-8 absolute right-5 z-20">
               <button
                 className="text-tertiary text-xs hover:underline"
@@ -179,7 +201,7 @@ export default function Chat({
               </button>
             </div>
           )}
-          {!error && messages.length === 0 && (
+          {!error && history.length === 0 && (
             <div className="text-tertiary my-4 font-light">
               <AIMessage>
                 {placeholder}

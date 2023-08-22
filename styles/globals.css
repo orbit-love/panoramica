@@ -28,6 +28,9 @@ body {
 /* import conversation styles */
 @import "./conversations.css";
 
+/* import AI styles */
+@import "./ai.css";
+
 /* import dockview themes */
 @import "./themes/dockview-theme-light.css";
 @import "./themes/dockview-theme-dark.css";

@@ -1,0 +1,35 @@
+.ai-html-message a {
+  @apply font-semibold;
+  color: var(--pan-secondary-color);
+}
+.ai-html-message a:hover {
+  @apply underline;
+}
+.ai-html-message blockquote {
+  @apply pl-2 border-l border-gray-200 dark:border-gray-800;
+}
+
+.ai-html-message p {
+  display: inline-block;
+  @apply mt-2;
+}
+
+.ai-html-message p:first-of-type {
+  display: inline-block;
+  @apply !mt-0;
+}
+
+.ai-html-message ol {
+  @apply list-decimal;
+  @apply list-inside;
+}
+.ai-html-message ul {
+  @apply my-1;
+  @apply list-disc;
+  @apply list-inside;
+}
+
+.ai-html-message ul li p,
+.ai-html-message ol li p {
+  display: inline;
+}
