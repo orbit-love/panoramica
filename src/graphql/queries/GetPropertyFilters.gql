@@ -1,6 +1,6 @@
-query ($projectId: ID!, $propertyNames: [String], $source: String) {
+query ($projectId: ID!, $propertyNames: [String], $where: PropertyFilterInput) {
   projects(where: { id: $projectId }) {
-    propertyFilters(propertyNames: $propertyNames, source: $source) {
+    propertyFilters(propertyNames: $propertyNames, where: $where) {
       name
       values {
         value

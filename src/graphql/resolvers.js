@@ -95,11 +95,11 @@ const resolvers = {
     },
     async propertyFilters(parent, args, { resolveTree }) {
       const projectId = resolveTree.args.where.id;
-      const { source, propertyNames } = args;
+      const { propertyNames, where } = args;
       return resolvePropertyFilters({
         projectId,
         propertyNames,
-        source,
+        where,
       });
     },
   },

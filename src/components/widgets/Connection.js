@@ -49,6 +49,18 @@ export default function Connection({ project, params, handlers }) {
 
   const activities = idsQueryData?.projects[0].activities || [];
 
+  // take the first descendant property and write them into the
+  // otherwise empty conversation object
+  const updatedActivities = activities.map((activity) => {
+    return {
+      ...activity,
+      conversation: {
+        ...activity.conversation.descendants[0],
+        ...activity.conversation,
+      },
+    };
+  });
+
   return (
     <Frame>
       <div className="px-6 mt-4">
@@ -86,7 +98,7 @@ export default function Connection({ project, params, handlers }) {
           />
         </div>
       </div>
-      {activities.map((activity) => (
+      {updatedActivities.map((activity) => (
         <ConversationFeedItem
           key={activity.id}
           activity={activity}

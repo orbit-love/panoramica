@@ -43,7 +43,6 @@ export const generate = async ({
   const text = await model.call(prompt);
   const then = new Date();
 
-  console.log("\n\n");
   console.log(
     `RAW OUTPUT Time:${then - now}ms Prompt:${prompt.length} Response:${
       text.length

@@ -3,7 +3,7 @@ import classnames from "classnames";
 import { Frame, saveLayout } from "src/components/widgets";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import useResizeCallback from "src/hooks/useResizeCallback";
-import { ChatArea, TitleBar } from "./Conversation/index";
+import { ChatArea, TitleBar, Property } from "./Conversation/index";
 
 export default function Conversation({
   project,
@@ -56,6 +56,25 @@ export default function Conversation({
             setTitle={setTitle}
             setActivity={setActivity}
           />
+          {activity.properties?.length > 1 && (
+            <div className="flex flex-col px-6 mt-4 text-sm">
+              <Property
+                name="type"
+                displayName="Type"
+                properties={activity.properties}
+              />
+              <Property
+                name="topics"
+                displayName="Topics"
+                properties={activity.properties}
+              />
+              <Property
+                name="statuses"
+                displayName="Status"
+                properties={activity.properties}
+              />
+            </div>
+          )}
           <React.Suspense fallback={<div />}>
             <FullThreadView
               activity={activity}

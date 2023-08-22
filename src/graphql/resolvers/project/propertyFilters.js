@@ -1,20 +1,26 @@
 import GraphConnection from "src/data/graph/Connection";
 
-const resolveConversationProperties = async ({
+const resolvePropertyFilters = async ({
   projectId,
   propertyNames,
-  source,
+  where = {},
 }) => {
   const graphConnection = new GraphConnection();
 
-  var wheres = [];
+  const wheres = [];
+  const { source, sourceChannel } = where;
+
   if (source) {
     wheres.push(`a.source = $source`);
+  }
+  if (sourceChannel) {
+    wheres.push(`a.sourceChannel = $sourceChannel`);
   }
   if (propertyNames) {
     wheres.push(`prop.name IN $propertyNames`);
   }
   var whereClause = wheres.length > 0 ? `WHERE ${wheres.join(" AND ")}` : "";
+  console.log("yo", whereClause);
 
   const { records } = await graphConnection.run(
     // match the project, all activities in the project,
@@ -33,7 +39,7 @@ const resolveConversationProperties = async ({
     {
       projectId,
       propertyNames,
-      source,
+      ...where,
     }
   );
 
@@ -50,4 +56,4 @@ const resolveConversationProperties = async ({
     }));
 };
 
-export default resolveConversationProperties;
+export default resolvePropertyFilters;

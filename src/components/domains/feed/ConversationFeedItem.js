@@ -82,20 +82,6 @@ export default function ConversationFeedItem(props) {
         }
       )}
     >
-      {conversation.properties?.length > 1 && (
-        <div className="flex flex-wrap pt-4 px-6">
-          {conversation.properties.map((property, index) => {
-            return (
-              <div key={index} className="m-1">
-                <div className="text-gray-500">
-                  {property.name}:{" "}
-                  <span className="font-semibold">{property.value}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
       {expanded && (
         <FullThreadView
           {...props}

@@ -194,3 +194,22 @@ export const TitleBar = ({
     </div>
   );
 };
+
+export const Property = ({
+  name,
+  displayName = name,
+  properties: allProperties,
+}) => {
+  const properties = allProperties.filter((property) => property.name === name);
+  const values = properties.map((property) => property.value);
+  return (
+    <>
+      {properties.length > 0 && (
+        <div className="mr-1 text-gray-500">
+          <span>{displayName}: </span>
+          <span className="font-semibold">{values.join(", ")}</span>
+        </div>
+      )}
+    </>
+  );
+};

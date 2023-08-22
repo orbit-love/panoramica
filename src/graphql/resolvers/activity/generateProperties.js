@@ -39,7 +39,7 @@ EXAMPLE RESPONSE FORMAT:
 YOUR ANSWER:`;
   };
 
-  const text = await generate({
+  const [text, _] = await generate({
     projectId,
     activityId,
     modelName,

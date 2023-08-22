@@ -83,6 +83,11 @@ const typeDefs = gql`
     values: [PropertyFilterOption!]!
   }
 
+  input PropertyFilterInput {
+    source: String
+    sourceChannel: String
+  }
+
   type Project
     @query(aggregate: false)
     @mutation(operations: [CREATE, UPDATE, DELETE])
@@ -110,7 +115,7 @@ const typeDefs = gql`
     prompts: [Prompt!]! @relationship(type: "OWNS", direction: OUT)
     propertyFilters(
       propertyNames: [String]
-      source: String
+      where: PropertyFilterInput
     ): [PropertyFilter!]! @customResolver(requires: ["id"])
     sourceChannels(source: String!): [SourceChannel!]!
       @customResolver(requires: ["id"])
@@ -151,6 +156,7 @@ const typeDefs = gql`
     @mutation(operations: [UPDATE]) {
     id: ID! @id
     conversationId: String
+    isConversation: Boolean
     actor: String
     actorName: String
     globalActor: String
