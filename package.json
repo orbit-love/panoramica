@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "git apply patch/sloppy.patch || true",
+    "postinstall": "(git apply patch/sloppy.patch || true) && cp patch/Exists.js node_modules/@neo4j/cypher-builder/dist/expressions/subquery/Exists.js",
     "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "engines": {
