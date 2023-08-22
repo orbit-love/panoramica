@@ -3,6 +3,12 @@ query ($projectId: ID!, $activityId: ID!) {
   projects(where: { id: $projectId }) {
     activities(where: { id: $activityId }) {
       ...ForActivityFeed
+      properties {
+        name
+        value
+        type
+        confidence
+      }
     }
   }
 }

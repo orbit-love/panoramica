@@ -8,7 +8,10 @@ export async function generateMetadata({ params }) {
   const { id: projectId, activityId } = params;
   const activity = await getConversation({ projectId, activityId });
   if (activity) {
-    const title = activity.summary || activity.text.slice(0, 50);
+    const titleProperty = activity.properties?.find(
+      (property) => property.name === "title"
+    );
+    const title = titleProperty?.value || activity.text.slice(0, 100);
     return {
       title,
     };

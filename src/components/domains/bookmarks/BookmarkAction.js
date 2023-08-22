@@ -1,4 +1,5 @@
 import React, { useCallback, useContext } from "react";
+import classnames from "classnames";
 import { useMutation } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -67,7 +68,13 @@ export default function BookmarkAction({ activity, className }) {
       onClick={onBookmark}
       className={className}
     >
-      <FontAwesomeIcon icon={bookmarkIcon} />
+      <FontAwesomeIcon
+        icon={bookmarkIcon}
+        className={classnames("text-tertiary", {
+          "": bookmark,
+          "opacity-50": !bookmark,
+        })}
+      />
     </button>
   );
 }

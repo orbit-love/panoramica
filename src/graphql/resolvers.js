@@ -1,7 +1,10 @@
 import { prisma } from "src/data/db";
 import GraphConnection from "src/data/graph/Connection";
-import getSimilarConversations from "src/graphql/resolvers/similarConversations";
+import getSimilarConversations from "src/graphql/resolvers/getSimilarConversations";
 import searchConversations from "src/graphql/resolvers/searchConversations";
+import resolveCompletion from "src/graphql/resolvers/activity/completion";
+import resolveGenerateProperties from "src/graphql/resolvers/activity/generateProperties";
+import resolveConversationJson from "src/graphql/resolvers/activity/conversationJson";
 
 const resolvers = {
   Query: {
@@ -44,7 +47,7 @@ const resolvers = {
           RETURN source`,
         { projectId }
       );
-      return records.map((record) => record.get("source"));
+      return records.map((record) => record.get("source")) || [];
     },
     async sourceChannels(parent, args) {
       const graphConnection = new GraphConnection();
@@ -66,13 +69,15 @@ const resolvers = {
           ORDER BY lastActivityAt DESC`,
         { projectId, source }
       );
-      return records
-        .map((record) => ({
-          name: record.get("name"),
-          activityCount: record.get("activityCount").low,
-          lastActivityAt: record.get("lastActivityAt"),
-        }))
-        .filter((record) => record.name);
+      return (
+        records
+          .map((record) => ({
+            name: record.get("name"),
+            activityCount: record.get("activityCount").low,
+            lastActivityAt: record.get("lastActivityAt"),
+          }))
+          .filter((record) => record.name) || []
+      );
     },
     async searchConversations(parent, args) {
       const { id: projectId } = parent;
@@ -88,6 +93,39 @@ const resolvers = {
     },
   },
   Activity: {
+    async completion(parent, args, { resolveTree }) {
+      const projectId = resolveTree.args.where.id;
+      const { id: activityId } = parent;
+      const { prompt, modelName, temperature } = args;
+      return resolveCompletion({
+        projectId,
+        activityId,
+        prompt,
+        modelName,
+        temperature,
+      });
+    },
+    async generateProperties(parent, args, { resolveTree }) {
+      const projectId = resolveTree.args.where.id;
+      const { id: activityId } = parent;
+      const { definitions, modelName, temperature } = args;
+      return resolveGenerateProperties({
+        projectId,
+        activityId,
+        definitions,
+        modelName,
+        temperature,
+      });
+    },
+    async conversationJson(parent, _, { resolveTree }) {
+      const projectId = resolveTree.args.where.id;
+      const { id: activityId } = parent;
+      const messages = await resolveConversationJson({
+        projectId,
+        activityId,
+      });
+      return JSON.stringify(messages);
+    },
     async similarConversations(parent) {
       const { id: activityId, project, descendants } = parent;
       if (!project || !descendants) {

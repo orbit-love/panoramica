@@ -20,28 +20,19 @@ export default function Source({ project, params, api, handlers }) {
     ...(source && { source }),
   };
 
-  const {
-    data: {
-      projects: [{ sourceChannels }],
-    },
-  } = useSuspenseQuery(GetSourceChannelsQuery, {
-    variables: {
-      projectId,
-      source: source || "no-source",
-    },
-  });
-
   return (
     <Frame>
       <Header>
         {source && <SourceIcon activity={{ source }} />}
         <div>{api.title}</div>
         <div className="flex-grow" />
-        {sourceChannels.length > 0 && (
-          <button className="mr-2" onClick={(e) => onClickChannels(e, source)}>
-            <FontAwesomeIcon icon="list" />
-          </button>
-        )}
+        <React.Suspense fallback={<div />}>
+          <SourceChannelsHeader
+            project={project}
+            source={source}
+            onClickChannels={onClickChannels}
+          />
+        </React.Suspense>
       </Header>
       <ConversationFeed
         handlers={handlers}
@@ -52,3 +43,26 @@ export default function Source({ project, params, api, handlers }) {
     </Frame>
   );
 }
+
+const SourceChannelsHeader = ({ project, source, onClickChannels }) => {
+  const { id: projectId } = project;
+  const {
+    data: {
+      projects: [{ sourceChannels }],
+    },
+  } = useSuspenseQuery(GetSourceChannelsQuery, {
+    variables: {
+      projectId,
+      source: source || "no-source",
+    },
+  });
+  return (
+    <>
+      {sourceChannels.length > 0 && (
+        <button className="mr-2" onClick={(e) => onClickChannels(e, source)}>
+          <FontAwesomeIcon icon="list" />
+        </button>
+      )}
+    </>
+  );
+};

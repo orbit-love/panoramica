@@ -1,12 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classnames from "classnames";
 import CompactMember from "src/components/domains/member/Member";
 import { Frame, Header } from "src/components/widgets";
 import { addMemberWidget } from "src/components/widgets/setup/widgets";
-import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import GetMembersQuery from "./Members/GetMembers.gql";
+import Loader from "src/components/domains/ui/Loader";
 
 export default function Members({ project, addWidget }) {
-  const [first, setFirst] = useState(100);
+  const pageSize = 50;
+  const defaultSort = { conversationCount: "DESC" };
+
+  const [first, setFirst] = useState(pageSize);
+  const [members, setMembers] = useState([]);
+  const [pageInfo, setPageInfo] = useState({});
+  const [totalCount, setTotalCount] = useState(null);
+  const [sort, setSort] = useState(defaultSort);
 
   let onClickMember = (member) => {
     return (e) => {
@@ -16,23 +26,24 @@ export default function Members({ project, addWidget }) {
   };
 
   const { id: projectId } = project;
-  const {
-    data: {
-      projects: [
-        {
-          membersConnection: {
-            edges,
-            pageInfo: { hasNextPage },
-            totalCount,
-          },
-        },
-      ],
-    },
-    fetchMore,
-  } = useSuspenseQuery(GetMembersQuery, {
+  const { loading, fetchMore } = useQuery(GetMembersQuery, {
     variables: {
       projectId,
       first,
+      sort,
+    },
+    onCompleted: (data) => {
+      const {
+        projects: [
+          {
+            membersConnection: { edges, pageInfo, totalCount },
+          },
+        ],
+      } = data;
+
+      setMembers(edges.map(({ node: member }) => member));
+      setPageInfo(pageInfo);
+      setTotalCount(totalCount);
     },
   });
 
@@ -40,27 +51,71 @@ export default function Members({ project, addWidget }) {
     fetchMore({
       variables: {
         first,
+        sort,
       },
     });
-  }, [first, fetchMore]);
+  }, [first, sort, fetchMore]);
 
-  const sortedEdges = [...edges].sort(({ node: a }, { node: b }) => {
-    return b.activitiesAggregate.count - a.activitiesAggregate.count;
-  });
+  const { hasNextPage } = pageInfo;
+
+  const changeSort = useCallback(
+    (sort) => {
+      setFirst(pageSize);
+      setSort(sort);
+    },
+    [setFirst, setSort]
+  );
 
   return (
     <Frame>
       <Header>
         <div className="flex justify-between items-baseline w-full">
-          <div className="text-lg">Members</div>
-          <div className="">
-            Showing {edges.length}/{totalCount}
+          <div className="text-lg">
+            Members {members.length}/{totalCount}
           </div>
+          {totalCount > 0 && (
+            <div className="flex items-baseline space-x-3 text-sm whitespace-nowrap">
+              <div className="grow" />
+              <div className="text-tertiary">Sort by: </div>
+              <div
+                className={classnames("", {
+                  "cursor-pointer underline text-gray-400":
+                    !sort.conversationCount,
+                  "text-tertiary": sort.conversationCount,
+                })}
+                onClick={() => {
+                  if (!sort.conversationCount)
+                    changeSort({ conversationCount: "DESC" });
+                }}
+              >
+                <FontAwesomeIcon
+                  icon="comment"
+                  flip="horizontal"
+                  className="mr-1"
+                />
+                <span>Conversations</span>
+              </div>
+              <div
+                className={classnames("", {
+                  "cursor-pointer underline text-gray-400":
+                    !sort.messagedWithCount,
+                  "text-tertiary": sort.messagedWithCount,
+                })}
+                onClick={() => {
+                  if (!sort.messagedWithCount)
+                    changeSort({ messagedWithCount: "DESC" });
+                }}
+              >
+                <FontAwesomeIcon icon="right-left" className="mr-1" />
+                <span>Connections</span>
+              </div>
+            </div>
+          )}
         </div>
       </Header>
       <div className="flex flex-col px-6 space-y-4">
         <div className="flex flex-col">
-          {sortedEdges.map(({ node: member }) => (
+          {members.map((member) => (
             <CompactMember
               key={member.globalActor}
               member={member}
@@ -71,17 +126,20 @@ export default function Members({ project, addWidget }) {
             />
           ))}
         </div>
-        {hasNextPage && (
+        {loading && <Loader />}
+        {hasNextPage && !loading && (
           <div className="flex justify-center">
             <button
               className="btn !w-auto text-sm"
-              onClick={() => setFirst(first + 100)}
+              onClick={() => setFirst((first) => first + pageSize)}
             >
               Load more
             </button>
           </div>
         )}
-        {!hasNextPage && <p className="my-5 text-center">♥</p>}
+        {!hasNextPage && !loading && members.length > 0 && (
+          <p className="my-5 text-center">♥</p>
+        )}
         <div />
       </div>
     </Frame>

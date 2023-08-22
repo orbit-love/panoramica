@@ -1,0 +1,7 @@
+mutation DeleteActivityProperties($id: ID!) {
+  updateActivities(where: { id: $id }, delete: { properties: {} }) {
+    info {
+      nodesDeleted
+    }
+  }
+}

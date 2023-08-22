@@ -1,0 +1,22 @@
+query (
+  $projectId: ID!
+  $activityId: ID!
+  $definitions: [GeneratePropertyInput!]!
+  $modelName: String
+  $temperature: Float
+) {
+  projects(where: { id: $projectId }) {
+    activities(where: { id: $activityId }) {
+      generateProperties(
+        modelName: $modelName
+        temperature: $temperature
+        definitions: $definitions
+      ) {
+        name
+        value
+        type
+        confidence
+      }
+    }
+  }
+}

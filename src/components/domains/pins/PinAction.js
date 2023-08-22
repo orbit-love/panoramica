@@ -77,9 +77,9 @@ export default function PinAction({ project, activity, className }) {
     >
       <FontAwesomeIcon
         icon={pinIcon}
-        className={classnames({
-          "text-tertiary": pin,
-          "text-gray-500": !pin,
+        className={classnames("text-tertiary", {
+          "": pin,
+          "opacity-50": !pin,
         })}
       />
     </button>

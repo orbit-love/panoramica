@@ -3,6 +3,11 @@ fragment ForActivityFeed on Activity {
   ...ActivityFields
   conversation {
     ...ActivityFields
+    properties {
+      name
+      type
+      value
+    }
     descendants(options: { sort: { timestampInt: ASC } }) {
       ...ActivityFields
       parent {

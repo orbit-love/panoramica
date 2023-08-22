@@ -107,3 +107,12 @@ export async function deleteDocumentation({ project, setLoading, onSuccess }) {
     });
   }
 }
+
+export async function postLabelConversations({ project, body }) {
+  const url = `/api/projects/${project.id}/labels`;
+  return fetch(url, {
+    method: "POST",
+    headers,
+    body,
+  });
+}

@@ -73,11 +73,6 @@ const typeDefs = gql`
     project: Project! @relationship(type: "OWNS", direction: IN)
   }
 
-  interface Pinned @relationshipProperties {
-    createdAt: String!
-    createdAtInt: Float!
-  }
-
   type Project
     @query(aggregate: false)
     @mutation(operations: [CREATE, UPDATE, DELETE])
@@ -124,10 +119,24 @@ const typeDefs = gql`
     score: Float!
   }
 
+  type Property {
+    name: String!
+    type: String!
+    value: String!
+    confidence: Float
+  }
+
+  input GeneratePropertyInput {
+    name: String!
+    type: String!
+    description: String!
+  }
+
   type Activity
     @query(read: false, aggregate: false)
-    @mutation(operations: []) {
+    @mutation(operations: [UPDATE]) {
     id: ID! @id
+    conversationId: String
     actor: String
     actorName: String
     globalActor: String
@@ -142,8 +151,6 @@ const typeDefs = gql`
     timestamp: String
     timestampInt: Int
     url: String
-    summary: String
-    similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
     project: Project! @relationship(type: "OWNS", direction: IN)
     member: Member! @relationship(type: "DID", direction: IN)
     mentions: [Member!]! @relationship(type: "MENTIONS", direction: OUT)
@@ -151,6 +158,16 @@ const typeDefs = gql`
     parent: Activity @relationship(type: "REPLIES_TO", direction: OUT)
     replies: [Activity!]! @relationship(type: "REPLIES_TO", direction: IN)
     descendants: [Activity!]! @relationship(type: "PART_OF", direction: IN)
+    properties: [Property!]! @relationship(type: "HAS", direction: OUT)
+    completion(prompt: String!, modelName: String, temperature: Float): String!
+      @customResolver(requires: ["id"])
+    generateProperties(
+      definitions: [GeneratePropertyInput!]!
+      modelName: String
+      temperature: Float
+    ): [Property!]! @customResolver(requires: ["id"])
+    conversationJson: String! @customResolver(requires: ["id"])
+    similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
   }
 
   interface Messaged @relationshipProperties {
@@ -165,6 +182,9 @@ const typeDefs = gql`
     id: ID! @alias(property: "globalActor")
     globalActor: String!
     globalActorName: String!
+    activityCount: Int!
+    conversationCount: Int!
+    messagedWithCount: Int!
     project: Project! @relationship(type: "OWNS", direction: IN)
     activities: [Activity!]! @relationship(type: "DID", direction: OUT)
     messagedWith: [Member!]!

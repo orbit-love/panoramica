@@ -1,4 +1,4 @@
-import getSimilarConversations from "src/graphql/resolvers/similarConversations";
+import getSimilarConversations from "src/graphql/resolvers/getSimilarConversations";
 import searchConversations from "src/graphql/resolvers/searchConversations";
 
 const resolvers = {

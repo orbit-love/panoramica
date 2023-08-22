@@ -1,40 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
-
-class FakeObserver {
-  observe() {}
-  unobserve() {}
-}
+import Loader from "src/components/domains/ui/Loader";
 
 export default function Paginator({
   activities,
   eachActivity,
   setFirst,
   pageInfo,
+  loading,
 }) {
   const { hasNextPage } = pageInfo;
   const [lastElement, setLastElement] = useState(null);
 
-  var Observer;
-  if (typeof window === "undefined") {
-    Observer = FakeObserver;
-  } else {
-    Observer = IntersectionObserver;
-  }
-
-  const observer = useRef(
-    new Observer((entries) => {
+  useEffect(() => {
+    const currentElement = lastElement;
+    const currentObserver = new IntersectionObserver((entries) => {
       const target = entries[0];
       if (target.isIntersecting) {
         if (hasNextPage) {
           setFirst((first) => first + 10);
         }
       }
-    })
-  );
-
-  useEffect(() => {
-    const currentElement = lastElement;
-    const currentObserver = observer.current;
+    });
 
     if (currentElement) {
       currentObserver.observe(currentElement);
@@ -45,16 +31,21 @@ export default function Paginator({
         currentObserver.unobserve(currentElement);
       }
     };
-  }, [lastElement]);
+  }, [lastElement, hasNextPage, setFirst]);
 
   return (
     <>
       {activities.map((activity, index) => (
-        <div key={activity.id} ref={hasNextPage ? setLastElement : null}>
+        <div key={activity.id} ref={setLastElement}>
           {eachActivity({ activity, index })}
         </div>
       ))}
-      {!hasNextPage && <p className="my-5 text-center">♥</p>}
+      {!loading && !hasNextPage && <p className="my-6 text-center">♥</p>}
+      {loading && (
+        <div className="p-6 text-center">
+          <Loader />
+        </div>
+      )}
     </>
   );
 }

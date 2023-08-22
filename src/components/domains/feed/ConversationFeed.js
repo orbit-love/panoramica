@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import Paginator from "src/components/domains/feed/Paginator";
 import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
@@ -26,12 +26,19 @@ export default function ConversationFeed({
   className = "border-t border-gray-300 dark:border-gray-700",
 }) {
   const [first, setFirst] = useState(10);
+  const [activities, setActivities] = useState([]);
+  const [pageInfo, setPageInfo] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  const { data, fetchMore } = useSuspenseQuery(query, {
+  const { fetchMore } = useQuery(query, {
     variables: { ...variables, first },
+    onCompleted: (data) => {
+      const [edges, pageInfo] = findEdges(data);
+      setActivities(edges.map((edge) => edge.node));
+      setPageInfo(pageInfo);
+      setLoading(false);
+    },
   });
-
-  const [edges, pageInfo] = findEdges(data);
 
   if (!eachActivity) {
     eachActivity = ({ activity, index }) => (
@@ -48,6 +55,7 @@ export default function ConversationFeed({
   }
 
   useEffect(() => {
+    setLoading(true);
     fetchMore({
       variables: {
         first,
@@ -55,21 +63,20 @@ export default function ConversationFeed({
     });
   }, [first, fetchMore]);
 
-  var activities = edges.map((edge) => edge.node);
-
   // keep only the first activity in a conversation
   const conversationIds = activities.map((a) => a.conversation.id);
-  activities = activities.filter((activity, index) => {
+  const filteredActivities = activities.filter((activity, index) => {
     return conversationIds.indexOf(activity.conversation.id) === index;
   });
 
   return (
     <div className={className}>
       <Paginator
-        activities={activities}
+        activities={filteredActivities}
         setFirst={setFirst}
         pageInfo={pageInfo}
         eachActivity={eachActivity}
+        loading={loading}
       />
     </div>
   );

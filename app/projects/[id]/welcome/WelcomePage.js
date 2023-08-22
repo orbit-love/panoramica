@@ -2,6 +2,7 @@
 
 import React, { useContext } from "react";
 import Link from "next/link";
+import Loader from "src/components/domains/ui/Loader";
 import { ProjectContext } from "src/components/context/ProjectContext";
 import SearchConversations from "src/components/domains/welcome/SearchConversations";
 import RecentConversations from "src/components/domains/welcome/RecentConversations";
@@ -39,7 +40,13 @@ export default function WelcomePage() {
           Pinned Conversations
         </div>
         <div className="sm:self-center sm:w-[650px]">
-          <React.Suspense fallback={<div className="p-6">Loading...</div>}>
+          <React.Suspense
+            fallback={
+              <div className="p-6">
+                <Loader />
+              </div>
+            }
+          >
             <PinnedConversations project={project} handlers={handlers} />
           </React.Suspense>
         </div>

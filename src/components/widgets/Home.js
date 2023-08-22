@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import ErrorBoundary from "src/components/widgets/base/ErrorBoundary";
 
 import Header from "./Home/Header";
@@ -13,8 +13,16 @@ import Settings from "./Home/Settings";
 import { Frame, resetLayout } from "src/components/widgets";
 import GetActivityCountQuery from "./Home/GetActivityCount.gql";
 
-export default function Home(props) {
-  const { project, dispatch, api, containerApi, addWidget, handlers } = props;
+export default function Home({
+  project,
+  dispatch,
+  api,
+  containerApi,
+  addWidget,
+  handlers,
+}) {
+  const [imported, setImported] = React.useState(true);
+  const [importChecked, setImportChecked] = React.useState(false);
 
   var user,
     { data: session } = useSession();
@@ -50,20 +58,55 @@ export default function Home(props) {
     resetLayout({ project, containerApi });
   }, [project, containerApi]);
 
+  return (
+    <Frame>
+      <Header project={project} imported={imported} />
+      <HomeInner
+        project={project}
+        dispatch={dispatch}
+        addWidget={addWidget}
+        handlers={handlers}
+        user={user}
+        resetWidgets={resetWidgets}
+        newPanelPosition={newPanelPosition}
+        imported={imported}
+        setImported={setImported}
+        importChecked={importChecked}
+        setImportChecked={setImportChecked}
+      />
+    </Frame>
+  );
+}
+
+function HomeInner({
+  project,
+  dispatch,
+  addWidget,
+  handlers,
+  user,
+  resetWidgets,
+  newPanelPosition,
+  imported,
+  setImported,
+  importChecked,
+  setImportChecked,
+}) {
   const { id: projectId } = project;
-  const {
-    data: { projects },
-    refetch,
-  } = useSuspenseQuery(GetActivityCountQuery, {
+  const { refetch } = useQuery(GetActivityCountQuery, {
     variables: {
       projectId,
     },
+    fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      const { projects } = data;
+      const isImported =
+        projects.length > 0 &&
+        projects[0].activitiesConnection &&
+        projects[0].activitiesConnection.totalCount > 0;
+      setImported(isImported);
+      setImportChecked(true);
+    },
   });
-
-  const imported =
-    projects.length > 0 &&
-    projects[0].activitiesConnection &&
-    projects[0].activitiesConnection.totalCount > 0;
 
   const onClickEditProject = (e) => {
     e.preventDefault();
@@ -82,68 +125,62 @@ export default function Home(props) {
   };
 
   return (
-    <Frame>
-      <Header project={project} imported={imported} />
-      <div className="flex flex-col pt-1 px-6">
-        <ErrorBoundary>
-          {!imported && (
-            <Setup
-              project={project}
-              dispatch={dispatch}
+    <div className="flex flex-col pt-1 px-6">
+      <ErrorBoundary>
+        {!imported && importChecked && (
+          <Setup
+            project={project}
+            dispatch={dispatch}
+            addWidget={addWidget}
+            newPanelPosition={newPanelPosition}
+            refetch={refetch}
+          />
+        )}
+        {imported && (
+          <div className="flex flex-col items-start space-y-4">
+            <Search newPanelPosition={newPanelPosition} addWidget={addWidget} />
+            <Explore
               addWidget={addWidget}
+              handlers={handlers}
               newPanelPosition={newPanelPosition}
-              refetch={refetch}
             />
-          )}
-          {imported && (
-            <div className="flex flex-col items-start space-y-4">
-              <Search
-                newPanelPosition={newPanelPosition}
-                addWidget={addWidget}
-              />
-              <Explore
-                addWidget={addWidget}
-                handlers={handlers}
-                newPanelPosition={newPanelPosition}
-              />
+            <React.Suspense fallback={<div />}>
               <Sources
                 handlers={handlers}
                 newPanelPosition={newPanelPosition}
                 project={project}
               />
-              <Settings
-                addWidget={addWidget}
-                newPanelPosition={newPanelPosition}
-                project={project}
-                resetWidgets={resetWidgets}
-                user={user}
-              />
-            </div>
-          )}
-        </ErrorBoundary>
-        <div className="mt-4">
-          <div>
-            <a
-              className="cursor-pointer hover:underline"
-              onClick={onClickEditProject}
-            >
-              Edit Settings
-            </a>
+            </React.Suspense>
+            <Settings
+              addWidget={addWidget}
+              newPanelPosition={newPanelPosition}
+              project={project}
+              resetWidgets={resetWidgets}
+              user={user}
+            />
           </div>
-          {user && (
-            <div
-              className="cursor-pointer hover:underline"
-              onClick={onClickApiSettings}
-            >
-              API Settings
-            </div>
-          )}
-          <Link className="hover:underline" href={`/projects`}>
-            Exit
-          </Link>
+        )}
+      </ErrorBoundary>
+      <div className="mt-4">
+        <div>
+          <a
+            className="cursor-pointer hover:underline"
+            onClick={onClickEditProject}
+          >
+            Edit Settings
+          </a>
         </div>
-        <div className="my-auto" />
+        <div
+          className="cursor-pointer hover:underline"
+          onClick={onClickApiSettings}
+        >
+          API Settings
+        </div>
+        <Link className="hover:underline" href={`/projects`}>
+          Exit
+        </Link>
       </div>
-    </Frame>
+      <div className="my-auto" />
+    </div>
   );
 }
