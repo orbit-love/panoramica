@@ -4,8 +4,8 @@ export const aiReady = (project) => {
   }
   return !!(
     project.modelName &&
-    project.pineconeApiEnv &&
-    project.pineconeIndexName
+    project.typesenseUrl &&
+    project.typesenseApiKey
   );
 };
 

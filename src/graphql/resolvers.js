@@ -156,7 +156,7 @@ const resolvers = {
         return [
           {
             id: "Please add project.id, descendants.id, and descendants.textHtml to the activity selection.",
-            score: 0.0,
+            distance: 2,
           },
         ];
       }

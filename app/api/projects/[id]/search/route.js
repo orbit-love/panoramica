@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 
 import { checkApp, authorizeProject } from "src/auth";
-import { prepareVectorStore } from "src/integrations/pinecone";
+import { searchProjectConversations } from "src/integrations/typesense";
 
 export async function GET(request, context) {
   const user = await checkApp();
@@ -15,7 +15,6 @@ export async function GET(request, context) {
 
   try {
     var project = await authorizeProject({ id, user, allowPublic: true });
-    var projectId = project.id;
     if (!project) {
       return NextResponse.json(
         {
@@ -25,17 +24,14 @@ export async function GET(request, context) {
       );
     }
 
-    var namespace = `project-${projectId}`;
-    const vectorStore = await prepareVectorStore({ project, namespace });
-
-    const vectorDocs = await vectorStore.similaritySearchWithScore(q, 25, {
-      contentLength: { $gt: 50 },
+    const result = await searchProjectConversations({
+      project,
+      searchRequest: {
+        q,
+        query_by: "body,embedding",
+        limit: 25,
+      },
     });
-
-    const result = vectorDocs.map(([doc, score]) => ({
-      ...doc.metadata,
-      score,
-    }));
 
     return NextResponse.json({
       result,

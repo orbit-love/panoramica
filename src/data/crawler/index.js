@@ -43,7 +43,7 @@ export const crawl = async ({
       const c = res.options.crawler;
 
       const title = $("title").text();
-      const url = res.request.uri.href;
+      const url = res.request.uri.href.trim().replace(/\/$/, "");
 
       console.log(`[Crawler] Processing page: ${title} @ ${url}`);
 
@@ -68,7 +68,7 @@ export const crawl = async ({
 
       const body = $("body").html();
 
-      results.push({ url, title, headings, body });
+      results.push({ url, title, rootUrl: cleanedRootUrl, headings, body });
 
       $(`body a[href^="${cleanedRootUrl}"]`).each((_, item) => {
         const href = $(item).attr("href");

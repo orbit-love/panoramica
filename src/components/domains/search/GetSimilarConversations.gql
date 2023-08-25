@@ -3,7 +3,7 @@ query ($projectId: ID!, $activityId: ID!) {
     activities(where: { id: $activityId }) {
       similarConversations {
         id
-        score
+        distance
       }
       project {
         id

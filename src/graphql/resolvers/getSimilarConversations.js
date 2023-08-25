@@ -1,6 +1,8 @@
 import { prisma } from "src/data/db";
-import { prepareVectorStore } from "src/integrations/pinecone";
-import { toPageContent } from "src/integrations/pinecone/embeddings";
+import {
+  searchProjectConversations,
+  toPageContent,
+} from "src/integrations/typesense";
 
 const getSimilarConversations = async ({
   projectId,
@@ -13,24 +15,17 @@ const getSimilarConversations = async ({
 
   var q = toPageContent(descendants);
 
-  var namespace = `project-conversations-${projectId}`;
-  const vectorStore = await prepareVectorStore({ project, namespace });
-
-  var vectorDocs = await vectorStore.similaritySearchWithScore(q, 25, {
-    contentLength: { $gt: 150 },
+  const documents = await searchProjectConversations({
+    project,
+    searchRequest: {
+      q,
+      query_by: "embedding",
+      filter_by: `body_length:>150 && id:!=${activityId}`,
+      limit: 25,
+    },
   });
 
-  // filter out the match for the conversation itself
-  vectorDocs = vectorDocs.filter(([doc, _]) => doc.metadata.id != activityId);
-
-  // get unique conversation ids from the vector docs
-
-  const result = vectorDocs.map(([doc, score]) => ({
-    ...doc.metadata,
-    score,
-  }));
-
-  return result;
+  return documents.map((doc) => ({ id: doc.id, distance: doc.distance }));
 };
 
 export default getSimilarConversations;

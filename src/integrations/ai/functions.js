@@ -1,10 +1,9 @@
 import { getConversation } from "src/data/graph/queries/getConversation";
 import GraphConnection from "src/data/graph/Connection";
-import { prepareVectorStore } from "src/integrations/pinecone";
-import utils from "src/utils";
 import { PROJECT_CONVERSATIONS_CONTEXT_INTRO } from "./templates";
+import { searchProjectConversations } from "../typesense";
 
-const SIMILARY_SCORE_THRESHOLD = 0.78;
+const SIMILARITY_DISTANCE_THRESHOLD = 0.5;
 
 export const executeFunction = async ({ project, input }) => {
   console.log(`[Assistant] Executing function: ${input}`);
@@ -66,32 +65,35 @@ export const formatFunctionOutput = async (project, functionOutput) => {
 };
 
 async function searchConversations(project, q) {
-  const vectorStore = await prepareVectorStore({ project });
-  const results = await vectorStore.similaritySearchWithScore(q, 10);
+  const documents = await searchProjectConversations({
+    project,
+    searchRequest: {
+      q,
+      query_by: "body,embedding",
+      limit: 10,
+    },
+  });
 
-  // get unique conversation ids from the vector docs
-  return results
-    .filter(([_, score]) => score >= SIMILARY_SCORE_THRESHOLD)
-    .map(([doc, _]) => doc.metadata.conversationId)
-    .filter((conversationId) => conversationId)
-    .filter(utils.onlyUnique)
-    .map((id) => ({ id }));
+  return documents.filter(
+    (doc) => doc.distance <= SIMILARITY_DISTANCE_THRESHOLD
+  );
 }
 
 async function searchDocumentation(project, q) {
-  const vectorStore = await prepareVectorStore({
-    project,
-    namespace: `project-documentation-${project.id}`,
+  const collection = await getProjectQAsCollection({ project });
+  if (!collection) {
+    return [];
+  }
+
+  const searchResult = await collection.documents().search({
+    q,
+    query_by: "question,embedding",
+    limit: 10,
   });
-  const results = await vectorStore.similaritySearchWithScore(q, 3);
-  return results
-    .filter(([_, score]) => score >= SIMILARY_SCORE_THRESHOLD)
-    .map(([vectorDoc, score]) => ({
-      url: vectorDoc.metadata.id,
-      title: vectorDoc.metadata.title,
-      body: vectorDoc.metadata.body,
-      score,
-    }));
+
+  return searchResult.hits
+    .map((result) => result.map((hit) => hit.document))
+    .filter((doc) => doc.distance <= SIMILARITY_DISTANCE_THRESHOLD);
 }
 
 function formatConversations(expandedConversations) {

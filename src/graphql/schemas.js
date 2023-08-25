@@ -26,12 +26,15 @@ const typeDefs = gql`
     @mutation(operations: []) {
     id: ID!
     name: String!
+    description: String
     demo: Boolean
     url: String
     modelName: String
     workspace: String
     pineconeApiEnv: String
     pineconeIndexName: String
+    typesenseUrl: String
+    typesenseApiKey: String
     prismaUser: PrismaUser!
   }
 
@@ -135,7 +138,7 @@ const typeDefs = gql`
     @query(read: false, aggregate: false)
     @mutation(operations: []) {
     id: ID!
-    score: Float!
+    distance: Float!
   }
 
   type Property {

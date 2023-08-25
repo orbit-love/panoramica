@@ -7,7 +7,7 @@ export default function SimilarConversations({
   project,
   activity,
   renderResults,
-  scoreThreshold = 0.75,
+  distanceThreshold = 0.5,
   maxResults = 5,
 }) {
   const { id: projectId } = project;
@@ -27,7 +27,7 @@ export default function SimilarConversations({
 
   // filter out and limit the number we show
   var filteredConversations = similarConversations
-    .filter(({ score }) => score > scoreThreshold)
+    .filter(({ distance }) => distance <= distanceThreshold)
     .slice(0, maxResults);
 
   var ids = filteredConversations.map(({ id }) => id);

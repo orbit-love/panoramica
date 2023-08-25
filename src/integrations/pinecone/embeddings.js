@@ -6,17 +6,8 @@ import {
 import utils from "src/utils";
 import TurndownService from "turndown";
 
-function cleanHtmlForEmbedding(htmlString) {
-  var str = utils.stripHtmlTags(htmlString);
-  str = utils.stripMentions(str);
-  str = utils.stripLinks(str);
-  str = utils.stripEmojis(str);
-  str = utils.stripPunctuation(str);
-  return str.replace(/\s+/g, " ").trim();
-}
-
 function embeddedActivityContent(activity) {
-  return cleanHtmlForEmbedding(activity.textHtml);
+  return utils.cleanHtmlForEmbedding(activity.textHtml);
 }
 
 export const toPageContent = (activities) => {
@@ -126,7 +117,9 @@ export const createDocumentationEmbeddings = async ({ project, pages }) => {
     if (!page.url) continue;
     const id = page.url.trim().replace(/\/$/, "");
     // create the pageContent for the docs based on the headings
-    const pageContent = page.headings.map(cleanHtmlForEmbedding).join("\n");
+    const pageContent = page.headings
+      .map(utils.cleanHtmlForEmbedding)
+      .join("\n");
     // add a contentLength for query-time filtering
     const contentLength = pageContent.length;
     // Time at which the documentation was indexed. Too old could mean outdated

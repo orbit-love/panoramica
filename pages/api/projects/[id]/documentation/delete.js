@@ -1,6 +1,6 @@
 import { check, redirect, authorizeProject } from "src/auth";
 import { aiReady } from "src/integrations/ready";
-import { deleteDocumentationEmbeddings } from "src/integrations/pinecone/embeddings";
+import { deleteAllIndexedQAs } from "src/integrations/typesense";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
@@ -29,10 +29,10 @@ export default async function handler(req, res) {
       });
     }
 
-    await deleteDocumentationEmbeddings({ project });
+    await deleteAllIndexedQAs({ project });
 
     return res.status(200).json({
-      result: "Successfully removed the embedded documentation",
+      result: "Successfully removed all embedded documentation",
     });
   } catch (err) {
     console.log(err);

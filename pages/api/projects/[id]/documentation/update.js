@@ -1,10 +1,6 @@
 import { check, redirect, authorizeProject } from "src/auth";
 import { aiReady } from "src/integrations/ready";
-import { crawl } from "src/data/crawler";
-import {
-  createDocumentationEmbeddings,
-  deleteDocumentationEmbeddings,
-} from "src/integrations/pinecone/embeddings";
+import { scheduleJob } from "src/workers";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
@@ -35,20 +31,10 @@ export default async function handler(req, res) {
 
     var { startUrl, rootUrl } = await req.body;
 
-    console.log("[Documentation] Crawling...");
-    const pages = await crawl({
-      startUrl,
-      rootUrl,
-    });
-    console.log(`[Documentation] Found ${pages.length} pages`);
-
-    console.log("[Documentation] Removing current embeddings.");
-    await deleteDocumentationEmbeddings({ project });
-    console.log("[Documentation] Adding new embeddings.");
-    await createDocumentationEmbeddings({ project, pages });
+    scheduleJob("CrawlPages", rootUrl, { startUrl, rootUrl, projectId: id });
 
     return res.status(200).json({
-      result: `${pages.length} documentation pages have been embedded`,
+      result: "Your documentation is being imported in the background",
     });
   } catch (err) {
     console.log(err);

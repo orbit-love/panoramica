@@ -11,7 +11,7 @@ export default function Search({
   initialTerm,
   renderResults,
   onChange,
-  scoreThreshold,
+  distanceThreshold,
   immediatelyVisibleResults,
 }) {
   const { id: projectId } = project;
@@ -32,7 +32,7 @@ export default function Search({
   if (!seeAll) {
     filteredConversations =
       searchConversations
-        ?.filter(({ score }) => score > scoreThreshold)
+        ?.filter(({ distance }) => distance <= distanceThreshold)
         ?.slice(0, immediatelyVisibleResults) || [];
   }
 
@@ -44,7 +44,7 @@ export default function Search({
 
   const activities = idsQueryData?.projects[0].activities || [];
 
-  const numberOfActivitiesBelowThreshold =
+  const numberOfActivitiesAboveThreshold =
     searchConversations.length - filteredConversations.length;
 
   const onSearchSubmit = useCallback(
@@ -102,14 +102,14 @@ export default function Search({
         )}
       </form>
       {activities.length > 0 && renderResults({ activities, appliedTerm })}
-      {!seeAll && numberOfActivitiesBelowThreshold > 0 && (
+      {!seeAll && numberOfActivitiesAboveThreshold > 0 && (
         <div className="p-6">
           <button
             className="text-tertiary hover:underline"
             title="See potentially less relevant results"
             onClick={() => setSeeAll(true)}
           >
-            See {numberOfActivitiesBelowThreshold} results with lower relevance
+            See {numberOfActivitiesAboveThreshold} results with lower relevance
           </button>
         </div>
       )}

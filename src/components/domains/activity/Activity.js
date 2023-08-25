@@ -7,6 +7,7 @@ import utils from "src/utils";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
 
+// TODO: Use the highlights from Typesense directly
 function highlightSearchTerm(string, searchTerm) {
   if (searchTerm) {
     const searchWords = searchTerm.split(" ").filter(Boolean); // Split search term into individual words
