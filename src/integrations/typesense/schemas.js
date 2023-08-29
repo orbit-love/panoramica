@@ -33,6 +33,7 @@ export const DEFAULT_CONVERSATIONS_SCHEMA = {
       name: "source_channel",
       type: "string",
       facet: true,
+      optional: true,
     },
     {
       name: "start_timestamp",

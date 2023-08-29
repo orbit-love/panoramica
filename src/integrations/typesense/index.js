@@ -48,11 +48,14 @@ export const searchProjectConversations = async ({
   const collection = await getProjectConversationsCollection({ project });
   if (!collection) return [];
 
-  const searchResult = await collection.documents().search(searchRequest);
+  const searchResult = await collection.$.documents().search({
+    ...searchRequest,
+    prefix: false,
+  });
 
   console.log(`Conversations search took ${searchResult.search_time_ms} ms`);
 
-  searchResult.hits.map((hit) => {
+  return searchResult.hits.map((hit) => {
     return {
       ...hit.document,
       highlights: hit.highlights,
@@ -112,6 +115,7 @@ export const indexConversations = async ({ project, conversations }) => {
   const collection = await findOrCreateTypesenseCollection({
     typesenseClient,
     collectionName,
+    modelApiKey: project.modelApiKey,
     schema: DEFAULT_CONVERSATIONS_SCHEMA,
   });
 
@@ -127,6 +131,7 @@ export const indexQAs = async ({ project, qas }) => {
   const collection = await findOrCreateTypesenseCollection({
     typesenseClient,
     collectionName,
+    modelApiKey: project.modelApiKey,
     schema: DEFAULT_QAS_SCHEMA,
   });
 

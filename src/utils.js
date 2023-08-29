@@ -106,11 +106,11 @@ const common = {
     return date.getTime(); // Get the timestamp in milliseconds
   },
   cleanHtmlForEmbedding(htmlString) {
-    var str = utils.stripHtmlTags(htmlString);
-    str = utils.stripMentions(str);
-    str = utils.stripLinks(str);
-    str = utils.stripEmojis(str);
-    str = utils.stripPunctuation(str);
+    var str = this.stripHtmlTags(htmlString);
+    str = this.stripMentions(str);
+    str = this.stripLinks(str);
+    str = this.stripEmojis(str);
+    str = this.stripPunctuation(str);
     return str.replace(/\s+/g, " ").trim();
   },
   slugify(str) {

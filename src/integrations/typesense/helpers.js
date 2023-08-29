@@ -10,7 +10,7 @@ export const getTypesenseClient = ({ project }) => {
       {
         host: typesenseUrl.hostname,
         port: typesenseUrl.port,
-        protocol: typesenseUrl.protocol,
+        protocol: typesenseUrl.protocol.replace(/\:$/, ""),
       },
     ],
     apiKey: project.typesenseApiKey,
@@ -23,7 +23,10 @@ export const retrieveTypesenseCollection = async ({
   collectionName,
 }) => {
   try {
-    return await typesenseClient.collections(collectionName).retrieve();
+    const $ = typesenseClient.collections(collectionName);
+    const collection = await $.retrieve();
+    collection.$ = $;
+    return collection;
   } catch {
     return;
   }
@@ -33,42 +36,47 @@ export const findOrCreateTypesenseCollection = async ({
   typesenseClient,
   collectionName,
   schema,
+  modelApiKey,
+  modelName = "text-embedding-ada-002",
 }) => {
   let collection;
   try {
-    collection = await typesenseClient.collections(name).retrieve();
-  } catch {
-    collection = await typesenseClient.collections().create({
+    collection = await typesenseClient.collections(collectionName).retrieve();
+  } catch (e) {
+    const structure = {
+      name: collectionName,
       fields: [
-        ...schema.fields,
         {
           name: "embedding",
           type: "float[]",
           embed: {
             from: schema.embedding,
             model_config: {
-              model_name: `openai/${project.modelName}`,
-              api_key: project.modelApiKey,
+              model_name: `openai/${modelName}`,
+              api_key: modelApiKey,
             },
           },
         },
-      ],
-      name: collectionName,
-    });
+      ].concat(schema.fields),
+    };
+    collection = await typesenseClient.collections().create(structure);
   }
+
+  collection.$ = typesenseClient.collections(collectionName);
 
   return collection;
 };
 
 export const deleteTypesenseCollection = ({ collection }) => {
-  collection.delete();
+  collection.$.delete();
 };
 
 export const bulkDeleteTypesenseDocuments = async ({ collection, query }) => {
   if (query) {
-    return await collection.documents().delete(query);
+    return await collection.$.documents().delete(query);
   } else {
-    return await collection.documents().delete();
+    console.log(collection);
+    return await collection.$.documents().delete();
   }
 };
 
@@ -76,7 +84,7 @@ export const bulkUpsertTypesenseDocuments = async ({
   collection,
   documents,
 }) => {
-  return await collection.documents().import(documents, { action: "upsert" });
+  return await collection.$.documents().import(documents, { action: "upsert" });
 };
 
 export const validateSearches = (searches) => {
