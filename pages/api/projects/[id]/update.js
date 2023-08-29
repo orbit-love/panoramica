@@ -39,9 +39,8 @@ export default async function handler(req, res) {
         apiKey: body.apiKey || project.apiKey,
         modelName: body.modelName,
         modelApiKey: body.modelApiKey || project.modelApiKey,
-        pineconeApiKey: body.pineconeApiKey || project.pineconeApiKey,
-        pineconeApiEnv: body.pineconeApiEnv,
-        pineconeIndexName: body.pineconeIndexName,
+        typesenseApiKey: body.typesenseApiKey || project.typesenseApiKey,
+        typesenseUrl: body.typesenseUrl || project.typesenseUrl,
       },
     });
 

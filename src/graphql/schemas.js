@@ -31,10 +31,9 @@ const typeDefs = gql`
     url: String
     modelName: String
     workspace: String
-    pineconeApiEnv: String
-    pineconeIndexName: String
     typesenseUrl: String
     typesenseApiKey: String
+    aiReady: Boolean
     prismaUser: PrismaUser!
   }
 

@@ -7,6 +7,7 @@ import resolveGenerateProperties from "src/graphql/resolvers/activity/generatePr
 import resolveGeneratePropertiesFromYaml from "src/graphql/resolvers/activity/generatePropertiesFromYaml";
 import resolveConversationJson from "src/graphql/resolvers/activity/conversationJson";
 import resolvePropertyFilters from "src/graphql/resolvers/project/propertyFilters";
+import { aiReady } from "src/integrations/ready";
 
 const resolvers = {
   Query: {
@@ -21,7 +22,7 @@ const resolvers = {
         where: whereClause(null, user),
       });
       for (let project of projects) {
-        project.prismaUser = project.user;
+        cleanupProject(project);
       }
 
       return projects;
@@ -33,7 +34,7 @@ const resolvers = {
         select: selectClause,
         where: whereClause(id, user),
       });
-      project.prismaUser = project.user;
+      cleanupProject(project);
       return project;
     },
   },
@@ -193,13 +194,20 @@ const selectClause = {
   demo: true,
   workspace: true,
   url: true,
-  pineconeApiEnv: true,
-  pineconeIndexName: true,
   modelName: true,
+  typesenseApiKey: true,
+  typesenseUrl: true,
   user: {
     select: {
       id: true,
       email: true,
     },
   },
+};
+
+const cleanupProject = (project) => {
+  project.prismaUser = project.user;
+  project.aiReady = aiReady(project);
+  delete project.typesenseUrl;
+  delete project.typesenseApiKey;
 };
