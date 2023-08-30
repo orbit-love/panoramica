@@ -7,7 +7,7 @@ export default {
   perform: async (job) => {
     const data = job.data;
     if (!data.startUrl || !data.rootUrl || !data.projectId) {
-      return;
+      return "Invalid Data";
     }
 
     const project = await prisma.project.findFirst({
@@ -15,7 +15,13 @@ export default {
     });
 
     if (!project) return "Project not found";
-    const results = await crawl(data.startUrl, data.rootUrl);
+
+    const { startUrl, rootUrl } = data;
+
+    const results = await crawl({
+      startUrl,
+      rootUrl,
+    });
 
     await deleteIndexedQAs({ project, rootUrl });
 
@@ -28,7 +34,7 @@ export default {
 
     return `Crawled ${results.length} pages`;
   },
-  onComplete: (job, returnValue) => {
+  onCompleted: (job, returnValue) => {
     console.log(`Job ${job} completed and returned:`);
     console.log(returnValue);
   },

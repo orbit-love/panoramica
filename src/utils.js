@@ -123,6 +123,15 @@ const common = {
       .replace(/\s+/g, "-") // replace spaces with hyphens
       .replace(/-+/g, "-"); // remove consecutive hyphens
   },
+  findQuotedSubstrings(str) {
+    const regex = /"(.*?)"/g;
+    let result = [];
+    let match;
+    while ((match = regex.exec(str)) !== null) {
+      result.push(match[1]);
+    }
+    return result;
+  },
 };
 
 export default common;

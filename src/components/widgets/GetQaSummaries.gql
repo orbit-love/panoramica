@@ -1,0 +1,8 @@
+query ($projectId: ID!) {
+  projects(where: { id: $projectId }) {
+    qaSummaries {
+      rootUrl
+      count
+    }
+  }
+}

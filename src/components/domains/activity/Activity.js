@@ -12,7 +12,7 @@ function highlightSearchTerm(string, searchTerm) {
   if (searchTerm) {
     const searchWords = searchTerm.split(" ").filter(Boolean); // Split search term into individual words
     const regex = new RegExp(`\\b(${searchWords.join("|")})\\b`, "gi"); // Create regex with word boundaries
-    return string.replace(regex, "<mark>$&</mark>");
+    return string?.replace(regex, "<mark>$&</mark>");
   } else {
     return string;
   }

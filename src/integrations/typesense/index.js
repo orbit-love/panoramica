@@ -48,10 +48,7 @@ export const searchProjectConversations = async ({
   const collection = await getProjectConversationsCollection({ project });
   if (!collection) return [];
 
-  const searchResult = await collection.$.documents().search({
-    ...searchRequest,
-    prefix: false,
-  });
+  const searchResult = await collection.$.documents().search(searchRequest);
 
   console.log(`Conversations search took ${searchResult.search_time_ms} ms`);
 

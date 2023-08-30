@@ -69,7 +69,8 @@ async function searchConversations(project, q) {
     project,
     searchRequest: {
       q,
-      query_by: "body,embedding",
+      query_by: "embedding",
+      prefix: false,
       limit: 10,
     },
   });
@@ -87,7 +88,8 @@ async function searchDocumentation(project, q) {
 
   const searchResult = await collection.documents().search({
     q,
-    query_by: "question,embedding",
+    query_by: "embedding",
+    prefix: false,
     limit: 10,
   });
 

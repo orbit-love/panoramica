@@ -27,13 +27,9 @@ const opts = {
 
 function startWorker(queueName, callbacks) {
   const queue = new Queue(queueName, opts);
-  const worker = new Worker(
-    queue.name,
-    async (job) => {
-      callbacks.perform(job);
-    },
-    { connection }
-  );
+  const worker = new Worker(queue.name, async (job) => {
+    callbacks.perform(job);
+  });
 
   worker.on("completed", callbacks.onCompleted);
   worker.on("failed", callbacks.onFailed);
@@ -45,15 +41,20 @@ function startWorker(queueName, callbacks) {
 }
 
 export const WORKER_DEFINITIONS = {
-  crawlPages: startWorker("CrawlPages", crawlPagesCallbacks),
-  processPages: startWorker("ProcessPages", processPagesCallbacks),
+  CrawlPages: startWorker("CrawlPages", crawlPagesCallbacks),
+  ProcessPages: startWorker("ProcessPages", processPagesCallbacks),
 };
 
 export const scheduleJob = (queueName, jobId, data) => {
+  console.log(`[Worker] ScheduleJob called on queue ${queueName}`);
   const workerDefinition = WORKER_DEFINITIONS[queueName];
   if (!workerDefinition) {
-    throw Error(`No worker definition found for Queue ${queue}`);
+    throw Error(`No worker definition found for Queue ${queueName}`);
   }
+  console.log(
+    `[Worker] queueing job jobId=${jobId}, queue=${queueName}, data=\n`,
+    JSON.stringify(data, null, 2)
+  );
   workerDefinition.queue.add(jobId, data);
 };
 

@@ -27,10 +27,10 @@ export default function Settings({
     });
   };
 
-  const onClickEmbedDocumentation = (e) => {
+  const onClickIndexDocumentation = (e) => {
     e.preventDefault();
-    addWidget("embed-documentation", "EmbedDocumentation", {
-      title: "Embed Documentation",
+    addWidget("index-documentation", "IndexDocumentation", {
+      title: "Index Documentation",
       position: newPanelPosition(),
     });
   };
@@ -64,9 +64,9 @@ export default function Settings({
           {aiReady(project) && (
             <div
               className="cursor-pointer hover:underline"
-              onClick={onClickEmbedDocumentation}
+              onClick={onClickIndexDocumentation}
             >
-              Embed Documentation
+              Index Documentation
             </div>
           )}
           <ThemeAction>

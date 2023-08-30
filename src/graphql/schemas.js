@@ -123,6 +123,7 @@ const typeDefs = gql`
       @customResolver(requires: ["id"])
     searchConversations(query: String!): [SearchResult!]!
       @customResolver(requires: ["id"])
+    qaSummaries: [QASummary!]! @customResolver(requires: ["id"])
   }
 
   type SourceChannel
@@ -138,6 +139,11 @@ const typeDefs = gql`
     @mutation(operations: []) {
     id: ID!
     distance: Float!
+  }
+
+  type QASummary {
+    rootUrl: String!
+    count: Int!
   }
 
   type Property {

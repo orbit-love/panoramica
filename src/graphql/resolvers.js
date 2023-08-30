@@ -8,6 +8,7 @@ import resolveGeneratePropertiesFromYaml from "src/graphql/resolvers/activity/ge
 import resolveConversationJson from "src/graphql/resolvers/activity/conversationJson";
 import resolvePropertyFilters from "src/graphql/resolvers/project/propertyFilters";
 import { aiReady } from "src/integrations/ready";
+import { getQaSummaries } from "./resolvers/getQaSummaries";
 
 const resolvers = {
   Query: {
@@ -102,6 +103,10 @@ const resolvers = {
         propertyNames,
         where,
       });
+    },
+    async qaSummaries(parent) {
+      const { id: projectId } = parent;
+      return getQaSummaries({ projectId });
     },
   },
   Activity: {

@@ -7,8 +7,8 @@ import { prisma } from "src/data/db";
 export default {
   perform: async (job) => {
     const data = job.data;
-    if (!data.project || !data.page) {
-      return;
+    if (!data.projectId || !data.page) {
+      return "Invalid data";
     }
     const { page, projectId } = data;
 
@@ -17,6 +17,8 @@ export default {
     });
 
     if (!project) return "Project not found";
+
+    console.log(`[Worker][ProcessPages] Processing page @ ${page.url}`);
 
     const turndownService = new TurndownService({ headingStyle: "atx" });
     const llmOutput = await callLLM({
@@ -56,7 +58,7 @@ export default {
       console.log("LLM didn't produce a usable output");
     }
   },
-  onComplete: (job, returnValue) => {
+  onCompleted: (job, returnValue) => {
     console.log(`Job ${job} completed and returned:`);
     console.log(returnValue);
   },
