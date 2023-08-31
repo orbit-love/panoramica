@@ -17,12 +17,8 @@ export const getQaSummaries = async ({ projectId }) => {
     per_page: 1,
   });
 
-  return results.facet_counts.map((facetCount) => {
-    const countObject = facetCount.counts[0];
-
-    return {
-      rootUrl: countObject.value,
-      count: countObject.count,
-    };
-  });
+  return results.facet_counts[0].counts.map((countObject) => ({
+    rootUrl: countObject.value,
+    count: countObject.count,
+  }));
 };

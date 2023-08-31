@@ -29,7 +29,7 @@ export default {
         Your mission will be to produce a serie of question/answers on the given content.
         Each question-answer should be a self-contained unit of information.
         You are free to ignore the structure of the original content if it makes sense.
-        Questions should be precise, and the answer complete with the right amount of details without being too verbose.
+        Questions should be precise, and the answer complete with a good amount of details including links.
         No useful information on the original page should be lost.
         Your output should be a single JSON that looks like this.
         

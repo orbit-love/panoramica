@@ -141,7 +141,7 @@ export const indexQAs = async ({ project, qas }) => {
     page_title: qa.page.title,
   }));
 
-  bulkUpsertTypesenseDocuments({ collection, documents });
+  return await bulkUpsertTypesenseDocuments({ collection, documents });
 };
 
 // DELETE
@@ -149,7 +149,7 @@ export const indexQAs = async ({ project, qas }) => {
 export const deleteIndexedQAs = async ({ project, rootUrl }) => {
   const collection = await getProjectQAsCollection({ project });
   if (!collection) return;
-  bulkDeleteTypesenseDocuments({
+  return await bulkDeleteTypesenseDocuments({
     collection,
     query: { filter_by: `root_url:=${rootUrl.trim().replace(/\/$/, "")}` },
   });
@@ -158,11 +158,11 @@ export const deleteIndexedQAs = async ({ project, rootUrl }) => {
 export const deleteAllIndexedQAs = async ({ project }) => {
   const collection = await getProjectQAsCollection({ project });
   if (!collection) return;
-  bulkDeleteTypesenseDocuments({ collection });
+  return await bulkDeleteTypesenseDocuments({ collection });
 };
 
 export const deleteAllIndexedConversations = async ({ project }) => {
   const collection = await getProjectConversationsCollection({ project });
   if (!collection) return;
-  bulkDeleteTypesenseDocuments({ collection });
+  return await bulkDeleteTypesenseDocuments({ collection });
 };
