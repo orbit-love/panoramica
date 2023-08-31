@@ -10,11 +10,19 @@ export const getQaSummaries = async ({ projectId }) => {
   if (!collection) return [];
 
   const results = await collection.$.documents().search({
-    q: "",
+    q: "*",
     facet_by: ["root_url"],
+    // We don't really care about the documents, only the facet counts.
+    exclude_fields: "embedding,id,question,answer,page_url,page_title",
+    per_page: 1,
   });
 
-  console.log("Typesense facet results", results);
+  return results.facet_counts.map((facetCount) => {
+    const countObject = facetCount.counts[0];
 
-  return [];
+    return {
+      rootUrl: countObject.value,
+      count: countObject.count,
+    };
+  });
 };

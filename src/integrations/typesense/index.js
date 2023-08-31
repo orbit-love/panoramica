@@ -133,7 +133,7 @@ export const indexQAs = async ({ project, qas }) => {
   });
 
   const documents = qas.map((qa) => ({
-    id: `${qa.page.url}-${utils.slugify(qa.q)}`,
+    id: utils.slugify(`${qa.page.url}-${qa.q}`),
     root_url: qa.page.rootUrl,
     question: qa.q,
     answer: qa.a,

@@ -27,7 +27,7 @@ export default function IndexDocumentation({ project, dispatch }) {
     utils.stringIsValidHttpUrl(startUrl) &&
     (!rootUrl || utils.stringIsValidHttpUrl(rootUrl));
 
-  const createDocumentationEmbeddings = async () => {
+  const indexDocuments = async () => {
     setStatus("");
     putDocumentation({
       project,
@@ -42,7 +42,7 @@ export default function IndexDocumentation({ project, dispatch }) {
     });
   };
 
-  const deleteDocumentationEmbeddings = useCallback(async () => {
+  const removeAllDocuments = useCallback(async () => {
     setStatus("");
     deleteDocumentation({
       project,
@@ -55,18 +55,19 @@ export default function IndexDocumentation({ project, dispatch }) {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await createDocumentationEmbeddings();
+    await indexDocuments();
   };
 
   return (
     <Frame>
       <div className="px-6 mt-4 mb-6">
         <section>
-          <h2 className="font-semibold">Index your product Documentation</h2>
+          <h2 className="text-lg font-semibold">
+            Index your product-related Documents
+          </h2>
           <p className="">
-            This will be made available through empower the assistant with some
-            understanding of your product and enhance the quality of its
-            response.
+            This will empower the assistant with some understanding of your
+            product and enhance the quality of its response.
           </p>
 
           <form
@@ -80,7 +81,7 @@ export default function IndexDocumentation({ project, dispatch }) {
             <div className="flex flex-col space-y-1">
               <label htmlFor="start-url">Start URL</label>
               <small>
-                We&apos;ll crawl and index your documentation starting from this
+                We&apos;ll crawl and index your documents starting from this
                 URL.
               </small>
               <input
@@ -121,18 +122,18 @@ export default function IndexDocumentation({ project, dispatch }) {
 
         {qaSummaries && qaSummaries.length > 0 && (
           <section className="py-6 flex flex-col items-start space-y-1">
-            <h2 className="font-semibold">Current indexed sources</h2>
+            <h2 className="text-lg font-semibold">Current indexed sources</h2>
 
             <table className="w-full text-left table-auto">
               <thead>
                 <tr>
-                  <th className="py-2 pr-4">Root URL</th>
-                  <th className="py-2 px-4"># Generated QAs</th>
+                  <th className="py-2 pr-8">Root URL</th>
+                  <th className="py-2 pr-4"># Generated QAs</th>
                 </tr>
               </thead>
               <tbody>
-                {qaSummaries.map((qaSummary) => (
-                  <tr>
+                {qaSummaries.map((qaSummary, index) => (
+                  <tr key={index}>
                     <td>{qaSummary.rootUrl}</td>
                     <td>{qaSummary.count}</td>
                   </tr>
@@ -149,9 +150,9 @@ export default function IndexDocumentation({ project, dispatch }) {
           <button
             className="hover:underline"
             disabled={loading ? "disabled" : ""}
-            onClick={deleteDocumentationEmbeddings}
+            onClick={removeAllDocuments}
           >
-            Remove current indices
+            Remove current sources
           </button>
         </section>
       </div>

@@ -28,13 +28,13 @@ export default {
         You will be given the content of a web page related to the above context.
         Your mission will be to produce a serie of question/answers on the given content.
         Each question-answer should be a self-contained unit of information.
-        You are free to ignore the original structure of the original content if it makes sense.
-        Questions should be precise, and the answer very concise but complete.
+        You are free to ignore the structure of the original content if it makes sense.
+        Questions should be precise, and the answer complete with the right amount of details without being too verbose.
         No useful information on the original page should be lost.
         Your output should be a single JSON that looks like this.
         
         [
-          { "q": "What is X", "a": "X is this" }
+          { "q": "What is X", "a": "X is this" },
           { "q": "How do you achieve Y", "a": "By doing this and that" }
         ]
         
@@ -51,11 +51,17 @@ export default {
       },
       streaming: false,
     });
+    // console.log(
+    //   `[Worker][ProcessPages] LLM Output from page @ ${page.url}\n`,
+    //   llmOutput
+    // );
     try {
       const qas = JSON.parse(llmOutput);
       await indexQAs({ project, qas: qas.map((qa) => ({ ...qa, page })) });
-    } catch {
-      console.log("LLM didn't produce a usable output");
+      return `[Worker][ProcessPages] Indexed ${qas.length} from page @ ${page.url}`;
+    } catch (e) {
+      console.log("[Worker][ProcessPages] LLM didn't produce a valid JSON");
+      throw e;
     }
   },
   onCompleted: (job, returnValue) => {
@@ -65,5 +71,9 @@ export default {
   onFailed: (job, error) => {
     console.error(`Job ${job} failed with the following error:`);
     console.error(error);
+  },
+  limiter: {
+    max: 3,
+    duration: 1000,
   },
 };

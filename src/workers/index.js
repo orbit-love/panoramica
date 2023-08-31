@@ -27,9 +27,13 @@ const opts = {
 
 function startWorker(queueName, callbacks) {
   const queue = new Queue(queueName, opts);
-  const worker = new Worker(queue.name, async (job) => {
-    callbacks.perform(job);
-  });
+  const worker = new Worker(
+    queue.name,
+    async (job) => {
+      callbacks.perform(job);
+    },
+    callbacks.limiter ? { limiter: callbacks.limiter } : {}
+  );
 
   worker.on("completed", callbacks.onCompleted);
   worker.on("failed", callbacks.onFailed);
