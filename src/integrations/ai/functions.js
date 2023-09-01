@@ -1,7 +1,10 @@
 import { getConversation } from "src/data/graph/queries/getConversation";
 import GraphConnection from "src/data/graph/Connection";
 import { PROJECT_CONVERSATIONS_CONTEXT_INTRO } from "./templates";
-import { searchProjectConversations } from "../typesense";
+import {
+  getProjectQAsCollection,
+  searchProjectConversations,
+} from "../typesense";
 
 const SIMILARITY_DISTANCE_THRESHOLD = 0.5;
 
@@ -86,16 +89,21 @@ async function searchDocumentation(project, q) {
     return [];
   }
 
-  const searchResult = await collection.documents().search({
+  const searchResult = await collection.$.documents().search({
     q,
     query_by: "embedding",
     prefix: false,
+    exclude_fields: "embedding",
     limit: 10,
   });
 
   return searchResult.hits
-    .map((result) => result.map((hit) => hit.document))
-    .filter((doc) => doc.distance <= SIMILARITY_DISTANCE_THRESHOLD);
+    .filter((hit) => hit.vector_distance <= SIMILARITY_DISTANCE_THRESHOLD)
+    .map((hit) => {
+      const document = structuredClone(hit.document);
+      delete document.root_rul;
+      return document;
+    });
 }
 
 function formatConversations(expandedConversations) {
@@ -110,7 +118,7 @@ function formatConversations(expandedConversations) {
 }
 
 function formatDocumentation(documentation) {
-  return `Documentation pages: ${documentation
+  return `Question-Answers from documentation: ${documentation
     .map((page) => JSON.stringify(page))
     .join("\n")}`;
 }
