@@ -57,7 +57,7 @@ export const DEFAULT_CONVERSATIONS_SCHEMA = {
       optional: true,
     },
   ],
-  embedding: ["body"],
+  embedding: ["body", "actors"],
 };
 
 export const DEFAULT_QAS_SCHEMA = {
@@ -91,5 +91,5 @@ export const DEFAULT_QAS_SCHEMA = {
       optional: true,
     },
   ],
-  embedding: ["question", "answer"],
+  embedding: ["question"],
 };

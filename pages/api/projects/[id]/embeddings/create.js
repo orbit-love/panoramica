@@ -3,7 +3,7 @@ import { aiReady } from "src/integrations/ready";
 import { getActivities } from "src/data/graph/queries";
 import GraphConnection from "src/data/graph/Connection";
 import {
-  deleteAllIndexedConversations,
+  deleteConversationsCollection,
   indexConversations,
 } from "src/integrations/typesense";
 
@@ -32,7 +32,8 @@ export default async function handler(req, res) {
       return;
     }
 
-    await deleteAllIndexedConversations({ project });
+    // Drop the whole collection (if it exists) so that it's rebuilt with the latest schema
+    await deleteConversationsCollection({ project });
 
     // create embeddings for all activities
     const graphConnection = new GraphConnection();

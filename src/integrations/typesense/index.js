@@ -4,6 +4,7 @@ import {
   bulkUpsertTypesenseDocuments,
   findOrCreateTypesenseCollection,
   bulkDeleteTypesenseDocuments,
+  deleteTypesenseCollection,
 } from "./helpers";
 import utils from "src/utils";
 import { DEFAULT_CONVERSATIONS_SCHEMA, DEFAULT_QAS_SCHEMA } from "./schemas";
@@ -13,7 +14,7 @@ function embeddedActivityContent(activity) {
 }
 
 export const toPageContent = (activities) => {
-  return activities.map(embeddedActivityContent).join(" ");
+  return activities.reverse().map(embeddedActivityContent).join(" ");
 };
 
 // SEARCH
@@ -155,14 +156,14 @@ export const deleteIndexedQAs = async ({ project, rootUrl }) => {
   });
 };
 
-export const deleteAllIndexedQAs = async ({ project }) => {
+export const deleteQAsCollection = async ({ project }) => {
   const collection = await getProjectQAsCollection({ project });
   if (!collection) return;
-  return await bulkDeleteTypesenseDocuments({ collection });
+  return await deleteTypesenseCollection({ collection });
 };
 
-export const deleteAllIndexedConversations = async ({ project }) => {
+export const deleteConversationsCollection = async ({ project }) => {
   const collection = await getProjectConversationsCollection({ project });
   if (!collection) return;
-  return await bulkDeleteTypesenseDocuments({ collection });
+  return await deleteTypesenseCollection({ collection });
 };

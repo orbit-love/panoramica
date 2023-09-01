@@ -67,8 +67,8 @@ export const findOrCreateTypesenseCollection = async ({
   return collection;
 };
 
-export const deleteTypesenseCollection = ({ collection }) => {
-  collection.$.delete();
+export const deleteTypesenseCollection = async ({ collection }) => {
+  return await collection.$.delete();
 };
 
 export const bulkDeleteTypesenseDocuments = async ({ collection, query }) => {
