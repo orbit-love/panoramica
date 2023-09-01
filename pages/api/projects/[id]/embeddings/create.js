@@ -3,10 +3,9 @@ import { aiReady } from "src/integrations/ready";
 import { getActivities } from "src/data/graph/queries";
 import GraphConnection from "src/data/graph/Connection";
 import {
-  createEmbeddings,
-  createConversationEmbeddings,
-  deleteEmbeddings,
-} from "src/integrations/pinecone/embeddings";
+  deleteConversationsCollection,
+  indexConversations,
+} from "src/integrations/typesense";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
@@ -33,8 +32,8 @@ export default async function handler(req, res) {
       return;
     }
 
-    // delete existing embeddings
-    await deleteEmbeddings({ project });
+    // Drop the whole collection (if it exists) so that it's rebuilt with the latest schema
+    await deleteConversationsCollection({ project });
 
     // create embeddings for all activities
     const graphConnection = new GraphConnection();
@@ -55,11 +54,7 @@ export default async function handler(req, res) {
       conversations[activity.conversationId].push(activity);
     }
 
-    // create embeddings for all activities at the same time
-    await Promise.all([
-      createEmbeddings({ project, activities }),
-      createConversationEmbeddings({ project, conversations }),
-    ]);
+    await indexConversations({ project, conversations });
 
     res.status(200).json({ result: "success" });
   } catch (err) {

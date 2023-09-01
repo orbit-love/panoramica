@@ -10,7 +10,7 @@ import { projectReducer } from "src/reducers";
 
 import Themed from "src/components/context/Themed";
 
-export default async function Providers(props) {
+export default function Providers(props) {
   const { project, session, children } = props || {};
   const initialObject = { project: project || {}, prompts: [] };
   const [object, dispatch] = useReducer(projectReducer, initialObject);

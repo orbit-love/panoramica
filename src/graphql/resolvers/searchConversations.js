@@ -1,24 +1,33 @@
+import utils from "src/utils";
 import { prisma } from "src/data/db";
-import { prepareVectorStore } from "src/integrations/pinecone";
+import { searchProjectConversations } from "src/integrations/typesense";
 
 const searchConversations = async ({ projectId, query }) => {
   const project = await prisma.project.findFirst({
     where: { id: projectId },
   });
 
-  var namespace = `project-${projectId}`;
-  const vectorStore = await prepareVectorStore({ project, namespace });
+  const keywords = utils.findQuotedSubstrings(query);
+  let keywordSearch = {};
+  if (keywords.length > 0) {
+    const filter = keywords.map((keyword) => `\`${keyword}\``).join(",");
+    keywordSearch.filter_by = `body: [${filter}]`;
+  }
 
-  var vectorDocs = await vectorStore.similaritySearchWithScore(query, 25, {
-    contentLength: { $gt: 150 },
+  console.log(keywordSearch);
+
+  const documents = await searchProjectConversations({
+    project,
+    searchRequest: {
+      q: query,
+      query_by: "embedding",
+      prefix: false,
+      limit: 25,
+      ...keywordSearch,
+    },
   });
 
-  const result = vectorDocs.map(([doc, score]) => ({
-    ...doc.metadata,
-    score,
-  }));
-
-  return result;
+  return documents.map((doc) => ({ id: doc.id, distance: doc.distance }));
 };
 
 export default searchConversations;

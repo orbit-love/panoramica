@@ -35,7 +35,7 @@ const loadConversationDocs = async (projectId, conversationId) => {
   return allDocs;
 };
 
-const callLLM = async ({
+export const callLLM = async ({
   project,
   promptTemplate,
   promptArgs,

@@ -9,19 +9,15 @@ export default function Edit({
   setStatus,
 }) {
   const [name, setName] = useState(project.name);
+  const [description, setDescription] = useState(project.description);
   const [url, setUrl] = useState(project.url || "");
   const [workspace, setWorkspace] = useState(project.workspace);
   const [apiKey, setApiKey] = useState("");
   const [modelName, setModelName] = useState(project.modelName || "");
   const [modelApiKey, setModelApiKey] = useState("");
-  const [pineconeApiKey, setPineconeApiKey] = useState("");
-  const [pineconeApiEnv, setPineconeApiEnv] = useState(
-    project.pineconeApiEnv || ""
-  );
+  const [typesenseUrl, setTypesenseUrl] = useState("");
+  const [typesenseApiKey, setTypesenseApiKey] = useState("");
   const [demo, setDemo] = useState(project.demo);
-  const [pineconeIndexName, setPineconeIndexName] = useState(
-    project.pineconeIndexName || ""
-  );
 
   const deleteProject = useCallback(() => {
     const url = `/api/projects/${project.id}/delete`;
@@ -50,14 +46,14 @@ export default function Edit({
       const data = {
         url,
         name,
+        description,
         demo,
         workspace,
         apiKey,
         modelName,
         modelApiKey,
-        pineconeApiKey,
-        pineconeApiEnv,
-        pineconeIndexName,
+        typesenseUrl,
+        typesenseApiKey,
       };
       setLoading(true);
       setStatus(null);
@@ -73,7 +69,7 @@ export default function Edit({
         .then(({ result, message }) => {
           if (result?.project) {
             setApiKey("");
-            setPineconeApiKey("");
+            setTypesenseApiKey("");
             setModelApiKey("");
             onUpdate(result.project);
             setLoading(false);
@@ -89,13 +85,13 @@ export default function Edit({
       onUpdate,
       url,
       name,
+      description,
       workspace,
       apiKey,
       modelName,
       modelApiKey,
-      pineconeApiKey,
-      pineconeApiEnv,
-      pineconeIndexName,
+      typesenseUrl,
+      typesenseApiKey,
       demo,
     ]
   );
@@ -117,6 +113,20 @@ export default function Edit({
           value={name}
           onChange={({ target }) => setName(target.value)}
         ></input>
+      </div>
+
+      <div className="flex flex-col space-y-1">
+        <label htmlFor="name">Short Description</label>
+        <small>
+          This will be used to give an overall context to the Assistant
+        </small>
+        <textarea
+          type="text"
+          placeholder="My Project makes space cats happy"
+          name="description"
+          value={description}
+          onChange={({ target }) => setDescription(target.value)}
+        ></textarea>
       </div>
 
       <div className="flex items-center space-x-2">
@@ -181,35 +191,24 @@ export default function Edit({
           onChange={({ target }) => setModelApiKey(target.value)}
         ></input>
       </div>
-      <div className="my-2 text-lg font-thin">Vector Store Features</div>
+      <div className="my-2 text-lg font-thin">Search Features</div>
       <div className="flex flex-col space-y-1">
-        <label htmlFor="pinecone-api-env">Pinecone API Env</label>
+        <label htmlFor="typesense-url">Typesense URL</label>
         <input
           type="text"
-          placeholder="us-east4-gcp"
-          name="pinecone-api-env"
-          value={pineconeApiEnv}
-          onChange={({ target }) => setPineconeApiEnv(target.value)}
+          placeholder="http://localhost:8108"
+          name="typesense-url"
+          value={typesenseUrl}
+          onChange={({ target }) => setTypesenseUrl(target.value)}
         ></input>
       </div>
       <div className="flex flex-col space-y-1">
-        <label htmlFor="pinecone-index-name">Pinecone Index Name</label>
+        <label htmlFor="typesense-api-key">Typesense API Key</label>
         <input
           type="text"
-          value={pineconeIndexName}
-          name="pinecone-index-name"
-          onChange={({ target }) => setPineconeIndexName(target.value)}
-        ></input>
-      </div>
-      <div className="flex flex-col space-y-1">
-        <label htmlFor="pinecone-api-key">
-          Pinecone API Key (provide to change)
-        </label>
-        <input
-          type="text"
-          name="pinecone-api-key"
-          value={pineconeApiKey}
-          onChange={({ target }) => setPineconeApiKey(target.value)}
+          value={typesenseApiKey}
+          name="typesense-api-key"
+          onChange={({ target }) => setTypesenseApiKey(target.value)}
         ></input>
       </div>
       <div className="flex-grow my-auto" />

@@ -20,7 +20,6 @@ const resolvePropertyFilters = async ({
     wheres.push(`prop.name IN $propertyNames`);
   }
   var whereClause = wheres.length > 0 ? `WHERE ${wheres.join(" AND ")}` : "";
-  console.log("yo", whereClause);
 
   const { records } = await graphConnection.run(
     // match the project, all activities in the project,

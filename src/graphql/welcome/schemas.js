@@ -48,7 +48,7 @@ const typeDefs = gql`
 
   type SearchResult @query(read: false, aggregate: false) {
     id: ID!
-    score: Float!
+    distance: Float!
   }
 
   type Property {
