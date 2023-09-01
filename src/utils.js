@@ -105,6 +105,33 @@ const common = {
     date.setHours(0, 0, 0, 0); // Truncate time to midnight
     return date.getTime(); // Get the timestamp in milliseconds
   },
+  cleanHtmlForEmbedding(htmlString) {
+    var str = this.stripHtmlTags(htmlString);
+    str = this.stripMentions(str);
+    str = this.stripLinks(str);
+    str = this.stripEmojis(str);
+    str = this.stripPunctuation(str);
+    return str.replace(/\s+/g, " ").trim();
+  },
+  slugify(str) {
+    return String(str)
+      .normalize("NFKD") // split accented characters into their base characters and diacritical marks
+      .replace(/[\u0300-\u036f]/g, "") // remove all the accents, which happen to be all in the \u03xx UNICODE block.
+      .trim() // trim leading or trailing whitespace
+      .toLowerCase() // convert to lowercase
+      .replace(/[^a-z0-9 -]/g, "") // remove non-alphanumeric characters
+      .replace(/\s+/g, "-") // replace spaces with hyphens
+      .replace(/-+/g, "-"); // remove consecutive hyphens
+  },
+  findQuotedSubstrings(str) {
+    const regex = /"(.*?)"/g;
+    let result = [];
+    let match;
+    while ((match = regex.exec(str)) !== null) {
+      result.push(match[1]);
+    }
+    return result;
+  },
 };
 
 export default common;

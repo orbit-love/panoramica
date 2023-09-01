@@ -11,7 +11,7 @@ import Member from "../Member";
 import Members from "../Members";
 import EditProject from "../EditProject";
 import EditPrompts from "../EditPrompts";
-import EmbedDocumentation from "../EmbedDocumentation";
+import IndexDocumentation from "../IndexDocumentation";
 import Assistant from "../Assistant";
 import Search from "../Search";
 import Source from "../Source";
@@ -38,7 +38,7 @@ const components = {
   Members: (props) => WithContext(Members, props),
   EditProject: (props) => WithContext(EditProject, props),
   EditPrompts: (props) => WithContext(EditPrompts, props),
-  EmbedDocumentation: (props) => WithContext(EmbedDocumentation, props),
+  IndexDocumentation: (props) => WithContext(IndexDocumentation, props),
   User: (props) => WithContext(User, props),
   Assistant: (props) => WithContext(Assistant, props),
   Search: (props) => WithContext(Search, props),

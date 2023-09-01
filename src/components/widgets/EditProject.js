@@ -113,7 +113,7 @@ export default function EditProject({ project, dispatch }) {
 
             {aiReady(project) && (
               <button className="hover:underline" onClick={createEmbeddings}>
-                Load embeddings into vector store
+                Index Conversations
               </button>
             )}
 

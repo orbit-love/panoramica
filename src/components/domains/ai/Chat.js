@@ -217,9 +217,9 @@ export default function Chat({
             </div>
           )}
           {error && <div className="py-4 text-red-500">{error}</div>}
-          {functionOutput && (
+          {/* {functionOutput && (
             <FunctionOutput project={project} functionOutput={functionOutput} />
-          )}
+          )} */}
           <PromptInput
             prompt={prompt}
             setPrompt={setPrompt}

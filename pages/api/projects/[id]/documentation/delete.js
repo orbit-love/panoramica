@@ -1,6 +1,6 @@
 import { check, redirect, authorizeProject } from "src/auth";
 import { aiReady } from "src/integrations/ready";
-import { deleteDocumentationEmbeddings } from "src/integrations/pinecone/embeddings";
+import { deleteQAsCollection } from "src/integrations/typesense";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
@@ -25,19 +25,20 @@ export default async function handler(req, res) {
 
     if (!aiReady(project)) {
       return res.status(400).json({
-        message: "Please set model and vector store API keys on the project",
+        message: "Please set model and Typesens API keys on the project",
       });
     }
 
-    await deleteDocumentationEmbeddings({ project });
+    // Drop the whole collection (if it exists) so that it's later rebuilt with the latest schema
+    await deleteQAsCollection({ project });
 
     return res.status(200).json({
-      result: "Successfully removed the embedded documentation",
+      result: "Successfully removed all indexed sources",
     });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      message: "Failed to remove the embedded documentation",
+      message: "Failed to remove the indexed sources",
     });
   }
 }

@@ -26,12 +26,14 @@ const typeDefs = gql`
     @mutation(operations: []) {
     id: ID!
     name: String!
+    description: String
     demo: Boolean
     url: String
     modelName: String
     workspace: String
-    pineconeApiEnv: String
-    pineconeIndexName: String
+    typesenseUrl: String
+    typesenseApiKey: String
+    aiReady: Boolean
     prismaUser: PrismaUser!
   }
 
@@ -121,6 +123,7 @@ const typeDefs = gql`
       @customResolver(requires: ["id"])
     searchConversations(query: String!): [SearchResult!]!
       @customResolver(requires: ["id"])
+    qaSummaries: [QASummary!]! @customResolver(requires: ["id"])
   }
 
   type SourceChannel
@@ -135,7 +138,12 @@ const typeDefs = gql`
     @query(read: false, aggregate: false)
     @mutation(operations: []) {
     id: ID!
-    score: Float!
+    distance: Float!
+  }
+
+  type QASummary {
+    rootUrl: String!
+    count: Int!
   }
 
   type Property {

@@ -2,7 +2,7 @@ query ($projectId: ID!, $query: String!) {
   projects(where: { id: $projectId }) {
     searchConversations(query: $query) {
       id
-      score
+      distance
     }
   }
 }

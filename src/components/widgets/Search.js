@@ -48,7 +48,7 @@ export default function Search({ project, api, containerApi, handlers }) {
           project={project}
           renderResults={renderResults}
           onChange={onChange}
-          scoreThreshold={0.75}
+          distanceThreshold={0.5}
           immediatelyVisibleResults={10}
         ></SearchComponent>
       </div>

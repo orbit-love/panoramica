@@ -50,7 +50,7 @@ const tabComponents = {
     var icon = <FontAwesomeIcon icon="gear" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
-  EmbedDocumentation: ({ api }) => {
+  IndexDocumentation: ({ api }) => {
     var icon = <FontAwesomeIcon icon="gear" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
