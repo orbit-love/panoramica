@@ -18,21 +18,25 @@ const nextConfig = {
     );
     return config;
   },
-  headers: {
-    // allow the portable widget to be loaded from any domain
-    source: "/api/welcome/graphql",
-    headers: [
-      { key: "Access-Control-Allow-Credentials", value: "true" },
-      { key: "Access-Control-Allow-Origin", value: "*" },
+  headers() {
+    return [
       {
-        key: "Access-Control-Allow-Headers",
-        value: "*",
+        // allow the portable widget to be loaded from any domain
+        source: "/api/welcome/graphql",
+        headers: [
+          { key: "Access-Control-Allow-Credentials", value: "true" },
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: "*",
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET,POST,HEAD,OPTIONS",
+          },
+        ],
       },
-      {
-        key: "Access-Control-Allow-Methods",
-        value: "GET,POST,HEAD,OPTIONS",
-      },
-    ],
+    ];
   },
 };
 
