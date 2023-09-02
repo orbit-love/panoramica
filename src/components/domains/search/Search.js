@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loader from "src/components/domains/ui/Loader";
 import SearchConversationsQuery from "./SearchConversations.gql";
 import GetActivitiesByIdsQuery from "./GetActivitiesByIds.gql";
+import utils from "src/utils";
 
 export default function Search({
   project,
@@ -42,7 +43,8 @@ export default function Search({
     variables: { projectId, ids },
   });
 
-  const activities = idsQueryData?.projects[0].activities || [];
+  var activities = idsQueryData?.projects[0].activities || [];
+  activities = utils.updateActivities(activities);
 
   const numberOfActivitiesAboveThreshold =
     searchConversations.length - filteredConversations.length;
