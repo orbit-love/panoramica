@@ -1,11 +1,10 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
-import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import { useLazyQuery } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Loader from "src/components/domains/ui/Loader";
 import SearchConversationsQuery from "./SearchConversations.gql";
 import GetActivitiesByIdsQuery from "./GetActivitiesByIds.gql";
-import utils from "src/utils";
 
 export default function Search({
   project,
@@ -15,54 +14,78 @@ export default function Search({
   distanceThreshold,
   immediatelyVisibleResults,
 }) {
-  const { id: projectId } = project;
   var searchRef = useRef();
 
   const [term, setTerm] = useState(initialTerm || "");
   const [appliedTerm, setAppliedTerm] = useState(initialTerm);
   const [seeAll, setSeeAll] = useState(false);
+  const [activities, setActivities] = useState([]);
+  const [numberOfHiddenActivities, setNumberOfHiddenActivities] = useState(0);
 
-  const { data, refetch } = useSuspenseQuery(SearchConversationsQuery, {
-    variables: { projectId, query: appliedTerm || "do-not-search" },
+  const { id: projectId } = project;
+
+  const [getActivitiesByIds] = useLazyQuery(GetActivitiesByIdsQuery, {
+    variables: { projectId, ids: [] },
+    onCompleted: (data) => {
+      const {
+        projects: [{ activities }],
+      } = data;
+
+      const updatedActivities = activities.map((activity) => {
+        return {
+          ...activity,
+          conversation: {
+            ...activity.conversation.descendants[0],
+            ...activity.conversation,
+          },
+        };
+      });
+      setActivities(updatedActivities);
+    },
   });
-  const searchConversations = data?.projects[0].searchConversations || [];
 
-  // filter out activities that aren't likely to be good results
-  var filteredConversations = searchConversations;
+  const [searchConversationsQuery, { loading }] = useLazyQuery(
+    SearchConversationsQuery,
+    {
+      variables: { projectId, query: "" },
+      onCompleted: async (data) => {
+        const {
+          projects: [{ searchConversations }],
+        } = data;
 
-  if (!seeAll) {
-    filteredConversations =
-      searchConversations
-        ?.filter(({ distance }) => distance <= distanceThreshold)
-        ?.slice(0, immediatelyVisibleResults) || [];
-  }
+        // filter out activities that aren't likely to be good results
+        var filteredConversations = searchConversations;
+        if (!seeAll) {
+          filteredConversations =
+            searchConversations
+              ?.filter(({ distance }) => distance <= distanceThreshold)
+              ?.slice(0, immediatelyVisibleResults) || [];
+        }
 
-  var ids = filteredConversations.map(({ id }) => id);
+        const numberOfHiddenActivities =
+          searchConversations.length - filteredConversations.length;
+        setNumberOfHiddenActivities(numberOfHiddenActivities);
 
-  const { data: idsQueryData } = useSuspenseQuery(GetActivitiesByIdsQuery, {
-    variables: { projectId, ids },
-  });
-
-  var activities = idsQueryData?.projects[0].activities || [];
-  activities = utils.updateActivities(activities);
-
-  const numberOfActivitiesAboveThreshold =
-    searchConversations.length - filteredConversations.length;
+        var ids = filteredConversations.map(({ id }) => id);
+        await getActivitiesByIds({ variables: { ids } });
+      },
+    }
+  );
 
   const onSearchSubmit = useCallback(
     (e) => {
       e.preventDefault();
       setAppliedTerm(term);
-      refetch();
+      searchConversationsQuery({ variables: { query: term } });
     },
-    [term, refetch]
+    [term, searchConversationsQuery]
   );
 
   useEffect(() => {
-    if (onChange) {
-      onChange(appliedTerm);
+    if (appliedTerm && activities.length === 0) {
+      searchConversationsQuery({ variables: { query: appliedTerm } });
     }
-  }, [appliedTerm, onChange]);
+  }, [appliedTerm, activities, searchConversationsQuery]);
 
   const onSearchChange = (e) => {
     setTerm(e.target.value);
@@ -71,8 +94,16 @@ export default function Search({
   const onReset = () => {
     setTerm("");
     setAppliedTerm("");
+    setActivities([]);
     setSeeAll(false);
+    setNumberOfHiddenActivities(0);
   };
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(appliedTerm);
+    }
+  }, [appliedTerm, onChange]);
 
   return (
     <>
@@ -88,12 +119,12 @@ export default function Search({
           onChange={onSearchChange}
           className="!w-full"
         />
+        <div />
         <button type="submit" className="btn">
-          <React.Suspense fallback={<Loader className="text-white" />}>
-            <FontAwesomeIcon className="text-white" icon="search" />
-          </React.Suspense>
+          {loading && <Loader className="text-white" />}
+          {!loading && <FontAwesomeIcon className="text-white" icon="search" />}
         </button>
-        {appliedTerm && (
+        {activities.length > 0 && (
           <button
             onClick={onReset}
             type="button"
@@ -104,14 +135,14 @@ export default function Search({
         )}
       </form>
       {activities.length > 0 && renderResults({ activities, appliedTerm })}
-      {!seeAll && numberOfActivitiesAboveThreshold > 0 && (
+      {!seeAll && numberOfHiddenActivities > 0 && (
         <div className="p-6">
           <button
             className="text-tertiary hover:underline"
             title="See potentially less relevant results"
             onClick={() => setSeeAll(true)}
           >
-            See {numberOfActivitiesAboveThreshold} results with lower relevance
+            See {numberOfHiddenActivities} results with lower relevance
           </button>
         </div>
       )}
