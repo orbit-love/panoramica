@@ -4,7 +4,7 @@ import { callLLM } from "src/integrations/ai/answer";
 import { indexQAs } from "src/integrations/typesense/index";
 import { prisma } from "src/data/db";
 
-export default {
+const processPagesCallbacks = {
   perform: async (job) => {
     const data = job.data;
     if (!data.projectId || !data.page) {
@@ -32,12 +32,12 @@ export default {
         Questions should be precise, and the answer complete with a good amount of details including links.
         No useful information on the original page should be lost.
         Your output should be a single JSON that looks like this.
-        
+
         [
           { "q": "What is X", "a": "X is this" },
           { "q": "How do you achieve Y", "a": "By doing this and that" }
         ]
-        
+
         The web page:
         {title}
         {body}
@@ -77,3 +77,5 @@ export default {
     duration: 1000,
   },
 };
+
+export default processPagesCallbacks;

@@ -3,7 +3,7 @@ import { eventEmitter } from "./events";
 import { deleteIndexedQAs } from "src/integrations/typesense";
 import { prisma } from "src/data/db";
 
-export default {
+const crawlPagesCallbacks = {
   perform: async (job) => {
     const data = job.data;
     if (!data.startUrl || !data.rootUrl || !data.projectId) {
@@ -43,3 +43,5 @@ export default {
     console.error(error);
   },
 };
+
+export default crawlPagesCallbacks;
