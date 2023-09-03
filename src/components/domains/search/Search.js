@@ -135,7 +135,7 @@ export default function Search({
         )}
       </form>
       {activities.length > 0 && renderResults({ activities, appliedTerm })}
-      {!seeAll && numberOfHiddenActivities > 0 && (
+      {!seeAll && activities.length > 0 && numberOfHiddenActivities > 0 && (
         <div className="p-6">
           <button
             className="text-tertiary hover:underline"
