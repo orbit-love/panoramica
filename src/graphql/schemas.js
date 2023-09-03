@@ -115,6 +115,7 @@ const typeDefs = gql`
     sources: [String!]! @customResolver(requires: ["id"])
     creator: User! @relationship(type: "CREATED", direction: IN)
     prompts: [Prompt!]! @relationship(type: "OWNS", direction: OUT)
+    properties: [Property!]! @relationship(type: "HAS", direction: OUT)
     propertyFilters(
       propertyNames: [String]
       where: PropertyFilterInput

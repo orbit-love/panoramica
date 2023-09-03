@@ -41,6 +41,7 @@ const typeDefs = gql`
     pins: [Activity!]!
       @relationship(type: "PINS", direction: OUT, properties: "Pinned")
     prompts: [Prompt!]! @relationship(type: "OWNS", direction: OUT)
+    properties: [Property!]! @relationship(type: "HAS", direction: OUT)
     propertyFilters(
       propertyNames: [String]
       where: PropertyFilterInput
