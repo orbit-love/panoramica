@@ -29,6 +29,17 @@ export async function POST(request, context) {
 
     var projectId = project.id;
 
+    // only fetch converstions: activities with descendants
+    const where = {
+      AND: [
+        {
+          node: {
+            descendantsAggregate: { count_GTE: 1 },
+          },
+        },
+      ],
+    };
+
     const {
       data: {
         projects: [
@@ -41,16 +52,13 @@ export async function POST(request, context) {
       query: GetConversationsQuery,
       variables: {
         projectId,
-        first: 1,
+        first: 5,
         after: cursor || "",
+        where,
       },
     });
 
-    // filter out replies and activities that already have properties
-    const activities = edges
-      .map((edge) => edge.node)
-      .filter((activity) => activity.id === activity.conversationId)
-      .filter((activity) => activity.propertiesConnection.totalCount <= 1);
+    const activities = edges.map((edge) => edge.node);
 
     const promises = activities.map(async (activity) => {
       try {

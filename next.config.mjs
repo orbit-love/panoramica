@@ -21,7 +21,7 @@ const nextConfig = {
   headers() {
     return [
       {
-        // allow the portable widget to be loaded from any domain
+        // allow the public-facing graphql endpoint to be accessed from anywhere
         source: "/api/welcome/graphql",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },

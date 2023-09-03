@@ -51,22 +51,26 @@ YAML OUTPUT:`;
   const properties = [];
 
   try {
+    if (!text) {
+      console.log("LLM returned null YAML");
+      return [];
+    }
+
     const doc = jsYaml.load(text);
-    if (doc === null) throw new Error("LLM returned null YAML");
 
     for (const [name, value] of Object.entries(doc)) {
       if (Array.isArray(value)) {
         for (const item of value) {
           properties.push({
             name,
-            value: item,
+            value: item + "",
             type: "String",
           });
         }
       } else {
         properties.push({
           name,
-          value,
+          value: value + "",
           type: "String",
         });
       }
