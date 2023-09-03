@@ -21,6 +21,7 @@ function buildClient(uri) {
     const httpLink = new HttpLink({
       uri,
       credentials: "same-origin",
+      fetchOptions: { cache: "no-store" },
     });
 
     return new NextSSRApolloClient({
