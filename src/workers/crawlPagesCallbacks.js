@@ -35,11 +35,11 @@ const crawlPagesCallbacks = {
     return `Crawled ${results.length} pages`;
   },
   onCompleted: (job, returnValue) => {
-    console.log(`Job ${job} completed and returned:`);
+    console.log(`Job ${job.name} completed and returned:`);
     console.log(returnValue);
   },
   onFailed: (job, error) => {
-    console.error(`Job ${job} failed with the following error:`);
+    console.error(`Job ${job.name} failed with the following error:`);
     console.error(error);
   },
 };

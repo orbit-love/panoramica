@@ -21,6 +21,12 @@ const processPagesCallbacks = {
     console.log(`[Worker][ProcessPages] Processing page @ ${page.url}`);
 
     const turndownService = new TurndownService({ headingStyle: "atx" });
+    const body = turndownService.turndown(page.body);
+    const bodySize = body.length;
+    if (bodySize > 16000) {
+      return `[Worker][ProcessPages] Body too big (${bodySize} chars), skipping: ${page.url}`;
+    }
+
     const llmOutput = await callLLM({
       project,
       promptTemplate: `
@@ -47,7 +53,7 @@ const processPagesCallbacks = {
       promptArgs: {
         description: project.description || "-",
         title: page.title,
-        body: turndownService.turndown(page.body),
+        body,
       },
       streaming: false,
     });
@@ -55,21 +61,23 @@ const processPagesCallbacks = {
     //   `[Worker][ProcessPages] LLM Output from page @ ${page.url}\n`,
     //   llmOutput
     // );
+    if (!llmOutput) {
+      return `[Worker][ProcessPages] No LLM Output likely due to rate limiting, skipping: ${page.url}`;
+    }
     try {
       const qas = JSON.parse(llmOutput);
       await indexQAs({ project, qas: qas.map((qa) => ({ ...qa, page })) });
       return `[Worker][ProcessPages] Indexed ${qas.length} from page @ ${page.url}`;
     } catch (e) {
-      console.log("[Worker][ProcessPages] LLM didn't produce a valid JSON");
-      throw e;
+      return `[Worker][ProcessPages] LLM didn't produce a valid JSON`;
     }
   },
   onCompleted: (job, returnValue) => {
-    console.log(`Job ${job} completed and returned:`);
+    console.log(`Job ${job.name} completed and returned:`);
     console.log(returnValue);
   },
   onFailed: (job, error) => {
-    console.error(`Job ${job} failed with the following error:`);
+    console.error(`Job ${job.name} failed with the following error:`);
     console.error(error);
   },
   limiter: {

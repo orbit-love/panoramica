@@ -42,6 +42,13 @@ export const crawl = async ({
       const $ = res.$;
       const c = res.options.crawler;
 
+      // if the page is not HTML, jQuery is not injected and the following code will
+      // fail - so we just skip it
+      if (!$) {
+        done();
+        return;
+      }
+
       const title = $("title").text();
       const url = res.request.uri.href.trim().replace(/\/$/, "");
 
