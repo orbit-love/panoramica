@@ -1,6 +1,12 @@
 #import "src/graphql/fragments/ForActivityFeed.gql"
-mutation ($activityId: ID!, $createdAt: String!, $createdAtInt: Float!) {
+mutation (
+  $projectId: ID!
+  $activityId: ID!
+  $createdAt: String!
+  $createdAtInt: Float!
+) {
   updateProjects(
+    where: { id: $projectId }
     update: {
       pins: {
         connectOrCreate: {
