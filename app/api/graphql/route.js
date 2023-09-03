@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
 import { graph } from "src/data/db";
 import { Neo4jGraphQL } from "@neo4j/graphql";
+import { checkJWT } from "src/auth";
 
 const secret = process.env.NEXTAUTH_SECRET;
 
@@ -46,14 +47,19 @@ const server = async () => {
   return apolloServer;
 };
 
-const getLoggedInUser = async () => {
-  const session = await getServerSession(authOptions);
-  return session?.user;
+const getLoggedInUser = async (request) => {
+  const user = checkJWT(request);
+  if (user) {
+    return user;
+  } else {
+    const session = await getServerSession(authOptions);
+    return session?.user;
+  }
 };
 
 const handler = startServerAndCreateNextHandler(await server(), {
-  context: async () => {
-    const user = await getLoggedInUser();
+  context: async (request) => {
+    const user = await getLoggedInUser(request);
     var token;
     if (user) {
       var roles = user.admin ? ["admin"] : [];
