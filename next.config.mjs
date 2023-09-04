@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 
+import { graph } from "neo4j-driver";
+
 const nextConfig = {
   basePath: process.env.BASE_PATH || "",
   reactStrictMode: false,
@@ -21,23 +23,28 @@ const nextConfig = {
   headers() {
     return [
       {
-        // allow the public-facing graphql endpoint to be accessed from anywhere
         source: "/api/welcome/graphql",
-        headers: [
-          { key: "Access-Control-Allow-Credentials", value: "true" },
-          { key: "Access-Control-Allow-Origin", value: "*" },
-          {
-            key: "Access-Control-Allow-Headers",
-            value: "*",
-          },
-          {
-            key: "Access-Control-Allow-Methods",
-            value: "GET,POST,HEAD,OPTIONS",
-          },
-        ],
+        headers: graphQLHeaders,
+      },
+      {
+        source: "/api/graphql",
+        headers: graphQLHeaders,
       },
     ];
   },
 };
 
 export default nextConfig;
+
+const graphQLHeaders = [
+  { key: "Access-Control-Allow-Credentials", value: "true" },
+  { key: "Access-Control-Allow-Origin", value: "*" },
+  {
+    key: "Access-Control-Allow-Headers",
+    value: "*",
+  },
+  {
+    key: "Access-Control-Allow-Methods",
+    value: "GET,POST,HEAD,OPTIONS",
+  },
+];
