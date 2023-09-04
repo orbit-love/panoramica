@@ -1,5 +1,6 @@
-mutation ($activityId: ID!) {
+mutation ($userId: ID!, $activityId: ID!) {
   updateUsers(
+    where: { id: $userId }
     disconnect: { bookmarks: { where: { node: { id: $activityId } } } }
   ) {
     info {

@@ -55,10 +55,14 @@ export const scheduleJob = (queueName, jobId, data) => {
   if (!workerDefinition) {
     throw Error(`No worker definition found for Queue ${queueName}`);
   }
-  console.log(
-    `[Worker] queueing job jobId=${jobId}, queue=${queueName}, data=\n`,
-    JSON.stringify(data, null, 2)
-  );
+  if (process.env.DEBUG) {
+    console.log(
+      `[Worker] Queueing job jobId=${jobId}, queue=${queueName}, data=\n`,
+      JSON.stringify(data, null, 2)
+    );
+  } else {
+    console.log(`[Worker] Queueing job jobId=${jobId}, queue=${queueName}`);
+  }
   workerDefinition.queue.add(jobId, data);
 };
 

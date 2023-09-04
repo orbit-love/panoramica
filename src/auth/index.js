@@ -24,8 +24,15 @@ export const demoSession = () => ({
   },
 });
 
-const checkJWT = function (req) {
-  const authorization = req.headers.authorization || "";
+export const checkJWT = function (req) {
+  var authorization;
+  // for the app router, req.headers.get is a function
+  // for the pages router, req.headers.authorization is the way to retrieve
+  if (typeof req.headers.get === "function") {
+    authorization = req.headers.get("authorization");
+  } else {
+    authorization = req.headers.authorization;
+  }
 
   if (!authorization) return;
 

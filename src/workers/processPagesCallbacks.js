@@ -4,7 +4,7 @@ import { callLLM } from "src/integrations/ai/answer";
 import { indexQAs } from "src/integrations/typesense/index";
 import { prisma } from "src/data/db";
 
-export default {
+const processPagesCallbacks = {
   perform: async (job) => {
     const data = job.data;
     if (!data.projectId || !data.page) {
@@ -21,6 +21,12 @@ export default {
     console.log(`[Worker][ProcessPages] Processing page @ ${page.url}`);
 
     const turndownService = new TurndownService({ headingStyle: "atx" });
+    const body = turndownService.turndown(page.body);
+    const bodySize = body.length;
+    if (bodySize > 16000) {
+      return `[Worker][ProcessPages] Body too big (${bodySize} chars), skipping: ${page.url}`;
+    }
+
     const llmOutput = await callLLM({
       project,
       promptTemplate: `
@@ -32,12 +38,12 @@ export default {
         Questions should be precise, and the answer complete with a good amount of details including links.
         No useful information on the original page should be lost.
         Your output should be a single JSON that looks like this.
-        
+
         [
           { "q": "What is X", "a": "X is this" },
           { "q": "How do you achieve Y", "a": "By doing this and that" }
         ]
-        
+
         The web page:
         {title}
         {body}
@@ -47,7 +53,7 @@ export default {
       promptArgs: {
         description: project.description || "-",
         title: page.title,
-        body: turndownService.turndown(page.body),
+        body,
       },
       streaming: false,
     });
@@ -55,21 +61,23 @@ export default {
     //   `[Worker][ProcessPages] LLM Output from page @ ${page.url}\n`,
     //   llmOutput
     // );
+    if (!llmOutput) {
+      return `[Worker][ProcessPages] No LLM Output likely due to rate limiting, skipping: ${page.url}`;
+    }
     try {
       const qas = JSON.parse(llmOutput);
       await indexQAs({ project, qas: qas.map((qa) => ({ ...qa, page })) });
       return `[Worker][ProcessPages] Indexed ${qas.length} from page @ ${page.url}`;
     } catch (e) {
-      console.log("[Worker][ProcessPages] LLM didn't produce a valid JSON");
-      throw e;
+      return `[Worker][ProcessPages] LLM didn't produce a valid JSON`;
     }
   },
   onCompleted: (job, returnValue) => {
-    console.log(`Job ${job} completed and returned:`);
+    console.log(`Job ${job.name} completed and returned:`);
     console.log(returnValue);
   },
   onFailed: (job, error) => {
-    console.error(`Job ${job} failed with the following error:`);
+    console.error(`Job ${job.name} failed with the following error:`);
     console.error(error);
   },
   limiter: {
@@ -77,3 +85,5 @@ export default {
     duration: 1000,
   },
 };
+
+export default processPagesCallbacks;

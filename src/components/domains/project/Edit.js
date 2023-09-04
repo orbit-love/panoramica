@@ -9,7 +9,7 @@ export default function Edit({
   setStatus,
 }) {
   const [name, setName] = useState(project.name);
-  const [description, setDescription] = useState(project.description);
+  const [description, setDescription] = useState(project.description || "");
   const [url, setUrl] = useState(project.url || "");
   const [workspace, setWorkspace] = useState(project.workspace);
   const [apiKey, setApiKey] = useState("");

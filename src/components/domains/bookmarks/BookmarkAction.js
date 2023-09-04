@@ -2,6 +2,7 @@ import React, { useCallback, useContext } from "react";
 import classnames from "classnames";
 import { useMutation } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useSession } from "next-auth/react";
 
 import {
   BookmarksContext,
@@ -13,6 +14,9 @@ import DisconnectBookmarkMutation from "src/graphql/mutations/DisconnectBookmark
 export default function BookmarkAction({ activity, className }) {
   const { bookmarks } = useContext(BookmarksContext);
   const dispatch = useContext(BookmarksDispatchContext);
+
+  const { data: session } = useSession();
+  const userId = session.user.id;
 
   var bookmark = bookmarks.find((bookmark) => bookmark.node.id === activity.id);
 
@@ -26,6 +30,7 @@ export default function BookmarkAction({ activity, className }) {
     if (bookmark) {
       await disconnectBookmark({
         variables: {
+          userId,
           activityId,
         },
       });
@@ -50,6 +55,7 @@ export default function BookmarkAction({ activity, className }) {
         },
       } = await connectBookmark({
         variables: {
+          userId,
           activityId,
           createdAt,
           createdAtInt,

@@ -1,6 +1,12 @@
 #import "src/graphql/fragments/ForActivityFeed.gql"
-mutation ($activityId: ID!, $createdAt: String!, $createdAtInt: Float!) {
+mutation (
+  $userId: ID!
+  $activityId: ID!
+  $createdAt: String!
+  $createdAtInt: Float!
+) {
   updateUsers(
+    where: { id: $userId }
     update: {
       bookmarks: {
         connectOrCreate: {

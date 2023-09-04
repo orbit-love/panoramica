@@ -132,6 +132,16 @@ const common = {
     }
     return result;
   },
+  updateActivities: (activities) =>
+    activities.map((activity) => {
+      return {
+        ...activity,
+        conversation: {
+          ...activity.conversation.descendants[0],
+          ...activity.conversation,
+        },
+      };
+    }),
 };
 
 export default common;

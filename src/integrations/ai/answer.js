@@ -40,8 +40,10 @@ export const callLLM = async ({
   promptTemplate,
   promptArgs,
   streaming = false,
+  modelName: modelNameFromArgument,
 }) => {
-  const { modelName, modelApiKey } = project;
+  const { modelName: modelNameFromProject, modelApiKey } = project;
+  const modelName = modelNameFromArgument || modelNameFromProject;
   const formattedPrompt = utils.formatUnicornString(promptTemplate, promptArgs);
 
   if (
@@ -52,6 +54,7 @@ export const callLLM = async ({
       modelName,
     })
   ) {
+    console.log("AI Limit check did not pass");
     return;
   }
 

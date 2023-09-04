@@ -25,17 +25,17 @@ Here is information about the conversation format to help you understand it.
 - The "timestamp" property contains the timestamp of the message in ISO 8601 format.
 - The "author" property is the name of the person sending the message
 
-YAML INPUT:
-
-${yaml}
-
-Now, generate a new YAML document based on that input, following these rules:
+Now, generate a new YAML document based on the following input, following these rules:
 
 - Use your understanding of the full conversation to generate the properties
 - If a property is a list, put the list items on separate lines and indent them
 - Omit properties that were not evaluated or are empty, DO NOT RETURN empty properties
 - Do not return any data from the conversation itself, only the generated properties
 - Check that the YAML document is valid before returning it
+
+YAML INPUT:
+
+${yaml}
 
 YAML OUTPUT:`;
   };
@@ -51,22 +51,26 @@ YAML OUTPUT:`;
   const properties = [];
 
   try {
+    if (!text) {
+      console.log("LLM returned null YAML");
+      return [];
+    }
+
     const doc = jsYaml.load(text);
-    if (doc === null) throw new Error("LLM returned null YAML");
 
     for (const [name, value] of Object.entries(doc)) {
       if (Array.isArray(value)) {
         for (const item of value) {
           properties.push({
             name,
-            value: item,
+            value: item + "",
             type: "String",
           });
         }
       } else {
         properties.push({
           name,
-          value,
+          value: value + "",
           type: "String",
         });
       }

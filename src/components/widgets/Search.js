@@ -19,7 +19,7 @@ export default function Search({ project, api, containerApi, handlers }) {
 
   const onChange = useCallback(
     (appliedTerm) => {
-      updateTitle(appliedTerm);
+      updateTitle(appliedTerm || "Search");
     },
     [updateTitle]
   );

@@ -41,33 +41,33 @@ export default function ConversationFeedItem(props) {
     }
   };
 
-  useEffect(() => {
-    // if the activity has no properties or only 1 property
-    // fire off a request to generate properties
-    if (conversation.properties?.length <= 1) {
-      console.log(
-        `No properties on ${conversation.id}, making request to generate`
-      );
-      postCreateActivityProperties({
-        project,
-        activity: conversation,
-        onSuccess: ({ data }) => {
-          const newProperties = data.properties;
-          console.log(
-            "New Properties fetched " + JSON.stringify(newProperties)
-          );
-          setActivity({
-            ...activity,
-            conversation: {
-              ...conversation,
-              properties: newProperties,
-            },
-          });
-          console.log(newProperties);
-        },
-      });
-    }
-  }, [project, activity, conversation]);
+  // useEffect(() => {
+  //   // if the activity has no properties or only 1 property
+  //   // fire off a request to generate properties
+  //   if (conversation.properties?.length <= 1) {
+  //     console.log(
+  //       `No properties on ${conversation.id}, making request to generate`
+  //     );
+  //     postCreateActivityProperties({
+  //       project,
+  //       activity: conversation,
+  //       onSuccess: ({ data }) => {
+  //         const newProperties = data.properties;
+  //         console.log(
+  //           "New Properties fetched " + JSON.stringify(newProperties)
+  //         );
+  //         setActivity({
+  //           ...activity,
+  //           conversation: {
+  //             ...conversation,
+  //             properties: newProperties,
+  //           },
+  //         });
+  //         console.log(newProperties);
+  //       },
+  //     });
+  //   }
+  // }, [project, activity, conversation]);
 
   return (
     <div

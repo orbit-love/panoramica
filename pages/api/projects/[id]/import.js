@@ -23,15 +23,14 @@ export default async function handler(req, res) {
     }
 
     const allData = [];
-    var pageLimit = 10;
     let { url, apiKey, workspace } = project;
 
+    var pageLimit;
     if (url) {
-      // if a url is provided, allow the url to control how much
-      // data is imported via timeframe or other filters
+      // if a url is provided, set page limit high to let other filters control it
       pageLimit = 100;
     } else {
-      // if a url is not provided, generate it
+      // if a url is not provided, generate it and set a lower default page limit
       url = getAPIUrl({ workspace });
       pageLimit = 10;
     }

@@ -8,6 +8,21 @@ const typeDefs = gql`
     createdAtInt: Float!
   }
 
+  type PropertyFilterOption {
+    value: String!
+    count: Int!
+  }
+
+  type PropertyFilter {
+    name: String!
+    values: [PropertyFilterOption!]!
+  }
+
+  input PropertyFilterInput {
+    source: String
+    sourceChannel: String
+  }
+
   type Project
     @query(aggregate: false)
     @authorization(
@@ -26,6 +41,11 @@ const typeDefs = gql`
     pins: [Activity!]!
       @relationship(type: "PINS", direction: OUT, properties: "Pinned")
     prompts: [Prompt!]! @relationship(type: "OWNS", direction: OUT)
+    properties: [Property!]! @relationship(type: "HAS", direction: OUT)
+    propertyFilters(
+      propertyNames: [String]
+      where: PropertyFilterInput
+    ): [PropertyFilter!]! @customResolver(requires: ["id"])
     searchConversations(query: String!): [SearchResult!]!
       @customResolver(requires: ["id"])
   }
