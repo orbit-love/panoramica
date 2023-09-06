@@ -9,6 +9,7 @@ import resolveConversationJson from "src/graphql/resolvers/activity/conversation
 import resolvePropertyFilters from "src/graphql/resolvers/project/propertyFilters";
 import { aiReady } from "src/integrations/ready";
 import { getQaSummaries } from "./resolvers/getQaSummaries";
+import performOmniSearch from "./resolvers/performOmniSearch";
 
 const resolvers = {
   Query: {
@@ -82,6 +83,15 @@ const resolvers = {
           }))
           .filter((record) => record.name) || []
       );
+    },
+    async omniSearch(parent, args) {
+      const { id: projectId } = parent;
+      const { query } = args;
+      if (query === "do-not-search") {
+        return { conversationSearchResults: [], qaSearchResults: [] };
+      } else {
+        return performOmniSearch({ projectId, query });
+      }
     },
     async searchConversations(parent, args) {
       const { id: projectId } = parent;

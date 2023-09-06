@@ -1,8 +1,7 @@
 import React, { useCallback } from "react";
 
 import { Frame, saveLayout } from "src/components/widgets";
-import SearchComponent from "src/components/domains/search/Search";
-import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
+import OmniSearch from "../domains/search/OmniSearch";
 
 export default function Search({ project, api, containerApi, handlers }) {
   const initialTerm = api.title === "Search" ? "" : api.title;
@@ -24,33 +23,15 @@ export default function Search({ project, api, containerApi, handlers }) {
     [updateTitle]
   );
 
-  const renderResults = ({ activities, appliedTerm }) => {
-    return (
-      <div className="flex flex-col space-y-0">
-        {activities.map((activity) => (
-          <ConversationFeedItem
-            key={activity.id}
-            activity={activity}
-            project={project}
-            handlers={handlers}
-            term={appliedTerm}
-          />
-        ))}
-      </div>
-    );
-  };
-
   return (
-    <Frame>
+    <Frame fullWidth={true}>
       <div className="my-6">
-        <SearchComponent
+        <OmniSearch
           initialTerm={initialTerm}
           project={project}
-          renderResults={renderResults}
           onChange={onChange}
-          distanceThreshold={0.5}
-          immediatelyVisibleResults={10}
-        ></SearchComponent>
+          handlers={handlers}
+        ></OmniSearch>
       </div>
     </Frame>
   );

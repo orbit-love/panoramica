@@ -6,7 +6,7 @@ import {
   searchProjectConversations,
 } from "../typesense";
 
-const SIMILARITY_DISTANCE_THRESHOLD = 0.5;
+const SIMILARITY_DISTANCE_THRESHOLD = 0.25;
 
 export const executeFunction = async ({ project, input }) => {
   console.log(`[Assistant] Executing function: ${input}`);

@@ -1,0 +1,19 @@
+query ($projectId: ID!, $query: String!) {
+  projects(where: { id: $projectId }) {
+    omniSearch(query: $query) {
+      conversationSearchResults {
+        id
+        distance
+      }
+
+      qaSearchResults {
+        id
+        distance
+        question
+        answer
+        pageTitle
+        pageUrl
+      }
+    }
+  }
+}
