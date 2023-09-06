@@ -7,7 +7,7 @@ export default function SimilarConversations({
   project,
   activity,
   renderResults,
-  distanceThreshold = 0.5,
+  distanceThreshold = 0.25,
   maxResults = 5,
 }) {
   const { id: projectId } = project;

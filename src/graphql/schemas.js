@@ -124,6 +124,8 @@ const typeDefs = gql`
       @customResolver(requires: ["id"])
     searchConversations(query: String!): [SearchResult!]!
       @customResolver(requires: ["id"])
+    omniSearch(query: String!): OmniSearchResults!
+      @customResolver(requires: ["id"])
     qaSummaries: [QASummary!]! @customResolver(requires: ["id"])
   }
 
@@ -133,6 +135,20 @@ const typeDefs = gql`
     name: String!
     activityCount: Int!
     lastActivityAt: String!
+  }
+
+  type OmniSearchResults {
+    conversationSearchResults: [SearchResult!]!
+    qaSearchResults: [QASearchResult!]!
+  }
+
+  type QASearchResult {
+    id: ID!
+    distance: Float!
+    question: String!
+    answer: String!
+    pageTitle: String
+    pageUrl: String
   }
 
   type SearchResult

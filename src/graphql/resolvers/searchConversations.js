@@ -14,13 +14,12 @@ const searchConversations = async ({ projectId, query }) => {
     keywordSearch.filter_by = `body: [${filter}]`;
   }
 
-  console.log(keywordSearch);
-
   const documents = await searchProjectConversations({
     project,
     searchRequest: {
       q: query,
       query_by: "embedding",
+      exclude_fields: "embedding",
       prefix: false,
       limit: 25,
       ...keywordSearch,

@@ -19,8 +19,12 @@ export const toPageContent = (activities) => {
 
 // SEARCH
 
-const getProjectCollection = async ({ project, collectionName }) => {
-  const typesenseClient = getTypesenseClient({ project });
+const getProjectCollection = async ({
+  project,
+  collectionName,
+  typesenseClient,
+}) => {
+  typesenseClient ||= getTypesenseClient({ project });
   if (!typesenseClient) return;
   return await retrieveTypesenseCollection({
     typesenseClient,
@@ -28,16 +32,21 @@ const getProjectCollection = async ({ project, collectionName }) => {
   });
 };
 
-export const getProjectConversationsCollection = async ({ project }) => {
+export const getProjectConversationsCollection = async ({
+  project,
+  typesenseClient,
+}) => {
   return await getProjectCollection({
     project,
+    typesenseClient,
     collectionName: `project-conversations-${project.id}`,
   });
 };
 
-export const getProjectQAsCollection = async ({ project }) => {
+export const getProjectQAsCollection = async ({ project, typesenseClient }) => {
   return await getProjectCollection({
     project,
+    typesenseClient,
     collectionName: `project-qas-${project.id}`,
   });
 };

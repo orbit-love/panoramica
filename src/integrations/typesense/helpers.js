@@ -14,7 +14,7 @@ export const getTypesenseClient = ({ project }) => {
       },
     ],
     apiKey: project.typesenseApiKey,
-    connectionTimeoutSeconds: 2,
+    connectionTimeoutSeconds: 5,
   });
 };
 

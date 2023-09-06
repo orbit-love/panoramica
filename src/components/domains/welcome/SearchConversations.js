@@ -23,7 +23,7 @@ export default function SearchConversations({ project, handlers }) {
     <Search
       project={project}
       renderResults={renderResults}
-      distanceThreshold={0.5}
+      distanceThreshold={0.25}
       immediatelyVisibleResults={5}
     ></Search>
   );
