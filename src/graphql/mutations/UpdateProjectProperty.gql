@@ -1,0 +1,22 @@
+mutation ($projectId: ID!, $name: String!, $value: String!) {
+  deleteExistingProperty: updateProjects(
+    delete: { properties: { where: { node: { name: $name } } } }
+    where: { id: $projectId }
+  ) {
+    info {
+      nodesDeleted
+      relationshipsDeleted
+    }
+  }
+  createNewProperty: updateProjects(
+    create: {
+      properties: [{ node: { name: $name, type: "String", value: $value } }]
+    }
+    where: { id: $projectId }
+  ) {
+    info {
+      nodesCreated
+      relationshipsCreated
+    }
+  }
+}

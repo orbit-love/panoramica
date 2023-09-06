@@ -1,7 +1,7 @@
 import { check, redirect, authorizeProject } from "src/auth";
 import { getAPIUrl, getAPIData } from "src/integrations/orbit/api";
 import { graph } from "src/data/db";
-import { setupProject, syncActivities } from "src/data/graph/mutations";
+import { syncActivities } from "src/data/graph/mutations";
 import { orbitImportReady } from "src/integrations/ready";
 
 export default async function handler(req, res) {
@@ -12,6 +12,9 @@ export default async function handler(req, res) {
 
   const { id } = req.query;
   const session = graph.session();
+
+  const json = req.body;
+  var { startDate, endDate } = json;
 
   try {
     var project = await authorizeProject({ id, user, res });
@@ -25,23 +28,20 @@ export default async function handler(req, res) {
     const allData = [];
     let { url, apiKey, workspace } = project;
 
-    var pageLimit;
-    if (url) {
-      // if a url is provided, set page limit high to let other filters control it
-      pageLimit = 100;
-    } else {
-      // if a url is not provided, generate it and set a lower default page limit
+    // if these fields are provided, set no page limit
+    const manualPageLimit = url || startDate || endDate;
+
+    if (!url) {
       url = getAPIUrl({ workspace });
-      pageLimit = 10;
+    }
+
+    if (startDate) {
+      url = `${url}&start_date=${startDate}`;
+    }
+    if (endDate) {
+      url = `${url}&end_date=${endDate}`;
     }
     console.log("Using Import URL ", url);
-
-    await session.writeTransaction(async (tx) => {
-      await setupProject({ tx, project, user });
-    });
-
-    // import a maximum of 1,000 activities; start at page 1
-    const page = 1;
 
     const handleRecords = async (records) => {
       // this is a quick and dirty way to remove duplicate sourceId from
@@ -59,10 +59,11 @@ export default async function handler(req, res) {
       console.log("Created activities: " + createdActivities.length);
     };
 
+    const pageLimit = manualPageLimit ? -1 : 10;
+
     await getAPIData({
       url,
       apiKey,
-      page,
       pageLimit,
       allData,
       project,

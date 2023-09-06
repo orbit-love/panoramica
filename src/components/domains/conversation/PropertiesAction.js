@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "src/components/ui/Modal";
 import GenerateConversationPropertiesFromYaml from "src/graphql/queries/GenerateConversationPropertiesFromYaml.gql";
-import SetActivityPropertiesMutation from "src/graphql/mutations/SetActivityProperties.gql";
+import CreateActivityPropertiesMutation from "src/graphql/mutations/CreateActivityProperties.gql";
 import DeleteActivityPropertiesMutation from "src/graphql/mutations/DeleteActivityProperties.gql";
 import Loader from "src/components/domains/ui/Loader";
 import coreYaml from "src/configuration/definitions/core.yaml";
@@ -51,7 +51,9 @@ const PropertiesModal = ({ project, activity, setActivity }) => {
   const [deleteActivityProperties] = useMutation(
     DeleteActivityPropertiesMutation
   );
-  const [setActivityProperties] = useMutation(SetActivityPropertiesMutation);
+  const [createActivityProperties] = useMutation(
+    CreateActivityPropertiesMutation
+  );
 
   const handleGeneratedProperties = useCallback(
     async (data) => {
@@ -77,14 +79,14 @@ const PropertiesModal = ({ project, activity, setActivity }) => {
           node: { name, value, type },
         })
       );
-      await setActivityProperties({
+      await createActivityProperties({
         variables: {
           id: activityId,
           properties: propertiesWithNode,
         },
       });
     },
-    [activity, setActivity, deleteActivityProperties, setActivityProperties]
+    [activity, setActivity, deleteActivityProperties, createActivityProperties]
   );
 
   const [generateProperties, { loading }] = useLazyQuery(

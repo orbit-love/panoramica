@@ -37,7 +37,7 @@ export function getAPIUrl({ workspace, timeframe = "" }) {
   ];
 
   let activityTypeStr = activityTypes.join("%2C");
-  // only conversational activity types with referenced tweets, 90 days default
+  // only conversational activity types with referenced tweets
   let queryString = `activity_type=${activityTypeStr}&include_referenced_activities=true${timeframe}`;
   return `https://app.orbit.love/${workspace}/activities.json?${queryString}`;
 }
@@ -440,7 +440,7 @@ export const getAPIData = async ({
       // This assumes that the API returns a JSON object with a 'nextPage' property
       // that is null when there are no more pages.
       var nextUrl = response.data.links?.next;
-      if (nextUrl && page < pageLimit) {
+      if (nextUrl && (page < pageLimit || pageLimit === -1)) {
         resolve(
           getAPIData({
             url: nextUrl,

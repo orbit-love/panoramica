@@ -1,3 +1,4 @@
+import React from "react";
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "../tailwind.config.js";
 
@@ -142,6 +143,17 @@ const common = {
         },
       };
     }),
+  getProperty: (name, object) =>
+    object.properties.find((property) => property.name === name),
+  getProperties: (name, object) =>
+    object.properties.filter((property) => property.name === name),
+  usePrevious: (value) => {
+    const ref = React.useRef();
+    React.useEffect(() => {
+      ref.current = value;
+    }, [value]);
+    return ref.current;
+  },
 };
 
 export default common;

@@ -1,7 +1,5 @@
 /** @type {import('next').NextConfig} */
 
-import { graph } from "neo4j-driver";
-
 const nextConfig = {
   basePath: process.env.BASE_PATH || "",
   reactStrictMode: false,

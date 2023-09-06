@@ -45,6 +45,7 @@ export async function getJWT({ onSuccess, setLoading }) {
 
 export async function putProjectImport({
   project,
+  body,
   onSuccess,
   onFailure,
   setLoading,
@@ -52,6 +53,7 @@ export async function putProjectImport({
   makeRequest({
     url: `/api/projects/${project.id}/import`,
     method: "PUT",
+    body,
     onSuccess,
     onFailure,
     setLoading,

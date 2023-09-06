@@ -6,7 +6,7 @@ import SiteHeader from "src/components/ui/SiteHeader";
 import Link from "next/link";
 import { getWelcomeClient as getClient } from "src/graphql/apollo-client";
 import { ApolloWelcomeWrapper } from "src/graphql/apollo-wrapper";
-import GetProjectQuery from "./GetProject.gql";
+import GetProjectQuery from "src/graphql/queries/GetProject.gql";
 
 export async function generateMetadata({ params }) {
   const project = await getProject(params.id);

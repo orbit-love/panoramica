@@ -9,7 +9,6 @@ export default function Settings({
   newPanelPosition,
   addWidget,
   resetWidgets,
-  user,
 }) {
   const onClickEditPrompts = (e) => {
     e.preventDefault();
@@ -31,6 +30,14 @@ export default function Settings({
     e.preventDefault();
     addWidget("index-documentation", "IndexDocumentation", {
       title: "Index Documentation",
+      position: newPanelPosition(),
+    });
+  };
+
+  const onClickManageData = (e) => {
+    e.preventDefault();
+    addWidget("manage-data", "ManageData", {
+      title: "Manage Data",
       position: newPanelPosition(),
     });
   };
@@ -69,6 +76,12 @@ export default function Settings({
               Index Documentation
             </div>
           )}
+          <div
+            className="cursor-pointer hover:underline"
+            onClick={onClickManageData}
+          >
+            Manage Data
+          </div>
           <ThemeAction>
             <div className="cursor-pointer hover:underline">Change Theme</div>
           </ThemeAction>

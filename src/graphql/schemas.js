@@ -178,7 +178,7 @@ const typeDefs = gql`
     text: String
     textHtml: String
     timestamp: String
-    timestampInt: Int
+    timestampInt: Float
     url: String
     project: Project! @relationship(type: "OWNS", direction: IN)
     member: Member! @relationship(type: "DID", direction: IN)

@@ -43,7 +43,10 @@ export async function mergeProject({ project, user, tx }) {
 
 export async function setupProject({ project, user, tx }) {
   await mergeProject({ project, user, tx });
+  console.log("Memgraph: Created project");
+}
 
+export async function clearProject({ project, tx }) {
   const projectId = project.id;
   // delete existing nodes and relationships
   await tx.run(
@@ -51,7 +54,7 @@ export async function setupProject({ project, user, tx }) {
         DETACH DELETE n`,
     { projectId }
   );
-  console.log("Memgraph: Cleared existing project data");
+  console.log("Memgraph: Cleared project");
 }
 
 // set up constraints and indexes for memgraph
