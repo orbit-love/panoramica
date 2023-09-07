@@ -143,6 +143,13 @@ const common = {
         },
       };
     }),
+  updateActivitiesNew: (activities) =>
+    activities.map((activity) => ({
+      ...activity,
+      conversation: {
+        ...activity,
+      },
+    })),
   getProperty: (name, object) =>
     object.properties.find((property) => property.name === name),
   getProperties: (name, object) =>

@@ -5,7 +5,7 @@ import UpdateProjectPropertyMutation from "src/graphql/mutations/UpdateProjectPr
 import utils from "src/utils";
 import { ProjectDispatchContext } from "src/components/context/ProjectContext";
 
-export default function ManageProperty({ propertyName, project }) {
+export default function ManageProjectProperty({ propertyName, project }) {
   const [message, setMessage] = React.useState("");
   const dispatch = React.useContext(ProjectDispatchContext);
 

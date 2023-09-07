@@ -18,14 +18,6 @@ export default function Settings({
     });
   };
 
-  const onClickUser = (e) => {
-    e.preventDefault();
-    addWidget("user", "User", {
-      title: "User",
-      position: newPanelPosition(),
-    });
-  };
-
   const onClickIndexDocumentation = (e) => {
     e.preventDefault();
     addWidget("index-documentation", "IndexDocumentation", {
@@ -38,6 +30,14 @@ export default function Settings({
     e.preventDefault();
     addWidget("manage-data", "ManageData", {
       title: "Manage Data",
+      position: newPanelPosition(),
+    });
+  };
+
+  const onClickLabelConversations = (e) => {
+    e.preventDefault();
+    addWidget("label-conversations", "LabelConversations", {
+      title: "Label Conversations",
       position: newPanelPosition(),
     });
   };
@@ -81,6 +81,12 @@ export default function Settings({
             onClick={onClickManageData}
           >
             Manage Data
+          </div>
+          <div
+            className="cursor-pointer hover:underline"
+            onClick={onClickLabelConversations}
+          >
+            Label Conversations
           </div>
           <ThemeAction>
             <div className="cursor-pointer hover:underline">Change Theme</div>

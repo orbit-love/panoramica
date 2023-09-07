@@ -6,6 +6,7 @@ import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import Paginator from "src/components/domains/feed/Paginator";
 import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
 import Filters from "./Filters";
+import FilterDisplay from "./FilterDisplay";
 
 const findActivitiesConnectionEdges = ({
   projects: [
@@ -140,42 +141,3 @@ export default function ConversationFeed({
     </>
   );
 }
-
-const FilterDisplay = ({
-  project,
-  where,
-  filters,
-  setFilters,
-  propertyNames,
-}) => {
-  const [showFilters, setShowFilters] = useState(false);
-
-  return (
-    <>
-      <div
-        className={classnames(
-          "flex absolute top-[1.0em] right-3 flex-col justify-end"
-        )}
-      >
-        <button onClick={() => setShowFilters((showFilters) => !showFilters)}>
-          <FontAwesomeIcon icon="filter" className="text-tertiary" />
-        </button>
-      </div>
-      <div
-        className={classnames({
-          hidden: !showFilters,
-        })}
-      >
-        <React.Suspense fallback={<div />}>
-          <Filters
-            project={project}
-            where={where}
-            filters={filters}
-            setFilters={setFilters}
-            propertyNames={propertyNames}
-          />
-        </React.Suspense>
-      </div>
-    </>
-  );
-};

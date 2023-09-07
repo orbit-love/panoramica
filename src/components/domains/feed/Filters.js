@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import GetPropertyFiltersQuery from "src/graphql/queries/GetPropertyFilters.gql";
+import Filter from "src/components/domains/feed/Filter";
 
 export default function Filters({
   project,
@@ -8,6 +9,8 @@ export default function Filters({
   where,
   filters,
   setFilters,
+  selectClassName,
+  capitalNames = true,
 }) {
   const { id: projectId } = project;
   const {
@@ -35,30 +38,20 @@ export default function Filters({
     [filters, setFilters]
   );
 
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-
   return (
-    <div className="flex flex-wrap px-6 mb-4">
-      {propertyFilters.map(({ name, values }) => {
-        return (
-          <div key={name} className="mb-1 mr-2">
-            <select onChange={(e) => onChange(e, name)} className="mb-2">
-              <option value="all">
-                {capitalizeFirstLetter(name).replace(/e?s$/, "")}
-              </option>
-              {values.map(({ value, count }) => {
-                return (
-                  <option key={value} value={value}>
-                    {value} ({count})
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-        );
-      })}
+    <div className="flex flex-wrap">
+      {propertyFilters.map(({ name, values }) => (
+        <div key={name} className="mb-1 mr-2">
+          <Filter
+            key={name}
+            name={name}
+            values={values}
+            onChange={onChange}
+            selectClassName={selectClassName}
+            capitalNames={capitalNames}
+          />
+        </div>
+      ))}
     </div>
   );
 }
