@@ -41,7 +41,8 @@ export default function ConversationTable({
   where.AND.push(...filtersWhere);
 
   const projectId = project.id;
-  const { loading } = useQuery(GetConversationsWhereQuery, {
+  const { loading, refetch } = useQuery(GetConversationsWhereQuery, {
+    notifyOnNetworkStatusChange: true, // so that loading is true on refetch
     variables: {
       projectId,
       where,
@@ -104,6 +105,15 @@ export default function ConversationTable({
         )}
         <div className="grow" />
         {loading && <Loader />}
+        <div>
+          <button
+            onClick={() => {
+              refetch();
+            }}
+          >
+            Refresh
+          </button>
+        </div>
         {offset > 0 && (
           <button
             onClick={() => {
