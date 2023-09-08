@@ -3,7 +3,7 @@ import { check, redirect, authorizeProject } from "src/auth";
 import { aiReady } from "src/integrations/ready";
 import { syncActivities } from "src/data/graph/mutations";
 import { getActivities } from "src/data/graph/queries/conversations";
-import { getAPIUrl, getAPIData } from "src/integrations/orbit/api";
+import { getAPIUrl, fetchActivitiesPage } from "src/integrations/orbit/api";
 import { orbitImportReady } from "src/integrations/ready";
 import GraphConnection from "src/data/graph/Connection";
 import { indexConversations } from "src/integrations/typesense";
@@ -25,16 +25,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: "Could not refresh project" });
     }
 
-    const allData = [];
     let { id: projectId, url, apiKey, workspace } = project;
     // if a url is not provided, use the default
     if (!url) {
       url = getAPIUrl({ workspace });
     }
-
-    // import a maximum of 100 new activities; start at page 1
-    const page = 1;
-    const pageLimit = 1;
 
     const handleRecords = async (activities) => {
       // sync activities to the graph db
@@ -67,17 +62,14 @@ export default async function handler(req, res) {
       }
     };
 
-    await getAPIData({
+    const { activities } = await fetchActivitiesPage({
       url,
       apiKey,
-      page,
-      pageLimit,
-      allData,
-      project,
-      handleRecords,
     });
 
-    res.status(200).json({ result: { count: allData.length } });
+    await handleRecords(activities);
+
+    res.status(200).json({ result: { count: activities.length } });
   } catch (err) {
     console.log("Could not refresh project", err);
     return res.status(500).json({ message: "Could not refresh project" });
