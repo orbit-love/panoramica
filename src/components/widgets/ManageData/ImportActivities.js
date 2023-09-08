@@ -57,17 +57,6 @@ export default function ImportActivities({ project }) {
     });
   }, [project, startDate, endDate, setLoading, refetch]);
 
-  const repairProject = useCallback(async () => {
-    setStatus("");
-    setLoading(true);
-    await fetch(`/api/projects/${project.id}/repair`, {
-      method: "POST",
-    });
-    setStatus(`Success! Project repaired`);
-    setLoading(false);
-    refetch();
-  }, [project, setLoading, refetch]);
-
   const onSubmit = (e) => {
     e.preventDefault();
     importProject();
@@ -129,13 +118,15 @@ export default function ImportActivities({ project }) {
         <button type="submit" className="btn">
           {loading ? <Loader className="text-white" /> : <span>Import</span>}
         </button>
-        <button type="button" className="btn" onClick={repairProject}>
-          {loading ? <Loader className="text-white" /> : <span>Repair</span>}
-        </button>
         {status && <div className="text-green-500">{status}</div>}
       </div>
-      <div className="!mt-6 underline cursor-pointer" onClick={postAdminQueues}>
-        Start Queues
+      <div>
+        <div
+          className="!mt-6 underline cursor-pointer"
+          onClick={postAdminQueues}
+        >
+          Start Queues
+        </div>
       </div>
     </form>
   );
