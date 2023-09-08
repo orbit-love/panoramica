@@ -21,6 +21,7 @@ export const generate = async ({
   // if the activity is not a conversation, it will have no messages
   // and we can safely exit
   if (messages.length === 0) {
+    console.log("NO MESSAGES, an activity not a conversation");
     return [];
   }
 

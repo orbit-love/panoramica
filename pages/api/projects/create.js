@@ -1,5 +1,7 @@
 import { prisma } from "src/data/db";
 import { check, redirect } from "src/auth";
+import { graph } from "src/data/db";
+import { setupProject } from "src/data/graph/mutations";
 
 export default async function handler(req, res) {
   if (process.env.DEMO_SITE) {
@@ -20,6 +22,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ data: "Name not found" });
   }
 
+  const session = graph.session();
+
   try {
     var project = await prisma.project.create({
       data: {
@@ -30,6 +34,10 @@ export default async function handler(req, res) {
           connect: { email: user.email },
         },
       },
+    });
+
+    await session.writeTransaction(async (tx) => {
+      await setupProject({ tx, project, user });
     });
 
     res.status(200).json({ result: { project } });

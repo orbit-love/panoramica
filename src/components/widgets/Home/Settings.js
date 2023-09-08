@@ -26,6 +26,22 @@ export default function Settings({
     });
   };
 
+  const onClickManageData = (e) => {
+    e.preventDefault();
+    addWidget("manage-data", "ManageData", {
+      title: "Manage Data",
+      position: newPanelPosition(),
+    });
+  };
+
+  const onClickLabelConversations = (e) => {
+    e.preventDefault();
+    addWidget("label-conversations", "LabelConversations", {
+      title: "Label Conversations",
+      position: newPanelPosition(),
+    });
+  };
+
   return (
     <>
       {project.demo && (
@@ -46,6 +62,13 @@ export default function Settings({
       <div className="flex flex-col items-start w-full">
         <div className="text-tertiary pb-1 pt-2 font-semibold">Settings</div>
         <div className="flex flex-col items-start">
+          <div
+            className="cursor-pointer hover:underline"
+            onClick={onClickEditPrompts}
+          >
+            Edit Prompts
+          </div>
+
           {aiReady(project) && (
             <div
               className="cursor-pointer hover:underline"
@@ -57,11 +80,16 @@ export default function Settings({
 
           <div
             className="cursor-pointer hover:underline"
-            onClick={onClickEditPrompts}
+            onClick={onClickManageData}
           >
-            Edit Prompts
+            Manage Data
           </div>
-
+          <div
+            className="cursor-pointer hover:underline"
+            onClick={onClickLabelConversations}
+          >
+            Label Conversations
+          </div>
           <ThemeAction>
             <div className="cursor-pointer hover:underline">Change Theme</div>
           </ThemeAction>

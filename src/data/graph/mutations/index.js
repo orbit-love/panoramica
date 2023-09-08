@@ -43,7 +43,10 @@ export async function mergeProject({ project, user, tx }) {
 
 export async function setupProject({ project, user, tx }) {
   await mergeProject({ project, user, tx });
+  console.log("Memgraph: Created project");
+}
 
+export async function clearProject({ project, tx }) {
   const projectId = project.id;
   // delete existing nodes and relationships
   await tx.run(
@@ -51,7 +54,7 @@ export async function setupProject({ project, user, tx }) {
         DETACH DELETE n`,
     { projectId }
   );
-  console.log("Memgraph: Cleared existing project data");
+  console.log("Memgraph: Cleared project");
 }
 
 // set up constraints and indexes for memgraph
@@ -112,39 +115,8 @@ export async function syncActivities({ tx, project, activities }) {
   // since some may have been created with a new uuid
   activities = records.map((record) => record.get("a").properties);
 
-  // assign parentId and :Reply label to activities that have a sourceParentId matching another activity
-  await tx.run(
-    `MATCH (p:Project { id: $projectId })
-        WITH p, $activities AS batch
-        UNWIND batch AS activity
-          MATCH (p)-[:OWNS]->(a1:Activity { id: activity.id }), (p)-[:OWNS]->(a2:Activity)
-            WHERE a1.sourceParentId = a2.sourceId
-              MERGE (a1)-[r:REPLIES_TO]->(a2)
-              SET a1.parentId = a2.id
-              SET a1:Reply`,
-    { activities, projectId }
-  );
-  console.log("Memgraph: Connected (a:Activity)-[:REPLIES_TO]->(p:Activity)");
-
-  // assign conversationId to the farthest ancestor of each activity or that activity itself
-  // apply the :Conversation label if the farthest ancestor is the activity itself
-  await tx.run(
-    `MATCH (p:Project { id: $projectId })
-      WITH p, $activities AS batch
-      UNWIND batch AS batchActivity
-        MATCH path = (p)-[:OWNS]->(ancestor:Activity)<-[:REPLIES_TO*0..]-(activity:Activity { id: batchActivity.id })
-          WITH activity, ancestor, reduce(acc = ancestor, n in nodes(path) | CASE WHEN n.timestamp < acc.timestamp THEN n ELSE acc END) as conversationStarter
-            ORDER BY conversationStarter.timestamp
-          WITH activity, HEAD(COLLECT(conversationStarter.id)) as conversationId
-            MATCH (conversation:Activity { id: conversationId })
-          WITH activity, conversation, conversationId
-            SET activity.conversationId = conversationId
-            MERGE (activity)-[:PART_OF]->(conversation)
-            SET conversation:Conversation
-            SET conversation.isConversation = true`,
-    { activities, projectId }
-  );
-  console.log("Memgraph: Connected (a:Activity)-[:PART_OF]->(c:Conversation)");
+  // needed when older data is imported after newer data
+  await margeActivityLinks({ tx, activities, project });
 
   // create (:Member) nodes for each unique globalActor
   await tx.run(
@@ -301,3 +273,61 @@ export async function syncActivities({ tx, project, activities }) {
 
   return activities;
 }
+
+export const margeActivityLinks = async ({ tx, activities, project }) => {
+  const projectId = project.id;
+
+  // assign parentId and :Reply label to activities that have a sourceParentId matching another activity
+  // it's possible if older data is important later than reply links won't be there
+  await tx.run(
+    `MATCH (p:Project { id: $projectId })
+        WITH p, $activities AS batch
+        UNWIND batch AS activity
+          MATCH (p)-[:OWNS]->(a1:Activity { id: activity.id }), (p)-[:OWNS]->(a2:Activity)
+            WHERE a1.sourceParentId = a2.sourceId
+              MERGE (a1)-[r:REPLIES_TO]->(a2)
+              SET a1.parentId = a2.id
+              SET a1:Reply`,
+    { activities, projectId }
+  );
+  console.log("Memgraph: Connected (a:Activity)-[:REPLIES_TO]->(p:Activity)");
+
+  // delete any existing PART_OF relationship so we don't create a duplicate
+  // when an ancestor is imported that we didn't know about before
+  // reset the fields on each activity that reflect it's conversation status
+  await tx.run(
+    `MATCH (p:Project { id: $projectId })
+      WITH p, $activities AS batch
+      UNWIND batch AS batchActivity
+        MATCH (p)-[:OWNS]->(activity:Activity { id: batchActivity.id })-[part_of:PART_OF]->(conversation:Activity)
+        WITH activity, part_of
+          SET activity.conversationId = NULL
+          SET activity.isConversation = false
+          REMOVE activity:Conversation
+          DELETE part_of`,
+    { activities, projectId }
+  );
+  console.log(
+    "Memgraph: Removed old (:Activity)-[:PART_OF]->(:Conversation) and related fields"
+  );
+
+  // assign conversationId to the farthest ancestor of each activity or that activity itself
+  // apply the :Conversation label if the farthest ancestor is the activity itself
+  await tx.run(
+    `MATCH (p:Project { id: $projectId })
+      WITH p, $activities AS batch
+      UNWIND batch AS batchActivity
+        MATCH path = (p)-[:OWNS]->(ancestor:Activity)<-[:REPLIES_TO*0..]-(activity:Activity { id: batchActivity.id })
+          WITH activity, ancestor, reduce(acc = ancestor, n in nodes(path) | CASE WHEN n.timestamp < acc.timestamp THEN n ELSE acc END) as conversationStarter
+            ORDER BY conversationStarter.timestamp
+          WITH activity, HEAD(COLLECT(conversationStarter.id)) as conversationId
+            MATCH (conversation:Activity { id: conversationId })
+          WITH activity, conversation, conversationId
+            MERGE (activity)-[:PART_OF]->(conversation)
+            SET activity.conversationId = conversationId
+            SET conversation:Conversation
+            SET conversation.isConversation = true`,
+    { activities, projectId }
+  );
+  console.log("Memgraph: Connected (a:Activity)-[:PART_OF]->(c:Conversation)");
+};

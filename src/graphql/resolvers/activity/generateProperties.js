@@ -47,9 +47,13 @@ YOUR ANSWER:`;
     prompt,
   });
 
-  const jsonResult = JSON.parse(text);
-  const finalResult = expandArrayProperties(jsonResult);
-  return finalResult;
+  if (text) {
+    const jsonResult = JSON.parse(text);
+    const finalResult = expandArrayProperties(jsonResult);
+    return finalResult;
+  } else {
+    return [];
+  }
 };
 
 export default resolveGenerateProperties;

@@ -46,6 +46,14 @@ const tabComponents = {
     var icon = <FontAwesomeIcon icon="gear" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
+  ManageData: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="gear" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
+  LabelConversations: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="comment" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
   EditPrompts: ({ api }) => {
     var icon = <FontAwesomeIcon icon="gear" />;
     return <TabComponentWithIcon api={api} icon={icon} />;

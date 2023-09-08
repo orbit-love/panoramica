@@ -3,5 +3,10 @@ query ($id: ID!) {
     id
     name
     demo
+    properties {
+      name
+      type
+      value
+    }
   }
 }

@@ -3,9 +3,7 @@ import { useRouter } from "next/navigation";
 
 import { Frame } from "src/components/widgets";
 import {
-  putProjectImport,
   postEmbeddings,
-  putProjectRefresh,
   postCreateActivitiesProperties,
 } from "src/data/client/fetches";
 import Edit from "src/components/domains/project/Edit";
@@ -26,55 +24,6 @@ export default function EditProject({ project, dispatch }) {
         setStatus("Embeddings created.");
       },
     });
-  }, [project, setLoading]);
-
-  const importProject = useCallback(async () => {
-    setStatus("");
-    putProjectImport({
-      project,
-      setLoading,
-      onSuccess: () => {
-        setStatus("Success: data has been re-imported.");
-      },
-    });
-  }, [project, setLoading]);
-
-  const refreshProject = useCallback(async () => {
-    setStatus("");
-    setLoading(true);
-    putProjectRefresh({
-      project,
-      setLoading,
-      onSuccess: () => {
-        setStatus("Success: data has been refreshed.");
-      },
-    });
-  }, [project, setLoading]);
-
-  const labelConversations = useCallback(async () => {
-    setStatus("");
-    var response, cursor;
-    try {
-      setStatus("Conversation labeling starting...");
-      while (!response || cursor) {
-        var response = await postCreateActivitiesProperties({
-          project,
-          setLoading,
-          body: JSON.stringify({ cursor }),
-          onSuccess: () => {},
-        });
-        if (response.status !== 200) {
-          break;
-        }
-        var { endCursor } = await response.json();
-        cursor = endCursor;
-        setStatus("Conversation labeling at " + cursor);
-      }
-      setStatus("Conversation labeling complete.");
-    } catch (e) {
-      console.error(e);
-      setStatus("Conversation labeling failed.");
-    }
   }, [project, setLoading]);
 
   return (
@@ -100,26 +49,9 @@ export default function EditProject({ project, dispatch }) {
               <div>Actions</div>
               {loading && <Loader />}
             </div>
-            {orbitImportReady(project) && (
-              <>
-                <button className="hover:underline" onClick={refreshProject}>
-                  Refresh latest data from Orbit
-                </button>
-                <button className="hover:underline" onClick={importProject}>
-                  Reimport all data from Orbit
-                </button>
-              </>
-            )}
-
             {aiReady(project) && (
               <button className="hover:underline" onClick={createEmbeddings}>
                 Index Conversations
-              </button>
-            )}
-
-            {aiReady(project) && (
-              <button className="hover:underline" onClick={labelConversations}>
-                Generate conversation properties
               </button>
             )}
           </div>

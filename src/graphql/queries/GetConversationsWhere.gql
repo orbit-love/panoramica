@@ -1,0 +1,17 @@
+#import "src/graphql/fragments/ActivityFields.gql"
+query ($projectId: ID!, $limit: Int!, $offset: Int!, $where: ActivityWhere) {
+  projects(where: { id: $projectId }) {
+    activities(
+      options: { limit: $limit, offset: $offset, sort: { timestampInt: DESC } }
+      where: $where
+    ) {
+      ...ActivityFields
+      descendants {
+        ...ActivityFields
+        parent {
+          id
+        }
+      }
+    }
+  }
+}

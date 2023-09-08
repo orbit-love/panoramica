@@ -17,6 +17,8 @@ import Search from "../Search";
 import Source from "../Source";
 import User from "../User";
 import Similar from "../Similar";
+import ManageData from "../ManageData";
+import LabelConversations from "../LabelConversations";
 
 import { WidgetContext } from "src/components/context/WidgetContext";
 
@@ -46,6 +48,8 @@ const components = {
   Search: (props) => WithContext(Search, props),
   Source: (props) => WithContext(Source, props),
   Similar: (props) => WithContext(Similar, props),
+  ManageData: (props) => WithContext(ManageData, props),
+  LabelConversations: (props) => WithContext(LabelConversations, props),
 };
 export default components;
 
