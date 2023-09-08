@@ -9,6 +9,7 @@ import resolveConversationJson from "src/graphql/resolvers/activity/conversation
 import resolvePropertyFilters from "src/graphql/resolvers/project/propertyFilters";
 import { aiReady } from "src/integrations/ready";
 import { getQaSummaries } from "./resolvers/getQaSummaries";
+import { searchQas } from "./resolvers/searchQas";
 
 const resolvers = {
   Query: {
@@ -107,6 +108,15 @@ const resolvers = {
     async qaSummaries(parent) {
       const { id: projectId } = parent;
       return getQaSummaries({ projectId });
+    },
+    async searchQas(parent, args) {
+      const { id: projectId } = parent;
+      const { query, sourceName, page } = args;
+      if (query === "do-not-search") {
+        return [];
+      } else {
+        return searchQas({ projectId, query, sourceName, page });
+      }
     },
   },
   Activity: {

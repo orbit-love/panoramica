@@ -9,7 +9,6 @@ export default function Settings({
   newPanelPosition,
   addWidget,
   resetWidgets,
-  user,
 }) {
   const onClickEditPrompts = (e) => {
     e.preventDefault();
@@ -19,18 +18,10 @@ export default function Settings({
     });
   };
 
-  const onClickUser = (e) => {
+  const onClickManageQas = (e) => {
     e.preventDefault();
-    addWidget("user", "User", {
-      title: "User",
-      position: newPanelPosition(),
-    });
-  };
-
-  const onClickIndexDocumentation = (e) => {
-    e.preventDefault();
-    addWidget("index-documentation", "IndexDocumentation", {
-      title: "Index Documentation",
+    addWidget("manage-qas", "ManageQas", {
+      title: "Manage QAs",
       position: newPanelPosition(),
     });
   };
@@ -55,20 +46,22 @@ export default function Settings({
       <div className="flex flex-col items-start w-full">
         <div className="text-tertiary pb-1 pt-2 font-semibold">Settings</div>
         <div className="flex flex-col items-start">
+          {aiReady(project) && (
+            <div
+              className="cursor-pointer hover:underline"
+              onClick={onClickManageQas}
+            >
+              Manage QAs
+            </div>
+          )}
+
           <div
             className="cursor-pointer hover:underline"
             onClick={onClickEditPrompts}
           >
             Edit Prompts
           </div>
-          {aiReady(project) && (
-            <div
-              className="cursor-pointer hover:underline"
-              onClick={onClickIndexDocumentation}
-            >
-              Index Documentation
-            </div>
-          )}
+
           <ThemeAction>
             <div className="cursor-pointer hover:underline">Change Theme</div>
           </ThemeAction>

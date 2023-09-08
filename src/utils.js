@@ -4,6 +4,12 @@ import tailwindConfig from "../tailwind.config.js";
 const fullConfig = resolveConfig(tailwindConfig);
 const colors = fullConfig.theme.colors;
 
+function toCamelCase(str) {
+  return str.replace(/_([a-z])/g, function (g) {
+    return g[1].toUpperCase();
+  });
+}
+
 const common = {
   colors,
   formatDate: function (timestamp) {
@@ -131,6 +137,20 @@ const common = {
       result.push(match[1]);
     }
     return result;
+  },
+
+  capitalizeFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  },
+  snakeToCamelCase(obj) {
+    const newObj = {};
+
+    for (const [key, value] of Object.entries(obj)) {
+      const newKey = toCamelCase(key);
+      newObj[newKey] = value;
+    }
+
+    return newObj;
   },
   updateActivities: (activities) =>
     activities.map((activity) => {

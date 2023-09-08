@@ -13,6 +13,26 @@ function embeddedActivityContent(activity) {
   return utils.cleanHtmlForEmbedding(activity.textHtml);
 }
 
+export const toFilters = (object, options = {}) => {
+  const comparators = options.comparators || {};
+  const clause = options.clause || "&&";
+  const filters = Object.entries(object)
+    .filter((entry) =>
+      // Only use defined and non-empty values
+      Array.isArray(entry[1]) ? entry[1].length > 0 : entry[1]
+    )
+    .map((entry) => {
+      const comparator = comparators[entry[0]] || ":=";
+      const value = Array.isArray(entry[1])
+        ? `[${entry[1].map((keyword) => `\`${keyword}\``).join(",")}]`
+        : entry[1];
+      return `${entry[0]}${comparator} ${value}`;
+    })
+    .join(` ${clause} `);
+
+  return filters ? filters : undefined;
+};
+
 export const toPageContent = (activities) => {
   return activities.reverse().map(embeddedActivityContent).join(" ");
 };
@@ -61,6 +81,24 @@ export const searchProjectConversations = async ({
       distance: hit.highlights.length > 0 ? 0 : hit.vector_distance || 0,
     };
   });
+};
+
+export const searchProjectQas = async ({ project, searchRequest }) => {
+  const collection = await getProjectQAsCollection({ project });
+  if (!collection) return;
+
+  const searchResult = await collection.$.documents().search(searchRequest);
+
+  console.log(`Qas search took ${searchResult.search_time_ms} ms`);
+
+  searchResult.hits = searchResult.hits.map((hit) => {
+    return {
+      ...hit.document,
+      distance: hit.vector_distance || 0,
+    };
+  });
+
+  return searchResult;
 };
 
 // CREATE
@@ -120,7 +158,7 @@ export const indexConversations = async ({ project, conversations }) => {
   return await bulkUpsertTypesenseDocuments({ collection, documents });
 };
 
-export const indexQAs = async ({ project, qas }) => {
+export const findOrCreateProjectQasCollection = async ({ project }) => {
   const typesenseClient = getTypesenseClient({ project });
   if (!typesenseClient) return;
 
@@ -133,13 +171,21 @@ export const indexQAs = async ({ project, qas }) => {
     schema: DEFAULT_QAS_SCHEMA,
   });
 
+  return collection;
+};
+
+export const indexQAs = async ({ project, qas }) => {
+  const collection = await findOrCreateProjectQasCollection({ project });
+  if (!collection) return;
+
   const documents = qas.map((qa) => ({
-    id: utils.slugify(`${qa.page.url}-${qa.q}`),
-    root_url: qa.page.rootUrl,
-    question: qa.q,
-    answer: qa.a,
-    page_url: qa.page.url,
-    page_title: qa.page.title,
+    id: utils.slugify(
+      [qa.source_name, qa.reference_id || qa.reference_url, qa.question]
+        .filter((el) => el)
+        .join("-")
+    ),
+    reference_timestamp: new Date().getTime(),
+    ...qa,
   }));
 
   return await bulkUpsertTypesenseDocuments({ collection, documents });
@@ -147,12 +193,12 @@ export const indexQAs = async ({ project, qas }) => {
 
 // DELETE
 
-export const deleteIndexedQAs = async ({ project, rootUrl }) => {
+export const deleteIndexedQAs = async ({ project, facets }) => {
   const collection = await getProjectQAsCollection({ project });
   if (!collection) return;
   return await bulkDeleteTypesenseDocuments({
     collection,
-    query: { filter_by: `root_url:=${rootUrl.trim().replace(/\/$/, "")}` },
+    query: { filter_by: toFilters(facets) },
   });
 };
 

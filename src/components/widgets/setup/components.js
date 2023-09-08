@@ -11,7 +11,7 @@ import Member from "../Member";
 import Members from "../Members";
 import EditProject from "../EditProject";
 import EditPrompts from "../EditPrompts";
-import IndexDocumentation from "../IndexDocumentation";
+import ManageQas from "../ManageQas";
 import Assistant from "../Assistant";
 import Search from "../Search";
 import Source from "../Source";
@@ -26,6 +26,7 @@ import {
 } from "src/components/context/ProjectContext";
 import { addWidget, clickHandlers } from "src/components/widgets/setup/widgets";
 import ErrorBoundary from "src/components/widgets/base/ErrorBoundary";
+import NewQasSource from "../Qas/NewQasSource";
 
 const components = {
   Bookmarks: (props) => WithContext(Bookmarks, props),
@@ -38,7 +39,8 @@ const components = {
   Members: (props) => WithContext(Members, props),
   EditProject: (props) => WithContext(EditProject, props),
   EditPrompts: (props) => WithContext(EditPrompts, props),
-  IndexDocumentation: (props) => WithContext(IndexDocumentation, props),
+  ManageQas: (props) => WithContext(ManageQas, props),
+  NewQasSource: (props) => WithContext(NewQasSource, props),
   User: (props) => WithContext(User, props),
   Assistant: (props) => WithContext(Assistant, props),
   Search: (props) => WithContext(Search, props),

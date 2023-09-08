@@ -1,0 +1,23 @@
+query ($projectId: ID!, $query: String, $sourceName: String, $page: Int) {
+  projects(where: { id: $projectId }) {
+    searchQas(query: $query, sourceName: $sourceName, page: $page) {
+      qaSummaries {
+        sourceName
+        count
+      }
+
+      qas {
+        id
+        question
+        answer
+        sourceName
+        distance
+        referenceUrl
+        referenceId
+        referenceTitle
+        timestamp
+        type
+      }
+    }
+  }
+}

@@ -124,7 +124,9 @@ const typeDefs = gql`
       @customResolver(requires: ["id"])
     searchConversations(query: String!): [SearchResult!]!
       @customResolver(requires: ["id"])
-    qaSummaries: [QASummary!]! @customResolver(requires: ["id"])
+    qaSummaries: [QaSummary!]! @customResolver(requires: ["id"])
+    searchQas(query: String, sourceName: String, page: Int): QaSearchResult!
+      @customResolver(requires: ["id"])
   }
 
   type SourceChannel
@@ -142,8 +144,26 @@ const typeDefs = gql`
     distance: Float!
   }
 
-  type QASummary {
-    rootUrl: String!
+  type QaSearchResult {
+    qaSummaries: [QaSummary!]!
+    qas: [Qa!]!
+  }
+
+  type Qa {
+    id: String!
+    question: String!
+    answer: String!
+    sourceName: String!
+    distance: Float!
+    referenceUrl: String
+    referenceId: String
+    referenceTitle: String
+    type: String
+    timestamp: Int
+  }
+
+  type QaSummary {
+    sourceName: String!
     count: Int!
   }
 

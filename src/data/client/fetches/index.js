@@ -80,16 +80,11 @@ export async function postEmbeddings({ project, setLoading, onSuccess }) {
   }
 }
 
-export async function putDocumentation({
-  project,
-  body,
-  setLoading,
-  onSuccess,
-}) {
+export async function postQas({ project, body, setLoading, onSuccess }) {
   if (aiReady(project)) {
     makeRequest({
-      url: `/api/projects/${project.id}/documentation/update`,
-      method: "PUT",
+      url: `/api/projects/${project.id}/qas/create`,
+      method: "POST",
       body,
       onSuccess,
       setLoading,
@@ -97,10 +92,26 @@ export async function putDocumentation({
   }
 }
 
-export async function deleteDocumentation({ project, setLoading, onSuccess }) {
+export async function deleteQas({
+  project,
+  sourceName,
+  setLoading,
+  onSuccess,
+}) {
   if (aiReady(project)) {
     makeRequest({
-      url: `/api/projects/${project.id}/documentation/delete`,
+      url: `/api/projects/${project.id}/qas/delete?sourceName=${sourceName}`,
+      method: "DELETE",
+      onSuccess,
+      setLoading,
+    });
+  }
+}
+
+export async function deleteQa({ project, qaId, setLoading, onSuccess }) {
+  if (aiReady(project)) {
+    makeRequest({
+      url: `/api/projects/${project.id}/qas/${qaId}/delete`,
       method: "DELETE",
       onSuccess,
       setLoading,

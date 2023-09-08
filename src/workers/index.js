@@ -1,8 +1,9 @@
 import Redis from "ioredis";
 import { Queue, Worker } from "bullmq";
-import processPagesCallbacks from "src/workers/processPagesCallbacks";
-import crawlPagesCallbacks from "src/workers/crawlPagesCallbacks";
 import { eventEmitter } from "./events";
+import markdownToQasCallbacks from "./markdownToQasCallbacks";
+import webToQasCallbacks from "./webToQasCallbacks";
+import conversationsToQasCallbacks from "./conversationsToQasCallbacks";
 
 const { REDIS_URL } = process.env;
 const client = new Redis(REDIS_URL);
@@ -45,8 +46,12 @@ function startWorker(queueName, callbacks) {
 }
 
 export const WORKER_DEFINITIONS = {
-  CrawlPages: startWorker("CrawlPages", crawlPagesCallbacks),
-  ProcessPages: startWorker("ProcessPages", processPagesCallbacks),
+  WebToQas: startWorker("WebToQas", webToQasCallbacks),
+  MarkdownToQas: startWorker("MarkdownToQas", markdownToQasCallbacks),
+  ConversationsToQas: startWorker(
+    "ConversationsToQas",
+    conversationsToQasCallbacks
+  ),
 };
 
 export const scheduleJob = (queueName, jobId, data) => {

@@ -1,6 +1,16 @@
 import utils from "src/utils";
 
-const processRow = (record, index) => {
+const defaultTransformActivity = (activity, parentActivity, member) => {
+  return {
+    messageId: activity.id,
+    replyToMessageId: parentActivity?.id,
+    author: member.globalActorName,
+    timestamp: activity.timestamp,
+    text: utils.stripHtmlTags(a.textHtml),
+  };
+};
+
+const processRow = (record, index, transformActivity) => {
   var a = record.get("a").properties;
   var b = record.get("b")?.properties;
   var memA = record.get("memA").properties;
@@ -8,26 +18,14 @@ const processRow = (record, index) => {
 
   var obj = [];
   if (index === 0) {
-    obj.push({
-      messageId: a.id,
-      replyToMessageId: null,
-      author: memA.globalActorName,
-      timestamp: a.timestamp,
-      text: utils.stripHtmlTags(a.textHtml),
-    });
+    obj.push(transformActivity(a, null, memA));
   }
 
   if (b) {
     // if the ids are the same, it's because there is just 1 message in
     // the conversation, so don't add another row
     if (a.id !== b.id) {
-      obj.push({
-        messageId: b.id,
-        replyToMessageId: a.id,
-        author: memB.globalActorName,
-        text: utils.stripHtmlTags(b.textHtml),
-        timestamp: b.timestamp,
-      });
+      obj.push(transformActivity(b, a, memB));
     }
   }
 
@@ -38,6 +36,7 @@ export const getConversation = async function ({
   projectId,
   conversationId,
   graphConnection,
+  transformActivity = defaultTransformActivity,
 }) {
   // this is what we account for here:
   // - single-message conversations return a but not b, hence the optional matches
@@ -59,6 +58,8 @@ export const getConversation = async function ({
     conversationId,
   });
 
-  var messages = records.map(processRow).flat();
+  var messages = records
+    .map((record, index) => processRow(record, index, transformActivity))
+    .flat();
   return messages;
 };

@@ -50,7 +50,11 @@ const tabComponents = {
     var icon = <FontAwesomeIcon icon="gear" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
-  IndexDocumentation: ({ api }) => {
+  ManageQas: ({ api }) => {
+    var icon = <FontAwesomeIcon icon="gear" />;
+    return <TabComponentWithIcon api={api} icon={icon} />;
+  },
+  NewQasSource: ({ api }) => {
     var icon = <FontAwesomeIcon icon="gear" />;
     return <TabComponentWithIcon api={api} icon={icon} />;
   },
