@@ -107,6 +107,7 @@ export default function ConversationTable({
         {loading && <Loader />}
         <div>
           <button
+            className="hover:underline"
             onClick={() => {
               refetch();
             }}
@@ -116,6 +117,7 @@ export default function ConversationTable({
         </div>
         {offset > 0 && (
           <button
+            className="hover:underline"
             onClick={() => {
               setOffset((offset) => offset - pageSize);
             }}
@@ -125,6 +127,7 @@ export default function ConversationTable({
         )}
         {true && (
           <button
+            className="hover:underline"
             onClick={() => {
               setOffset((offset) => offset + pageSize);
             }}

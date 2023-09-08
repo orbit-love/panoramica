@@ -5,7 +5,6 @@ import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 
-import { prisma } from "src/data/db";
 import axios from "axios";
 
 const getMentions = function (text) {
@@ -22,7 +21,7 @@ const getMentions = function (text) {
   }
 };
 
-export function getAPIUrl({ workspace, timeframe = "" }) {
+export function getAPIUrl({ workspace, timeframe = "", items = 100 }) {
   // list of conversational activity types to fetch from orbit
   let activityTypes = [
     "discord:message:sent",
@@ -38,7 +37,7 @@ export function getAPIUrl({ workspace, timeframe = "" }) {
 
   let activityTypeStr = activityTypes.join("%2C");
   // only conversational activity types with referenced tweets
-  let queryString = `activity_type=${activityTypeStr}&include_referenced_activities=true${timeframe}`;
+  let queryString = `activity_type=${activityTypeStr}&include_referenced_activities=true&items=${items}${timeframe}`;
   return `https://app.orbit.love/${workspace}/activities.json?${queryString}`;
 }
 
@@ -351,7 +350,7 @@ const getIdentity = ({ type, member, included }) => {
   }
 };
 
-const getFields = async ({ project, activity, included }) => {
+const getFields = async ({ activity, included }) => {
   var sourceId = activity.id;
   var sourceType = activity.type;
   var timestamp = activity.attributes.occurred_at;
@@ -389,7 +388,6 @@ const getFields = async ({ project, activity, included }) => {
     ...typeFields,
     globalActor,
     globalActorName,
-    projectId: project.id,
     tags: properties,
     url: activity_link,
     payload: {},
@@ -398,66 +396,30 @@ const getFields = async ({ project, activity, included }) => {
   return fields;
 };
 
-export const getAPIData = async ({
-  url,
-  apiKey,
-  project,
-  page = 1,
-  pageLimit = 1,
-  handleRecords,
-  allData = [],
-}) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const response = await axios.get(url, {
-        params: {
-          items: 100,
-        },
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
+export const fetchActivitiesPage = async ({ url, apiKey }) => {
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
 
-      var activities = response.data.data;
-      var included = response.data.included;
+    const orbitActivities = response.data.data;
+    const included = response.data.included;
 
-      var records = [];
-
-      for (let activity of activities) {
-        var fields = await getFields({ project, activity, included });
-        records.push(fields);
-      }
-
-      // if needed, deduping by sourceId (within the batch at least) could go before this
-      // the call determines what to do with the fetched records
-      await handleRecords(records);
-
-      // add activities to the final array
-      allData.push(...activities);
-
-      // This assumes that the API returns a JSON object with a 'nextPage' property
-      // that is null when there are no more pages.
-      var nextUrl = response.data.links?.next;
-      if (nextUrl && (page < pageLimit || pageLimit === -1)) {
-        resolve(
-          getAPIData({
-            url: nextUrl,
-            apiKey,
-            prisma,
-            project,
-            page: page + 1,
-            pageLimit,
-            allData,
-            handleRecords,
-          })
-        );
-      } else {
-        resolve(allData);
-      }
-    } catch (error) {
-      reject(`Failed to fetch data: ${error}`);
+    const activities = [];
+    for (let orbitActivity of orbitActivities) {
+      activities.push(await getFields({ activity: orbitActivity, included }));
     }
-  });
+
+    var nextUrl = response.data.links?.next;
+    return {
+      nextUrl,
+      activities,
+    };
+  } catch (error) {
+    console.log("Orbit API: Failed to fetch data", error);
+  }
 };
