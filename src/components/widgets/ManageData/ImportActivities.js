@@ -7,8 +7,8 @@ import Loader from "src/components/domains/ui/Loader";
 import utils from "src/utils";
 
 export default function ImportActivities({ project }) {
-  const [startDate, setStartDate] = useState("2022-01-01");
-  const [endDate, setEndDate] = useState("2023-01-01");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   const [stats, setStats] = useState(null);
@@ -33,6 +33,14 @@ export default function ImportActivities({ project }) {
     },
   });
 
+  const postAdminQueues = useCallback(async () => {
+    setStatus("");
+    await fetch(`/api/admin/queues`, {
+      method: "POST",
+    });
+    setStatus(`Queues started`);
+  }, [setStatus]);
+
   const importProject = useCallback(async () => {
     setStatus("");
     putProjectImport({
@@ -42,8 +50,8 @@ export default function ImportActivities({ project }) {
         startDate,
         endDate,
       }),
-      onSuccess: ({ result: { count } }) => {
-        setStatus(`Success! ${count} activities imported`);
+      onSuccess: ({ result: { status } }) => {
+        setStatus(`Success! ${status}`);
         refetch();
       },
     });
@@ -125,6 +133,9 @@ export default function ImportActivities({ project }) {
           {loading ? <Loader className="text-white" /> : <span>Repair</span>}
         </button>
         {status && <div className="text-green-500">{status}</div>}
+      </div>
+      <div className="!mt-6 underline cursor-pointer" onClick={postAdminQueues}>
+        Start Queues
       </div>
     </form>
   );
