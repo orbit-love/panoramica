@@ -10,6 +10,7 @@ export default function ManageActivityProperty({
   activity,
   setActivities,
   propertyValues,
+  setLoading,
 }) {
   const property = utils.getProperty(propertyName, activity);
   const projectId = project.id;
@@ -29,8 +30,9 @@ export default function ManageActivityProperty({
   );
 
   const replaceProperty = useCallback(
-    (value) => {
-      replaceActivityProperty({
+    async (value) => {
+      setLoading(true);
+      await replaceActivityProperty({
         variables: {
           value,
         },
@@ -52,8 +54,9 @@ export default function ManageActivityProperty({
         };
         return newActivities;
       });
+      setLoading(false);
     },
-    [replaceActivityProperty, activity, propertyName, setActivities]
+    [replaceActivityProperty, activity, propertyName, setActivities, setLoading]
   );
 
   const onChange = useCallback(

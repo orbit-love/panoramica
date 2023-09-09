@@ -23,6 +23,7 @@ export default function ConversationItem({
   controlledProperties = [],
   selectedRows,
   setSelectedRows,
+  propertyFilters,
 }) {
   const [loading, setLoading] = React.useState(false);
   const previousTrigger = utils.usePrevious(trigger);
@@ -140,13 +141,10 @@ export default function ConversationItem({
 
   return (
     <tr
-      className={classnames(
-        "align-top border-y border-gray-100 dark:border-gray-800",
-        {
-          "dark:bg-opacity-30 dark:bg-fuchsia-900": isSelected,
-          "dark:bg-opacity-10 bg-gray-50 dark:bg-fuchsia-900": !isSelected,
-        }
-      )}
+      className={classnames("border-y border-gray-100 dark:border-gray-800", {
+        "dark:bg-opacity-30 dark:bg-fuchsia-900": isSelected,
+        "dark:bg-opacity-10 bg-gray-50 dark:bg-fuchsia-900": !isSelected,
+      })}
     >
       <td className="p-2 align-middle">
         {loading && <Loader />}
@@ -211,13 +209,14 @@ export default function ConversationItem({
             setActivities={setActivities}
             propertyName={name}
             propertyValues={values}
+            setLoading={setLoading}
           />
         </td>
       ))}
-      {propertyNames.map((propertyName) => {
-        const properties = utils.getProperties(propertyName, activity);
+      {propertyFilters.map(({ name }) => {
+        const properties = utils.getProperties(name, activity);
         return (
-          <td className="p-2" key={propertyName}>
+          <td className="p-2" key={name}>
             <div className="flex flex-col space-y-1 w-40 text-xs">
               {properties.map((property, index) => (
                 <div key={index}>{property?.value}</div>

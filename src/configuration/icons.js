@@ -38,6 +38,7 @@ import {
   faLocationPin,
   faFileCode,
   faFilter,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faBookmark as faBookmarkRegular } from "@fortawesome/free-regular-svg-icons";
@@ -96,7 +97,8 @@ library.add(
   faRobot,
   faLocationPin,
   faFileCode,
-  faFilter
+  faFilter,
+  faTrash
 );
 
 export default library;
