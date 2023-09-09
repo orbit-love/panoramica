@@ -217,9 +217,14 @@ export default function ConversationItem({
         const properties = utils.getProperties(name, activity);
         return (
           <td className="p-2" key={name}>
-            <div className="flex flex-col space-y-1 w-40 text-xs">
+            <div className="inline-flex flex-col max-w-40 space-y-[2px]">
               {properties.map((property, index) => (
-                <div key={index}>{property?.value}</div>
+                <div
+                  key={index}
+                  className="border-opacity-70 py-1 px-2 text-xs text-fuchsia-800 rounded border border-fuchsia-800"
+                >
+                  {property?.value}
+                </div>
               ))}
             </div>
           </td>
