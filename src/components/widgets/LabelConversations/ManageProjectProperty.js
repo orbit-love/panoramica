@@ -5,7 +5,11 @@ import UpdateProjectPropertyMutation from "src/graphql/mutations/UpdateProjectPr
 import utils from "src/utils";
 import { ProjectDispatchContext } from "src/components/context/ProjectContext";
 
-export default function ManageProjectProperty({ propertyName, project }) {
+export default function ManageProjectProperty({
+  propertyName,
+  project,
+  onSave,
+}) {
   const [message, setMessage] = React.useState("");
   const dispatch = React.useContext(ProjectDispatchContext);
 
@@ -28,7 +32,6 @@ export default function ManageProjectProperty({ propertyName, project }) {
           value,
         },
       });
-      setMessage("Saved property!");
       dispatch({
         type: "updateProject",
         project: {
@@ -42,19 +45,27 @@ export default function ManageProjectProperty({ propertyName, project }) {
           ],
         },
       });
+      if (onSave) {
+        onSave();
+      } else {
+        setMessage("Saved property!");
+      }
     },
-    [value, dispatch, updateProjectProperty, project, propertyName]
+    [value, dispatch, updateProjectProperty, project, propertyName, onSave]
   );
 
   return (
-    <form onSubmit={saveProperty} className="inline-flex flex-col space-y-2">
+    <form
+      onSubmit={saveProperty}
+      className="inline-flex flex-col space-y-2 w-full h-full"
+    >
       <h2 className="text-tertiary font-light">
         Manage Property: {propertyName}
       </h2>
       <textarea
         name="value"
         onChange={(e) => setValue(e.target.value)}
-        className="h-64 w-[500px]"
+        className="h-full"
         value={value}
       />
       <button className="btn" type="submit">

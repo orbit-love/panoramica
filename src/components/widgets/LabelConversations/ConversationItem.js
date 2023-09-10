@@ -142,19 +142,22 @@ export default function ConversationItem({
   return (
     <tr
       className={classnames("border-y border-gray-100 dark:border-gray-800", {
-        "dark:bg-opacity-30 dark:bg-fuchsia-900": isSelected,
-        "dark:bg-opacity-10 bg-gray-50 dark:bg-fuchsia-900": !isSelected,
+        "dark:bg-opacity-30 hover:bg-opacity-50 dark:bg-fuchsia-900":
+          isSelected,
+        "dark:bg-opacity-10 hover:bg-gray-50 dark:bg-fuchsia-900": !isSelected,
       })}
     >
       <td className="p-2 align-middle">
-        {loading && <Loader />}
-        {!loading && (
-          <input
-            type="checkbox"
-            onChange={toggleSelection}
-            checked={isSelected}
-          />
-        )}
+        <div className="pl-2">
+          {loading && <Loader />}
+          {!loading && (
+            <input
+              type="checkbox"
+              onChange={toggleSelection}
+              checked={isSelected}
+            />
+          )}
+        </div>
       </td>
       <td className="relative p-2">
         <div className="w-[350px] overflow-hidden" onClick={toggleSelection}>
@@ -217,13 +220,16 @@ export default function ConversationItem({
         const properties = utils.getProperties(name, activity);
         return (
           <td className="p-2" key={name}>
-            <div className="inline-flex flex-col max-w-40 space-y-[2px]">
+            <div className="flex flex-wrap max-w-[200px]">
               {properties.map((property, index) => (
                 <div
                   key={index}
-                  className="border-opacity-70 py-1 px-2 text-xs text-fuchsia-800 rounded border border-fuchsia-800"
+                  title={property.value}
+                  className="overflow-hidden py-1 px-2 mr-1 mb-1 whitespace-nowrap bg-gray-100 rounded"
                 >
-                  {property?.value}
+                  <div className="overflow-hidden text-xs text-ellipsis">
+                    {property.value}
+                  </div>
                 </div>
               ))}
             </div>

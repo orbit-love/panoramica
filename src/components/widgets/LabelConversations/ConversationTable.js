@@ -5,10 +5,9 @@ import utils from "src/utils";
 import ConversationItem from "./ConversationItem";
 import GetConversationsWhereQuery from "src/graphql/queries/GetConversationsWhere.gql";
 import GetConversationsCountQuery from "src/graphql/queries/GetConversationsCount.gql";
-import Filter from "src/components/domains/feed/Filter";
 import Loader from "src/components/domains/ui/Loader";
 import GetPropertyFiltersQuery from "src/graphql/queries/GetPropertyFilters.gql";
-import DeleteActivityProperty from "./DeleteActivityProperty";
+import PropertyFilter from "./PropertyFilter";
 
 export default function ConversationTable({
   project,
@@ -16,17 +15,18 @@ export default function ConversationTable({
   yaml,
   controlledProperties,
 }) {
+  const defaultWhereClauses = [
+    {
+      isConversation: true,
+    },
+  ];
   const pageSize = 10;
   const [activities, setActivities] = React.useState([]);
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [trigger, setTrigger] = React.useState(0);
   const [filters, setFilters] = React.useState([]);
   const [where, setWhere] = React.useState({
-    AND: [
-      {
-        isConversation: true,
-      },
-    ],
+    AND: defaultWhereClauses,
   });
   const [limit, setLimit] = React.useState(pageSize);
   const [offset, setOffset] = React.useState(0);
@@ -36,6 +36,7 @@ export default function ConversationTable({
   const [totalCount, setTotalCount] = React.useState(null);
   const [refetches, setRefetches] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [sort, setSort] = React.useState({ timestampInt: "DESC" });
   const projectId = project.id;
   const childProps = {
     project,
@@ -66,19 +67,22 @@ export default function ConversationTable({
     setRefetches,
     where,
     setWhere,
+    defaultWhereClauses,
+    sort,
+    setSort,
     loading,
     setLoading,
   };
 
   return (
     <div className="flex flex-col space-y-2">
-      <div className="-pl-6 flex items-center pr-2 space-x-2">
+      <div className="flex items-center pr-2 px-4 space-x-2 w-full">
         <Actions {...childProps} />
         <div className="grow" />
         <Pagination {...childProps} />
       </div>
-      <div className="py-2">
-        <table className="table min-w-[100%] h-[80vh] text-sm overflow-y-auto">
+      <div className="overflow-auto h-[calc(100vh-120px)]">
+        <table className="text-sm table-auto">
           <TableHeader {...childProps} />
           <TableBody {...childProps} />
         </table>
@@ -122,12 +126,13 @@ const Actions = ({
 
   return (
     <>
+      <div>Actions:</div>
       {selectedRows.length > 0 && (
         <div className="flex items-center space-x-2">
-          <button className="btn !text-sm" onClick={processAll}>
+          <button className="underline" onClick={processAll}>
             Label
           </button>
-          <div>{selectedRows.length} selected</div>
+          <div className="text-gray-400">{selectedRows.length} selected</div>
         </div>
       )}
       <div>
@@ -233,6 +238,18 @@ const Pagination = ({
           Next
         </button>
       )}
+      {hasNextPage && (
+        <button
+          className="underline"
+          onClick={() => {
+            setSelectAllCheckboxValue(0);
+            setSelectedRows([]);
+            setOffset(Math.floor(totalCount / pageSize) * pageSize);
+          }}
+        >
+          Last
+        </button>
+      )}
       <div></div>
       <div className="flex space-x-1">
         {[10, 25, 100, 500].map((value) => (
@@ -270,29 +287,8 @@ const TableHeader = ({
   refetches,
   setRefetches,
   setWhere,
+  defaultWhereClauses,
 }) => {
-  const onChangeFilter = React.useCallback(
-    (e, name) => {
-      const { value } = e.target;
-      const newFilters = filters.filter((filter) => filter.name !== name);
-      if (value !== "all") {
-        newFilters.push({ name, value });
-      }
-      setFilters(newFilters);
-
-      const filtersWhere = newFilters.map(({ name, value }) => ({
-        properties: {
-          name,
-          value,
-        },
-      }));
-      setWhere(() => ({
-        AND: [{ isConversation: true }, ...filtersWhere],
-      }));
-    },
-    [filters, setFilters, setWhere]
-  );
-
   const { refetch } = useQuery(GetPropertyFiltersQuery, {
     notifyOnNetworkStatusChange: true, // so that loading is true on refetch
     variables: {
@@ -340,39 +336,37 @@ const TableHeader = ({
 
   return (
     <thead>
-      <tr className="font-semibold text-left">
+      <tr className="text-left bg-gray-50 border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700">
         <th className="p-2">
-          <input
-            type="checkbox"
-            onChange={(e) => {
-              setSelectAllCheckboxValue(e.target.checked);
-            }}
-            checked={selectAllCheckboxValue}
-          />
+          <div className="pl-2">
+            <input
+              type="checkbox"
+              onChange={(e) => {
+                setSelectAllCheckboxValue(e.target.checked);
+              }}
+              checked={selectAllCheckboxValue}
+            />
+          </div>
         </th>
         <th className="p-2">Conversation</th>
         {controlledProperties.map(({ name }) => (
-          <td className="p-2" key={name}>
+          <th className="p-2" key={name}>
             <div>{name.split(".").slice(-1)}</div>
-          </td>
+          </th>
         ))}
         {propertyFilters.map(({ name, values }) => {
           return (
             <th className="p-2 whitespace-nowrap" key={name}>
               <div className="flex items-center space-x-2">
-                <Filter
+                <PropertyFilter
                   name={name}
                   values={values}
-                  onChange={(e) => onChangeFilter(e, name)}
-                  selectClassName={"w-48"}
-                  capitalNames={false}
-                />
-                <DeleteActivityProperty
-                  propertyName={name}
+                  setFilters={setFilters}
+                  defaultWhereClauses={defaultWhereClauses}
                   project={project}
-                  onComplete={() => {
-                    refetch();
-                  }}
+                  filters={filters}
+                  setWhere={setWhere}
+                  refetch={refetch}
                 />
               </div>
             </th>
@@ -393,6 +387,7 @@ const TableBody = ({
   refetches,
   setRefetches,
   setLoading,
+  sort,
   ...props
 }) => {
   const { loading: queryLoading, refetch } = useQuery(
@@ -402,6 +397,7 @@ const TableBody = ({
       variables: {
         projectId,
         where,
+        sort,
         limit,
         offset,
       },

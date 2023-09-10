@@ -1,46 +1,62 @@
 import React from "react";
+import { createPortal } from "react-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import jsyaml from "js-yaml";
 
-import { Frame } from "src/components/widgets";
+import { Frame, saveLayout } from "src/components/widgets";
 import ConversationTable from "src/components/widgets/LabelConversations/ConversationTable";
 import ManageProjectProperty from "src/components/widgets/LabelConversations/ManageProjectProperty";
-import { aiReady } from "src/integrations/ready";
-import jsyaml from "js-yaml";
 import utils from "src/utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Modal from "src/components/ui/Modal";
 
-export default function LabelConversations({ project }) {
-  const [yamlPropertyName, setYamlPropertyName] = React.useState("");
+export default function LabelConversations({
+  project,
+  api,
+  containerApi,
+  params,
+}) {
+  const initialYamlPropertyName = params.yamlPropertyName;
+  const [yamlPropertyName, setYamlPropertyName] = React.useState(
+    initialYamlPropertyName
+  );
+
+  const updateYamlPropertyName = React.useCallback(
+    (yamlPropertyName) => {
+      api.updateParameters({ yamlPropertyName });
+      saveLayout({ project, containerApi });
+    },
+    [project, api, containerApi]
+  );
+
+  React.useEffect(() => {
+    updateYamlPropertyName(yamlPropertyName);
+  }, [yamlPropertyName, updateYamlPropertyName]);
 
   return (
     <Frame fullWidth>
-      <div className="flex overflow-x-scroll flex-col p-4 space-y-2 w-full">
-        <div className="text-lg">
-          <span className="text-tertiary font-light">Label Conversations</span>
+      <div className="flex overflow-x-scroll flex-col space-y-2 w-full">
+        <div className="flex items-center px-4 pt-4  space-x-1 text-lg">
+          <div className="text-tertiary text-lg font-light">
+            Label Conversations
+          </div>
           {yamlPropertyName && (
-            <>
-              <span>
-                {" "}
-                <span className="text-gray-400">/</span> {yamlPropertyName}
-              </span>
-              <span onClick={() => setYamlPropertyName(null)}>
-                <FontAwesomeIcon
-                  icon="times"
-                  className="ml-2 text-sm cursor-pointer"
-                />
-              </span>
-            </>
+            <YamlPropertyEditor
+              project={project}
+              yamlPropertyName={yamlPropertyName}
+              setYamlPropertyName={setYamlPropertyName}
+            />
           )}
         </div>
-        {yamlPropertyName && (
-          <WithProperyName
-            project={project}
-            yamlPropertyName={yamlPropertyName}
-          />
-        )}
         {!yamlPropertyName && (
           <ChoosePropertyName
             project={project}
             setYamlPropertyName={setYamlPropertyName}
+          />
+        )}
+        {yamlPropertyName && (
+          <WithProperyName
+            project={project}
+            yamlPropertyName={yamlPropertyName}
           />
         )}
       </div>
@@ -58,7 +74,7 @@ const ChoosePropertyName = ({ project, setYamlPropertyName }) => {
     p.name.endsWith(".yaml")
   );
   return (
-    <form className="space-y-4" onSubmit={onSubmit}>
+    <form className="p-4 space-y-4" onSubmit={onSubmit}>
       <div className="">Select a yaml for labeling conversations.</div>
       <div className="space-y-1">
         {yamlPropertyNames.map((p) => (
@@ -101,22 +117,55 @@ const WithProperyName = ({ project, yamlPropertyName }) => {
     },
   ];
   return (
+    <ConversationTable
+      project={project}
+      yaml={yamlProperty?.value}
+      propertyNames={propertyNames}
+      controlledProperties={controlledProperties}
+    />
+  );
+};
+
+const YamlPropertyEditor = ({
+  yamlPropertyName,
+  setYamlPropertyName,
+  project,
+}) => {
+  const [expanded, setExpanded] = React.useState(false);
+
+  return (
     <>
-      {aiReady(project) && (
-        <ConversationTable
-          project={project}
-          yaml={yamlProperty?.value}
-          propertyNames={propertyNames}
-          controlledProperties={controlledProperties}
-        />
-      )}
-      <div className="h-4" />
-      <div>
-        <ManageProjectProperty
-          propertyName={yamlPropertyName}
-          project={project}
-        />
+      <div className="flex space-x-1">
+        <div>{" / "}</div>
+        <div
+          onClick={() => setExpanded(true)}
+          className="cursor-pointer hover:underline"
+        >
+          {yamlPropertyName}
+        </div>
       </div>
+      <div onClick={() => setYamlPropertyName(null)}>
+        <FontAwesomeIcon icon="times" className="ml-2 text-sm cursor-pointer" />
+      </div>
+      {expanded &&
+        createPortal(
+          <Modal
+            title={`Edit ${yamlPropertyName}`}
+            close={() => setExpanded(false)}
+            fullHeight
+          >
+            <div className="p-6 w-full h-full">
+              <ManageProjectProperty
+                propertyName={yamlPropertyName}
+                project={project}
+                onSave={() => {
+                  setExpanded(false);
+                }}
+              />
+            </div>
+          </Modal>,
+          document.body
+        )}
     </>
   );
 };

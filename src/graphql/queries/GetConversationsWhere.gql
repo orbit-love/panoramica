@@ -1,8 +1,14 @@
 #import "src/graphql/fragments/ActivityFields.gql"
-query ($projectId: ID!, $limit: Int!, $offset: Int!, $where: ActivityWhere) {
+query (
+  $projectId: ID!
+  $limit: Int!
+  $offset: Int!
+  $sort: [ActivitySort!]
+  $where: ActivityWhere
+) {
   projects(where: { id: $projectId }) {
     activities(
-      options: { limit: $limit, offset: $offset, sort: { timestampInt: DESC } }
+      options: { limit: $limit, offset: $offset, sort: $sort }
       where: $where
     ) {
       ...ActivityFields

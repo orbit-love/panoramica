@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useMutation } from "@apollo/client";
 
 import DeleteActivityPropertyMutation from "src/graphql/mutations/DeleteActivityProperty.gql";
@@ -8,6 +8,7 @@ export default function DeleteAllActivityProperties({
   propertyName,
   project,
   onComplete,
+  children,
 }) {
   const projectId = project.id;
 
@@ -18,7 +19,7 @@ export default function DeleteAllActivityProperties({
     },
   });
 
-  const deleteProperty = useCallback(
+  const deleteProperty = React.useCallback(
     async (value) => {
       await deleteActivityProperty({
         variables: {
@@ -30,9 +31,18 @@ export default function DeleteAllActivityProperties({
     [deleteActivityProperty, onComplete]
   );
 
+  const confirmDelete = React.useCallback(() => {
+    if (window.confirm("Are you sure you want to delete this property?")) {
+      deleteProperty();
+    }
+  }, [deleteProperty]);
+
   return (
-    <button onClick={() => deleteProperty()}>
-      <FontAwesomeIcon icon="trash" className="text-sm cursor-pointer" />
-    </button>
+    <div className="cursor-pointer" onClick={confirmDelete}>
+      {children}
+      {!children && (
+        <FontAwesomeIcon icon="trash" className="text-sm cursor-pointer" />
+      )}
+    </div>
   );
 }
