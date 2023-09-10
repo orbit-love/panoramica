@@ -75,8 +75,8 @@ export default function ConversationTable({
   };
 
   return (
-    <div className="flex flex-col space-y-2">
-      <div className="flex items-center pr-2 px-4 space-x-2 w-full">
+    <div className="flex flex-col space-y-4">
+      <div className="flex items-center px-4 space-x-2 w-full">
         <ActionController {...childProps} />
         <div className="grow" />
         <Pagination {...childProps} />

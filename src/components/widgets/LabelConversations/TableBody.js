@@ -16,6 +16,7 @@ export default function TableBody({
   sort,
   trigger,
   refetchNow,
+  setRefetchNow,
   ...props
 }) {
   const { loading: queryLoading, refetch } = useQuery(
@@ -55,6 +56,7 @@ export default function TableBody({
           key={activity.id}
           activity={activity}
           setActivities={setActivities}
+          setRefetchNow={setRefetchNow}
           {...props}
         />
       ))}

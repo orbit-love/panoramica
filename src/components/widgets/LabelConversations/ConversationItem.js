@@ -18,6 +18,7 @@ export default function ConversationItem({
   loadingRows,
   setLoadingRows,
   propertyFilters,
+  setRefetchNow,
 }) {
   const [preview, setPreview] = React.useState(false);
 
@@ -59,13 +60,13 @@ export default function ConversationItem({
   return (
     <tr
       className={classnames("border-y border-gray-100 dark:border-gray-800", {
-        "dark:bg-opacity-30 hover:bg-opacity-50 dark:bg-fuchsia-900":
+        "dark:bg-opacity-30 hover:bg-opacity-50 bg-fuchsia-100 dark:bg-fuchsia-900":
           isSelected,
-        "dark:bg-opacity-10 hover:bg-gray-50 dark:bg-fuchsia-900": !isSelected,
+        "dark:hover:bg-gray-800 hover:bg-gray-50": !isSelected,
       })}
     >
-      <td className="p-2 align-middle">
-        <div className="flex justify-center w-6">
+      <td className="py-2 pl-4">
+        <div className="flex justify-center">
           {loading && <Loader />}
           {!loading && (
             <input
@@ -76,7 +77,7 @@ export default function ConversationItem({
           )}
         </div>
       </td>
-      <td className="relative p-2">
+      <td className="relative py-2 px-4">
         <div className="w-[350px] overflow-hidden" onClick={toggleSelection}>
           <>
             <div className="font-semibold">
@@ -122,7 +123,7 @@ export default function ConversationItem({
         </div>
       </td>
       {controlledProperties.map(({ name, values }) => (
-        <td className="p-2" key={name}>
+        <td className="py-2 px-4" key={name}>
           <ManageActivityProperty
             project={project}
             activity={activity}
@@ -130,6 +131,7 @@ export default function ConversationItem({
             propertyName={name}
             propertyValues={values}
             setLoading={setLoading}
+            onSave={() => setRefetchNow((refetchNow) => refetchNow + 1)}
           />
         </td>
       ))}
@@ -138,13 +140,13 @@ export default function ConversationItem({
         .map(({ name }) => {
           const properties = utils.getProperties(name, activity);
           return (
-            <td className="p-2" key={name}>
+            <td className="py-2 px-4" key={name}>
               <div className="flex flex-wrap max-w-[200px]">
                 {properties.map((property, index) => (
                   <div
                     key={index}
                     title={property.value}
-                    className="overflow-hidden py-1 px-2 mr-1 mb-1 whitespace-nowrap bg-gray-100 rounded"
+                    className="overflow-hidden py-1 px-2 mr-1 mb-1 whitespace-nowrap bg-gray-100 rounded dark:bg-gray-800"
                   >
                     <div className="overflow-hidden text-xs text-ellipsis">
                       {property.value}

@@ -94,9 +94,9 @@ export default function TableHeader({
 
   return (
     <thead>
-      <tr className="text-left bg-gray-50 border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700">
-        <th className="p-2">
-          <div className="flex justify-center w-6">
+      <tr className="text-left bg-gray-50 border-y border-gray-200 dark:bg-gray-900 dark:border-gray-700">
+        <th className="py-2 pl-4">
+          <div className="flex justify-center">
             {loadingRows.length > 0 && <Loader />}
             <input
               type="checkbox"
@@ -108,10 +108,13 @@ export default function TableHeader({
             />
           </div>
         </th>
-        <th className="p-2">Conversation</th>
+        <th className="py-2 px-4 text-xs font-semibold">Conversation</th>
         {propertyFilters.map(({ name, values }) => {
           return (
-            <th className="p-2 whitespace-nowrap" key={name}>
+            <th
+              key={name}
+              className="font-semibold border-x border-gray-200 dark:border-gray-700"
+            >
               <PropertyFilter
                 name={name}
                 displayName={propertyDisplayName(name)}

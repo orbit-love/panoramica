@@ -96,31 +96,17 @@ export default function PropertyFilter({
       selectedFilter === "Not Exists");
 
   return (
-    <div className="relative">
-      <div className="flex space-x-1">
-        <div
-          onClick={() => setExpanded((expanded) => !expanded)}
-          className={classnames("cursor-pointer select-none", {
-            "text-blue-500": filters.length > 0,
-          })}
-        >
-          {displayName}
-        </div>
-        <div className="flex-1" />
-        <div>
-          <div onClick={() => setExpanded((expanded) => !expanded)}>
-            <FontAwesomeIcon
-              icon="filter"
-              className={classnames("cursor-pointer", {
-                "text-blue-500": filters.length > 0,
-                "text-gray-500": filters.length === 0 && !expanded,
-              })}
-            />
-          </div>
-        </div>
+    <div className="hover:dark:bg-gray-800 relative py-2 px-4 whitespace-nowrap cursor-pointer hover:bg-gray-100">
+      <div
+        onClick={() => setExpanded((expanded) => !expanded)}
+        className={classnames("select-none text-xs", {
+          "text-blue-500": filters.length > 0,
+        })}
+      >
+        {displayName}
       </div>
       {expanded && (
-        <div className="font-normal absolute left-[-25%] top-8 bg-gray-50 dark:bg-gray-950 shadow border border-gray-200 dark:border-gray-700 min-w-[300px]">
+        <div className="font-normal absolute right-0 top-9 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-700 min-w-[300px] z-50">
           <div className="absolute top-2 right-2">
             <FontAwesomeIcon
               icon="times"
