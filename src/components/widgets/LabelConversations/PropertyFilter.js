@@ -7,6 +7,7 @@ import DeleteActivityProperty from "./DeleteActivityProperty";
 export default function PropertyFilter({
   project,
   name,
+  displayName = name,
   values,
   filters: parentFilters,
   setFilters: setParentFilters,
@@ -44,7 +45,7 @@ export default function PropertyFilter({
           case "Equals":
             return { properties: { name, value } };
           case "Not Equals":
-            return { properties: { name, value_NOT: value } };
+            return { properties_NONE: { name, value } };
           case "Contains":
             return { properties: { name, value_CONTAINS: value } };
           case "Exists":
@@ -74,7 +75,7 @@ export default function PropertyFilter({
       ];
       updateFilters(newFilters);
       setFilterValue("");
-      setSelectedFilter(null);
+      setSelectedFilter("Equals");
     }
   }, [selectedFilter, filterValue, filters, updateFilters]);
 
@@ -83,7 +84,7 @@ export default function PropertyFilter({
       const newFilters = filters.filter((_, i) => i !== index);
       updateFilters(newFilters);
       setFilterValue("");
-      setSelectedFilter(null);
+      setSelectedFilter("Equals");
     },
     [filters, updateFilters]
   );
@@ -103,7 +104,7 @@ export default function PropertyFilter({
             "text-blue-500": filters.length > 0,
           })}
         >
-          {name}
+          {displayName}
         </div>
         <div className="flex-1" />
         <div>

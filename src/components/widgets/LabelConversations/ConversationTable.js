@@ -10,6 +10,7 @@ import ActionController from "./ActionController";
 export default function ConversationTable({
   project,
   propertyNames,
+  yamlPropertyName,
   yaml,
   controlledProperties,
 }) {
@@ -41,6 +42,7 @@ export default function ConversationTable({
     projectId,
     propertyNames,
     yaml,
+    yamlPropertyName,
     controlledProperties,
     activities,
     setActivities,

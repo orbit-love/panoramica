@@ -120,6 +120,7 @@ const WithProperyName = ({ project, yamlPropertyName }) => {
     <ConversationTable
       project={project}
       yaml={yamlProperty?.value}
+      yamlPropertyName={yamlPropertyName}
       propertyNames={propertyNames}
       controlledProperties={controlledProperties}
     />

@@ -33,7 +33,7 @@ export default function ConversationItem({
     if (loading && !isLoadingRef.current) {
       setLoadingRows((loadingRows) => [...loadingRows, activity.id]);
     }
-    if (!loading && isLoadingRef.current) {
+    if (!loading) {
       setLoadingRows((loadingRows) =>
         loadingRows.filter((id) => id !== activity.id)
       );
@@ -133,26 +133,28 @@ export default function ConversationItem({
           />
         </td>
       ))}
-      {propertyFilters.map(({ name }) => {
-        const properties = utils.getProperties(name, activity);
-        return (
-          <td className="p-2" key={name}>
-            <div className="flex flex-wrap max-w-[200px]">
-              {properties.map((property, index) => (
-                <div
-                  key={index}
-                  title={property.value}
-                  className="overflow-hidden py-1 px-2 mr-1 mb-1 whitespace-nowrap bg-gray-100 rounded"
-                >
-                  <div className="overflow-hidden text-xs text-ellipsis">
-                    {property.value}
+      {propertyFilters
+        .filter(({ name }) => controlledProperties.find((p) => p.name !== name))
+        .map(({ name }) => {
+          const properties = utils.getProperties(name, activity);
+          return (
+            <td className="p-2" key={name}>
+              <div className="flex flex-wrap max-w-[200px]">
+                {properties.map((property, index) => (
+                  <div
+                    key={index}
+                    title={property.value}
+                    className="overflow-hidden py-1 px-2 mr-1 mb-1 whitespace-nowrap bg-gray-100 rounded"
+                  >
+                    <div className="overflow-hidden text-xs text-ellipsis">
+                      {property.value}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </td>
-        );
-      })}
+                ))}
+              </div>
+            </td>
+          );
+        })}
     </tr>
   );
 }

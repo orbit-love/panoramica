@@ -1,8 +1,10 @@
 import React from "react";
+import classnames from "classnames";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import GetPropertyFiltersQuery from "src/graphql/queries/GetPropertyFilters.gql";
 import PropertyFilter from "./PropertyFilter";
+import Loader from "src/components/domains/ui/Loader";
 
 export default function TableHeader({
   project,
@@ -14,6 +16,8 @@ export default function TableHeader({
   controlledProperties,
   selectAllCheckboxValue,
   setSelectAllCheckboxValue,
+  yamlPropertyName,
+  loadingRows,
   propertyNames,
   refetchNow,
   setWhere,
@@ -28,12 +32,37 @@ export default function TableHeader({
       var {
         projects: [{ propertyFilters }],
       } = data;
-      // remove any controller properties for this labeling project or others
-      propertyFilters = propertyFilters.filter(
-        ({ name }) => !name.endsWith(".status")
-      );
+      // remove any controlled properties for another project
+      propertyFilters = propertyFilters.filter(({ name }) => {
+        const theYamlPropertyName = nameIfControlled(name);
+        if (theYamlPropertyName) {
+          return theYamlPropertyName === yamlPropertyName;
+        } else {
+          return true;
+        }
+      });
+
+      // if the propertyFilters are missing anything in controlledProperties, add it
+      controlledProperties.forEach(({ name, values }) => {
+        if (!propertyFilters.find((filter) => filter.name === name)) {
+          propertyFilters.push({
+            name,
+            values,
+          });
+        }
+      });
+
       // put any filters matching propertyNames first, then sort alphabetically
       propertyFilters.sort((a, b) => {
+        const aNameIfControlled = nameIfControlled(a.name);
+        const bNameIfControlled = nameIfControlled(b.name);
+        if (aNameIfControlled && !bNameIfControlled) {
+          return -1;
+        }
+        if (!aNameIfControlled && bNameIfControlled) {
+          return 1;
+        }
+
         const aIndex = propertyNames.indexOf(a.name);
         const bIndex = propertyNames.indexOf(b.name);
         if (aIndex === -1 && bIndex === -1) {
@@ -68,36 +97,32 @@ export default function TableHeader({
       <tr className="text-left bg-gray-50 border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700">
         <th className="p-2">
           <div className="flex justify-center w-6">
+            {loadingRows.length > 0 && <Loader />}
             <input
               type="checkbox"
               onChange={(e) => {
                 setSelectAllCheckboxValue(e.target.checked);
               }}
               checked={selectAllCheckboxValue}
+              className={classnames({ hidden: loadingRows.length > 0 })}
             />
           </div>
         </th>
         <th className="p-2">Conversation</th>
-        {controlledProperties.map(({ name }) => (
-          <th className="p-2" key={name}>
-            <div>{name.split(".").slice(-1)}</div>
-          </th>
-        ))}
         {propertyFilters.map(({ name, values }) => {
           return (
             <th className="p-2 whitespace-nowrap" key={name}>
-              <div className="flex items-center space-x-2">
-                <PropertyFilter
-                  name={name}
-                  values={values}
-                  setFilters={setFilters}
-                  defaultWhereClauses={defaultWhereClauses}
-                  project={project}
-                  filters={filters}
-                  setWhere={setWhere}
-                  refetch={refetch}
-                />
-              </div>
+              <PropertyFilter
+                name={name}
+                displayName={propertyDisplayName(name)}
+                values={values}
+                filters={filters}
+                setFilters={setFilters}
+                defaultWhereClauses={defaultWhereClauses}
+                project={project}
+                setWhere={setWhere}
+                refetch={refetch}
+              />
             </th>
           );
         })}
@@ -105,3 +130,22 @@ export default function TableHeader({
     </thead>
   );
 }
+
+const regex = /^(.*)\.([^\.]+)$/;
+const nameIfControlled = (name) => {
+  const match = name.match(regex);
+  if (match) {
+    return match[1];
+  } else {
+    return null;
+  }
+};
+
+const propertyDisplayName = (name) => {
+  const match = name.match(regex);
+  if (match) {
+    return match[2];
+  } else {
+    return name;
+  }
+};
