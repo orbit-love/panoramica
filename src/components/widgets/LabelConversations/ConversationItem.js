@@ -1,11 +1,7 @@
 import React from "react";
 import classnames from "classnames";
-import { useLazyQuery, useMutation } from "@apollo/client";
 import TimeAgo from "react-timeago";
 
-import GenerateConversationPropertiesFromYaml from "src/graphql/queries/GenerateConversationPropertiesFromYaml.gql";
-import CreateActivityPropertiesMutation from "src/graphql/mutations/CreateActivityProperties.gql";
-import DeleteActivityPropertiesMutation from "src/graphql/mutations/DeleteActivityProperties.gql";
 import utils from "src/utils";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
@@ -16,114 +12,35 @@ export default function ConversationItem({
   project,
   activity,
   setActivities,
-  yaml,
-  trigger,
-  propertyNames,
-  replaceExistingProperties = true,
   controlledProperties = [],
   selectedRows,
   setSelectedRows,
+  loadingRows,
+  setLoadingRows,
   propertyFilters,
 }) {
-  const [loading, setLoading] = React.useState(false);
-  const previousTrigger = utils.usePrevious(trigger);
   const [preview, setPreview] = React.useState(false);
 
-  const [deleteActivityProperties] = useMutation(
-    DeleteActivityPropertiesMutation
-  );
-  const [createActivityProperties] = useMutation(
-    CreateActivityPropertiesMutation
-  );
-
-  const handleGeneratedProperties = React.useCallback(
-    async (data) => {
-      const { id: activityId } = activity;
-      const {
-        projects: [
-          {
-            activities: [{ generatePropertiesFromYaml }],
-          },
-        ],
-      } = data;
-
-      var finalProperties = [...activity.properties];
-
-      if (replaceExistingProperties) {
-        const propertyNames = generatePropertiesFromYaml.map(
-          ({ name }) => name
-        );
-        const where = { node: { name_IN: propertyNames } };
-        await deleteActivityProperties({
-          variables: {
-            id: activityId,
-            where,
-          },
-        });
-
-        // remove the properties that were deleted from the finalProperties
-        finalProperties = finalProperties.filter((property) => {
-          return !propertyNames.includes(property.name);
-        });
-      }
-
-      const propertiesWithNode = generatePropertiesFromYaml.map(
-        ({ name, value, type }) => ({
-          node: { name, value, type },
-        })
-      );
-
-      await createActivityProperties({
-        variables: {
-          id: activityId,
-          properties: propertiesWithNode,
-        },
-      });
-
-      // push the new properties on
-      finalProperties.push(...generatePropertiesFromYaml);
-
-      const newActivity = { ...activity, properties: finalProperties };
-      setActivities((activities) =>
-        activities.map((a) => (a.id === activityId ? newActivity : a))
-      );
-
-      setLoading(false);
-      setSelectedRows((selectedRows) =>
-        selectedRows.filter((rowId) => rowId !== activityId)
-      );
-    },
-    [
-      activity,
-      setActivities,
-      deleteActivityProperties,
-      createActivityProperties,
-      replaceExistingProperties,
-      setSelectedRows,
-    ]
-  );
-
-  const [generateProperties] = useLazyQuery(
-    GenerateConversationPropertiesFromYaml,
-    {
-      onCompleted: handleGeneratedProperties,
-      fetchPolicy: "no-cache",
-      variables: {
-        projectId: project.id,
-        activityId: activity.id,
-        yaml: yaml,
-      },
-    }
-  );
-
-  const isSelected = selectedRows.includes(activity.id);
+  const isLoading = loadingRows.includes(activity.id);
+  const [loading, setLoading] = React.useState(isLoading);
 
   React.useEffect(() => {
-    if (trigger > 0 && trigger !== previousTrigger && isSelected) {
-      setLoading(true);
-      generateProperties();
+    setLoading(isLoading);
+  }, [isLoading]);
+
+  const isLoadingRef = React.useRef(isLoading);
+  React.useEffect(() => {
+    if (loading && !isLoadingRef.current) {
+      setLoadingRows((loadingRows) => [...loadingRows, activity.id]);
     }
-  }, [trigger, previousTrigger, generateProperties, isSelected]);
+    if (!loading && isLoadingRef.current) {
+      setLoadingRows((loadingRows) =>
+        loadingRows.filter((id) => id !== activity.id)
+      );
+    }
+  }, [loading, setLoadingRows, activity.id]);
+
+  const isSelected = selectedRows.includes(activity.id);
 
   const toggleSelection = React.useCallback(() => {
     const { id } = activity;
@@ -148,7 +65,7 @@ export default function ConversationItem({
       })}
     >
       <td className="p-2 align-middle">
-        <div className="pl-2">
+        <div className="flex justify-center w-6">
           {loading && <Loader />}
           {!loading && (
             <input

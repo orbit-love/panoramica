@@ -42,18 +42,26 @@ function buildClient(uri) {
   };
 }
 
-export function ApolloBaseWrapper({ children }) {
+export function baseClient() {
   var uri = process.env.NEXT_PUBLIC_URL_SERVER_GRAPHQL;
+  return buildClient(uri);
+}
+
+export function welcomeClient() {
+  var uri = process.env.NEXT_PUBLIC_URL_SERVER_WELCOME_GRAPHQL;
+  return buildClient(uri);
+}
+
+export function ApolloBaseWrapper({ children }) {
   return (
-    <ApolloNextAppProvider makeClient={buildClient(uri)}>
+    <ApolloNextAppProvider makeClient={baseClient()}>
       {children}
     </ApolloNextAppProvider>
   );
 }
 export function ApolloWelcomeWrapper({ children }) {
-  var uri = process.env.NEXT_PUBLIC_URL_SERVER_WELCOME_GRAPHQL;
   return (
-    <ApolloNextAppProvider makeClient={buildClient(uri)}>
+    <ApolloNextAppProvider makeClient={welcomeClient}>
       {children}
     </ApolloNextAppProvider>
   );
