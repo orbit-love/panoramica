@@ -3,7 +3,6 @@ import classnames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import DeleteActivityProperty from "./DeleteActivityProperty";
-import Filter from "src/components/domains/feed/Filter";
 
 export default function PropertyFilter({
   project,
@@ -20,77 +19,74 @@ export default function PropertyFilter({
   const [selectedFilter, setSelectedFilter] = React.useState("Equals");
   const [filterValue, setFilterValue] = React.useState("");
 
-  const addFilter = () => {
+  const parentFiltersRef = React.useRef(parentFilters);
+  React.useEffect(() => {
+    parentFiltersRef.current = parentFilters;
+  }, [parentFilters]);
+
+  const updateFilters = React.useCallback(
+    (filters) => {
+      setFilters(filters);
+
+      const newParentFilters = parentFiltersRef.current
+        .filter(({ name }) => name !== name)
+        .concat(
+          filters.map(({ type, value }) => ({
+            name,
+            type,
+            value,
+          }))
+        );
+      setParentFilters(newParentFilters);
+
+      const filtersWhere = newParentFilters.map(({ name, type, value }) => {
+        switch (type) {
+          case "Equals":
+            return { properties: { name, value } };
+          case "Not Equals":
+            return { properties: { name, value_NOT: value } };
+          case "Contains":
+            return { properties: { name, value_CONTAINS: value } };
+          case "Exists":
+            return { properties: { name } };
+          case "Not Exists":
+            return { properties_NONE: { name } };
+        }
+      });
+
+      setWhere(() => ({
+        AND: [...defaultWhereClauses, ...filtersWhere],
+      }));
+    },
+    [name, setParentFilters, setWhere, defaultWhereClauses]
+  );
+
+  const addFilter = React.useCallback(() => {
     if (
       selectedFilter &&
       (filterValue ||
         selectedFilter === "Exists" ||
         selectedFilter === "Not Exists")
     ) {
-      setFilters([...filters, { type: selectedFilter, value: filterValue }]);
+      const newFilters = [
+        ...filters,
+        { type: selectedFilter, value: filterValue },
+      ];
+      updateFilters(newFilters);
       setFilterValue("");
       setSelectedFilter(null);
     }
-  };
+  }, [selectedFilter, filterValue, filters, updateFilters]);
 
-  const removeFilter = (index) => {
-    setFilters(filters.filter((_, i) => i !== index));
-  };
-
-  // const onChangeFilter = React.useCallback(
-  //   (e, name) => {
-  //     const { value } = e.target;
-  //     const newFilters = filters.filter((filter) => filter.name !== name);
-  //     if (value !== "all") {
-  //       newFilters.push({ name, value });
-  //     }
-  //     setFilters(newFilters);
-
-  //     const filtersWhere = newFilters.map(({ name, value }) => ({
-  //       properties: {
-  //         name,
-  //         value,
-  //       },
-  //     }));
-  //     setWhere(() => ({
-  //       AND: [...defaultWhereClauses, ...filtersWhere],
-  //     }));
-  //   },
-  //   [filters, setFilters, setWhere, defaultWhereClauses]
-  // );
-
-  const updateFilters = React.useCallback(
-    (filters) => {
-      const newParentFilters = parentFilters
-        .filter(({ name }) => name !== name)
-        .concat(
-          filters.map(({ value }) => ({
-            name,
-            value,
-          }))
-        );
-
-      // set the parent filters the old filters + the newParentFilters
-      // but while remove the old filters that have the same name as the newParentFilters
-      setParentFilters(newParentFilters);
-
-      const filtersWhere = newParentFilters.map(({ name, value }) => ({
-        properties: {
-          name,
-          value,
-        },
-      }));
-
-      setWhere(() => ({
-        AND: [...defaultWhereClauses, ...filtersWhere],
-      }));
+  const removeFilter = React.useCallback(
+    (index) => {
+      const newFilters = filters.filter((_, i) => i !== index);
+      updateFilters(newFilters);
+      setFilterValue("");
+      setSelectedFilter(null);
     },
-    [name, parentFilters, setParentFilters, setWhere, defaultWhereClauses]
+    [filters, updateFilters]
   );
-
-  // React.useEffect(() => {
-  //   updateFilters(filters);
-  // }, [filters, updateFilters]);
 
   const enabledAddButton =
     selectedFilter &&
