@@ -82,7 +82,7 @@ export default function ConversationTable({
         <Pagination {...childProps} />
       </div>
       <div className="overflow-auto h-[calc(100vh-120px)]">
-        <table className="text-sm table-auto">
+        <table className="text-sm border-collapse table-auto">
           <TableHeader {...childProps} />
           <TableBody {...childProps} />
         </table>
