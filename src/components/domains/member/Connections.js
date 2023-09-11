@@ -11,7 +11,7 @@ export default function CompactConnections({ project, member, onClick }) {
   const [sort, setSort] = useState(defaultSort);
   const [expanded, setExpanded] = useState(false);
 
-  const { globalActor: memberId } = member;
+  const { id: memberId } = member;
   const { id: projectId } = project;
 
   const {} = useQuery(GetMessagedWithQuery, {
@@ -90,7 +90,7 @@ export default function CompactConnections({ project, member, onClick }) {
             conversationCount,
           }) => (
             <CompactConnection
-              key={connectedMember.globalActor}
+              key={connectedMember.id}
               member={member}
               connectedMember={connectedMember}
               activityCount={activityCount}

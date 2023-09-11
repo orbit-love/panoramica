@@ -143,7 +143,7 @@ export async function syncActivities({ tx, project, activities }) {
   console.log("Memgraph: Created (:Member)->[:DID]->(:Activity) edges");
 
   // needed when older data is imported after newer data
-  await margeActivityLinks({ tx, activities, project });
+  await mergeConversations({ tx, activities, project });
 
   let mentions = [];
 
@@ -193,40 +193,38 @@ export async function syncActivities({ tx, project, activities }) {
   // this is undirected so that there is only one edge between two people and
   // to create a directional version messaged / messagedBy, only the
   // MERGE (m1)-[k:MESSAGED]-(m2) part needs a direction into m2
+  const activityIds = activities.map((activity) => activity.id);
   const mergeMessagedEdge = async ({ tx, match }) => {
     return await tx.run(
-      `MATCH (p:Project { id: $projectId })
-        WITH p, $activities AS batch
-          UNWIND batch AS activity
-            MATCH
-              (p)-[:OWNS]->(a:Activity { id: activity.id })
-            WITH a
-              MATCH (a)<-[:DID]-(m1:Member)
-            WITH m1
-              ${match}
-              WHERE m1 <> m2
-              MATCH (a1)<-[:INCLUDES]-(c:Conversation)
-              MERGE (m1)-[k:MESSAGED]-(m2)
-              ON CREATE SET k.activities = [a1.id],
-                            k.conversations = [c.id],
-                            k.activityCount = 1,
-                            k.conversationCount = 1,
-                            k.lastInteractedAt = a1.timestamp
-              ON MATCH SET k.activities = CASE
-                                          WHEN NOT a1.id IN k.activities THEN k.activities + a1.id
-                                          ELSE k.activities
-                                          END,
-                           k.conversations = CASE
-                                          WHEN NOT c.id IN k.conversations THEN k.conversations + c.id
-                                          ELSE k.conversations
-                                          END,
-                           k.activityCount = SIZE(k.activities),
-                           k.conversationCount = SIZE(k.conversations),
-                           k.lastInteractedAt = CASE
-                                                WHEN k.lastInteractedAt IS NULL OR a1.timestamp > k.lastInteractedAt THEN a1.timestamp
-                                                ELSE k.lastInteractedAt
-                                                END`,
-      { activities, projectId }
+      `MATCH (p:Project { id: $projectId }) WITH p
+       MATCH
+         (p)-[:OWNS]->(a:Activity)<-[:DID]-(m1:Member)
+         WHERE a.id IN $activityIds
+         WITH DISTINCT(m1) AS m1
+         ${match}
+         WHERE m1 <> m2
+         MATCH (a1)<-[:INCLUDES]-(c:Conversation)
+         MERGE (m1)-[k:MESSAGED]-(m2)
+         ON CREATE SET k.activities = [a1.id],
+                       k.conversationIds = [c.id],
+                       k.activityCount = 1,
+                       k.conversationCount = 1,
+                       k.lastInteractedAt = a1.timestamp
+         ON MATCH SET k.activities = CASE
+                                     WHEN NOT a1.id IN k.activities THEN k.activities + a1.id
+                                     ELSE k.activities
+                                     END,
+                       k.conversationIds = CASE
+                                     WHEN NOT c.id IN k.conversationIds THEN k.conversationIds + c.id
+                                     ELSE k.conversationIds
+                                     END,
+                       k.activityCount = SIZE(k.activities),
+                       k.conversationCount = SIZE(k.conversationIds),
+                       k.lastInteractedAt = CASE
+                                           WHEN k.lastInteractedAt IS NULL OR a1.timestamp > k.lastInteractedAt THEN a1.timestamp
+                                           ELSE k.lastInteractedAt
+                                           END`,
+      { activityIds, projectId }
     );
   };
 
@@ -278,7 +276,7 @@ export async function syncActivities({ tx, project, activities }) {
   return activities;
 }
 
-export const margeActivityLinks = async ({ tx, activities, project }) => {
+export const mergeConversations = async ({ tx, activities, project }) => {
   const projectId = project.id;
 
   // assign parentId and :Reply label to activities that have a sourceParentId matching another activity
@@ -296,15 +294,6 @@ export const margeActivityLinks = async ({ tx, activities, project }) => {
   );
   console.log("Memgraph: Connected (a:Activity)-[:REPLIES_TO]->(p:Activity)");
 
-  // now that all the links are there, merge the conversation node; if it doesn't exist
-  // we will create it and this activity will be the starter; if it does exist, we will
-  // ideally we get rid of fields like isConversation and conversationId on the activity node
-  // so we don't need to keep them in sync and cause lots of unnecessary updates
-  // put the timestamps of the first and last activity on the conversation as well as other
-  // fields for easy filtering like the number of replies, unique members, etc.
-  // materialize the conversation
-  // if an activity is an island, but has a sourceParentId, give it a warning and filter them out by default
-
   await tx.run(
     `MATCH (p:Project { id: $projectId })
       WITH p, $activities AS batch
@@ -317,8 +306,8 @@ export const margeActivityLinks = async ({ tx, activities, project }) => {
           c.lastActivityTimestamp = starter.timestamp,
           c.memberCount = 1, c.activityCount = 1,
           c.members = [m.id],
-          c.missingParent = c.sourceParentId
-          c.source = starter.source
+          c.missingParent = c.sourceParentId,
+          c.source = starter.source,
           c.sourceChannel = starter.sourceChannel
         MERGE (c)-[:INCLUDES]->(starter)
         MERGE (c)-[:INCLUDES]->(member)
@@ -342,4 +331,5 @@ export const margeActivityLinks = async ({ tx, activities, project }) => {
         DELETE r`,
     { activities, projectId }
   );
+  console.log("Memgraph: Merged (Conversation) nodes");
 };

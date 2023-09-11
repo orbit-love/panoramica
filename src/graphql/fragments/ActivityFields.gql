@@ -8,6 +8,7 @@ fragment ActivityFields on Activity {
   timestamp
   url
   member {
+    id
     globalActor
     globalActorName
   }

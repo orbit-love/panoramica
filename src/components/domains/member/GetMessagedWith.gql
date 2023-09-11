@@ -5,10 +5,11 @@ query ($projectId: ID!, $memberId: ID!, $sort: MessagedSort) {
         edges {
           activityCount
           activities
-          conversations
+          conversationIds
           conversationCount
           lastInteractedAt
           node {
+            id
             globalActor
             globalActorName
           }

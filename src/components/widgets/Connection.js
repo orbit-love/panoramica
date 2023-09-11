@@ -6,17 +6,25 @@ import TimeAgo from "react-timeago";
 import { Frame } from "src/components/widgets";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
-import GetActivityIdsQuery from "./Connection/GetActivityIds.gql";
-import GetActivitiesByIdsQuery from "src/components/domains/search/GetActivitiesByIds.gql";
+import GetMessagedWithConnectionQuery from "./Connection/GetMessagedWithConnection.gql";
+import GetConversationsByIdsQuery from "src/graphql/queries/GetConversationsByIds.gql";
 import utils from "src/utils";
 
 export default function Connection({ project, params, handlers }) {
+  return (
+    <React.Suspense fallback={<></>}>
+      <ConnectionInner project={project} params={params} handlers={handlers} />
+    </React.Suspense>
+  );
+}
+
+function ConnectionInner({ project, params, handlers }) {
   var { member, connection } = params;
   var { onClickMember } = handlers;
 
   const { id: projectId } = project;
-  const { globalActor: memberId } = member;
-  const { globalActor: connectionId } = connection;
+  const { id: memberId } = member;
+  const { id: connectionId } = connection;
 
   const {
     data: {
@@ -30,7 +38,7 @@ export default function Connection({ project, params, handlers }) {
                     activityCount,
                     conversationCount,
                     lastInteractedAt,
-                    conversations: ids,
+                    conversationIds,
                   },
                 ],
               },
@@ -39,27 +47,21 @@ export default function Connection({ project, params, handlers }) {
         },
       ],
     },
-  } = useSuspenseQuery(GetActivityIdsQuery, {
+  } = useSuspenseQuery(GetMessagedWithConnectionQuery, {
     variables: { projectId, memberId, connectionId },
   });
 
-  const { data: idsQueryData } = useSuspenseQuery(GetActivitiesByIdsQuery, {
-    variables: { projectId, ids },
+  const { data: idsQueryData } = useSuspenseQuery(GetConversationsByIdsQuery, {
+    variables: { projectId, ids: conversationIds },
   });
 
-  const activities = idsQueryData?.projects[0].activities || [];
+  const conversations = idsQueryData?.projects[0].conversations || [];
 
-  // take the first descendant property and write them into the
-  // otherwise empty conversation object
-  const updatedActivities = activities.map((activity) => {
-    return {
-      ...activity,
-      conversation: {
-        ...activity.conversation.descendants[0],
-        ...activity.conversation,
-      },
-    };
-  });
+  const latestActivityByEitherMember = (conversation) => {
+    return conversation.descendants
+      .reverse()
+      .find((a) => [memberId, connectionId].includes(a.member.id));
+  };
 
   return (
     <Frame>
@@ -98,10 +100,11 @@ export default function Connection({ project, params, handlers }) {
           />
         </div>
       </div>
-      {updatedActivities.map((activity) => (
+      {conversations.map((conversation) => (
         <ConversationFeedItem
-          key={activity.id}
-          activity={activity}
+          key={conversation.id}
+          activity={latestActivityByEitherMember(conversation)}
+          conversation={conversation}
           project={project}
           handlers={handlers}
         />

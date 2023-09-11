@@ -68,7 +68,7 @@ const GeneratedTitleProperty = ({
       const {
         projects: [
           {
-            activities: [{ generateProperties }],
+            conversations: [{ generateProperties }],
           },
         ],
       } = data;

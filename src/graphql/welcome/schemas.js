@@ -122,7 +122,7 @@ const typeDefs = gql`
   }
 
   type Member @query(read: false, aggregate: false) {
-    id: ID! @alias(property: "globalActor")
+    id: ID!
     globalActor: String!
     globalActorName: String!
   }

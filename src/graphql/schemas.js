@@ -244,13 +244,13 @@ const typeDefs = gql`
   interface Messaged @relationshipProperties {
     activities: [String!]!
     activityCount: Int!
-    conversations: [String!]!
+    conversationIds: [String!]!
     conversationCount: Int!
     lastInteractedAt: String!
   }
 
   type Member @query(read: false, aggregate: false) @mutation(operations: []) {
-    id: ID! @alias(property: "globalActor")
+    id: ID!
     globalActor: String!
     globalActorName: String!
     activityCount: Int!
@@ -258,6 +258,8 @@ const typeDefs = gql`
     messagedWithCount: Int!
     project: Project! @relationship(type: "OWNS", direction: IN)
     activities: [Activity!]! @relationship(type: "DID", direction: OUT)
+    conversations: [Conversation!]!
+      @relationship(type: "INCLUDES", direction: IN)
     messagedWith: [Member!]!
       @relationship(
         type: "MESSAGED"

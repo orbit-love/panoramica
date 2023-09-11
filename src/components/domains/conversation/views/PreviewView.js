@@ -9,6 +9,7 @@ export default function PreviewView(props) {
   let { onClickMember } = handlers;
 
   const descendants = conversation.descendants;
+  const starter = descendants[0];
 
   // activity is the activity to show in the preview
   // if not provided, the latest activity in the conversation will be used
@@ -19,7 +20,7 @@ export default function PreviewView(props) {
   const parent = descendants.find((a) => a.id === activity.parent?.id);
   const replies = descendants.filter((a) => a.parent?.id === activity.id);
 
-  const showConversation = activity.id !== conversation.id;
+  const showConversation = activity.id !== starter.id;
   const showParent = parent && parent.id !== conversation.id;
 
   return (
@@ -27,7 +28,7 @@ export default function PreviewView(props) {
       <div className="text-secondary flex flex-col text-sm whitespace-nowrap">
         {showConversation && (
           <ActivityPreview
-            activity={conversation}
+            activity={starter}
             descendants={descendants}
             onClickMember={onClickMember}
             onExpand={onExpand}
