@@ -1,29 +1,29 @@
 import React, { useCallback } from "react";
 import { useMutation } from "@apollo/client";
 
-import ReplaceActivityPropertyMutation from "src/graphql/mutations/ReplaceActivityProperty.gql";
+import ReplaceConversationPropertyMutation from "src/graphql/mutations/ReplaceConversationProperty.gql";
 import utils from "src/utils";
 
-export default function ManageActivityProperty({
+export default function ManageConversationProperty({
   propertyName,
   project,
-  activity,
-  setActivities,
+  conversation,
+  setConversations,
   propertyValues,
   setLoading,
   onSave,
 }) {
-  const property = utils.getProperty(propertyName, activity);
+  const property = utils.getProperty(propertyName, conversation);
   const projectId = project.id;
-  const activityId = activity.id;
+  const conversationId = conversation.id;
   const [value, setValue] = React.useState(property?.value);
 
-  const [replaceActivityProperty] = useMutation(
-    ReplaceActivityPropertyMutation,
+  const [replaceConversationProperty] = useMutation(
+    ReplaceConversationPropertyMutation,
     {
       variables: {
         projectId,
-        activityId,
+        conversationId,
         name: propertyName,
         type: "String",
       },
@@ -33,7 +33,7 @@ export default function ManageActivityProperty({
   const replaceProperty = useCallback(
     async (value) => {
       setLoading(true);
-      await replaceActivityProperty({
+      await replaceConversationProperty({
         variables: {
           value,
         },
@@ -41,13 +41,15 @@ export default function ManageActivityProperty({
       if (onSave) {
         onSave();
       }
-      setActivities((activities) => {
-        const newActivities = [...activities];
-        const index = newActivities.findIndex(({ id }) => id === activity.id);
-        newActivities[index] = {
-          ...newActivities[index],
+      setConversations((conversations) => {
+        const newConversations = [...conversations];
+        const index = newConversations.findIndex(
+          ({ id }) => id === conversation.id
+        );
+        newConversations[index] = {
+          ...newConversations[index],
           properties: [
-            ...newActivities[index].properties.filter(
+            ...newConversations[index].properties.filter(
               (p) => p.name !== propertyName
             ),
             {
@@ -56,15 +58,15 @@ export default function ManageActivityProperty({
             },
           ],
         };
-        return newActivities;
+        return newConversations;
       });
       setLoading(false);
     },
     [
-      replaceActivityProperty,
-      activity,
+      replaceConversationProperty,
+      conversation,
       propertyName,
-      setActivities,
+      setConversations,
       setLoading,
       onSave,
     ]

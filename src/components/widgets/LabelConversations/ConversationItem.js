@@ -5,13 +5,13 @@ import TimeAgo from "react-timeago";
 import utils from "src/utils";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
-import ManageActivityProperty from "./ManageActivityProperty";
+import ManageConversationProperty from "./ManageConversationProperty";
 import Loader from "src/components/domains/ui/Loader";
 
 export default function ConversationItem({
   project,
-  activity,
-  setActivities,
+  conversation,
+  setConversations,
   controlledProperties = [],
   selectedRows,
   setSelectedRows,
@@ -22,7 +22,7 @@ export default function ConversationItem({
 }) {
   const [preview, setPreview] = React.useState(false);
 
-  const isLoading = loadingRows.includes(activity.id);
+  const isLoading = loadingRows.includes(conversation.id);
   const [loading, setLoading] = React.useState(isLoading);
 
   React.useEffect(() => {
@@ -32,19 +32,19 @@ export default function ConversationItem({
   const isLoadingRef = React.useRef(isLoading);
   React.useEffect(() => {
     if (loading && !isLoadingRef.current) {
-      setLoadingRows((loadingRows) => [...loadingRows, activity.id]);
+      setLoadingRows((loadingRows) => [...loadingRows, conversation.id]);
     }
     if (!loading) {
       setLoadingRows((loadingRows) =>
-        loadingRows.filter((id) => id !== activity.id)
+        loadingRows.filter((id) => id !== conversation.id)
       );
     }
-  }, [loading, setLoadingRows, activity.id]);
+  }, [loading, setLoadingRows, conversation.id]);
 
-  const isSelected = selectedRows.includes(activity.id);
+  const isSelected = selectedRows.includes(conversation.id);
 
   const toggleSelection = React.useCallback(() => {
-    const { id } = activity;
+    const { id } = conversation;
     if (!isSelected) {
       setSelectedRows((selectedRows) => [...selectedRows, id]);
     } else {
@@ -52,10 +52,12 @@ export default function ConversationItem({
         selectedRows.filter((rowId) => rowId !== id)
       );
     }
-  }, [activity, setSelectedRows, isSelected]);
+  }, [conversation, setSelectedRows, isSelected]);
 
-  const titleProperty = utils.getProperty("title", activity);
+  const titleProperty = utils.getProperty("title", conversation);
   const handlers = {};
+
+  const activity = conversation.descendants[0];
 
   return (
     <tr
@@ -97,7 +99,7 @@ export default function ConversationItem({
                   setPreview((preview) => !preview);
                 }}
               >
-                {activity.descendants.length - 1} replies
+                {conversation.descendants.length - 1} replies
               </div>
               <TimeAgo
                 date={activity.timestamp}
@@ -113,21 +115,17 @@ export default function ConversationItem({
               }}
               className="absolute w-[600px] max-h-[500px] overflow-y-scroll left-0 top-14 bg-gray-100 dark:bg-gray-900 shadow-lg z-[1000] border dark:border-gray-800 border-gray-200"
             >
-              <FullThreadView
-                activity={activity}
-                conversation={activity}
-                handlers={handlers}
-              />
+              <FullThreadView conversation={conversation} handlers={handlers} />
             </div>
           )}
         </div>
       </td>
       {controlledProperties.map(({ name, values }) => (
         <td className="py-2 px-4" key={name}>
-          <ManageActivityProperty
+          <ManageConversationProperty
             project={project}
-            activity={activity}
-            setActivities={setActivities}
+            conversation={conversation}
+            setConversations={setConversations}
             propertyName={name}
             propertyValues={values}
             setLoading={setLoading}
@@ -138,7 +136,7 @@ export default function ConversationItem({
       {propertyFilters
         .filter(({ name }) => controlledProperties.find((p) => p.name !== name))
         .map(({ name }) => {
-          const properties = utils.getProperties(name, activity);
+          const properties = utils.getProperties(name, conversation);
           return (
             <td className="py-2 px-4" key={name}>
               <div className="flex flex-wrap w-[200px]">

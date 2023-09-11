@@ -1,8 +1,8 @@
-mutation DeleteActivityProperties(
+mutation DeleteConversationProperties(
   $id: ID!
-  $where: ActivityPropertiesConnectionWhere
+  $where: ConversationPropertiesConnectionWhere
 ) {
-  updateActivities(
+  updateConversations(
     where: { id: $id }
     delete: { properties: { where: $where } }
   ) {

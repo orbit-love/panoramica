@@ -122,11 +122,11 @@ const resolvers = {
   Conversation: {
     async completion(parent, args, { resolveTree }) {
       const projectId = resolveTree.args.where.id;
-      const { id: activityId } = parent;
+      const { id: conversationId } = parent;
       const { prompt, modelName, temperature } = args;
       return resolveCompletion({
         projectId,
-        activityId,
+        conversationId,
         prompt,
         modelName,
         temperature,
@@ -134,11 +134,11 @@ const resolvers = {
     },
     async generateProperties(parent, args, { resolveTree }) {
       const projectId = resolveTree.args.where.id;
-      const { id: activityId } = parent;
+      const { id: conversationId } = parent;
       const { definitions, modelName, temperature } = args;
       return resolveGenerateProperties({
         projectId,
-        activityId,
+        conversationId,
         definitions,
         modelName,
         temperature,
@@ -146,11 +146,11 @@ const resolvers = {
     },
     async generatePropertiesFromYaml(parent, args, { resolveTree }) {
       const projectId = resolveTree.args.where.id;
-      const { id: activityId } = parent;
+      const { id: conversationId } = parent;
       const { modelName, temperature, yaml } = args;
       return resolveGeneratePropertiesFromYaml({
         projectId,
-        activityId,
+        conversationId,
         yaml,
         modelName,
         temperature,
@@ -158,20 +158,20 @@ const resolvers = {
     },
     async conversationJson(parent, _, { resolveTree }) {
       const projectId = resolveTree.args.where.id;
-      const { id: activityId } = parent;
+      const { id: conversationId } = parent;
       const messages = await resolveConversationJson({
         projectId,
-        activityId,
+        conversationId,
       });
       return JSON.stringify(messages);
     },
     async similarConversations(parent) {
-      const { id: activityId, project, descendants } = parent;
+      const { id: conversationId, project, descendants } = parent;
       if (!project || !descendants) {
         // these fields must be included in the query
         return [
           {
-            id: "Please add project.id, descendants.id, and descendants.textHtml to the activity selection.",
+            id: "Please add project.id, descendants.id, and descendants.textHtml to the conversation selection.",
             distance: 2,
           },
         ];
@@ -179,7 +179,7 @@ const resolvers = {
       const { id: projectId } = project;
       return getSimilarConversations({
         projectId,
-        activityId,
+        conversationId,
         descendants,
       });
     },

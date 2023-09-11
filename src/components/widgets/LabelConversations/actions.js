@@ -1,26 +1,25 @@
-import React from "react";
 import { baseClient } from "src/graphql/apollo-wrapper";
 
 import GenerateConversationPropertiesFromYaml from "src/graphql/queries/GenerateConversationPropertiesFromYaml.gql";
-import CreateActivityPropertiesMutation from "src/graphql/mutations/CreateActivityProperties.gql";
-import DeleteActivityPropertiesMutation from "src/graphql/mutations/DeleteActivityProperties.gql";
+import CreateConversationPropertiesMutation from "src/graphql/mutations/CreateConversationProperties.gql";
+import DeleteConversationPropertiesMutation from "src/graphql/mutations/DeleteConversationProperties.gql";
 
-export const labelActivity = async ({
+export const labelConversation = async ({
   project,
-  activity,
+  conversation,
   yaml,
   replaceExistingProperties = true,
 }) => {
   const client = baseClient()();
 
   const projectId = project.id;
-  const activityId = activity.id;
+  const conversationId = conversation.id;
 
   const {
     data: {
       projects: [
         {
-          activities: [{ generatePropertiesFromYaml }],
+          conversations: [{ generatePropertiesFromYaml }],
         },
       ],
     },
@@ -29,20 +28,20 @@ export const labelActivity = async ({
     fetchPolicy: "no-cache",
     variables: {
       projectId,
-      activityId,
+      conversationId,
       yaml,
     },
   });
 
-  var finalProperties = [...activity.properties];
+  var finalProperties = [...conversation.properties];
 
   if (replaceExistingProperties) {
     const propertyNames = generatePropertiesFromYaml.map(({ name }) => name);
     const where = { node: { name_IN: propertyNames } };
     await client.mutate({
-      mutation: DeleteActivityPropertiesMutation,
+      mutation: DeleteConversationPropertiesMutation,
       variables: {
-        id: activityId,
+        id: conversationId,
         where,
       },
     });
@@ -60,9 +59,9 @@ export const labelActivity = async ({
   );
 
   await client.mutate({
-    mutation: CreateActivityPropertiesMutation,
+    mutation: CreateConversationPropertiesMutation,
     variables: {
-      id: activityId,
+      id: conversationId,
       properties: propertiesWithNode,
     },
   });
@@ -70,6 +69,6 @@ export const labelActivity = async ({
   // push the new properties on
   finalProperties.push(...generatePropertiesFromYaml);
 
-  const newActivity = { ...activity, properties: finalProperties };
-  return newActivity;
+  const newConversation = { ...conversation, properties: finalProperties };
+  return newConversation;
 };

@@ -1,12 +1,12 @@
 query (
   $projectId: ID!
-  $activityId: ID!
+  $conversationId: ID!
   $yaml: String!
   $modelName: String
   $temperature: Float
 ) {
   projects(where: { id: $projectId }) {
-    activities(where: { id: $activityId }) {
+    conversations(where: { id: $conversationId }) {
       generatePropertiesFromYaml(
         modelName: $modelName
         temperature: $temperature

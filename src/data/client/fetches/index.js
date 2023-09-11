@@ -130,7 +130,7 @@ export async function postCreateActivitiesProperties({ project, body }) {
   });
 }
 
-export async function postCreateActivityProperties({ project, activity }) {
+export async function postCreateConversationProperties({ project, activity }) {
   const url = `/api/projects/${project.id}/${activity.id}/properties`;
   return fetch(url, {
     method: "POST",

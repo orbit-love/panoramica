@@ -11,10 +11,10 @@ const resolvePropertyFilters = async ({
   const { source, sourceChannel } = where;
 
   if (source) {
-    wheres.push(`a.source = $source`);
+    wheres.push(`c.source = $source`);
   }
   if (sourceChannel) {
-    wheres.push(`a.sourceChannel = $sourceChannel`);
+    wheres.push(`c.sourceChannel = $sourceChannel`);
   }
   if (propertyNames) {
     wheres.push(`prop.name IN $propertyNames`);
@@ -28,7 +28,7 @@ const resolvePropertyFilters = async ({
     // activities have that property
     `MATCH (p:Project { id: $projectId })
         WITH p
-      MATCH (p)-[:OWNS]->(a:Activity)-[:HAS]->(prop:Property)
+      MATCH (p)-[:OWNS]->(c:Conversation)-[:HAS]->(prop:Property)
         ${whereClause}
       WITH prop.name AS propertyName, prop.value AS propertyValue
       WITH propertyName, propertyValue, COUNT(*) AS count ORDER by propertyName, count DESC

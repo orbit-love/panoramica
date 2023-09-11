@@ -9,8 +9,8 @@ export default function TableBody({
   where,
   limit,
   offset,
-  activities,
-  setActivities,
+  conversations,
+  setConversations,
   setLoading,
   sort,
   trigger,
@@ -29,9 +29,9 @@ export default function TableBody({
     },
     onCompleted: (data) => {
       const {
-        projects: [{ activities }],
+        projects: [{ conversations }],
       } = data;
-      setActivities(activities);
+      setConversations(conversations);
     },
   });
 
@@ -47,11 +47,11 @@ export default function TableBody({
 
   return (
     <tbody className="h-[70vh] overflow-y-auto">
-      {activities.map((activity) => (
+      {conversations.map((conversation) => (
         <ConversationItem
-          key={activity.id}
-          activity={activity}
-          setActivities={setActivities}
+          key={conversation.id}
+          conversation={conversation}
+          setConversations={setConversations}
           setRefetchNow={setRefetchNow}
           {...props}
         />

@@ -3,8 +3,8 @@ query (
   $projectId: ID!
   $limit: Int!
   $offset: Int!
-  $sort: [ActivitySort!]
-  $where: ActivityWhere
+  $sort: [ConversationSort!]
+  $where: ConversationWhere
 ) {
   projects(where: { id: $projectId }) {
     conversations(

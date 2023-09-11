@@ -309,20 +309,22 @@ export const margeActivityLinks = async ({ tx, activities, project }) => {
     `MATCH (p:Project { id: $projectId })
       WITH p, $activities AS batch
       UNWIND batch AS batchActivity
-        MATCH (p)-[:OWNS]->(start:Activity { id: batchActivity.id })<-[:DID]-(m:Member)
-        WHERE NOT EXISTS((start)-[:REPLIES_TO]->(:Activity))
-        MERGE (p)-[:OWNS]->(c:Conversation { id: start.id })
+        MATCH (p)-[:OWNS]->(starter:Activity { id: batchActivity.id })<-[:DID]-(m:Member)
+        WHERE NOT EXISTS((starter)-[:REPLIES_TO]->(:Activity))
+        MERGE (p)-[:OWNS]->(c:Conversation { id: starter.id })
         ON CREATE SET
-          c.firstActivityTimestamp = start.timestamp,
-          c.lastActivityTimestamp = start.timestamp,
+          c.firstActivityTimestamp = starter.timestamp,
+          c.lastActivityTimestamp = starter.timestamp,
           c.memberCount = 1, c.activityCount = 1,
           c.members = [m.id],
           c.missingParent = c.sourceParentId
-        MERGE (c)-[:INCLUDES]->(start)
+          c.source = starter.source
+          c.sourceChannel = starter.sourceChannel
+        MERGE (c)-[:INCLUDES]->(starter)
         MERGE (c)-[:INCLUDES]->(member)
-        MERGE (c)<-[:BEGINS]-(start)
-        WITH c, start
-        MATCH (start)<-[:REPLIES_TO*0..]-(reply:Activity)<-[:DID]-(member:Member)
+        MERGE (c)<-[:BEGINS]-(starter)
+        WITH c, starter
+        MATCH (starter)<-[:REPLIES_TO*0..]-(reply:Activity)<-[:DID]-(member:Member)
         MERGE (c)-[:INCLUDES]->(reply)
         MERGE (c)-[:INCLUDES]->(member)
         ON MATCH SET

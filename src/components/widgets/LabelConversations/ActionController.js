@@ -1,11 +1,11 @@
 import React from "react";
 
-import { labelActivity } from "./actions";
+import { labelConversation } from "./actions";
 
 export default function ActionController({
   project,
-  activities,
-  setActivities,
+  conversations,
+  setConversations,
   yaml,
   selectedRows,
   setSelectedRows,
@@ -14,33 +14,35 @@ export default function ActionController({
   setSelectAllCheckboxValue,
   setRefetchNow,
 }) {
-  const processActivity = React.useCallback(
-    async (activity) => {
-      setLoadingRows((loadingRows) => [...loadingRows, activity.id]);
-      const newActivity = await labelActivity({
+  const processConversation = React.useCallback(
+    async (conversation) => {
+      setLoadingRows((loadingRows) => [...loadingRows, conversation.id]);
+      const newConversation = await labelConversation({
         project,
-        activity,
+        conversation,
         yaml,
       });
-      setActivities((activities) =>
-        activities.map((a) => (a.id === activity.id ? newActivity : a))
+      setConversations((conversations) =>
+        conversations.map((a) =>
+          a.id === conversation.id ? newConversation : a
+        )
       );
       setSelectedRows((selectedRows) =>
-        selectedRows.filter((id) => id !== activity.id)
+        selectedRows.filter((id) => id !== conversation.id)
       );
       setLoadingRows((loadingRows) =>
-        loadingRows.filter((id) => id !== activity.id)
+        loadingRows.filter((id) => id !== conversation.id)
       );
     },
-    [project, yaml, setActivities, setSelectedRows, setLoadingRows]
+    [project, yaml, setConversations, setSelectedRows, setLoadingRows]
   );
 
   // sends a message to children that they should process
   // the child's job is to determine if it is selected or not
-  const labelSelectedActivities = async ({
-    selectedActivities: objects,
+  const labelSelectedConversations = async ({
+    selectedConversations: objects,
     setSelectAllCheckboxValue,
-    processActivity: processObject,
+    processConversation: processObject,
   }) => {
     let index = 0;
     let maxConcurrency = 5;
@@ -69,22 +71,22 @@ export default function ActionController({
     setSelectAllCheckboxValue(false);
   };
 
-  const activitiesRef = React.useRef();
+  const conversationsRef = React.useRef();
 
   React.useEffect(() => {
-    activitiesRef.current = activities;
-  }, [activities]);
+    conversationsRef.current = conversations;
+  }, [conversations]);
 
   React.useEffect(() => {
     if (selectAllCheckboxValue) {
-      setSelectedRows(activitiesRef.current.map(({ id }) => id));
+      setSelectedRows(conversationsRef.current.map(({ id }) => id));
     } else {
       setSelectedRows([]);
     }
   }, [selectAllCheckboxValue, setSelectedRows]);
 
-  const selectedActivities = selectedRows.map((id) =>
-    activities.find((activity) => activity.id === id)
+  const selectedConversations = selectedRows.map((id) =>
+    conversations.find((conversation) => conversation.id === id)
   );
 
   return (
@@ -95,10 +97,10 @@ export default function ActionController({
           <button
             className="underline"
             onClick={() =>
-              labelSelectedActivities({
-                selectedActivities,
+              labelSelectedConversations({
+                selectedConversations,
                 setSelectAllCheckboxValue,
-                processActivity,
+                processConversation,
               })
             }
           >

@@ -1,7 +1,7 @@
 import React from "react";
 import { useMutation } from "@apollo/client";
 
-import DeleteActivityPropertyMutation from "src/graphql/mutations/DeleteActivityProperty.gql";
+import DeleteConversationPropertyMutation from "src/graphql/mutations/DeleteConversationProperty.gql";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function DeleteAllActivityProperties({
@@ -12,23 +12,26 @@ export default function DeleteAllActivityProperties({
 }) {
   const projectId = project.id;
 
-  const [deleteActivityProperty] = useMutation(DeleteActivityPropertyMutation, {
-    variables: {
-      projectId,
-      name: propertyName,
-    },
-  });
+  const [deleteConversationProperty] = useMutation(
+    DeleteConversationPropertyMutation,
+    {
+      variables: {
+        projectId,
+        name: propertyName,
+      },
+    }
+  );
 
   const deleteProperty = React.useCallback(
     async (value) => {
-      await deleteActivityProperty({
+      await deleteConversationProperty({
         variables: {
           value,
         },
       });
       await onComplete();
     },
-    [deleteActivityProperty, onComplete]
+    [deleteConversationProperty, onComplete]
   );
 
   const confirmDelete = React.useCallback(() => {

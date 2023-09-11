@@ -13,7 +13,7 @@ import GetPromptsByContextQuery from "src/graphql/queries/GetPromptsByContext.gq
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import GenerateConversationProperties from "src/graphql/queries/GenerateConversationProperties.gql";
-import ReplaceActivityPropertyMutation from "src/graphql/mutations/ReplaceActivityProperty.gql";
+import ReplaceConversationPropertyMutation from "src/graphql/mutations/ReplaceConversationProperty.gql";
 import { titleDefinition } from "src/configuration/propertyDefinitions";
 
 export const ChatArea = ({ project, conversation }) => {
@@ -57,8 +57,8 @@ const GeneratedTitleProperty = ({
   setTitle,
   setConversation,
 }) => {
-  const [replaceActivityProperty] = useMutation(
-    ReplaceActivityPropertyMutation
+  const [replaceConversationProperty] = useMutation(
+    ReplaceConversationPropertyMutation
   );
 
   // handle newly generated properties by updating the conversation
@@ -85,7 +85,7 @@ const GeneratedTitleProperty = ({
             .concat(titleProperty),
         }));
 
-        replaceActivityProperty({
+        replaceConversationProperty({
           variables: {
             conversationId: conversation.id,
             ...titleProperty,
@@ -93,7 +93,7 @@ const GeneratedTitleProperty = ({
         });
       }
     },
-    [setTitle, setConversation, replaceActivityProperty, conversation]
+    [setTitle, setConversation, replaceConversationProperty, conversation]
   );
 
   // skip the query if title exists and has a value

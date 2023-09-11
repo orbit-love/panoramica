@@ -1,6 +1,6 @@
-query ($projectId: ID!, $where: ActivityWhere) {
+query ($projectId: ID!, $where: ConversationWhere) {
   projects(where: { id: $projectId }) {
-    activitiesAggregate(where: $where) {
+    conversationsAggregate(where: $where) {
       count
     }
   }

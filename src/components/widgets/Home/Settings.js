@@ -26,14 +26,6 @@ export default function Settings({
     });
   };
 
-  const onClickManageData = (e) => {
-    e.preventDefault();
-    addWidget("manage-data", "ManageData", {
-      title: "Manage Data",
-      position: newPanelPosition(),
-    });
-  };
-
   const onClickLabelConversations = (e) => {
     e.preventDefault();
     const widgetId = `label-conversations-${new Date().getTime()}`;
@@ -79,12 +71,6 @@ export default function Settings({
             </div>
           )}
 
-          <div
-            className="cursor-pointer hover:underline"
-            onClick={onClickManageData}
-          >
-            Manage Data
-          </div>
           <div
             className="cursor-pointer hover:underline"
             onClick={onClickLabelConversations}

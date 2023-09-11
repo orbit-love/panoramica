@@ -3,7 +3,7 @@ import jsYaml from "js-yaml";
 
 const resolveGeneratePropertiesFromYaml = async ({
   projectId,
-  activityId,
+  conversationId,
   yaml,
   modelName,
   temperature,
@@ -42,7 +42,7 @@ YAML OUTPUT:`;
 
   const [text, finalPrompt] = await generate({
     projectId,
-    activityId,
+    conversationId,
     modelName,
     temperature,
     prompt,

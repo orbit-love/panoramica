@@ -1,8 +1,8 @@
-mutation DeleteActivityProperty($projectId: ID!, $name: String!) {
+mutation DeleteConversationProperty($projectId: ID!, $name: String!) {
   updateProjects(
     where: { id: $projectId }
     update: {
-      activities: {
+      conversations: {
         update: {
           node: { properties: { delete: { where: { node: { name: $name } } } } }
         }
