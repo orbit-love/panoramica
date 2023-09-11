@@ -96,7 +96,15 @@ export default function PropertyFilter({
       selectedFilter === "Not Exists");
 
   return (
-    <div className="hover:dark:bg-gray-800 relative py-2 px-4 whitespace-nowrap cursor-pointer hover:bg-gray-100">
+    <div
+      className={classnames(
+        "relative py-2 px-4 whitespace-nowrap cursor-pointer",
+        {
+          "bg-blue-100 dark:bg-blue-900": expanded,
+          "hover:dark:bg-gray-800 hover:bg-gray-100": !expanded,
+        }
+      )}
+    >
       <div
         onClick={() => setExpanded((expanded) => !expanded)}
         className={classnames("select-none text-xs", {
@@ -106,7 +114,7 @@ export default function PropertyFilter({
         {displayName}
       </div>
       {expanded && (
-        <div className="font-normal absolute right-0 top-9 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-700 min-w-[300px] z-50">
+        <div className="font-normal absolute left-[-50%] top-8 bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-700 min-w-[300px] z-50">
           <div className="absolute top-2 right-2">
             <FontAwesomeIcon
               icon="times"

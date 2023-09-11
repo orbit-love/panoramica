@@ -60,7 +60,7 @@ export default function ConversationItem({
   return (
     <tr
       className={classnames("border-y border-gray-100 dark:border-gray-800", {
-        "dark:bg-opacity-30 hover:bg-opacity-50 bg-fuchsia-100 dark:bg-fuchsia-900":
+        "dark:bg-opacity-30 hover:bg-opacity-50 bg-blue-100 dark:bg-blue-900":
           isSelected,
         "dark:hover:bg-gray-800 hover:bg-gray-50": !isSelected,
       })}
@@ -141,7 +141,7 @@ export default function ConversationItem({
           const properties = utils.getProperties(name, activity);
           return (
             <td className="py-2 px-4" key={name}>
-              <div className="flex flex-wrap max-w-[200px]">
+              <div className="flex flex-wrap w-[200px]">
                 {properties.map((property, index) => (
                   <div
                     key={index}
