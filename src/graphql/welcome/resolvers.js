@@ -26,7 +26,7 @@ const resolvers = {
       }
     },
   },
-  Activity: {
+  Conversation: {
     async similarConversations(parent) {
       const { id: activityId, project, descendants } = parent;
       if (!project || !descendants) {
