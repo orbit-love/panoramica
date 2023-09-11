@@ -4,7 +4,7 @@ import { Frame, Header } from "src/components/widgets";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import Connections from "src/components/domains/member/Connections";
-import GetActivitiesQuery from "./Member/GetActivities.gql";
+import GetMemberConversationsConnectionQuery from "src/graphql/queries/GetMemberConversationsConnection.gql";
 
 export default function Member({ project, params, handlers }) {
   var { member } = params;
@@ -13,11 +13,16 @@ export default function Member({ project, params, handlers }) {
   const { globalActor: memberId } = member;
   const { id: projectId } = project;
 
-  const query = GetActivitiesQuery;
+  const query = GetMemberConversationsConnectionQuery;
   const variables = {
     projectId,
     memberId,
   };
+
+  // what we want instead is to grab all the activities for the member
+  // get the conversations, and then render each feed item with the right preview
+  // dedupping the conversations
+  // this is true for search, etc.
 
   return (
     <Frame>

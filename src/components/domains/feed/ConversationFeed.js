@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classnames from "classnames";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import Paginator from "src/components/domains/feed/Paginator";
 import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
-import Filters from "./Filters";
 import FilterDisplay from "./FilterDisplay";
 
-const findActivitiesConnectionEdges = ({
+const findConversationsConnectionEdges = ({
   projects: [
     {
-      activitiesConnection: { edges, pageInfo },
+      conversationsConnection: { edges, pageInfo },
     },
   ],
 }) => {
@@ -22,22 +19,22 @@ export default function ConversationFeed({
   project,
   query,
   variables,
-  where = [],
+  where = { AND: [] },
+  sort = { node: { lastActivityTimestamp: "DESC" } },
   handlers,
-  minimal,
   term,
-  eachActivity,
+  eachConversation,
   filterPropertyNames,
-  findEdges = findActivitiesConnectionEdges,
+  findEdges = findConversationsConnectionEdges,
   className = "border-t border-gray-300 dark:border-gray-700",
 }) {
   const [first, setFirst] = useState(10);
-  const [activities, setActivities] = useState([]);
+  const [conversations, setConversations] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState([]);
 
-  const toWhere = (filters) => {
+  const mergeWhere = (filters) => {
     const filterList = filters.map(({ name, value }) => {
       return {
         node: {
@@ -48,36 +45,29 @@ export default function ConversationFeed({
         },
       };
     });
-    const whereList = where.map((predicate) => {
-      return {
-        node: predicate,
-      };
-    });
     return {
-      AND: [...filterList, ...whereList],
+      AND: [...filterList, ...where.AND],
     };
   };
-  const whereInput = toWhere(filters);
 
   const { fetchMore } = useQuery(query, {
-    variables: { ...variables, first, where: whereInput },
+    variables: { ...variables, first, where: mergeWhere(filters), sort },
     onCompleted: (data) => {
       const [edges, pageInfo] = findEdges(data);
-      setActivities(edges.map((edge) => edge.node));
+      setConversations(edges.map((edge) => edge.node));
       setPageInfo(pageInfo);
       setLoading(false);
     },
   });
 
-  if (!eachActivity) {
-    eachActivity = ({ activity, index }) => (
+  if (!eachConversation) {
+    eachConversation = ({ conversation, index }) => (
       <ConversationFeedItem
         project={project}
-        key={activity.id}
         index={index}
-        activity={activity}
+        key={conversation.id}
+        conversation={conversation}
         handlers={handlers}
-        minimal={minimal}
         term={term}
       />
     );
@@ -92,38 +82,12 @@ export default function ConversationFeed({
     });
   }, [first, fetchMore]);
 
-  // keep only the first activity in a conversation
-  const conversationIds = activities.map((a) => a.conversation.id);
-  const filteredActivities = activities.filter((activity, index) => {
-    return conversationIds.indexOf(activity.conversation.id) === index;
-  });
-
-  // take the first descendant property and write them into the
-  // otherwise empty conversation object, this is an optimization to
-  // work around an issue with hung queries
-  const updatedActivities = filteredActivities.map((activity) => {
-    return {
-      ...activity,
-      conversation: {
-        ...activity.conversation.descendants[0],
-        ...activity.conversation,
-      },
-    };
-  });
-
-  // transform an array of objects into a single object
-  // with all the properties from each object
-
-  const whereObject = where.reduce((acc, object) => {
-    return { ...acc, ...object };
-  }, {});
-
   return (
     <>
       {filterPropertyNames?.length > 0 && (
         <FilterDisplay
           project={project}
-          where={whereObject}
+          where={where}
           filters={filters}
           setFilters={setFilters}
           propertyNames={filterPropertyNames}
@@ -131,10 +95,10 @@ export default function ConversationFeed({
       )}
       <div className={className}>
         <Paginator
-          activities={updatedActivities}
+          conversations={conversations}
           setFirst={setFirst}
           pageInfo={pageInfo}
-          eachActivity={eachActivity}
+          eachConversation={eachConversation}
           loading={loading}
         />
       </div>

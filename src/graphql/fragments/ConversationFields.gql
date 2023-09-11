@@ -1,0 +1,12 @@
+fragment ConversationFields on Conversation {
+  id
+  firstActivityTimestamp
+  lastActivityTimestamp
+  memberCount
+  activityCount
+  properties {
+    name
+    type
+    value
+  }
+}

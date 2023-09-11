@@ -11,9 +11,4 @@ fragment ActivityFields on Activity {
     globalActor
     globalActorName
   }
-  properties {
-    name
-    type
-    value
-  }
 }

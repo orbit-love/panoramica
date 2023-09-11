@@ -40,7 +40,7 @@ export default function Setup({
         <div className="flex flex-col space-y-6">
           <p>
             The project has been created. Click the button to fetch data from
-            Orbit. This is a one-time operation and takes up to 60 seconds.
+            Orbit. This will be done in the background.
           </p>
           <button className="btn" onClick={importProject}>
             {loading && <Loader className="text-white" />}

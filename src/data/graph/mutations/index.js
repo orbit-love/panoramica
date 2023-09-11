@@ -115,16 +115,17 @@ export async function syncActivities({ tx, project, activities }) {
   // since some may have been created with a new uuid
   activities = records.map((record) => record.get("a").properties);
 
-  // needed when older data is imported after newer data
-  await margeActivityLinks({ tx, activities, project });
-
   // create (:Member) nodes for each unique globalActor
   await tx.run(
     `MATCH (p:Project { id: $projectId })
       WITH p, $activities AS batch
         UNWIND batch AS activity
         MERGE (p)-[:OWNS]-(m:Member { globalActor: activity.globalActor })
-          SET m.globalActorName = activity.globalActorName`,
+           CALL uuid_generator.get() YIELD uuid
+           SET m += {
+             id: COALESCE(m.id, uuid),
+             globalActorName: activity.globalActorName
+           }`,
     { activities, projectId }
   );
   console.log("Memgraph: Created (:Member) nodes");
@@ -140,6 +141,9 @@ export async function syncActivities({ tx, project, activities }) {
     { activities, projectId }
   );
   console.log("Memgraph: Created (:Member)->[:DID]->(:Activity) edges");
+
+  // needed when older data is imported after newer data
+  await margeActivityLinks({ tx, activities, project });
 
   let mentions = [];
 
@@ -201,7 +205,7 @@ export async function syncActivities({ tx, project, activities }) {
             WITH m1
               ${match}
               WHERE m1 <> m2
-              MATCH (a1)-[:PART_OF]->(c:Activity)
+              MATCH (a1)<-[:INCLUDES]-(c:Conversation)
               MERGE (m1)-[k:MESSAGED]-(m2)
               ON CREATE SET k.activities = [a1.id],
                             k.conversations = [c.id],
@@ -240,7 +244,7 @@ export async function syncActivities({ tx, project, activities }) {
 
   // update (:Member) nodes with an activity conversation count
   // it would be better to do it at query time but graphql sorting
-  // doesn't support aggregations and writing a customer resolver
+  // doesn't support aggregations and writing a custom resolver
   // is complicated because of pagination, etc.
   await tx.run(
     `MATCH (p:Project { id: $projectId })
@@ -248,7 +252,7 @@ export async function syncActivities({ tx, project, activities }) {
         UNWIND batch AS activity
         MATCH (p)-[:OWNS]-(m:Member { globalActor: activity.globalActor })
           WITH m
-            MATCH (m)-[:DID]-(a:Activity)-[:PART_OF]->(c:Conversation)
+            MATCH (m)-[:DID]-(a:Activity)<-[:INCLUDES]-(c:Conversation)
           WITH m, count(DISTINCT a.id) as activityCount, count(DISTINCT c.id) as conversationCount
             OPTIONAL MATCH (m)-[:MESSAGED]-(n:Member)
             WITH m, activityCount, conversationCount, count(DISTINCT n.globalActor) AS messagedWithCount
@@ -292,42 +296,48 @@ export const margeActivityLinks = async ({ tx, activities, project }) => {
   );
   console.log("Memgraph: Connected (a:Activity)-[:REPLIES_TO]->(p:Activity)");
 
-  // delete any existing PART_OF relationship so we don't create a duplicate
-  // when an ancestor is imported that we didn't know about before
-  // reset the fields on each activity that reflect it's conversation status
-  await tx.run(
-    `MATCH (p:Project { id: $projectId })
-      WITH p, $activities AS batch
-      UNWIND batch AS batchActivity
-        MATCH (p)-[:OWNS]->(activity:Activity { id: batchActivity.id })-[part_of:PART_OF]->(conversation:Activity)
-        WITH activity, part_of
-          SET activity.conversationId = NULL
-          SET activity.isConversation = false
-          REMOVE activity:Conversation
-          DELETE part_of`,
-    { activities, projectId }
-  );
-  console.log(
-    "Memgraph: Removed old (:Activity)-[:PART_OF]->(:Conversation) and related fields"
-  );
+  // now that all the links are there, merge the conversation node; if it doesn't exist
+  // we will create it and this activity will be the starter; if it does exist, we will
+  // ideally we get rid of fields like isConversation and conversationId on the activity node
+  // so we don't need to keep them in sync and cause lots of unnecessary updates
+  // put the timestamps of the first and last activity on the conversation as well as other
+  // fields for easy filtering like the number of replies, unique members, etc.
+  // materialize the conversation
+  // if an activity is an island, but has a sourceParentId, give it a warning and filter them out by default
 
-  // assign conversationId to the farthest ancestor of each activity or that activity itself
-  // apply the :Conversation label if the farthest ancestor is the activity itself
   await tx.run(
     `MATCH (p:Project { id: $projectId })
       WITH p, $activities AS batch
       UNWIND batch AS batchActivity
-        MATCH path = (p)-[:OWNS]->(ancestor:Activity)<-[:REPLIES_TO*0..]-(activity:Activity { id: batchActivity.id })
-          WITH activity, ancestor, reduce(acc = ancestor, n in nodes(path) | CASE WHEN n.timestamp < acc.timestamp THEN n ELSE acc END) as conversationStarter
-            ORDER BY conversationStarter.timestamp
-          WITH activity, HEAD(COLLECT(conversationStarter.id)) as conversationId
-            MATCH (conversation:Activity { id: conversationId })
-          WITH activity, conversation, conversationId
-            MERGE (activity)-[:PART_OF]->(conversation)
-            SET activity.conversationId = conversationId
-            SET conversation:Conversation
-            SET conversation.isConversation = true`,
+        MATCH (p)-[:OWNS]->(start:Activity { id: batchActivity.id })<-[:DID]-(m:Member)
+        WHERE NOT EXISTS((start)-[:REPLIES_TO]->(:Activity))
+        MERGE (p)-[:OWNS]->(c:Conversation { id: start.id })
+        ON CREATE SET
+          c.firstActivityTimestamp = start.timestamp,
+          c.lastActivityTimestamp = start.timestamp,
+          c.memberCount = 1, c.activityCount = 1,
+          c.members = [m.id],
+          c.missingParent = c.sourceParentId
+        MERGE (c)-[:INCLUDES]->(start)
+        MERGE (c)-[:INCLUDES]->(member)
+        MERGE (c)<-[:BEGINS]-(start)
+        WITH c, start
+        MATCH (start)<-[:REPLIES_TO*0..]-(reply:Activity)<-[:DID]-(member:Member)
+        MERGE (c)-[:INCLUDES]->(reply)
+        MERGE (c)-[:INCLUDES]->(member)
+        ON MATCH SET
+          c.timestampLast = CASE
+                              WHEN c.timestampLast < reply.timestamp
+                              THEN reply.timestamp
+                              ELSE c.timestampLast
+                            END,
+          c.activityCount = c.activityCount + 1
+        WITH c, collect(DISTINCT member.id) AS memberIds
+        SET c.memberCount = size(memberIds), c.members = memberIds
+        WITH c
+        MATCH (c)-[:INCLUDES]->(a:Activity)<-[r:INCLUDES]-(otherC:Conversation)
+        WHERE c <> otherC
+        DELETE r`,
     { activities, projectId }
   );
-  console.log("Memgraph: Connected (a:Activity)-[:PART_OF]->(c:Conversation)");
 };

@@ -7,6 +7,7 @@ export default function FullThreadView(props) {
   // the activity represents the message that was clicked on
   // but for the thread rendering purposes we start at the top
   var { conversation } = props;
+  var firstActivity = conversation.descendants[0];
 
   // this component provides the same value for conversation
   // descendants at all levels of the thread; that information
@@ -15,7 +16,7 @@ export default function FullThreadView(props) {
     <div className="p-6">
       <FullThreadViewInner
         {...props}
-        activity={conversation}
+        activity={firstActivity}
         conversation={conversation}
         descendants={conversation?.descendants}
       />

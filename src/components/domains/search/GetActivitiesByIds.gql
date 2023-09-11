@@ -1,8 +1,12 @@
-#import "src/graphql/fragments/ForActivityFeed.gql"
+#import "src/graphql/fragments/ActivityFields.gql"
+#import "src/graphql/fragments/ConversationFields.gql"
 query ($projectId: ID!, $ids: [ID!]) {
   projects(where: { id: $projectId }) {
     activities(where: { id_IN: $ids }) {
-      ...ForActivityFeed
+      ...ActivityFields
+      conversation {
+        ...ConversationFields
+      }
     }
   }
 }

@@ -30,17 +30,7 @@ export default function Search({
       const {
         projects: [{ activities }],
       } = data;
-
-      const updatedActivities = activities.map((activity) => {
-        return {
-          ...activity,
-          conversation: {
-            ...activity.conversation.descendants[0],
-            ...activity.conversation,
-          },
-        };
-      });
-      setActivities(updatedActivities);
+      setActivities(activities);
     },
   });
 

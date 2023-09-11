@@ -153,23 +153,6 @@ const common = {
 
     return newObj;
   },
-  updateActivities: (activities) =>
-    activities.map((activity) => {
-      return {
-        ...activity,
-        conversation: {
-          ...activity.conversation.descendants[0],
-          ...activity.conversation,
-        },
-      };
-    }),
-  updateActivitiesNew: (activities) =>
-    activities.map((activity) => ({
-      ...activity,
-      conversation: {
-        ...activity,
-      },
-    })),
   getProperty: (name, object) =>
     object.properties.find((property) => property.name === name),
   getProperties: (name, object) =>

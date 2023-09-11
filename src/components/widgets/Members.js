@@ -71,7 +71,12 @@ export default function Members({ project, addWidget }) {
       <Header>
         <div className="flex justify-between items-baseline w-full">
           <div className="text-lg">
-            Members {members.length}/{totalCount}
+            Members{" "}
+            {members.length > 0 && totalCount > 0 && (
+              <span>
+                {members.length}/{totalCount}
+              </span>
+            )}
           </div>
           {totalCount > 0 && (
             <div className="flex items-baseline space-x-3 text-sm whitespace-nowrap">

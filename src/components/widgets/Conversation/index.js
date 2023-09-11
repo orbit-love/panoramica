@@ -9,7 +9,6 @@ import BookmarkAction from "src/components/domains/bookmarks/BookmarkAction";
 import PinAction from "src/components/domains/pins/PinAction";
 import SimilarAction from "src/components/domains/conversation/SimilarAction";
 import SourceAction from "src/components/domains/conversation/SourceAction";
-import PropertiesAction from "src/components/domains/conversation/PropertiesAction";
 import GetPromptsByContextQuery from "src/graphql/queries/GetPromptsByContext.gql";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -17,7 +16,7 @@ import GenerateConversationProperties from "src/graphql/queries/GenerateConversa
 import ReplaceActivityPropertyMutation from "src/graphql/mutations/ReplaceActivityProperty.gql";
 import { titleDefinition } from "src/configuration/propertyDefinitions";
 
-export const ChatArea = ({ project, activity }) => {
+export const ChatArea = ({ project, conversation }) => {
   const { id: projectId } = project;
   const context = "Conversation";
   const {
@@ -31,7 +30,7 @@ export const ChatArea = ({ project, activity }) => {
     },
   });
 
-  const subContext = { conversationId: activity.id };
+  const subContext = { conversationId: conversation.id };
   return (
     <>
       {project.modelName && (
@@ -53,16 +52,16 @@ export const ChatArea = ({ project, activity }) => {
 
 const GeneratedTitleProperty = ({
   project,
-  activity,
+  conversation,
   title,
   setTitle,
-  setActivity,
+  setConversation,
 }) => {
   const [replaceActivityProperty] = useMutation(
     ReplaceActivityPropertyMutation
   );
 
-  // handle newly generated properties by updating the activity
+  // handle newly generated properties by updating the conversation
   // and title state and then persisting with a mutation
   const handleGeneratedProperties = useCallback(
     (data) => {
@@ -79,22 +78,22 @@ const GeneratedTitleProperty = ({
 
       if (titleProperty) {
         setTitle(titleProperty.value);
-        setActivity((activity) => ({
-          ...activity,
-          properties: activity.properties
+        setConversation((conversation) => ({
+          ...conversation,
+          properties: conversation.properties
             ?.filter((property) => property.name !== "title")
             .concat(titleProperty),
         }));
 
         replaceActivityProperty({
           variables: {
-            activityId: activity.id,
+            conversationId: conversation.id,
             ...titleProperty,
           },
         });
       }
     },
-    [setTitle, setActivity, replaceActivityProperty, activity]
+    [setTitle, setConversation, replaceActivityProperty, conversation]
   );
 
   // skip the query if title exists and has a value
@@ -105,7 +104,7 @@ const GeneratedTitleProperty = ({
     fetchPolicy: "no-cache",
     variables: {
       projectId: project.id,
-      activityId: activity.id,
+      conversationId: conversation.id,
       definitions: [titleDefinition],
       modelName: "gpt-4",
       temperature: 0.1,
@@ -114,10 +113,10 @@ const GeneratedTitleProperty = ({
 
   // if the title property is present, update the title
   // normally this won't change anything, but if the title is out
-  // of sync with the activity it'll fix it; if the title property is
+  // of sync with the conversation it'll fix it; if the title property is
   // not present, generate it
   useEffect(() => {
-    const titleProperty = activity.properties?.find(
+    const titleProperty = conversation.properties?.find(
       (property) => property.name === "title"
     );
     if (titleProperty?.value) {
@@ -125,7 +124,7 @@ const GeneratedTitleProperty = ({
     } else {
       generateProperties();
     }
-  }, [activity, setTitle, generateProperties]);
+  }, [conversation, setTitle, generateProperties]);
 
   return (
     <div
@@ -139,7 +138,8 @@ const GeneratedTitleProperty = ({
   );
 };
 
-const SimpleTitleProperty = ({ activity }) => {
+const SimpleTitleProperty = ({ conversation }) => {
+  const activity = conversation.descendants[0];
   const title = activity.text.slice(0, 50);
   return (
     <div className="overflow-hidden font-semibold text-ellipsis">{title}</div>
@@ -148,42 +148,37 @@ const SimpleTitleProperty = ({ activity }) => {
 
 export const TitleBar = ({
   project,
-  activity,
-  setActivity,
+  conversation,
+  setConversation,
   title,
   setTitle,
 }) => {
   return (
     <div className="flex justify-between items-start pb-4 px-6 space-x-2 border-b border-gray-300 dark:border-gray-800">
       <div>
-        {!aiReady(project) && <SimpleTitleProperty activity={activity} />}
+        {!aiReady(project) && (
+          <SimpleTitleProperty conversation={conversation} />
+        )}
         {aiReady(project) && (
           <GeneratedTitleProperty
             project={project}
-            activity={activity}
-            setActivity={setActivity}
+            conversation={conversation}
+            setConversation={setConversation}
             title={title}
             setTitle={setTitle}
           />
         )}
       </div>
       <div className="text-tertiary flex space-x-2">
-        <BookmarkAction project={project} activity={activity} />
+        <BookmarkAction project={project} conversation={conversation} />
         <React.Suspense fallback={<div></div>}>
-          <PinAction project={project} activity={activity} />
+          <PinAction project={project} conversation={conversation} />
         </React.Suspense>
-        <div />
-        <PropertiesAction
-          project={project}
-          activity={activity}
-          setActivity={setActivity}
-        />
-        <SimilarAction activity={activity} />
-        <div />
-        <SourceAction activity={activity} />
+        <SimilarAction conversation={conversation} />
+        <SourceAction conversation={conversation} />
         {project.demo && (
           <Link
-            href={`/projects/${project.id}/welcome/${activity.id}`}
+            href={`/projects/${project.id}/welcome/${conversation.id}`}
             target="_blank"
             title="View on public site"
           >

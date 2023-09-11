@@ -2,13 +2,16 @@
 query (
   $projectId: ID!
   $first: Int!
-  $source: String!
-  $sourceChannel: String!
+  $after: String
+  $sort: [ProjectConversationsConnectionSort!]
+  $where: ProjectConversationsConnectionWhere
 ) {
   projects(where: { id: $projectId }) {
-    activitiesConnection(
+    conversationsConnection(
       first: $first
-      where: { node: { source: $source, sourceChannel: $sourceChannel } }
+      after: $after
+      where: $where
+      sort: $sort
     ) {
       ...ProjectConversationsConnection
     }

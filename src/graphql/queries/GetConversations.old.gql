@@ -1,0 +1,24 @@
+query ($projectId: ID!, $first: Int!, $after: String) {
+  projects(where: { id: $projectId }) {
+    activitiesConnection(
+      first: $first
+      after: $after
+      sort: { node: { timestampInt: DESC } }
+    ) {
+      edges {
+        node {
+          id
+          conversationId
+          propertiesConnection {
+            totalCount
+          }
+        }
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+}

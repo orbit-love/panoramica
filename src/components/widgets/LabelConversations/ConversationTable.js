@@ -14,11 +14,7 @@ export default function ConversationTable({
   yaml,
   controlledProperties,
 }) {
-  const defaultWhereClauses = [
-    {
-      isConversation: true,
-    },
-  ];
+  const defaultWhereClauses = [];
   const pageSize = 10;
   const [activities, setActivities] = React.useState([]);
   const [selectedRows, setSelectedRows] = React.useState([]);

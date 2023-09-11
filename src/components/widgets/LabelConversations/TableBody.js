@@ -1,9 +1,8 @@
 import React from "react";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
-import utils from "src/utils";
 import ConversationItem from "./ConversationItem";
-import GetConversationsWhereQuery from "src/graphql/queries/GetConversationsWhere.gql";
+import GetConversationsQuery from "src/graphql/queries/GetConversations.gql";
 
 export default function TableBody({
   projectId,
@@ -19,25 +18,22 @@ export default function TableBody({
   setRefetchNow,
   ...props
 }) {
-  const { loading: queryLoading, refetch } = useQuery(
-    GetConversationsWhereQuery,
-    {
-      notifyOnNetworkStatusChange: true, // so that loading is true on refetch
-      variables: {
-        projectId,
-        where,
-        sort,
-        limit,
-        offset,
-      },
-      onCompleted: (data) => {
-        const {
-          projects: [{ activities }],
-        } = data;
-        setActivities(utils.updateActivitiesNew(activities));
-      },
-    }
-  );
+  const { loading: queryLoading, refetch } = useQuery(GetConversationsQuery, {
+    notifyOnNetworkStatusChange: true, // so that loading is true on refetch
+    variables: {
+      projectId,
+      where,
+      sort,
+      limit,
+      offset,
+    },
+    onCompleted: (data) => {
+      const {
+        projects: [{ activities }],
+      } = data;
+      setActivities(activities);
+    },
+  });
 
   React.useEffect(() => {
     if (refetchNow) {

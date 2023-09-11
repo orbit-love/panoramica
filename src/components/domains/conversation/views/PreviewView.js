@@ -5,11 +5,17 @@ import Activity from "src/components/domains/activity/Activity";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 
 export default function PreviewView(props) {
-  let { activity, handlers, onExpand, term } = props;
+  let { activity, conversation, handlers, onExpand, term } = props;
   let { onClickMember } = handlers;
 
-  const conversation = activity.conversation;
   const descendants = conversation.descendants;
+
+  // activity is the activity to show in the preview
+  // if not provided, the latest activity in the conversation will be used
+  if (!activity) {
+    activity = descendants[descendants.length - 1];
+  }
+
   const parent = descendants.find((a) => a.id === activity.parent?.id);
   const replies = descendants.filter((a) => a.parent?.id === activity.id);
 

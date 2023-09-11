@@ -3,7 +3,8 @@ import Link from "next/link";
 import utils from "src/utils";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
 
-export default function SourceAction({ children, activity, className }) {
+export default function SourceAction({ children, conversation, className }) {
+  const activity = conversation.descendants[0];
   return (
     <>
       {activity.url && (

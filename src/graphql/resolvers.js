@@ -2,10 +2,10 @@ import { prisma } from "src/data/db";
 import GraphConnection from "src/data/graph/Connection";
 import getSimilarConversations from "src/graphql/resolvers/getSimilarConversations";
 import searchConversations from "src/graphql/resolvers/searchConversations";
-import resolveCompletion from "src/graphql/resolvers/activity/completion";
-import resolveGenerateProperties from "src/graphql/resolvers/activity/generateProperties";
-import resolveGeneratePropertiesFromYaml from "src/graphql/resolvers/activity/generatePropertiesFromYaml";
-import resolveConversationJson from "src/graphql/resolvers/activity/conversationJson";
+import resolveCompletion from "src/graphql/resolvers/conversation/completion";
+import resolveGenerateProperties from "src/graphql/resolvers/conversation/generateProperties";
+import resolveGeneratePropertiesFromYaml from "src/graphql/resolvers/conversation/generatePropertiesFromYaml";
+import resolveConversationJson from "src/graphql/resolvers/conversation/conversationJson";
 import resolvePropertyFilters from "src/graphql/resolvers/project/propertyFilters";
 import { aiReady } from "src/integrations/ready";
 import { getQaSummaries } from "./resolvers/getQaSummaries";
@@ -119,7 +119,7 @@ const resolvers = {
       }
     },
   },
-  Activity: {
+  Conversation: {
     async completion(parent, args, { resolveTree }) {
       const projectId = resolveTree.args.where.id;
       const { id: activityId } = parent;

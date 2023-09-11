@@ -38,7 +38,8 @@ const typeDefs = gql`
     name: String!
     demo: Boolean!
     activities: [Activity!]! @relationship(type: "OWNS", direction: OUT)
-    pins: [Activity!]!
+    conversations: [Conversation!]! @relationship(type: "OWNS", direction: OUT)
+    pins: [Conversation!]!
       @relationship(type: "PINS", direction: OUT, properties: "Pinned")
     prompts: [Prompt!]! @relationship(type: "OWNS", direction: OUT)
     properties: [Property!]! @relationship(type: "HAS", direction: OUT)
@@ -78,6 +79,23 @@ const typeDefs = gql`
     confidence: Float
   }
 
+  type Conversation
+    @query(read: false, aggregate: false)
+    @mutation(operations: [UPDATE]) {
+    id: ID! @id
+    firstActivityTimestamp: String!
+    lastActivityTimestamp: String!
+    memberCount: Int!
+    activityCount: Int!
+    missingParent: String
+    project: Project! @relationship(type: "OWNS", direction: IN)
+    properties: [Property!]! @relationship(type: "HAS", direction: OUT)
+    beginsWith: [Activity!]! @relationship(type: "BEGINS", direction: IN)
+    descendants: [Activity!]! @relationship(type: "INCLUDES", direction: OUT)
+    members: [Member!]! @relationship(type: "INCLUDES", direction: OUT)
+    similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
+  }
+
   type Activity @query(read: false, aggregate: false) {
     id: ID!
     actor: String
@@ -97,12 +115,10 @@ const typeDefs = gql`
     project: Project! @relationship(type: "OWNS", direction: IN)
     member: Member! @relationship(type: "DID", direction: IN)
     mentions: [Member!]! @relationship(type: "MENTIONS", direction: OUT)
-    conversation: Activity! @relationship(type: "PART_OF", direction: OUT)
+    conversation: Conversation! @relationship(type: "INCLUDES", direction: IN)
+    begins: [Conversation!]! @relationship(type: "BEGINS", direction: OUT)
     parent: Activity @relationship(type: "REPLIES_TO", direction: OUT)
     replies: [Activity!]! @relationship(type: "REPLIES_TO", direction: IN)
-    descendants: [Activity!]! @relationship(type: "PART_OF", direction: IN)
-    properties: [Property!]! @relationship(type: "HAS", direction: OUT)
-    similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
   }
 
   type Member @query(read: false, aggregate: false) {

@@ -5,20 +5,22 @@ import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { Frame, Header } from "src/components/widgets";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
-import GetActivitiesQuery from "./Source/GetActivities.gql";
-import GetActivitiesWithSourceQuery from "./Source/GetActivitiesWithSource.gql";
+import GetConversationsConnectionQuery from "src/graphql/queries/GetConversationsConnection.gql";
 import GetSourceChannelsQuery from "./Source/GetSourceChannels.gql";
 
 export default function Source({ project, params, api, handlers }) {
   var { source } = params;
   var { onClickChannels } = handlers;
-
   const { id: projectId } = project;
-  const query = source ? GetActivitiesWithSourceQuery : GetActivitiesQuery;
+
+  const where = { AND: [] };
+  if (source) {
+    where.AND.push({ node: { source } });
+  }
+  const query = GetConversationsConnectionQuery;
   const variables = {
     projectId,
   };
-  const where = source ? [{ source }] : [];
 
   return (
     <Frame>

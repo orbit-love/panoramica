@@ -8,7 +8,7 @@ import GetPinsQuery from "src/graphql/queries/GetPins.gql";
 import ConnectPinMutation from "src/graphql/mutations/ConnectPin.gql";
 import DisconnectPinMutation from "src/graphql/mutations/DisconnectPin.gql";
 
-export default function PinAction({ project, activity, className }) {
+export default function PinAction({ project, conversation, className }) {
   const { id: projectId } = project;
   const {
     data: {
@@ -24,7 +24,7 @@ export default function PinAction({ project, activity, className }) {
     },
   });
 
-  var pinResult = pinsResult.find((pin) => pin.node.id === activity.id);
+  var pinResult = pinsResult.find((pin) => pin.node.id === conversation.id);
   const [pin, setPin] = useState(pinResult);
 
   const pinIcon = "location-pin";
@@ -33,12 +33,12 @@ export default function PinAction({ project, activity, className }) {
   const [disconnectPin] = useMutation(DisconnectPinMutation);
 
   const onPin = useCallback(async () => {
-    const { id: activityId } = activity;
+    const { id: conversationId } = conversation;
     if (pin) {
       await disconnectPin({
         variables: {
           projectId,
-          activityId,
+          conversationId,
         },
       });
       setPin(null);
@@ -60,14 +60,14 @@ export default function PinAction({ project, activity, className }) {
       } = await connectPin({
         variables: {
           projectId,
-          activityId,
+          conversationId,
           createdAt,
           createdAtInt,
         },
       });
       setPin(pin);
     }
-  }, [pin, projectId, activity, connectPin, disconnectPin]);
+  }, [pin, projectId, conversation, connectPin, disconnectPin]);
 
   return (
     <button
