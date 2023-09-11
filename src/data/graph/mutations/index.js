@@ -86,7 +86,7 @@ export async function syncActivities({ tx, project, activities }) {
     `MATCH (p:Project { id: $projectId })
         WITH p, $activities AS batch
           UNWIND batch AS activity
-          MERGE (p)-[:OWNS]-(a:Activity { sourceId: activity.sourceId })
+          MERGE (p)-[:OWNS]->(a:Activity { sourceId: activity.sourceId })
            CALL uuid_generator.get() YIELD uuid
            SET a += {
             id: COALESCE(a.id, uuid),
@@ -114,13 +114,14 @@ export async function syncActivities({ tx, project, activities }) {
   // get the activities back from the result and assign them to the activities array
   // since some may have been created with a new uuid
   activities = records.map((record) => record.get("a").properties);
+  const activityIds = activities.map((activity) => activity.id);
 
   // create (:Member) nodes for each unique globalActor
   await tx.run(
     `MATCH (p:Project { id: $projectId })
       WITH p, $activities AS batch
         UNWIND batch AS activity
-        MERGE (p)-[:OWNS]-(m:Member { globalActor: activity.globalActor })
+        MERGE (p)-[:OWNS]->(m:Member { globalActor: activity.globalActor })
            CALL uuid_generator.get() YIELD uuid
            SET m += {
              id: COALESCE(m.id, uuid),
@@ -133,12 +134,14 @@ export async function syncActivities({ tx, project, activities }) {
   // create [:DID] edges between members and activities
   await tx.run(
     `MATCH (p:Project { id: $projectId })
-        WITH p, $activities AS batch
-            UNWIND batch AS activity
-            MATCH (p)-[:OWNS]->(a:Activity { id: activity.id }),
-                  (p)-[:OWNS]->(m:Member { globalActor: activity.globalActor })
-           MERGE (m)-[r:DID]-(a)`,
-    { activities, projectId }
+        WITH p
+        MATCH (p)-[:OWNS]->(a:Activity)
+          WHERE a.id IN $activityIds
+          WITH a
+            MATCH (p)-[:OWNS]->(m:Member { globalActor: a.globalActor })
+          WITH a, m
+            MERGE (m)-[:DID]->(a)`,
+    { activityIds, projectId }
   );
   console.log("Memgraph: Created (:Member)->[:DID]->(:Activity) edges");
 
@@ -173,10 +176,9 @@ export async function syncActivities({ tx, project, activities }) {
     `MATCH (p:Project { id: $projectId })
         WITH p, $mentions AS batch
           UNWIND batch AS mention
-            MATCH
-              (p)-[:OWNS]->(m:Member   { globalActor: mention.globalActor }),
-              (p)-[:OWNS]->(a:Activity { id: mention.activityId })
-            MERGE (a)-[r:MENTIONS]-(m)`,
+            MATCH (p)-[:OWNS]->(m:Member   { globalActor: mention.globalActor })
+            MATCH (p)-[:OWNS]->(a:Activity { id: mention.activityId })
+            MERGE (a)-[:MENTIONS]-(m)`,
     { mentions, projectId }
   );
   console.log(
@@ -193,12 +195,11 @@ export async function syncActivities({ tx, project, activities }) {
   // this is undirected so that there is only one edge between two people and
   // to create a directional version messaged / messagedBy, only the
   // MERGE (m1)-[k:MESSAGED]-(m2) part needs a direction into m2
-  const activityIds = activities.map((activity) => activity.id);
   const mergeMessagedEdge = async ({ tx, match }) => {
     return await tx.run(
-      `MATCH (p:Project { id: $projectId }) WITH p
-       MATCH
-         (p)-[:OWNS]->(a:Activity)<-[:DID]-(m1:Member)
+      `MATCH (p:Project { id: $projectId })
+       WITH p
+       MATCH (p)-[:OWNS]->(a:Activity)<-[:DID]-(m1:Member)
          WHERE a.id IN $activityIds
          WITH DISTINCT(m1) AS m1
          ${match}
@@ -246,28 +247,26 @@ export async function syncActivities({ tx, project, activities }) {
   // is complicated because of pagination, etc.
   await tx.run(
     `MATCH (p:Project { id: $projectId })
-      WITH p, $activities AS batch
-        UNWIND batch AS activity
-        MATCH (p)-[:OWNS]-(m:Member { globalActor: activity.globalActor })
-          WITH m
-            MATCH (m)-[:DID]-(a:Activity)<-[:INCLUDES]-(c:Conversation)
-          WITH m, count(DISTINCT a.id) as activityCount, count(DISTINCT c.id) as conversationCount
-            OPTIONAL MATCH (m)-[:MESSAGED]-(n:Member)
-            WITH m, activityCount, conversationCount, count(DISTINCT n.globalActor) AS messagedWithCount
-              SET m.activityCount = activityCount,
-              m.conversationCount = conversationCount,
-              m.messagedWithCount = messagedWithCount`,
-    { activities, projectId }
+      WITH p
+        MATCH (p)-[:OWNS]->(m:Member)-[:DID]->(a:Activity)<-[:INCLUDES]-(c:Conversation)
+        WHERE a.id IN $activityIds
+        WITH m, count(DISTINCT a.id) as activityCount, count(DISTINCT c.id) as conversationCount
+          OPTIONAL MATCH (m)-[:MESSAGED]-(n:Member)
+          WITH m, activityCount, conversationCount, count(DISTINCT n.globalActor) AS messagedWithCount
+            SET m.activityCount = activityCount,
+            m.conversationCount = conversationCount,
+            m.messagedWithCount = messagedWithCount`,
+    { activityIds, projectId }
   );
   console.log("Memgraph: Updated (:Member) nodes with counts");
 
   const finalResult = await tx.run(
     `MATCH (p:Project { id: $projectId })
-      WITH p, $activities AS batch
-        UNWIND batch AS activity
-          MATCH (p)-[:OWNS]-(a:Activity { id: activity.id })
-          RETURN a`,
-    { activities, projectId }
+      WITH p
+        MATCH (p)-[:OWNS]->(a:Activity)
+        WHERE a.id IN $activityIds
+        RETURN a`,
+    { activityIds, projectId }
   );
 
   // return activities with all new fields loaded
@@ -278,35 +277,36 @@ export async function syncActivities({ tx, project, activities }) {
 
 export const mergeConversations = async ({ tx, activities, project }) => {
   const projectId = project.id;
+  const activityIds = activities.map((activity) => activity.id);
 
   // assign parentId and :Reply label to activities that have a sourceParentId matching another activity
   // it's possible if older data is important later than reply links won't be there
   await tx.run(
     `MATCH (p:Project { id: $projectId })
-        WITH p, $activities AS batch
-        UNWIND batch AS activity
-          MATCH (p)-[:OWNS]->(a1:Activity { id: activity.id }), (p)-[:OWNS]->(a2:Activity)
-            WHERE a1.sourceParentId = a2.sourceId
-              MERGE (a1)-[r:REPLIES_TO]->(a2)
-              SET a1.parentId = a2.id
-              SET a1:Reply`,
-    { activities, projectId }
+        WITH p
+        MATCH (p)-[:OWNS]->(a1:Activity)
+          WHERE a1.id IN $activityIds
+          WITH a1
+            MATCH (p)-[:OWNS]->(a2:Activity)
+              WHERE a1.sourceParentId = a2.sourceId
+            MERGE (a1)-[r:REPLIES_TO]->(a2)`,
+    { activityIds, projectId }
   );
   console.log("Memgraph: Connected (a:Activity)-[:REPLIES_TO]->(p:Activity)");
 
   await tx.run(
     `MATCH (p:Project { id: $projectId })
-      WITH p, $activities AS batch
-      UNWIND batch AS batchActivity
-        MATCH (p)-[:OWNS]->(starter:Activity { id: batchActivity.id })<-[:DID]-(m:Member)
-        WHERE NOT EXISTS((starter)-[:REPLIES_TO]->(:Activity))
+      WITH p
+        MATCH (p)-[:OWNS]->(starter:Activity)<-[:DID]-(m:Member)
+        WHERE starter.id IN $activityIds AND
+          NOT EXISTS((starter)-[:REPLIES_TO]->(:Activity))
         MERGE (p)-[:OWNS]->(c:Conversation { id: starter.id })
         ON CREATE SET
           c.firstActivityTimestamp = starter.timestamp,
           c.lastActivityTimestamp = starter.timestamp,
           c.memberCount = 1, c.activityCount = 1,
           c.members = [m.id],
-          c.missingParent = c.sourceParentId,
+          c.missingParent = starter.sourceParentId,
           c.source = starter.source,
           c.sourceChannel = starter.sourceChannel
         MERGE (c)-[:INCLUDES]->(starter)
@@ -329,7 +329,7 @@ export const mergeConversations = async ({ tx, activities, project }) => {
         MATCH (c)-[:INCLUDES]->(a:Activity)<-[r:INCLUDES]-(otherC:Conversation)
         WHERE c <> otherC
         DELETE r`,
-    { activities, projectId }
+    { activityIds, projectId }
   );
   console.log("Memgraph: Merged (Conversation) nodes");
 };
