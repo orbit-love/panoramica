@@ -10,6 +10,8 @@ export default function ManageActivityProperty({
   activity,
   setActivities,
   propertyValues,
+  setLoading,
+  onSave,
 }) {
   const property = utils.getProperty(propertyName, activity);
   const projectId = project.id;
@@ -29,12 +31,16 @@ export default function ManageActivityProperty({
   );
 
   const replaceProperty = useCallback(
-    (value) => {
-      replaceActivityProperty({
+    async (value) => {
+      setLoading(true);
+      await replaceActivityProperty({
         variables: {
           value,
         },
       });
+      if (onSave) {
+        onSave();
+      }
       setActivities((activities) => {
         const newActivities = [...activities];
         const index = newActivities.findIndex(({ id }) => id === activity.id);
@@ -52,8 +58,16 @@ export default function ManageActivityProperty({
         };
         return newActivities;
       });
+      setLoading(false);
     },
-    [replaceActivityProperty, activity, propertyName, setActivities]
+    [
+      replaceActivityProperty,
+      activity,
+      propertyName,
+      setActivities,
+      setLoading,
+      onSave,
+    ]
   );
 
   const onChange = useCallback(
@@ -66,7 +80,7 @@ export default function ManageActivityProperty({
   );
 
   return (
-    <select onChange={onChange} value={value}>
+    <select onChange={onChange} value={value} className="!text-xs">
       <option value={""}>--</option>
       {propertyValues.map((propertyValue) => (
         <option key={propertyValue} value={propertyValue}>

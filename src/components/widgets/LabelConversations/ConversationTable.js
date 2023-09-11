@@ -1,181 +1,219 @@
 import React from "react";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
-import utils from "src/utils";
-import ConversationItem from "./ConversationItem";
-import GetConversationsWhereQuery from "src/graphql/queries/GetConversationsWhere.gql";
-import Filters from "src/components/domains/feed/Filters";
+import GetConversationsCountQuery from "src/graphql/queries/GetConversationsCount.gql";
 import Loader from "src/components/domains/ui/Loader";
+import TableBody from "./TableBody";
+import TableHeader from "./TableHeader";
+import ActionController from "./ActionController";
 
 export default function ConversationTable({
   project,
   propertyNames,
+  yamlPropertyName,
   yaml,
   controlledProperties,
 }) {
-  const pageSize = 20;
+  const defaultWhereClauses = [
+    {
+      isConversation: true,
+    },
+  ];
+  const pageSize = 10;
   const [activities, setActivities] = React.useState([]);
   const [selectedRows, setSelectedRows] = React.useState([]);
-  const [trigger, setTrigger] = React.useState(0);
+  const [loadingRows, setLoadingRows] = React.useState([]);
   const [filters, setFilters] = React.useState([]);
+  const [where, setWhere] = React.useState({
+    AND: defaultWhereClauses,
+  });
   const [limit, setLimit] = React.useState(pageSize);
   const [offset, setOffset] = React.useState(0);
-
-  const where = { AND: [] };
-  where.AND.push({
-    isConversation: true,
-  });
-  // todo: remove later, this is an example
-  where.AND.push({
-    properties_NOT: {
-      name: "example.yaml.status",
-      value: "dismiss",
-    },
-  });
-  const filtersWhere = filters.map(({ name, value }) => ({
-    properties: {
-      name,
-      value,
-    },
-  }));
-  where.AND.push(...filtersWhere);
-
+  const [propertyFilters, setPropertyFilters] = React.useState([]);
+  const [selectAllCheckboxValue, setSelectAllCheckboxValue] =
+    React.useState(false);
+  const [totalCount, setTotalCount] = React.useState(null);
+  const [refetchNow, setRefetchNow] = React.useState(1);
+  const [loading, setLoading] = React.useState(false);
+  const [sort, setSort] = React.useState({ timestampInt: "DESC" });
   const projectId = project.id;
-  const { loading, refetch } = useQuery(GetConversationsWhereQuery, {
-    notifyOnNetworkStatusChange: true, // so that loading is true on refetch
-    variables: {
-      projectId,
-      where,
-      limit,
-      offset,
-    },
-    onCompleted: (data) => {
-      const {
-        projects: [{ activities: theActivities }],
-      } = data;
-      const activities = theActivities.filter(
-        (activity) => activity.descendants.length > 0
-      );
-      setActivities(utils.updateActivitiesNew(activities));
-    },
-  });
-
-  const processAll = React.useCallback(async () => {
-    setTrigger((t) => t + 1);
-  }, []);
-
-  const onChangeCheckbox = React.useCallback(
-    (e) => {
-      const { checked } = e.target;
-      if (checked) {
-        setSelectedRows(activities.map(({ id }) => id));
-      } else {
-        setSelectedRows([]);
-      }
-    },
-    [activities]
-  );
+  const childProps = {
+    project,
+    projectId,
+    propertyNames,
+    yaml,
+    yamlPropertyName,
+    controlledProperties,
+    activities,
+    setActivities,
+    selectedRows,
+    setSelectedRows,
+    loadingRows,
+    setLoadingRows,
+    filters,
+    setFilters,
+    pageSize,
+    limit,
+    setLimit,
+    offset,
+    setOffset,
+    propertyFilters,
+    setPropertyFilters,
+    selectAllCheckboxValue,
+    setSelectAllCheckboxValue,
+    totalCount,
+    setTotalCount,
+    refetchNow,
+    setRefetchNow,
+    where,
+    setWhere,
+    defaultWhereClauses,
+    sort,
+    setSort,
+    loading,
+    setLoading,
+  };
 
   return (
-    <div className="flex flex-col space-y-2">
-      <div className="-pl-6 flex items-center pr-2 space-x-2">
-        {propertyNames?.length > 0 && (
-          <React.Suspense fallback={<div />}>
-            <Filters
-              project={project}
-              where={[]}
-              filters={filters}
-              setFilters={setFilters}
-              propertyNames={[
-                ...controlledProperties.map(({ name }) => name),
-                ...propertyNames,
-              ]}
-              selectClassName="w-36"
-              capitalNames={false}
-            />
-          </React.Suspense>
-        )}
-        {selectedRows.length > 0 && (
-          <div className="flex items-center space-x-2">
-            <button className="btn mb-1" onClick={processAll}>
-              Label
-            </button>
-            <div>{selectedRows.length} selected</div>
-          </div>
-        )}
+    <div className="flex flex-col space-y-4">
+      <div className="flex items-center px-4 space-x-2 w-full">
+        <ActionController {...childProps} />
         <div className="grow" />
-        {loading && <Loader />}
-        <div>
-          <button
-            className="hover:underline"
-            onClick={() => {
-              refetch();
-            }}
-          >
-            Refresh
-          </button>
-        </div>
-        {offset > 0 && (
-          <button
-            className="hover:underline"
-            onClick={() => {
-              setOffset((offset) => offset - pageSize);
-            }}
-          >
-            Previous
-          </button>
-        )}
-        {true && (
-          <button
-            className="hover:underline"
-            onClick={() => {
-              setOffset((offset) => offset + pageSize);
-            }}
-          >
-            Next
-          </button>
-        )}
+        <Pagination {...childProps} />
       </div>
-      <div className="h-[70vh] overflow-y-scroll py-2">
-        <table className="table min-w-[100%] text-sm">
-          <thead>
-            <tr className="font-semibold text-left">
-              <th className="p-2">
-                <input type="checkbox" onChange={onChangeCheckbox} />
-              </th>
-              <th className="p-2">Conversation</th>
-              {controlledProperties.map(({ name }) => (
-                <td className="p-2" key={name}>
-                  <div>{name.split(".").slice(-1)}</div>
-                </td>
-              ))}
-              {propertyNames.map((propertyName) => {
-                return (
-                  <td className="p-2 whitespace-nowrap" key={propertyName}>
-                    <div className="w-40">🔖 {propertyName}</div>
-                  </td>
-                );
-              })}
-            </tr>
-          </thead>
-          <tbody>
-            {activities.map((activity) => (
-              <ConversationItem
-                key={activity.id}
-                activity={activity}
-                setActivities={setActivities}
-                project={project}
-                yaml={yaml}
-                trigger={trigger}
-                propertyNames={propertyNames}
-                controlledProperties={controlledProperties}
-                selectedRows={selectedRows}
-                setSelectedRows={setSelectedRows}
-              />
-            ))}
-          </tbody>
+      <div className="overflow-auto h-[calc(100vh-120px)]">
+        <table className="text-sm border-collapse table-auto">
+          <TableHeader {...childProps} />
+          <TableBody {...childProps} />
         </table>
       </div>
     </div>
   );
 }
+
+const Pagination = ({
+  projectId,
+  where,
+  pageSize,
+  offset,
+  limit,
+  setLimit,
+  setOffset,
+  activities,
+  totalCount,
+  setTotalCount,
+  setSelectAllCheckboxValue,
+  setSelectedRows,
+  refetchNow,
+  loading,
+}) => {
+  const hasPreviousPage = offset > 0;
+  const hasNextPage = offset + activities.length < totalCount;
+
+  const { refetch } = useQuery(GetConversationsCountQuery, {
+    notifyOnNetworkStatusChange: true, // so that loading is true on refetch
+    variables: {
+      projectId,
+      where,
+    },
+    onCompleted: (data) => {
+      const {
+        projects: [
+          {
+            activitiesAggregate: { count },
+          },
+        ],
+      } = data;
+      setTotalCount(count);
+    },
+  });
+
+  React.useEffect(() => {
+    if (refetchNow) {
+      refetch();
+    }
+  }, [refetchNow, refetch]);
+
+  return (
+    <div className="flex space-x-2">
+      {loading && (
+        <div>
+          <Loader />
+        </div>
+      )}
+      <div></div>
+      {hasPreviousPage && (
+        <>
+          <button
+            className="underline"
+            onClick={() => {
+              setSelectAllCheckboxValue(0);
+              setSelectedRows([]);
+              setOffset(0);
+            }}
+          >
+            First
+          </button>
+          <button
+            className="underline"
+            onClick={() => {
+              setSelectAllCheckboxValue(0);
+              setSelectedRows([]);
+              setOffset((offset) => offset - pageSize);
+            }}
+          >
+            Previous
+          </button>
+        </>
+      )}
+      {totalCount > 0 && activities.length > 0 && (
+        <div>
+          Showing {offset + 1} - {offset + activities.length} of {totalCount}
+        </div>
+      )}
+      {hasNextPage && (
+        <button
+          className="underline"
+          onClick={() => {
+            setSelectAllCheckboxValue(0);
+            setSelectedRows([]);
+            setOffset((offset) => offset + pageSize);
+          }}
+        >
+          Next
+        </button>
+      )}
+      {hasNextPage && (
+        <button
+          className="underline"
+          onClick={() => {
+            setSelectAllCheckboxValue(0);
+            setSelectedRows([]);
+            setOffset(Math.floor(totalCount / pageSize) * pageSize);
+          }}
+        >
+          Last
+        </button>
+      )}
+      <div></div>
+      <div className="flex space-x-1">
+        {[10, 25, 100, 500].map((value) => (
+          <React.Fragment key={value}>
+            {limit === value && <div className="font-semibold">{value}</div>}
+            {limit !== value && (
+              <button
+                className="underline"
+                onClick={() => {
+                  setSelectedRows([]);
+                  setLimit(value);
+                }}
+              >
+                {value}
+              </button>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+};

@@ -1,0 +1,17 @@
+mutation DeleteActivityProperty($projectId: ID!, $name: String!) {
+  updateProjects(
+    where: { id: $projectId }
+    update: {
+      activities: {
+        update: {
+          node: { properties: { delete: { where: { node: { name: $name } } } } }
+        }
+      }
+    }
+  ) {
+    info {
+      nodesDeleted
+      relationshipsDeleted
+    }
+  }
+}
