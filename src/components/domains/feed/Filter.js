@@ -20,7 +20,7 @@ export default function Filter({
       <option value="all">
         {capitalNames
           ? capitalizeFirstLetter(name).replace(/e?s$/, "")
-          : `🔖 ${name.split(".").slice(-1)}`}
+          : `🔖 ${name}`}
       </option>
       {values.map(({ value, count }) => {
         return (

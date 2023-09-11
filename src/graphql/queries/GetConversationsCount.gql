@@ -1,0 +1,7 @@
+query ($projectId: ID!, $where: ActivityWhere) {
+  projects(where: { id: $projectId }) {
+    activitiesAggregate(where: $where) {
+      count
+    }
+  }
+}

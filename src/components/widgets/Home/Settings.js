@@ -36,7 +36,8 @@ export default function Settings({
 
   const onClickLabelConversations = (e) => {
     e.preventDefault();
-    addWidget("label-conversations", "LabelConversations", {
+    const widgetId = `label-conversations-${new Date().getTime()}`;
+    addWidget(widgetId, "LabelConversations", {
       title: "Label Conversations",
       position: newPanelPosition(),
     });

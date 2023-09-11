@@ -1,11 +1,7 @@
 import React from "react";
 import classnames from "classnames";
-import { useLazyQuery, useMutation } from "@apollo/client";
 import TimeAgo from "react-timeago";
 
-import GenerateConversationPropertiesFromYaml from "src/graphql/queries/GenerateConversationPropertiesFromYaml.gql";
-import CreateActivityPropertiesMutation from "src/graphql/mutations/CreateActivityProperties.gql";
-import DeleteActivityPropertiesMutation from "src/graphql/mutations/DeleteActivityProperties.gql";
 import utils from "src/utils";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
@@ -16,113 +12,36 @@ export default function ConversationItem({
   project,
   activity,
   setActivities,
-  yaml,
-  trigger,
-  propertyNames,
-  replaceExistingProperties = true,
   controlledProperties = [],
   selectedRows,
   setSelectedRows,
+  loadingRows,
+  setLoadingRows,
+  propertyFilters,
+  setRefetchNow,
 }) {
-  const [loading, setLoading] = React.useState(false);
-  const previousTrigger = utils.usePrevious(trigger);
   const [preview, setPreview] = React.useState(false);
 
-  const [deleteActivityProperties] = useMutation(
-    DeleteActivityPropertiesMutation
-  );
-  const [createActivityProperties] = useMutation(
-    CreateActivityPropertiesMutation
-  );
-
-  const handleGeneratedProperties = React.useCallback(
-    async (data) => {
-      const { id: activityId } = activity;
-      const {
-        projects: [
-          {
-            activities: [{ generatePropertiesFromYaml }],
-          },
-        ],
-      } = data;
-
-      var finalProperties = [...activity.properties];
-
-      if (replaceExistingProperties) {
-        const propertyNames = generatePropertiesFromYaml.map(
-          ({ name }) => name
-        );
-        const where = { node: { name_IN: propertyNames } };
-        await deleteActivityProperties({
-          variables: {
-            id: activityId,
-            where,
-          },
-        });
-
-        // remove the properties that were deleted from the finalProperties
-        finalProperties = finalProperties.filter((property) => {
-          return !propertyNames.includes(property.name);
-        });
-      }
-
-      const propertiesWithNode = generatePropertiesFromYaml.map(
-        ({ name, value, type }) => ({
-          node: { name, value, type },
-        })
-      );
-
-      await createActivityProperties({
-        variables: {
-          id: activityId,
-          properties: propertiesWithNode,
-        },
-      });
-
-      // push the new properties on
-      finalProperties.push(...generatePropertiesFromYaml);
-
-      const newActivity = { ...activity, properties: finalProperties };
-      setActivities((activities) =>
-        activities.map((a) => (a.id === activityId ? newActivity : a))
-      );
-
-      setLoading(false);
-      setSelectedRows((selectedRows) =>
-        selectedRows.filter((rowId) => rowId !== activityId)
-      );
-    },
-    [
-      activity,
-      setActivities,
-      deleteActivityProperties,
-      createActivityProperties,
-      replaceExistingProperties,
-      setSelectedRows,
-    ]
-  );
-
-  const [generateProperties] = useLazyQuery(
-    GenerateConversationPropertiesFromYaml,
-    {
-      onCompleted: handleGeneratedProperties,
-      fetchPolicy: "no-cache",
-      variables: {
-        projectId: project.id,
-        activityId: activity.id,
-        yaml: yaml,
-      },
-    }
-  );
-
-  const isSelected = selectedRows.includes(activity.id);
+  const isLoading = loadingRows.includes(activity.id);
+  const [loading, setLoading] = React.useState(isLoading);
 
   React.useEffect(() => {
-    if (trigger > 0 && trigger !== previousTrigger && isSelected) {
-      setLoading(true);
-      generateProperties();
+    setLoading(isLoading);
+  }, [isLoading]);
+
+  const isLoadingRef = React.useRef(isLoading);
+  React.useEffect(() => {
+    if (loading && !isLoadingRef.current) {
+      setLoadingRows((loadingRows) => [...loadingRows, activity.id]);
     }
-  }, [trigger, previousTrigger, generateProperties, isSelected]);
+    if (!loading) {
+      setLoadingRows((loadingRows) =>
+        loadingRows.filter((id) => id !== activity.id)
+      );
+    }
+  }, [loading, setLoadingRows, activity.id]);
+
+  const isSelected = selectedRows.includes(activity.id);
 
   const toggleSelection = React.useCallback(() => {
     const { id } = activity;
@@ -140,25 +59,25 @@ export default function ConversationItem({
 
   return (
     <tr
-      className={classnames(
-        "align-top border-y border-gray-100 dark:border-gray-800",
-        {
-          "dark:bg-opacity-30 dark:bg-fuchsia-900": isSelected,
-          "dark:bg-opacity-10 bg-gray-50 dark:bg-fuchsia-900": !isSelected,
-        }
-      )}
+      className={classnames("border-y border-gray-100 dark:border-gray-800", {
+        "dark:bg-opacity-30 hover:bg-opacity-50 bg-blue-100 dark:bg-blue-900":
+          isSelected,
+        "dark:hover:bg-gray-800 hover:bg-gray-50": !isSelected,
+      })}
     >
-      <td className="p-2 align-middle">
-        {loading && <Loader />}
-        {!loading && (
-          <input
-            type="checkbox"
-            onChange={toggleSelection}
-            checked={isSelected}
-          />
-        )}
+      <td className="py-2 pl-4">
+        <div className="flex justify-center">
+          {loading && <Loader />}
+          {!loading && (
+            <input
+              type="checkbox"
+              onChange={toggleSelection}
+              checked={isSelected}
+            />
+          )}
+        </div>
       </td>
-      <td className="relative p-2">
+      <td className="relative py-2 px-4">
         <div className="w-[350px] overflow-hidden" onClick={toggleSelection}>
           <>
             <div className="font-semibold">
@@ -204,28 +123,40 @@ export default function ConversationItem({
         </div>
       </td>
       {controlledProperties.map(({ name, values }) => (
-        <td className="p-2" key={name}>
+        <td className="py-2 px-4" key={name}>
           <ManageActivityProperty
             project={project}
             activity={activity}
             setActivities={setActivities}
             propertyName={name}
             propertyValues={values}
+            setLoading={setLoading}
+            onSave={() => setRefetchNow((refetchNow) => refetchNow + 1)}
           />
         </td>
       ))}
-      {propertyNames.map((propertyName) => {
-        const properties = utils.getProperties(propertyName, activity);
-        return (
-          <td className="p-2" key={propertyName}>
-            <div className="flex flex-col space-y-1 w-40 text-xs">
-              {properties.map((property, index) => (
-                <div key={index}>{property?.value}</div>
-              ))}
-            </div>
-          </td>
-        );
-      })}
+      {propertyFilters
+        .filter(({ name }) => controlledProperties.find((p) => p.name !== name))
+        .map(({ name }) => {
+          const properties = utils.getProperties(name, activity);
+          return (
+            <td className="py-2 px-4" key={name}>
+              <div className="flex flex-wrap w-[200px]">
+                {properties.map((property, index) => (
+                  <div
+                    key={index}
+                    title={property.value}
+                    className="overflow-hidden py-1 px-2 mr-1 mb-1 whitespace-nowrap bg-gray-100 rounded dark:bg-gray-800"
+                  >
+                    <div className="overflow-hidden text-xs text-ellipsis">
+                      {property.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </td>
+          );
+        })}
     </tr>
   );
 }
