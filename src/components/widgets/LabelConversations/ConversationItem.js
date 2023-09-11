@@ -80,33 +80,37 @@ export default function ConversationItem({
         </div>
       </td>
       <td className="relative py-2 px-4">
-        <div className="w-[350px] overflow-hidden" onClick={toggleSelection}>
-          <>
-            <div className="font-semibold">
-              {titleProperty?.value || activity.text.slice(0, 30) + "..."}
+        <div
+          className="flex flex-col space-y-1 w-[350px] overflow-hidden"
+          onClick={toggleSelection}
+        >
+          <div className="font-semibold">
+            {titleProperty?.value || activity.text.slice(0, 30) + "..."}
+          </div>
+          <div className="flex space-x-3 whitespace-nowrap">
+            <div className="text-primary max-w-[100px] overflow-hidden text-ellipsis">
+              {activity.member.globalActorName}
             </div>
-            <div className="flex space-x-3 whitespace-nowrap">
-              <div className="text-primary max-w-[100px] overflow-hidden text-ellipsis">
-                {activity.member.globalActorName}
-              </div>
-              <div>
-                <SourceIcon activity={activity} />
-              </div>
-              <div
-                className="underline cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setPreview((preview) => !preview);
-                }}
-              >
-                {conversation.descendants.length - 1} replies
-              </div>
-              <TimeAgo
-                date={activity.timestamp}
-                title={utils.formatDate(activity.timestamp)}
-              />
+            <div
+              className="underline cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                setPreview((preview) => !preview);
+              }}
+            >
+              {conversation.descendants.length - 1} replies
             </div>
-          </>
+            <div className="flex items-center space-x-1">
+              <SourceIcon activity={activity} />
+              {activity.sourceChannel && (
+                <span>{activity.sourceChannel?.split("/")?.slice(-1)}</span>
+              )}
+            </div>
+            <TimeAgo
+              date={activity.timestamp}
+              title={utils.formatDate(activity.timestamp)}
+            />
+          </div>
           {preview && (
             <div
               onClick={(e) => {

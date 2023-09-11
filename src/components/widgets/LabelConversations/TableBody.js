@@ -56,6 +56,7 @@ export default function TableBody({
           {...props}
         />
       ))}
+      <tr className="h-full"></tr>
     </tbody>
   );
 }
