@@ -6,12 +6,8 @@ query ($projectId: ID!, $first: Int!, $after: String, $sort: MemberSort) {
           id
           globalActor
           globalActorName
-          activitiesAggregate {
-            count
-          }
-          messagedWithConnection {
-            totalCount
-          }
+          conversationCount
+          messagedWithCount
         }
       }
       pageInfo {

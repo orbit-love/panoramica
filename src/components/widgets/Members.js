@@ -126,8 +126,8 @@ export default function Members({ project, addWidget }) {
               member={member}
               metrics={true}
               onClick={onClickMember(member)}
-              activityCount={member.activitiesAggregate.count}
-              connectionCount={member.messagedWithConnection.totalCount}
+              conversationCount={member.conversationCount}
+              connectionCount={member.messagedWithCount}
             />
           ))}
         </div>

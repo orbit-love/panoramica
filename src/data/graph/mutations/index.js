@@ -248,9 +248,11 @@ export async function syncActivities({ tx, project, activities }) {
   await tx.run(
     `MATCH (p:Project { id: $projectId })
       WITH p
-        MATCH (p)-[:OWNS]->(m:Member)-[:DID]->(a:Activity)<-[:INCLUDES]-(c:Conversation)
+        MATCH (p)-[:OWNS]->(m:Member)-[:DID]->(a:Activity)
         WHERE a.id IN $activityIds
-        WITH m, count(DISTINCT a.id) as activityCount, count(DISTINCT c.id) as conversationCount
+        WITH DISTINCT(m)
+          MATCH (m)-[:DID]-(a:Activity)<-[:INCLUDES]-(c:Conversation)
+          WITH m, count(DISTINCT a.id) as activityCount, count(DISTINCT c.id) as conversationCount
           OPTIONAL MATCH (m)-[:MESSAGED]-(n:Member)
           WITH m, activityCount, conversationCount, count(DISTINCT n.globalActor) AS messagedWithCount
             SET m.activityCount = activityCount,
