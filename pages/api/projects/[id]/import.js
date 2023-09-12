@@ -2,7 +2,6 @@ import { check, redirect, authorizeProject } from "src/auth";
 import { getAPIUrl } from "src/integrations/orbit/api";
 import { graph } from "src/data/db";
 import { orbitImportReady } from "src/integrations/ready";
-import { createClient } from "src/workers/common";
 import { queue } from "src/workers/orbit/importActivities";
 
 export default async function handler(req, res) {

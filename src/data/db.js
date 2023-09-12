@@ -25,8 +25,6 @@ export const safeProjectSelectFields = () => {
     workspace: true,
     url: true,
     modelName: true,
-    pineconeApiEnv: true,
-    pineconeIndexName: true,
     demo: true,
   };
 };
