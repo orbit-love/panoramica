@@ -2,11 +2,10 @@ import { Worker, Queue } from "bullmq";
 import { graph } from "src/data/db";
 import { fetchActivitiesPage } from "src/integrations/orbit/api";
 import { syncActivities } from "src/data/graph/mutations";
-import { createClient, connection } from "src/workers/common";
+import { createClient } from "src/workers/common";
 
 const queueName = "orbit/ImportActivities";
 const options = {
-  connection,
   createClient,
   limiter: {
     max: 1,
