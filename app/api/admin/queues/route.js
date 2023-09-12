@@ -1,4 +1,4 @@
-import IORedis from "ioredis";
+import { connection } from "src/data/db/redis";
 import { NextResponse } from "next/server";
 import {
   getQueueNames,
@@ -12,7 +12,6 @@ const postHandler = async () => {
 };
 
 const deleteHandler = async () => {
-  const connection = new IORedis(process.env.REDIS_URL);
   const result = {};
   const queueNames = await getQueueNames({ connection });
   for (const queueName of queueNames) {
@@ -22,7 +21,6 @@ const deleteHandler = async () => {
 };
 
 const getHandler = async () => {
-  const connection = new IORedis(process.env.REDIS_URL);
   const result = {};
   const queueNames = await getQueueNames({ connection });
   for (const queueName of queueNames) {
