@@ -2,21 +2,9 @@ import React from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
-import { putProjectImport } from "src/data/client/fetches";
-
 export default function List({ projects, projectUrl }) {
   const { data: session } = useSession();
   const user = session?.user;
-
-  const importProject = async (project) => {
-    putProjectImport({
-      project,
-      setLoading: () => {},
-      onSuccess: () => {
-        console.log("Success: data has been re-imported.");
-      },
-    });
-  };
 
   return (
     <div className="flex flex-col items-baseline space-y-2">
@@ -39,9 +27,6 @@ export default function List({ projects, projectUrl }) {
               <span>{`${project.prismaUser.email}`}</span>
             </div>
           )}
-          <button className="underline" onClick={() => importProject(project)}>
-            Repair
-          </button>
         </div>
       ))}
     </div>

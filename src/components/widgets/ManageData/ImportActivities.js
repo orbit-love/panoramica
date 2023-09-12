@@ -33,14 +33,6 @@ export default function ImportActivities({ project }) {
     },
   });
 
-  const postAdminQueues = useCallback(async () => {
-    setStatus("");
-    await fetch(`/api/admin/queues`, {
-      method: "POST",
-    });
-    setStatus(`Queues started`);
-  }, [setStatus]);
-
   const importProject = useCallback(async () => {
     setStatus("");
     putProjectImport({
@@ -119,14 +111,6 @@ export default function ImportActivities({ project }) {
           {loading ? <Loader className="text-white" /> : <span>Import</span>}
         </button>
         {status && <div className="text-green-500">{status}</div>}
-      </div>
-      <div>
-        <div
-          className="!mt-6 underline cursor-pointer"
-          onClick={postAdminQueues}
-        >
-          Start Queues
-        </div>
       </div>
     </form>
   );

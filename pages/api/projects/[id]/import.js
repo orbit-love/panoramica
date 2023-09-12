@@ -1,6 +1,5 @@
 import { check, redirect, authorizeProject } from "src/auth";
 import { getAPIUrl } from "src/integrations/orbit/api";
-import { graph } from "src/data/db";
 import { orbitImportReady } from "src/integrations/ready";
 import { queue } from "src/workers/orbit/importActivities";
 
@@ -11,8 +10,6 @@ export default async function handler(req, res) {
   }
 
   const { id } = req.query;
-  const session = graph.session();
-
   const json = req.body;
   var { startDate, endDate } = json;
 
@@ -51,7 +48,5 @@ export default async function handler(req, res) {
     return res.status(500).json({
       message: "Creating the import failed. Please check the logs.",
     });
-  } finally {
-    session.close();
   }
 }
