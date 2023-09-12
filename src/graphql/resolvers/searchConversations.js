@@ -14,7 +14,7 @@ const searchConversations = async ({ projectId, query }) => {
     keywordSearch.filter_by = `body: [${filter}]`;
   }
 
-  console.log(keywordSearch);
+  console.log("[searchConversations]", query, keywordSearch);
 
   const documents = await searchProjectConversations({
     project,

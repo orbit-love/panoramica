@@ -111,8 +111,8 @@ export const indexConversations = async ({ project, conversations }) => {
   for (let [conversationId, activities] of Object.entries(conversations)) {
     const body = toPageContent(activities);
     // grab the most recent activity for the timestamp
-    const lastActivity = activities[0];
-    const firstActivity = activities[activities.length - 1];
+    const firstActivity = activities[0];
+    const lastActivity = activities[activities.length - 1];
     // add the source and source channel to the metadata
     const { source, sourceChannel } = lastActivity;
     // add a contentLength for query-time filtering
