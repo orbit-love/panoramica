@@ -3,7 +3,6 @@ import { eventEmitter } from "./events";
 import markdownToQasCallbacks from "./markdownToQasCallbacks";
 import webToQasCallbacks from "./webToQasCallbacks";
 import conversationsToQasCallbacks from "./conversationsToQasCallbacks";
-import importOrbitActivitiesCallbacks from "./orbit/importActivitiesCallbacks";
 import { createClient } from "./common";
 
 const opts = { createClient };
@@ -33,10 +32,6 @@ export const WORKER_DEFINITIONS = {
   ConversationsToQas: startWorker(
     "ConversationsToQas",
     conversationsToQasCallbacks
-  ),
-  ImportOrbitActivities: startWorker(
-    "ImportOrbitActivities",
-    importOrbitActivitiesCallbacks
   ),
 };
 

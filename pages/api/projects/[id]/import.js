@@ -1,7 +1,7 @@
 import { check, redirect, authorizeProject } from "src/auth";
 import { getAPIUrl } from "src/integrations/orbit/api";
 import { orbitImportReady } from "src/integrations/ready";
-import { scheduleJob } from "src/workers";
+import { queue } from "src/workers/orbit/importActivities";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
@@ -36,7 +36,7 @@ export default async function handler(req, res) {
     }
     console.log("Using Import URL ", url);
 
-    scheduleJob("ImportOrbitActivities", url, {
+    await queue.add(url, {
       project,
       url,
     });
