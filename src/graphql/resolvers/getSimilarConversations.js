@@ -21,12 +21,14 @@ const getSimilarConversations = async ({
       q,
       query_by: "embedding",
       prefix: false,
-      filter_by: `body_length:>150 && id:!=${conversationId}`,
+      // filter_by: `body_length:>150`,
       limit: 25,
     },
   });
 
-  return documents.map((doc) => ({ id: doc.id, distance: doc.distance }));
+  return documents
+    .filter(({ id }) => id !== conversationId)
+    .map((doc) => ({ id: doc.id, distance: doc.distance }));
 };
 
 export default getSimilarConversations;
