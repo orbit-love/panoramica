@@ -1,0 +1,12 @@
+mutation DeleteAllConversationProperties($projectId: ID!) {
+  updateProjects(
+    where: { id: $projectId }
+    update: {
+      conversations: { update: { node: { properties: { delete: {} } } } }
+    }
+  ) {
+    info {
+      nodesDeleted
+    }
+  }
+}

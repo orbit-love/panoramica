@@ -1,65 +1,67 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import TimeAgo from "react-timeago";
 
 import { Frame } from "src/components/widgets";
 import NameAndIcon from "src/components/domains/member/NameAndIcon";
 import ConversationFeedItem from "src/components/domains/feed/ConversationFeedItem";
-import GetActivityIdsQuery from "./Connection/GetActivityIds.gql";
-import GetActivitiesByIdsQuery from "src/components/domains/search/GetActivitiesByIds.gql";
+import GetMessagedWithConnectionQuery from "./Connection/GetMessagedWithConnection.gql";
+import GetConversationsByIdsQuery from "src/graphql/queries/GetConversationsByIds.gql";
 import utils from "src/utils";
+import Loader from "../domains/ui/Loader";
 
 export default function Connection({ project, params, handlers }) {
-  var { member, connection } = params;
-  var { onClickMember } = handlers;
-
+  const { member, connection } = params;
+  const { onClickMember } = handlers;
   const { id: projectId } = project;
-  const { globalActor: memberId } = member;
-  const { globalActor: connectionId } = connection;
+  const { id: memberId } = member;
+  const { id: connectionId } = connection;
+  const [edge, setEdge] = React.useState({});
+  const [conversations, setConversations] = React.useState([]);
 
-  const {
-    data: {
-      projects: [
-        {
-          members: [
-            {
-              messagedWithConnection: {
-                edges: [
-                  {
-                    activityCount,
-                    conversationCount,
-                    lastInteractedAt,
-                    conversations: ids,
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      ],
-    },
-  } = useSuspenseQuery(GetActivityIdsQuery, {
+  const [getConversationsByIdQuery] = useLazyQuery(GetConversationsByIdsQuery, {
+    variables: { projectId },
+  });
+
+  const { loading } = useQuery(GetMessagedWithConnectionQuery, {
     variables: { projectId, memberId, connectionId },
+    onCompleted: async (data) => {
+      const {
+        projects: [
+          {
+            members: [
+              {
+                messagedWithConnection: {
+                  edges: [edge],
+                },
+              },
+            ],
+          },
+        ],
+      } = data;
+      setEdge(edge);
+
+      const { conversationIds: ids } = edge;
+      const {
+        data: {
+          projects: [{ conversations }],
+        },
+      } = await getConversationsByIdQuery({
+        variables: { ids },
+      });
+      setConversations(conversations);
+    },
   });
 
-  const { data: idsQueryData } = useSuspenseQuery(GetActivitiesByIdsQuery, {
-    variables: { projectId, ids },
-  });
+  const { activityCount, conversationCount, lastInteractedAt } = edge;
 
-  const activities = idsQueryData?.projects[0].activities || [];
-
-  // take the first descendant property and write them into the
-  // otherwise empty conversation object
-  const updatedActivities = activities.map((activity) => {
-    return {
-      ...activity,
-      conversation: {
-        ...activity.conversation.descendants[0],
-        ...activity.conversation,
-      },
-    };
-  });
+  const latestActivityByEitherMember = (conversation) => {
+    return conversation.descendants
+      .slice()
+      .reverse()
+      .find((a) => [memberId, connectionId].includes(a.member.id));
+  };
 
   return (
     <Frame>
@@ -90,22 +92,31 @@ export default function Connection({ project, params, handlers }) {
             <span title={activityCount}>{conversationCount}</span>
           </div>
         </div>
-        <div className="text-gray-400 dark:text-gray-600">
-          <span>Last interacted: </span>
-          <TimeAgo
-            date={lastInteractedAt}
-            title={`Last interacted on ${utils.formatDate(lastInteractedAt)}`}
-          />
-        </div>
+        {lastInteractedAt && (
+          <div className="text-gray-400 dark:text-gray-600">
+            <span>Last interacted: </span>
+            <TimeAgo
+              date={lastInteractedAt}
+              title={`Last interacted on ${utils.formatDate(lastInteractedAt)}`}
+            />
+          </div>
+        )}
       </div>
-      {updatedActivities.map((activity) => (
-        <ConversationFeedItem
-          key={activity.id}
-          activity={activity}
-          project={project}
-          handlers={handlers}
-        />
-      ))}
+      {loading && (
+        <div className="px-6">
+          <Loader />
+        </div>
+      )}
+      {!loading &&
+        conversations.map((conversation) => (
+          <ConversationFeedItem
+            key={conversation.id}
+            activity={latestActivityByEitherMember(conversation)}
+            conversation={conversation}
+            project={project}
+            handlers={handlers}
+          />
+        ))}
     </Frame>
   );
 }

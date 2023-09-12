@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 
 import { checkApp, authorizeProject } from "src/auth";
-import generatePropertiesFromYaml from "src/graphql/resolvers/activity/generatePropertiesFromYaml";
+import generatePropertiesFromYaml from "src/graphql/resolvers/conversation/generatePropertiesFromYaml";
 import { getBaseClient } from "src/graphql/apollo-client";
 import ReplaceActivityPropertiesMutation from "src/graphql/mutations/ReplaceActivityProperties.gql";
 import coreYaml from "src/configuration/definitions/core.yaml";

@@ -1,7 +1,7 @@
-const { Queue, Worker, QueueScheduler } = require("bullmq");
+const { Queue } = require("bullmq");
 const IORedis = require("ioredis");
 
-const connection = new IORedis();
+const connection = new IORedis(process.env.REDIS_URL);
 
 const getQueueNames = async () => {
   // Fetch keys from Redis that match the BullMQ naming convention.

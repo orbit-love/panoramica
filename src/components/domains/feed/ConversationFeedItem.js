@@ -1,28 +1,21 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import classnames from "classnames";
 
 import { BookmarksContext } from "src/components/context/BookmarksContext";
 import PreviewView from "src/components/domains/conversation/views/PreviewView";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import Toolbar from "src/components/domains/conversation/Toolbar";
-import { postCreateActivityProperties } from "src/data/client/fetches";
 
+// activity is passed in also and passed through; it is up to the caller to
+// pass in the conversation, whether it is the activity or an ancestor
 export default function ConversationFeedItem(props) {
-  var {
-    index,
-    project,
-    activity: initialActivity,
-    handlers,
-    minimal,
-    term,
-  } = props;
-
-  const [activity, setActivity] = useState(initialActivity);
+  var { index, conversation, handlers } = props;
 
   const bookmarksContext = useContext(BookmarksContext);
   const bookmarks = bookmarksContext.bookmarks;
 
-  const conversation = activity.conversation;
+  // this pattern assumes that the activity passed in is the conversation
+  // (the top level activity) and contains descendants
   const bookmark = bookmarks.find(
     (bookmark) => bookmark.node.id === conversation.id
   );
@@ -32,7 +25,7 @@ export default function ConversationFeedItem(props) {
   const canExpand = conversation.descendants.length > 1;
 
   const onOpen = (e) => {
-    handlers.onClickActivity(e, conversation);
+    handlers.onClickConversation(e, conversation);
   };
   const onExpand = () => {
     let selection = window.getSelection().toString();
@@ -40,34 +33,6 @@ export default function ConversationFeedItem(props) {
       setExpanded(!expanded);
     }
   };
-
-  // useEffect(() => {
-  //   // if the activity has no properties or only 1 property
-  //   // fire off a request to generate properties
-  //   if (conversation.properties?.length <= 1) {
-  //     console.log(
-  //       `No properties on ${conversation.id}, making request to generate`
-  //     );
-  //     postCreateActivityProperties({
-  //       project,
-  //       activity: conversation,
-  //       onSuccess: ({ data }) => {
-  //         const newProperties = data.properties;
-  //         console.log(
-  //           "New Properties fetched " + JSON.stringify(newProperties)
-  //         );
-  //         setActivity({
-  //           ...activity,
-  //           conversation: {
-  //             ...conversation,
-  //             properties: newProperties,
-  //           },
-  //         });
-  //         console.log(newProperties);
-  //       },
-  //     });
-  //   }
-  // }, [project, activity, conversation]);
 
   return (
     <div
@@ -82,15 +47,14 @@ export default function ConversationFeedItem(props) {
         }
       )}
     >
-      {expanded && (
-        <FullThreadView
+      {expanded && <FullThreadView {...props} conversation={conversation} />}
+      {!expanded && (
+        <PreviewView
           {...props}
-          activity={activity}
+          onExpand={onExpand}
           conversation={conversation}
-          term={term}
         />
       )}
-      {!expanded && <PreviewView onExpand={onExpand} {...props} />}
       <Toolbar
         {...props}
         activity={conversation}
@@ -99,7 +63,6 @@ export default function ConversationFeedItem(props) {
         setExpanded={setExpanded}
         onOpen={onOpen}
         onExpand={onExpand}
-        minimal={minimal}
         bookmark={bookmark}
       />
     </div>

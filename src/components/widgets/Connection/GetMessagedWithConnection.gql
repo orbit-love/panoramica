@@ -4,7 +4,7 @@ query ($projectId: ID!, $memberId: ID!, $connectionId: ID!) {
       messagedWithConnection(where: { node: { id: $connectionId } }) {
         edges {
           activityCount
-          conversations
+          conversationIds
           conversationCount
           lastInteractedAt
         }

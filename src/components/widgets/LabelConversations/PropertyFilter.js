@@ -2,7 +2,7 @@ import React from "react";
 import classnames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import DeleteActivityProperty from "./DeleteActivityProperty";
+import DeleteConversationProperty from "./DeleteConversationProperty";
 
 export default function PropertyFilter({
   project,
@@ -190,7 +190,7 @@ export default function PropertyFilter({
             </div>
           </div>
           <div className="flex justify-end p-2">
-            <DeleteActivityProperty
+            <DeleteConversationProperty
               propertyName={name}
               project={project}
               onComplete={() => {
@@ -198,7 +198,7 @@ export default function PropertyFilter({
               }}
             >
               <span className="text-red-500">delete</span>
-            </DeleteActivityProperty>
+            </DeleteConversationProperty>
           </div>
         </div>
       )}

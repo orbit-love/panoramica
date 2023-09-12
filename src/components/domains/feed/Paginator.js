@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import Loader from "src/components/domains/ui/Loader";
 
 export default function Paginator({
-  activities,
-  eachActivity,
+  conversations,
+  eachConversation,
   setFirst,
   pageInfo,
   loading,
@@ -35,9 +35,9 @@ export default function Paginator({
 
   return (
     <>
-      {activities.map((activity, index) => (
-        <div key={activity.id} ref={setLastElement}>
-          {eachActivity({ activity, index })}
+      {conversations.map((conversation, index) => (
+        <div key={conversation.id} ref={setLastElement}>
+          {eachConversation({ conversation, index })}
         </div>
       ))}
       {!loading && !hasNextPage && <p className="my-6 text-center">♥</p>}

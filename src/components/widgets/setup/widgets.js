@@ -81,12 +81,12 @@ export function addChannelsWidget(source, addWidget, options = {}) {
   });
 }
 
-export function addActivityWidget(activity, addWidget, options = {}) {
-  const titleProperty = activity.properties?.find(
+export function addConversationWidget(conversation, addWidget, options = {}) {
+  const titleProperty = conversation.properties?.find(
     (property) => property.name === "title"
   );
-  addWidget(`activity-${activity.id}`, "Conversation", {
-    activity,
+  addWidget(`conversation-${conversation.id}`, "Conversation", {
+    conversation,
     title: titleProperty?.value || "...",
     ...options,
   });
@@ -113,8 +113,8 @@ export const clickHandlers = (addWidget) => ({
     e.stopPropagation();
     addConnectionWidget(member, connection, addWidget, options);
   },
-  onClickActivity: (e, activity, options) => {
+  onClickConversation: (e, conversation, options) => {
     e.stopPropagation();
-    addActivityWidget(activity, addWidget, options);
+    addConversationWidget(conversation, addWidget, options);
   },
 });

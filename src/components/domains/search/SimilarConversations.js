@@ -1,28 +1,28 @@
 import React from "react";
 import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import GetSimilarConversationsQuery from "./GetSimilarConversations.gql";
-import GetActivitiesByIdsQuery from "src/components/domains/search/GetActivitiesByIds.gql";
+import GetConversationsByIdsQuery from "src/graphql/queries/GetConversationsByIds.gql";
 
 export default function SimilarConversations({
   project,
-  activity,
+  conversation,
   renderResults,
   distanceThreshold = 0.5,
   maxResults = 5,
 }) {
   const { id: projectId } = project;
-  const { id: activityId } = activity;
+  const { id: conversationId } = conversation;
 
   const {
     data: {
       projects: [
         {
-          activities: [{ similarConversations }],
+          conversations: [{ similarConversations }],
         },
       ],
     },
   } = useSuspenseQuery(GetSimilarConversationsQuery, {
-    variables: { projectId, activityId },
+    variables: { projectId, conversationId },
   });
 
   // filter out and limit the number we show
@@ -34,11 +34,11 @@ export default function SimilarConversations({
 
   const {
     data: {
-      projects: [{ activities }],
+      projects: [{ conversations }],
     },
-  } = useSuspenseQuery(GetActivitiesByIdsQuery, {
+  } = useSuspenseQuery(GetConversationsByIdsQuery, {
     variables: { projectId, ids },
   });
 
-  return <>{activities.length > 0 && renderResults({ activities })}</>;
+  return <>{conversations.length > 0 && renderResults({ conversations })}</>;
 }

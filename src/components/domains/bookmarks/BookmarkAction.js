@@ -11,14 +11,16 @@ import {
 import ConnectBookmarkMutation from "src/graphql/mutations/ConnectBookmark.gql";
 import DisconnectBookmarkMutation from "src/graphql/mutations/DisconnectBookmark.gql";
 
-export default function BookmarkAction({ activity, className }) {
+export default function BookmarkAction({ conversation, className }) {
   const { bookmarks } = useContext(BookmarksContext);
   const dispatch = useContext(BookmarksDispatchContext);
 
   const { data: session } = useSession();
   const userId = session.user.id;
 
-  var bookmark = bookmarks.find((bookmark) => bookmark.node.id === activity.id);
+  var bookmark = bookmarks.find(
+    (bookmark) => bookmark.node.id === conversation.id
+  );
 
   const bookmarkIcon = bookmark ? "bookmark" : ["far", "bookmark"];
 
@@ -26,12 +28,12 @@ export default function BookmarkAction({ activity, className }) {
   const [disconnectBookmark] = useMutation(DisconnectBookmarkMutation);
 
   const onBookmark = useCallback(async () => {
-    const { id: activityId } = activity;
+    const { id: conversationId } = conversation;
     if (bookmark) {
       await disconnectBookmark({
         variables: {
           userId,
-          activityId,
+          conversationId,
         },
       });
       dispatch({
@@ -56,28 +58,24 @@ export default function BookmarkAction({ activity, className }) {
       } = await connectBookmark({
         variables: {
           userId,
-          activityId,
+          conversationId,
           createdAt,
           createdAtInt,
         },
       });
-      const { node: activity } = bookmark;
-      const updatedBookmark = {
-        ...bookmark,
-        node: {
-          ...activity,
-          conversation: {
-            ...activity.conversation.descendants[0],
-            ...activity.conversation,
-          },
-        },
-      };
       dispatch({
         type: "addBookmark",
-        bookmark: updatedBookmark,
+        bookmark,
       });
     }
-  }, [dispatch, bookmark, activity, connectBookmark, disconnectBookmark]);
+  }, [
+    dispatch,
+    bookmark,
+    conversation,
+    connectBookmark,
+    disconnectBookmark,
+    userId,
+  ]);
 
   return (
     <button

@@ -6,12 +6,18 @@ import Filter from "src/components/domains/feed/Filter";
 export default function Filters({
   project,
   propertyNames,
-  where,
+  where: parentWhere,
   filters,
   setFilters,
   selectClassName,
   capitalNames = true,
 }) {
+  const where = parentWhere.AND.filter((name) =>
+    ["source", "sourceChannel"].includes(name)
+  ).reduce((acc, object) => {
+    return { ...acc, ...object };
+  }, {});
+
   const { id: projectId } = project;
   const {
     data: {

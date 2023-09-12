@@ -1,17 +1,16 @@
 import React from "react";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
-import utils from "src/utils";
 import ConversationItem from "./ConversationItem";
-import GetConversationsWhereQuery from "src/graphql/queries/GetConversationsWhere.gql";
+import GetConversationsQuery from "src/graphql/queries/GetConversations.gql";
 
 export default function TableBody({
   projectId,
   where,
   limit,
   offset,
-  activities,
-  setActivities,
+  conversations,
+  setConversations,
   setLoading,
   sort,
   trigger,
@@ -19,25 +18,22 @@ export default function TableBody({
   setRefetchNow,
   ...props
 }) {
-  const { loading: queryLoading, refetch } = useQuery(
-    GetConversationsWhereQuery,
-    {
-      notifyOnNetworkStatusChange: true, // so that loading is true on refetch
-      variables: {
-        projectId,
-        where,
-        sort,
-        limit,
-        offset,
-      },
-      onCompleted: (data) => {
-        const {
-          projects: [{ activities }],
-        } = data;
-        setActivities(utils.updateActivitiesNew(activities));
-      },
-    }
-  );
+  const { loading: queryLoading, refetch } = useQuery(GetConversationsQuery, {
+    notifyOnNetworkStatusChange: true, // so that loading is true on refetch
+    variables: {
+      projectId,
+      where,
+      sort,
+      limit,
+      offset,
+    },
+    onCompleted: (data) => {
+      const {
+        projects: [{ conversations }],
+      } = data;
+      setConversations(conversations);
+    },
+  });
 
   React.useEffect(() => {
     if (refetchNow) {
@@ -51,15 +47,16 @@ export default function TableBody({
 
   return (
     <tbody className="h-[70vh] overflow-y-auto">
-      {activities.map((activity) => (
+      {conversations.map((conversation) => (
         <ConversationItem
-          key={activity.id}
-          activity={activity}
-          setActivities={setActivities}
+          key={conversation.id}
+          conversation={conversation}
+          setConversations={setConversations}
           setRefetchNow={setRefetchNow}
           {...props}
         />
       ))}
+      <tr className="h-full"></tr>
     </tbody>
   );
 }

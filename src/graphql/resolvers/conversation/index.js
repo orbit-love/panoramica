@@ -4,7 +4,7 @@ import resolveConversationJson from "./conversationJson";
 
 export const generate = async ({
   projectId,
-  activityId,
+  conversationId,
   modelName,
   temperature,
   prompt,
@@ -15,7 +15,7 @@ export const generate = async ({
 
   const messages = await resolveConversationJson({
     projectId,
-    activityId,
+    conversationId,
   });
 
   // if the activity is not a conversation, it will have no messages
@@ -38,7 +38,7 @@ export const generate = async ({
     prompt = prompt(messages);
   }
 
-  console.log(`CALLING LLM for ${activityId}`);
+  console.log(`CALLING LLM for ${conversationId}`);
 
   const now = new Date();
   const text = await model.call(prompt);

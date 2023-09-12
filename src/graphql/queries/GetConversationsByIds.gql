@@ -1,0 +1,8 @@
+#import "src/graphql/fragments/ForConversationFeed.gql"
+query ($projectId: ID!, $ids: [ID!]) {
+  projects(where: { id: $projectId }) {
+    conversations(where: { id_IN: $ids }) {
+      ...ForConversationFeed
+    }
+  }
+}

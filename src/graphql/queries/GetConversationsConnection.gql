@@ -1,0 +1,19 @@
+#import "src/graphql/fragments/ProjectConversationsConnection.gql"
+query (
+  $projectId: ID!
+  $first: Int!
+  $after: String
+  $sort: [ProjectConversationsConnectionSort!]
+  $where: ProjectConversationsConnectionWhere
+) {
+  projects(where: { id: $projectId }) {
+    conversationsConnection(
+      first: $first
+      after: $after
+      where: $where
+      sort: $sort
+    ) {
+      ...ProjectConversationsConnection
+    }
+  }
+}

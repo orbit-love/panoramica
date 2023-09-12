@@ -1,4 +1,4 @@
-#import "src/graphql/fragments/ProjectActivitiesConnection.gql"
+#import "src/graphql/fragments/ProjectConversationsConnection.gql"
 query (
   $projectId: ID!
   $first: Int!
@@ -10,7 +10,7 @@ query (
       first: $first
       where: { node: { source: $source, sourceChannel: $sourceChannel } }
     ) {
-      ...ProjectActivitiesConnection
+      ...ProjectConversationsConnection
     }
   }
 }

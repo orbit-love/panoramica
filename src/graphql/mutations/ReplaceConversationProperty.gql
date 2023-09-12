@@ -1,26 +1,26 @@
-mutation UpdateActivityProperty(
-  $activityId: ID!
+mutation ReplaceConversationProperty(
+  $conversationId: ID!
   $name: String!
   $value: String!
   $type: String!
 ) {
-  deleteProperty: updateActivities(
-    where: { id: $activityId }
+  deleteProperty: updateConversations(
+    where: { id: $conversationId }
     update: { properties: { delete: { where: { node: { name: $name } } } } }
   ) {
     info {
       nodesDeleted
     }
   }
-  createProperty: updateActivities(
-    where: { id: $activityId }
+  createProperty: updateConversations(
+    where: { id: $conversationId }
     update: {
       properties: {
         create: { node: { name: $name, value: $value, type: $type } }
       }
     }
   ) {
-    activities {
+    conversations {
       properties {
         name
         type

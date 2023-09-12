@@ -1,14 +1,11 @@
 import { ApolloServer } from "@apollo/server";
-import jwt from "jsonwebtoken";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "app/api/auth/[...nextauth]/route";
 import { graph } from "src/data/db";
 import { Neo4jGraphQL } from "@neo4j/graphql";
-import { checkJWT } from "src/auth";
-
-const secret = process.env.NEXTAUTH_SECRET;
+import { checkJWT, createJWT } from "src/auth";
 
 import typeDefs from "src/graphql/schemas";
 import resolvers from "src/graphql/resolvers";
@@ -60,15 +57,9 @@ const getLoggedInUser = async (request) => {
 const handler = startServerAndCreateNextHandler(await server(), {
   context: async (request) => {
     const user = await getLoggedInUser(request);
-    var token;
-    if (user) {
-      var roles = user.admin ? ["admin"] : [];
-      var payload = { sub: user.id, roles };
-      token = jwt.sign(payload, secret);
-    }
     return {
-      token,
       user,
+      token: user && createJWT(user),
     };
   },
 });

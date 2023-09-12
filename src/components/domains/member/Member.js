@@ -5,7 +5,7 @@ import NameAndIcon from "src/components/domains/member/NameAndIcon";
 export default function CompactMember({
   member,
   metrics,
-  activityCount,
+  conversationCount,
   connectionCount,
   onClick,
 }) {
@@ -17,7 +17,7 @@ export default function CompactMember({
       <div className="mx-auto" />
       {metrics && (
         <NumberStats
-          activityCount={activityCount}
+          conversationCount={conversationCount}
           connectionCount={connectionCount}
         />
       )}

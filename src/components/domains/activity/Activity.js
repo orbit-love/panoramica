@@ -28,7 +28,7 @@ export default function Activity({
   term,
   timeDisplay,
 }) {
-  var { onClickMember, onClickChannel, onClickActivity, onClickTimestamp } =
+  var { onClickMember, onClickChannel, onClickConversation, onClickTimestamp } =
     handlers;
   var member = activity.member;
   var renderHtml = activity.textHtml?.length > 0;
@@ -104,7 +104,7 @@ export default function Activity({
           {linkTimestamp && !onClickTimestamp && (
             <button
               className="hover:underline"
-              onClick={(e) => onClickActivity(e, conversation)}
+              onClick={(e) => onClickConversation(e, conversation)}
               target="_blank"
               rel="noreferrer"
             >

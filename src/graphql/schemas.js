@@ -1,7 +1,7 @@
 import { gql } from "graphql-tag";
 
 const typeDefs = gql`
-  extend schema @authentication @subscription(operations: [])
+  extend schema @authentication
 
   type JWT @jwt {
     roles: [String!]!
@@ -54,7 +54,7 @@ const typeDefs = gql`
     id: ID! @id
     email: String!
     projects: [Project!]! @relationship(type: "CREATED", direction: OUT)
-    bookmarks: [Activity!]!
+    bookmarks: [Conversation!]!
       @relationship(type: "BOOKMARKS", direction: OUT, properties: "Bookmarked")
   }
 
@@ -109,7 +109,8 @@ const typeDefs = gql`
     name: String!
     demo: Boolean!
     activities: [Activity!]! @relationship(type: "OWNS", direction: OUT)
-    pins: [Activity!]!
+    conversations: [Conversation!]! @relationship(type: "OWNS", direction: OUT)
+    pins: [Conversation!]!
       @relationship(type: "PINS", direction: OUT, properties: "Pinned")
     members: [Member!]! @relationship(type: "OWNS", direction: OUT)
     sources: [String!]! @customResolver(requires: ["id"])
@@ -180,12 +181,45 @@ const typeDefs = gql`
     description: String!
   }
 
+  # some fields are not marked required due to an issue with connectOrCreate
+  type Conversation
+    @query(read: false, aggregate: false)
+    @mutation(operations: [UPDATE]) {
+    id: ID! @id
+    firstActivityTimestamp: String
+    lastActivityTimestamp: String
+    memberCount: Int
+    activityCount: Int
+    missingParent: String
+    source: String!
+    sourceChannel: String!
+    project: Project! @relationship(type: "OWNS", direction: IN)
+    properties: [Property!]! @relationship(type: "HAS", direction: OUT)
+    beginsWith: [Activity!]! @relationship(type: "BEGINS", direction: IN)
+    descendants: [Activity!]! @relationship(type: "INCLUDES", direction: OUT)
+    members: [Member!]! @relationship(type: "INCLUDES", direction: OUT)
+
+    completion(prompt: String!, modelName: String, temperature: Float): String!
+      @customResolver(requires: ["id"])
+    generateProperties(
+      definitions: [GeneratePropertyInput!]!
+      modelName: String
+      temperature: Float
+    ): [Property!]! @customResolver(requires: ["id"])
+    generatePropertiesFromYaml(
+      yaml: String
+      modelName: String
+      temperature: Float
+    ): [Property!]! @customResolver(requires: ["id"])
+    conversationJson: String! @customResolver(requires: ["id"])
+    similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
+  }
+
+  # some fields are not marked required due to an issue with connectOrCreate
   type Activity
     @query(read: false, aggregate: false)
     @mutation(operations: [UPDATE]) {
     id: ID! @id
-    conversationId: String
-    isConversation: Boolean
     actor: String
     actorName: String
     globalActor: String
@@ -203,37 +237,22 @@ const typeDefs = gql`
     project: Project! @relationship(type: "OWNS", direction: IN)
     member: Member! @relationship(type: "DID", direction: IN)
     mentions: [Member!]! @relationship(type: "MENTIONS", direction: OUT)
-    conversation: Activity! @relationship(type: "PART_OF", direction: OUT)
+    conversation: Conversation! @relationship(type: "INCLUDES", direction: IN)
+    begins: [Conversation!]! @relationship(type: "BEGINS", direction: OUT)
     parent: Activity @relationship(type: "REPLIES_TO", direction: OUT)
     replies: [Activity!]! @relationship(type: "REPLIES_TO", direction: IN)
-    descendants: [Activity!]! @relationship(type: "PART_OF", direction: IN)
-    properties: [Property!]! @relationship(type: "HAS", direction: OUT)
-    completion(prompt: String!, modelName: String, temperature: Float): String!
-      @customResolver(requires: ["id"])
-    generateProperties(
-      definitions: [GeneratePropertyInput!]!
-      modelName: String
-      temperature: Float
-    ): [Property!]! @customResolver(requires: ["id"])
-    generatePropertiesFromYaml(
-      yaml: String
-      modelName: String
-      temperature: Float
-    ): [Property!]! @customResolver(requires: ["id"])
-    conversationJson: String! @customResolver(requires: ["id"])
-    similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
   }
 
   interface Messaged @relationshipProperties {
     activities: [String!]!
     activityCount: Int!
-    conversations: [String!]!
+    conversationIds: [String!]!
     conversationCount: Int!
     lastInteractedAt: String!
   }
 
   type Member @query(read: false, aggregate: false) @mutation(operations: []) {
-    id: ID! @alias(property: "globalActor")
+    id: ID!
     globalActor: String!
     globalActorName: String!
     activityCount: Int!
@@ -241,6 +260,8 @@ const typeDefs = gql`
     messagedWithCount: Int!
     project: Project! @relationship(type: "OWNS", direction: IN)
     activities: [Activity!]! @relationship(type: "DID", direction: OUT)
+    conversations: [Conversation!]!
+      @relationship(type: "INCLUDES", direction: IN)
     messagedWith: [Member!]!
       @relationship(
         type: "MESSAGED"

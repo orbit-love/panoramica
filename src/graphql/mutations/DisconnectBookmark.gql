@@ -1,7 +1,7 @@
-mutation ($userId: ID!, $activityId: ID!) {
+mutation ($userId: ID!, $conversationId: ID!) {
   updateUsers(
     where: { id: $userId }
-    disconnect: { bookmarks: { where: { node: { id: $activityId } } } }
+    disconnect: { bookmarks: { where: { node: { id: $conversationId } } } }
   ) {
     info {
       nodesDeleted

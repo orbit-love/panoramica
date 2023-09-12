@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Loader from "src/components/domains/ui/Loader";
 import SearchConversationsQuery from "./SearchConversations.gql";
-import GetActivitiesByIdsQuery from "./GetActivitiesByIds.gql";
+import GetConversationsByIdsQuery from "src/graphql/queries/GetConversationsByIds.gql";
 
 export default function Search({
   project,
@@ -19,28 +19,19 @@ export default function Search({
   const [term, setTerm] = useState(initialTerm || "");
   const [appliedTerm, setAppliedTerm] = useState(initialTerm);
   const [seeAll, setSeeAll] = useState(false);
-  const [activities, setActivities] = useState([]);
-  const [numberOfHiddenActivities, setNumberOfHiddenActivities] = useState(0);
+  const [conversations, setConversations] = useState([]);
+  const [numberOfHiddenConversations, setNumberOfHiddenConversations] =
+    useState(0);
 
   const { id: projectId } = project;
 
-  const [getActivitiesByIds] = useLazyQuery(GetActivitiesByIdsQuery, {
+  const [getConversationsByIds] = useLazyQuery(GetConversationsByIdsQuery, {
     variables: { projectId, ids: [] },
     onCompleted: (data) => {
       const {
-        projects: [{ activities }],
+        projects: [{ conversations }],
       } = data;
-
-      const updatedActivities = activities.map((activity) => {
-        return {
-          ...activity,
-          conversation: {
-            ...activity.conversation.descendants[0],
-            ...activity.conversation,
-          },
-        };
-      });
-      setActivities(updatedActivities);
+      setConversations(conversations);
     },
   });
 
@@ -53,7 +44,7 @@ export default function Search({
           projects: [{ searchConversations }],
         } = data;
 
-        // filter out activities that aren't likely to be good results
+        // filter out conversations that aren't likely to be good results
         var filteredConversations = searchConversations;
         if (!seeAll) {
           filteredConversations =
@@ -62,12 +53,12 @@ export default function Search({
               ?.slice(0, immediatelyVisibleResults) || [];
         }
 
-        const numberOfHiddenActivities =
+        const numberOfHiddenConversations =
           searchConversations.length - filteredConversations.length;
-        setNumberOfHiddenActivities(numberOfHiddenActivities);
+        setNumberOfHiddenConversations(numberOfHiddenConversations);
 
         var ids = filteredConversations.map(({ id }) => id);
-        await getActivitiesByIds({ variables: { ids } });
+        await getConversationsByIds({ variables: { ids } });
       },
     }
   );
@@ -82,10 +73,10 @@ export default function Search({
   );
 
   useEffect(() => {
-    if (appliedTerm && activities.length === 0) {
+    if (appliedTerm && conversations.length === 0) {
       searchConversationsQuery({ variables: { query: appliedTerm } });
     }
-  }, [appliedTerm, activities, searchConversationsQuery]);
+  }, [appliedTerm, conversations, searchConversationsQuery]);
 
   const onSearchChange = (e) => {
     setTerm(e.target.value);
@@ -94,9 +85,9 @@ export default function Search({
   const onReset = () => {
     setTerm("");
     setAppliedTerm("");
-    setActivities([]);
+    setConversations([]);
     setSeeAll(false);
-    setNumberOfHiddenActivities(0);
+    setNumberOfHiddenConversations(0);
   };
 
   useEffect(() => {
@@ -124,7 +115,7 @@ export default function Search({
           {loading && <Loader className="text-white" />}
           {!loading && <FontAwesomeIcon className="text-white" icon="search" />}
         </button>
-        {activities.length > 0 && (
+        {conversations.length > 0 && (
           <button
             onClick={onReset}
             type="button"
@@ -134,18 +125,21 @@ export default function Search({
           </button>
         )}
       </form>
-      {activities.length > 0 && renderResults({ activities, appliedTerm })}
-      {!seeAll && activities.length > 0 && numberOfHiddenActivities > 0 && (
-        <div className="p-6">
-          <button
-            className="text-tertiary hover:underline"
-            title="See potentially less relevant results"
-            onClick={() => setSeeAll(true)}
-          >
-            See {numberOfHiddenActivities} results with lower relevance
-          </button>
-        </div>
-      )}
+      {conversations.length > 0 &&
+        renderResults({ conversations, appliedTerm })}
+      {!seeAll &&
+        conversations.length > 0 &&
+        numberOfHiddenConversations > 0 && (
+          <div className="p-6">
+            <button
+              className="text-tertiary hover:underline"
+              title="See potentially less relevant results"
+              onClick={() => setSeeAll(true)}
+            >
+              See {numberOfHiddenConversations} results with lower relevance
+            </button>
+          </div>
+        )}
     </>
   );
 }
