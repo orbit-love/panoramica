@@ -21,7 +21,7 @@ export default function EditProject({ project, dispatch }) {
       project,
       setLoading,
       onSuccess: () => {
-        setStatus("Embeddings created.");
+        setStatus("Conversations indexed.");
       },
     });
   }, [project, setLoading]);

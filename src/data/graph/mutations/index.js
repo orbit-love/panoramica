@@ -265,14 +265,17 @@ export async function syncActivities({ tx, project, activities }) {
   const finalResult = await tx.run(
     `MATCH (p:Project { id: $projectId })
       WITH p
-        MATCH (p)-[:OWNS]->(a:Activity)
+        MATCH (p)-[:OWNS]->(a:Activity)<-[:INCLUDES]-(c:Conversation)
         WHERE a.id IN $activityIds
-        RETURN a`,
+        RETURN a, c`,
     { activityIds, projectId }
   );
 
   // return activities with all new fields loaded
-  activities = finalResult.records.map((record) => record.get("a").properties);
+  activities = finalResult.records.map((record) => ({
+    ...record.get("a").properties,
+    conversation: record.get("c").properties,
+  }));
 
   return activities;
 }

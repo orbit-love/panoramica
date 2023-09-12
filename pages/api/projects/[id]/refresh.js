@@ -1,12 +1,12 @@
 import { graph } from "src/data/db";
-import { check, redirect, authorizeProject } from "src/auth";
+import { check, redirect, authorizeProject, createJWT } from "src/auth";
 import { aiReady } from "src/integrations/ready";
 import { syncActivities } from "src/data/graph/mutations";
-import { getActivities } from "src/data/graph/queries/conversations";
 import { getAPIUrl, fetchActivitiesPage } from "src/integrations/orbit/api";
 import { orbitImportReady } from "src/integrations/ready";
-import GraphConnection from "src/data/graph/Connection";
 import { indexConversations } from "src/integrations/typesense";
+
+import { ogm, Project } from "src/models";
 
 export default async function handler(req, res) {
   const user = await check(req, res);
@@ -31,6 +31,12 @@ export default async function handler(req, res) {
       url = getAPIUrl({ workspace });
     }
 
+    await ogm.init();
+    const context = {
+      user,
+      token: createJWT(user),
+    };
+
     const handleRecords = async (activities) => {
       // sync activities to the graph db
       // uuids are returned with new activities that typesense needs, so we
@@ -44,17 +50,34 @@ export default async function handler(req, res) {
         // map the incoming activities to unique conversationIds
         var conversations = {};
         var conversationIds = activities.map(
-          ({ conversationId }) => conversationId
+          ({ conversation }) => conversation.id
         );
 
         // iterate over the conversationIds and load the activities for each one
-        const graphConnection = new GraphConnection();
         for (let conversationId of conversationIds) {
-          conversations[conversationId] = await getActivities({
-            projectId,
-            conversationId,
-            graphConnection,
+          const result = await Project.find({
+            where: { id: projectId },
+            selectionSet: `
+            {
+              conversations(where: { id: "${conversationId}" }) {
+                descendants(options: { sort: { timestamp: ASC } }) {
+                  id
+                  source
+                  sourceChannel
+                  globalActorName
+                  textHtml
+                  timestamp
+                }
+              }
+            }`,
+            context,
           });
+          const [
+            {
+              conversations: [{ descendants: conversationActivities }],
+            },
+          ] = result;
+          conversations[conversationId] = conversationActivities;
         }
 
         // index conversations

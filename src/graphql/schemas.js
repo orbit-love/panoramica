@@ -1,7 +1,7 @@
 import { gql } from "graphql-tag";
 
 const typeDefs = gql`
-  extend schema @authentication @subscription(operations: [])
+  extend schema @authentication
 
   type JWT @jwt {
     roles: [String!]!
