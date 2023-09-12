@@ -34,36 +34,12 @@ export const displayQueueInfo = async ({ queueName, connection }) => {
   };
 };
 
-const clearQueue = async ({ queueName, connection }) => {
+export const clearQueue = async ({ queueName, connection }) => {
   const queue = new Queue(queueName, { connection });
 
   await queue.obliterate({ force: true });
 
   console.log(`Cleared queue: ${queueName}`);
+
+  return true;
 };
-
-const main = async () => {
-  // Replace with your list of queue names
-  const queueNames = await getQueueNames();
-  console.log(`Found Queues: ${queueNames.join(", ")}`);
-
-  const connection = new IORedis(process.env.REDIS_URL);
-
-  if (process.argv.includes("--clear")) {
-    for (const queueName of queueNames) {
-      await clearQueue({ queueName, connection });
-    }
-  } else {
-    for (const queueName of queueNames) {
-      await displayQueueInfo({ queueName, connection });
-    }
-  }
-};
-
-main()
-  .catch((err) => {
-    console.error("Error:", err);
-  })
-  .then(() => {
-    process.exit(1);
-  });
