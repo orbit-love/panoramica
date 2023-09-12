@@ -8,14 +8,14 @@ export const connection = new Redis(REDIS_URL);
 
 // redisOpts here will contain at least a property of
 // connectionName which will identify the queue based on its name
-export function createClient(type, redisOpts) {
+export function createClient(type, _redisOpts) {
   switch (type) {
     case "client":
       return client;
     case "subscriber":
       return subscriber;
     case "bclient":
-      return new Redis(REDIS_URL, redisOpts);
+      return new Redis(REDIS_URL);
     default:
       throw new Error("Unexpected connection type: ", type);
   }
