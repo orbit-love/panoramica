@@ -1,12 +1,12 @@
 import { Worker, Queue } from "bullmq";
 import { graph } from "src/data/db";
+import { connection } from "src/data/db/redis";
 import { fetchActivitiesPage } from "src/integrations/orbit/api";
 import { syncActivities } from "src/data/graph/mutations";
-import { createClient } from "src/workers/common";
 
 const queueName = "ImportOrbitActivities";
 const options = {
-  createClient,
+  connection,
 };
 
 export const queue = new Queue(queueName, options);

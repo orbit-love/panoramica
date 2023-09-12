@@ -3,9 +3,9 @@ import { eventEmitter } from "./events";
 import markdownToQasCallbacks from "./markdownToQasCallbacks";
 import webToQasCallbacks from "./webToQasCallbacks";
 import conversationsToQasCallbacks from "./conversationsToQasCallbacks";
-import { createClient } from "./common";
+import { connection } from "src/data/db/redis";
 
-const opts = { createClient };
+const opts = { connection };
 
 function startWorker(queueName, callbacks) {
   const queue = new Queue(queueName, opts);

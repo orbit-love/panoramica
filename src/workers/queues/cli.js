@@ -1,12 +1,14 @@
-const IORedis = require("ioredis");
+const Redis = require("ioredis");
 
-import { getQueueNames, displayQueueInfo } from "src/workers/queues/shared";
+import { getQueueNames, displayQueueInfo } from "./shared";
 
 const main = async () => {
-  const queueNames = await getQueueNames();
-  console.log(`Found Queues: ${queueNames.join(", ")}`);
+  const { REDIS_URL, NODE_ENV } = process.env;
+  const options = NODE_ENV === "production" ? { tls: {} } : {};
+  const connection = new Redis(REDIS_URL, options);
 
-  const connection = new IORedis(process.env.REDIS_URL);
+  const queueNames = await getQueueNames({ connection });
+  console.log(`Found Queues: ${queueNames.join(", ")}`);
 
   if (process.argv.includes("--clear")) {
     for (const queueName of queueNames) {

@@ -1,5 +1,4 @@
 const { Queue } = require("bullmq");
-const IORedis = require("ioredis");
 
 export const getQueueNames = async ({ connection }) => {
   // Fetch keys from Redis that match the BullMQ naming convention.
