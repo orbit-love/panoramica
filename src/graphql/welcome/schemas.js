@@ -79,9 +79,7 @@ const typeDefs = gql`
     confidence: Float
   }
 
-  type Conversation
-    @query(read: false, aggregate: false)
-    @mutation(operations: [UPDATE]) {
+  type Conversation @query(read: false, aggregate: false) {
     id: ID! @id
     firstActivityTimestamp: String!
     lastActivityTimestamp: String!
