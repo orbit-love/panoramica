@@ -61,13 +61,14 @@ const typeDefs = gql`
   type UserVisibleToAdmin
     @node(labels: ["User"])
     @query(aggregate: false)
+    @mutation(operations: [])
     @authorization(filter: [{ where: { jwt: { roles_INCLUDES: "admin" } } }]) {
     id: ID! @id
     email: String!
     projects: [Project!]! @relationship(type: "CREATED", direction: OUT)
   }
 
-  type Prompt {
+  type Prompt @query(read: false, aggregate: false) @mutation(operations: []) {
     id: ID! @id
     context: String!
     label: String!
@@ -75,12 +76,16 @@ const typeDefs = gql`
     project: Project! @relationship(type: "OWNS", direction: IN)
   }
 
-  type PropertyFilterOption {
+  type PropertyFilterOption
+    @query(read: false, aggregate: false)
+    @mutation(operations: []) {
     value: String!
     count: Int!
   }
 
-  type PropertyFilter {
+  type PropertyFilter
+    @query(read: false, aggregate: false)
+    @mutation(operations: []) {
     name: String!
     values: [PropertyFilterOption!]!
   }
@@ -145,12 +150,14 @@ const typeDefs = gql`
     distance: Float!
   }
 
-  type QaSearchResult {
+  type QaSearchResult
+    @query(read: false, aggregate: false)
+    @mutation(operations: []) {
     qaSummaries: [QaSummary!]!
     qas: [Qa!]!
   }
 
-  type Qa {
+  type Qa @query(read: false, aggregate: false) @mutation(operations: []) {
     id: String!
     question: String!
     answer: String!
@@ -163,12 +170,16 @@ const typeDefs = gql`
     timestamp: Int
   }
 
-  type QaSummary {
+  type QaSummary
+    @query(read: false, aggregate: false)
+    @mutation(operations: []) {
     sourceName: String!
     count: Int!
   }
 
-  type Property {
+  type Property
+    @query(read: false, aggregate: false)
+    @mutation(operations: []) {
     name: String!
     type: String!
     value: String!

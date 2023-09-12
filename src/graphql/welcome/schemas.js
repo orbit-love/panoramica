@@ -8,12 +8,12 @@ const typeDefs = gql`
     createdAtInt: Float!
   }
 
-  type PropertyFilterOption {
+  type PropertyFilterOption @query(read: false, aggregate: false) {
     value: String!
     count: Int!
   }
 
-  type PropertyFilter {
+  type PropertyFilter @query(read: false, aggregate: false) {
     name: String!
     values: [PropertyFilterOption!]!
   }
@@ -52,6 +52,7 @@ const typeDefs = gql`
   }
 
   type Prompt
+    @query(read: false, aggregate: false)
     @authorization(
       filter: [
         {
@@ -72,7 +73,7 @@ const typeDefs = gql`
     distance: Float!
   }
 
-  type Property {
+  type Property @query(read: false, aggregate: false) {
     name: String!
     type: String!
     value: String!

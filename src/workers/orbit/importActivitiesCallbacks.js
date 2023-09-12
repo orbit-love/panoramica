@@ -1,19 +1,9 @@
-import { Worker, Queue } from "bullmq";
 import { graph } from "src/data/db";
 import { fetchActivitiesPage } from "src/integrations/orbit/api";
 import { syncActivities } from "src/data/graph/mutations";
-import { createClient } from "src/workers/common";
 
-const queueName = "ImportOrbitActivities";
-const options = {
-  createClient,
-};
-
-export const queue = new Queue(queueName, options);
-
-const worker = new Worker(
-  queueName,
-  async (job) => {
+const importActivitiesCallbacks = {
+  perform: async (job) => {
     const { url, project } = job.data;
     const { apiKey } = project;
     const session = graph.session();
@@ -52,12 +42,14 @@ const worker = new Worker(
       session.close();
     }
   },
-  options
-);
+  onCompleted: (job, returnValue) => {
+    console.log(`Job ${job.name} completed and returned:`);
+    console.log(returnValue);
+  },
+  onFailed: (job, error) => {
+    console.error(`Job ${job.name} failed with the following error:`);
+    console.error(error);
+  },
+};
 
-worker.on("completed", (job) => {
-  const { project } = job.data;
-  console.log(`Finished job ${job.id} for project ${project.name}`);
-});
-
-export default worker;
+export default importActivitiesCallbacks;
