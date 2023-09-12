@@ -4,12 +4,9 @@ import { fetchActivitiesPage } from "src/integrations/orbit/api";
 import { syncActivities } from "src/data/graph/mutations";
 import { createClient } from "src/workers/common";
 
-const queueName = "orbit/ImportActivities";
+const queueName = "ImportOrbitActivities";
 const options = {
   createClient,
-  limiter: {
-    max: 1,
-  },
 };
 
 export const queue = new Queue(queueName, options);
