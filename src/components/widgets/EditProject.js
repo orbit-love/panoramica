@@ -2,10 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 import { Frame } from "src/components/widgets";
-import {
-  postEmbeddings,
-  postCreateActivitiesProperties,
-} from "src/data/client/fetches";
+import { postEmbeddings } from "src/data/client/fetches";
 import Edit from "src/components/domains/project/Edit";
 import Loader from "src/components/domains/ui/Loader";
 import { aiReady, orbitImportReady } from "src/integrations/ready";

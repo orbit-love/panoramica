@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ConversationFeedItem from "../feed/ConversationFeedItem";
-import GetActivitiesByIdsQuery from "src/components/domains/search/GetActivitiesByIds.gql";
+import GetConversationsByIdsQuery from "src/graphql/queries/GetConversationsByIds.gql";
 
 export default function FunctionOutput({ project, functionOutput }) {
   const [closed, setClosed] = useState(false);
 
-  const conversationsContext = (searchTerm, activities) => {
+  const conversationsContext = (searchTerm, conversations) => {
     const handlers = { onClickMember: () => {} };
     return (
       <div className="flex-col mt-1 space-y-1">
@@ -17,10 +17,10 @@ export default function FunctionOutput({ project, functionOutput }) {
         <small className="block pb-1">
           Search term: &quot;{searchTerm}&quot;
         </small>
-        {activities.map((activity) => (
+        {conversations.map((conversation) => (
           <ConversationFeedItem
-            key={activity.id}
-            activity={activity}
+            key={conversation.id}
+            conversation={conversation}
             project={project}
             handlers={handlers}
           />
@@ -51,7 +51,7 @@ export default function FunctionOutput({ project, functionOutput }) {
 
   const { id: projectId } = project;
 
-  const getActivityDocs = () => {
+  const getConversationDocs = () => {
     switch (functionOutput.name) {
       case "search_conversations":
         return functionOutput.output;
@@ -62,13 +62,13 @@ export default function FunctionOutput({ project, functionOutput }) {
     }
   };
 
-  const ids = getActivityDocs().map(({ id }) => id);
+  const ids = getConversationDocs().map(({ id }) => id);
 
-  const { data } = useQuery(GetActivitiesByIdsQuery, {
+  const { data } = useQuery(GetConversationsByIdsQuery, {
     variables: { projectId, ids },
   });
   if (!data) return null;
-  const activities = data.projects[0].activities;
+  const conversations = data.projects[0].conversations;
 
   return (
     <div className="border-t-1 py-2 px-4 bg-gray-50 rounded-t-lg dark:bg-gray-900">
@@ -84,14 +84,14 @@ export default function FunctionOutput({ project, functionOutput }) {
       <div className="overflow-y-auto max-h-40">
         {!closed &&
           functionOutput.name === "search_conversations" &&
-          conversationsContext(functionOutput.args[0], activities)}
+          conversationsContext(functionOutput.args[0], conversations)}
         {!closed &&
           functionOutput.name === "search_documentation" &&
           documentationContext(functionOutput.args[0], functionOutput.output)}
         {!closed &&
           functionOutput.name === "search_conversations_and_documentation" && (
             <>
-              {conversationsContext(functionOutput.args[0], activities)}
+              {conversationsContext(functionOutput.args[0], conversations)}
               <div className="mt-4"></div>
               {documentationContext(
                 functionOutput.args[1],

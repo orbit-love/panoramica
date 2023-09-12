@@ -6,7 +6,7 @@ import {
 
 const getSimilarConversations = async ({
   projectId,
-  activityId,
+  conversationId,
   descendants,
 }) => {
   const project = await prisma.project.findFirst({
@@ -21,7 +21,7 @@ const getSimilarConversations = async ({
       q,
       query_by: "embedding",
       prefix: false,
-      filter_by: `body_length:>150 && id:!=${activityId}`,
+      filter_by: `body_length:>150 && id:!=${conversationId}`,
       limit: 25,
     },
   });

@@ -45,6 +45,7 @@ export default async function handler(req, res) {
       selectionSet: `
       {
         conversations {
+          id
           descendants(options: { sort: { timestamp: ASC } }) {
             id
             source

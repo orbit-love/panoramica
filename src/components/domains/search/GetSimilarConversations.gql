@@ -1,16 +1,17 @@
-query ($projectId: ID!, $activityId: ID!) {
+query ($projectId: ID!, $conversationId: ID!) {
   projects(where: { id: $projectId }) {
-    activities(where: { id: $activityId }) {
-      similarConversations {
-        id
-        distance
-      }
+    conversations(where: { id: $conversationId }) {
+      id
       project {
         id
       }
-      descendants {
+      descendants(options: { sort: { timestamp: ASC } }) {
         id
         textHtml
+      }
+      similarConversations {
+        id
+        distance
       }
     }
   }
