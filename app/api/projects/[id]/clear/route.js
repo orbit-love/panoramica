@@ -1,15 +1,16 @@
+import { NextResponse } from "next/server";
 import { redirect } from "next/navigation";
 import { checkApp, authorizeProject } from "src/auth";
 import { graph } from "src/data/db";
 import { clearProject } from "src/data/graph/mutations";
 
-export async function DELETE(request) {
+export async function DELETE(_, context) {
   const user = await checkApp();
   if (!user) {
     return redirect("/");
   }
 
-  const { id } = request.query;
+  const { id } = context.params;
   const session = graph.session();
   try {
     var project = await authorizeProject({ id, user });

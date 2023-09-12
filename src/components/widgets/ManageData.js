@@ -9,7 +9,7 @@ export default function ManageData({ project }) {
   return (
     <Frame>
       <div className="p-4">
-        <div className="text-tertiary text-lg font-light">Manage Data</div>
+        <div className="text-tertiary pb-4 text-lg font-light">Manage Data</div>
         <div className="flex flex-col space-y-10">
           <div>
             {orbitImportReady(project) && (
@@ -42,7 +42,7 @@ const StartQueues = ({}) => {
   }, [setStatus]);
 
   return (
-    <div className="flex space-x-4">
+    <div className="flex flex-col space-y-1">
       <div className="underline cursor-pointer" onClick={postAdminQueues}>
         Start Queues
       </div>
@@ -62,7 +62,9 @@ const RemoveData = ({ project }) => {
       await fetch(`/api/projects/${project.id}/clear`, {
         method: "DELETE",
       });
-      setStatus(`Data removed, please refresh the page.`);
+      setStatus(
+        `Data removed, please refresh the page and close any open tabs`
+      );
     }
   }, [project, setStatus]);
 
@@ -73,7 +75,7 @@ const RemoveData = ({ project }) => {
         projectId: project.id,
       },
       onCompleted: () => {
-        setStatus(`Properties deleted.`);
+        setStatus(`Properties deleted`);
       },
     }
   );
