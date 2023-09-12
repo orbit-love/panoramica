@@ -1,4 +1,4 @@
-#import "src/graphql/fragments/ForActivityFeed.gql"
+#import "src/graphql/fragments/ForConversationFeed.gql"
 query ($projectId: ID!) {
   users {
     bookmarksConnection(
@@ -10,7 +10,7 @@ query ($projectId: ID!) {
         createdAtInt
         node {
           id
-          ...ForActivityFeed
+          ...ForConversationFeed
         }
       }
     }

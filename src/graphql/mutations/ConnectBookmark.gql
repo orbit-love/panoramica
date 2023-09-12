@@ -1,7 +1,7 @@
-#import "src/graphql/fragments/ForActivityFeed.gql"
+#import "src/graphql/fragments/ForConversationFeed.gql"
 mutation (
   $userId: ID!
-  $activityId: ID!
+  $conversationId: ID!
   $createdAt: String!
   $createdAtInt: Float!
 ) {
@@ -10,7 +10,7 @@ mutation (
     update: {
       bookmarks: {
         connectOrCreate: {
-          where: { node: { id: $activityId } }
+          where: { node: { id: $conversationId } }
           onCreate: {
             edge: { createdAt: $createdAt, createdAtInt: $createdAtInt }
             node: {}
@@ -20,12 +20,12 @@ mutation (
     }
   ) {
     users {
-      bookmarksConnection(where: { node: { id: $activityId } }) {
+      bookmarksConnection(where: { node: { id: $conversationId } }) {
         edges {
           createdAt
           createdAtInt
           node {
-            ...ForActivityFeed
+            ...ForConversationFeed
           }
         }
       }

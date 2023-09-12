@@ -26,9 +26,9 @@ const resolvers = {
       }
     },
   },
-  Activity: {
+  Conversation: {
     async similarConversations(parent) {
-      const { id: activityId, project, descendants } = parent;
+      const { id: conversationId, project, descendants } = parent;
       if (!project || !descendants) {
         // these fields must be included in the query
         return null;
@@ -36,7 +36,7 @@ const resolvers = {
       const { id: projectId } = project;
       return getSimilarConversations({
         projectId,
-        activityId,
+        conversationId,
         descendants,
       });
     },

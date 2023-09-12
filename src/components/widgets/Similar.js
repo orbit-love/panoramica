@@ -5,15 +5,15 @@ import SimilarConversations from "src/components/domains/search/SimilarConversat
 import Loader from "../domains/ui/Loader";
 
 export default function Similar({ project, api, params, handlers }) {
-  const { activity } = params;
+  const { conversation } = params;
 
-  const renderResults = ({ activities }) => {
+  const renderResults = ({ conversations }) => {
     return (
       <div className="flex flex-col space-y-0">
-        {activities.map((activity) => (
+        {conversations.map((conversation) => (
           <ConversationFeedItem
-            key={activity.id}
-            activity={activity}
+            key={conversation.id}
+            conversation={conversation}
             project={project}
             handlers={handlers}
           />
@@ -37,7 +37,7 @@ export default function Similar({ project, api, params, handlers }) {
       >
         <SimilarConversations
           project={project}
-          activity={activity}
+          conversation={conversation}
           renderResults={renderResults}
         />
       </React.Suspense>

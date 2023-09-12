@@ -1,0 +1,11 @@
+#import "src/graphql/fragments/ForConversationFeed.gql"
+fragment MemberConversationsConnection on MemberConversationsConnection {
+  edges {
+    node {
+      ...ForConversationFeed
+    }
+  }
+  pageInfo {
+    hasNextPage
+  }
+}

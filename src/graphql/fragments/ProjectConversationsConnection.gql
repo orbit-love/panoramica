@@ -1,0 +1,13 @@
+#import "src/graphql/fragments/ForConversationFeed.gql"
+fragment ProjectConversationsConnection on ProjectConversationsConnection {
+  edges {
+    node {
+      ...ForConversationFeed
+    }
+  }
+  pageInfo {
+    hasNextPage
+    startCursor
+    endCursor
+  }
+}

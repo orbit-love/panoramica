@@ -1,0 +1,14 @@
+mutation CreateConversationProperties(
+  $id: ID!
+  $properties: [ConversationPropertiesCreateFieldInput!]!
+) {
+  updateConversations(where: { id: $id }, create: { properties: $properties }) {
+    conversations {
+      properties {
+        name
+        type
+        value
+      }
+    }
+  }
+}

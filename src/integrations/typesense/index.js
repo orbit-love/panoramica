@@ -33,8 +33,9 @@ export const toFilters = (object, options = {}) => {
   return filters ? filters : undefined;
 };
 
+// send in activities in ascending timestamp order
 export const toPageContent = (activities) => {
-  return activities.reverse().map(embeddedActivityContent).join(" ");
+  return activities.map(embeddedActivityContent).join(" ");
 };
 
 // SEARCH
@@ -110,9 +111,16 @@ export const indexConversations = async ({ project, conversations }) => {
   const documents = [];
   for (let [conversationId, activities] of Object.entries(conversations)) {
     const body = toPageContent(activities);
+
+    if (activities.length === 0) {
+      // this should not happen but there may be conversations that are
+      // created and not cleaned up in the new path - tbd
+      console.log("No activities for conversation ", conversationId);
+      continue;
+    }
     // grab the most recent activity for the timestamp
-    const lastActivity = activities[0];
-    const firstActivity = activities[activities.length - 1];
+    const firstActivity = activities[0];
+    const lastActivity = activities[activities.length - 1];
     // add the source and source channel to the metadata
     const { source, sourceChannel } = lastActivity;
     // add a contentLength for query-time filtering

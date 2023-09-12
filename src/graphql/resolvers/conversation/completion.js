@@ -7,7 +7,7 @@ import resolveConversationJson from "./conversationJson";
 
 const resolveCompletion = async ({
   projectId,
-  activityId,
+  conversationId,
   prompt,
   modelName,
   temperature,
@@ -19,7 +19,7 @@ const resolveCompletion = async ({
   const allDocs = [];
   const messages = await resolveConversationJson({
     projectId,
-    activityId,
+    conversationId,
   });
 
   for (let message of messages) {

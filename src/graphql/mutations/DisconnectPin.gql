@@ -1,7 +1,7 @@
-mutation ($projectId: ID!, $activityId: ID!) {
+mutation ($projectId: ID!, $conversationId: ID!) {
   updateProjects(
     where: { id: $projectId }
-    disconnect: { pins: { where: { node: { id: $activityId } } } }
+    disconnect: { pins: { where: { node: { id: $conversationId } } } }
   ) {
     info {
       nodesDeleted

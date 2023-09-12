@@ -12,9 +12,9 @@ export default function Conversation({
   params,
   handlers,
 }) {
-  var { activity: paramsActivity } = params;
-  let [flexCol, setFlexCol] = useState();
-  const [activity, setActivity] = useState(paramsActivity);
+  const { conversation: paramsConversation } = params;
+  const [flexCol, setFlexCol] = useState();
+  const [conversation, setConversation] = useState(paramsConversation);
   const [title, setTitle] = useState(api.title);
 
   const flexContainerRef = useRef();
@@ -24,15 +24,15 @@ export default function Conversation({
   );
 
   useEffect(() => {
-    if (activity) {
+    if (conversation) {
       api.setTitle(
-        activity.properties.find((property) => property.name === "title")
+        conversation.properties.find((property) => property.name === "title")
           ?.value || title
       );
-      api.updateParameters({ activity });
+      api.updateParameters({ conversation });
     }
     saveLayout({ project, containerApi });
-  }, [api, containerApi, project, title, activity]);
+  }, [api, containerApi, project, title, conversation]);
 
   return (
     <Frame fullWidth>
@@ -51,42 +51,38 @@ export default function Conversation({
         >
           <TitleBar
             project={project}
-            activity={activity}
+            conversation={conversation}
             title={title}
             setTitle={setTitle}
-            setActivity={setActivity}
+            setConversation={setConversation}
           />
-          {activity.properties?.length > 1 && (
+          {conversation.properties?.length > 1 && (
             <div className="flex flex-col px-6 mt-4 text-sm">
               <Property
                 name="type"
                 displayName="Type"
-                properties={activity.properties}
+                properties={conversation.properties}
               />
               <Property
                 name="topics"
                 displayName="Topics"
-                properties={activity.properties}
+                properties={conversation.properties}
               />
               <Property
                 name="statuses"
                 displayName="Status"
-                properties={activity.properties}
+                properties={conversation.properties}
               />
             </div>
           )}
           <React.Suspense fallback={<div />}>
-            <FullThreadView
-              activity={activity}
-              conversation={activity}
-              handlers={handlers}
-            />
+            <FullThreadView conversation={conversation} handlers={handlers} />
           </React.Suspense>
         </div>
         {flexCol && <div className="grow" />}
         <div className="flex flex-col w-full border-l border-gray-300 dark:border-gray-800">
           <React.Suspense fallback={<div></div>}>
-            <ChatArea project={project} activity={activity} />
+            <ChatArea project={project} conversation={conversation} />
           </React.Suspense>
         </div>
       </div>

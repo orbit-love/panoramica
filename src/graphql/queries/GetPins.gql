@@ -1,4 +1,4 @@
-#import "src/graphql/fragments/ForActivityFeed.gql"
+#import "src/graphql/fragments/ForConversationFeed.gql"
 query ($projectId: ID!) {
   projects(where: { id: $projectId }) {
     pinsConnection(sort: { edge: { createdAtInt: DESC } }) {
@@ -6,7 +6,7 @@ query ($projectId: ID!) {
         createdAt
         createdAtInt
         node {
-          ...ForActivityFeed
+          ...ForConversationFeed
         }
       }
     }

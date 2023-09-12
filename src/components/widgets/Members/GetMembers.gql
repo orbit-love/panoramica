@@ -3,14 +3,11 @@ query ($projectId: ID!, $first: Int!, $after: String, $sort: MemberSort) {
     membersConnection(first: $first, after: $after, sort: { node: $sort }) {
       edges {
         node {
+          id
           globalActor
           globalActorName
-          activitiesAggregate {
-            count
-          }
-          messagedWithConnection {
-            totalCount
-          }
+          conversationCount
+          messagedWithCount
         }
       }
       pageInfo {

@@ -6,7 +6,7 @@ const defaultTransformActivity = (activity, parentActivity, member) => {
     replyToMessageId: parentActivity?.id,
     author: member.globalActorName,
     timestamp: activity.timestamp,
-    text: utils.stripHtmlTags(a.textHtml),
+    text: utils.stripHtmlTags(activity.textHtml),
   };
 };
 
@@ -44,7 +44,7 @@ export const getConversation = async function ({
   const query = `
     MATCH (p:Project { id: $projectId })
     WITH p
-      MATCH (p)-[:OWNS]-(a:Activity { conversationId: $conversationId })
+      MATCH (p)-[:OWNS]->(c:Conversation { id: $conversationId })-[:INCLUDES]->(a:Activity)
        OPTIONAL MATCH (a)<-[:REPLIES_TO]-(b:Activity)
       WITH a, b
       MATCH (memA:Member)-[:DID]->(a)

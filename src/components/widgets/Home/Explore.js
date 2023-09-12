@@ -3,7 +3,7 @@ import SourceIcon from "src/components/domains/activity/SourceIcon";
 import { BookmarksContext } from "src/components/context/BookmarksContext";
 
 export default function Explore({ newPanelPosition, addWidget, handlers }) {
-  const { onClickSource, onClickActivity } = handlers;
+  const { onClickSource, onClickConversation } = handlers;
 
   const onClickAssistant = () => {
     addWidget("prompt", "Assistant", {
@@ -57,21 +57,24 @@ export default function Explore({ newPanelPosition, addWidget, handlers }) {
         Bookmarks ({bookmarks.length})
       </div>
       <div className="flex flex-col items-start w-full whitespace-nowrap">
-        {bookmarks.map(({ node: activity }) => (
+        {bookmarks.map(({ node: conversation }) => (
           <div
-            key={activity.id}
+            key={conversation.id}
             className="group flex items-center space-x-1 w-full text-sm text-left text-gray-400 text-ellipsis cursor-pointer dark:text-gray-500"
             onClick={(e) =>
-              onClickActivity(e, activity.conversation, {
+              onClickConversation(e, conversation, {
                 position: newPanelPosition(),
               })
             }
           >
-            <SourceIcon activity={activity} className="text-xs" />
+            <SourceIcon
+              activity={conversation.descendants[0]}
+              className="text-xs"
+            />
             <div className="group-hover:underline overflow-x-hidden w-full text-ellipsis">
-              {activity.conversation.properties.find(
+              {conversation.properties.find(
                 (property) => property.name === "title"
-              )?.value || activity.text.slice(0, 50)}
+              )?.value || conversation.descendants[0].text.slice(0, 50)}
             </div>
           </div>
         ))}

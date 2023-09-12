@@ -23,6 +23,7 @@ export default function Bookmarks({ project, api, handlers }) {
         <ConversationFeedItem
           key={activity.id}
           activity={activity}
+          conversation={activity}
           project={project}
           handlers={handlers}
         />

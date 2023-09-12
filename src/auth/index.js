@@ -24,6 +24,12 @@ export const demoSession = () => ({
   },
 });
 
+export const createJWT = function (user) {
+  var roles = user.admin ? ["admin"] : [];
+  var payload = { sub: user.id, roles };
+  return jwt.sign(payload, secret);
+};
+
 export const checkJWT = function (req) {
   var authorization;
   // for the app router, req.headers.get is a function

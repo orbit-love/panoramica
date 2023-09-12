@@ -124,6 +124,14 @@ function HomeInner({
     });
   };
 
+  const onClickManageData = (e) => {
+    e.preventDefault();
+    addWidget("manage-data", "ManageData", {
+      title: "Manage Data",
+      position: newPanelPosition(),
+    });
+  };
+
   return (
     <div className="flex flex-col pt-1 px-6">
       <ErrorBoundary>
@@ -169,6 +177,12 @@ function HomeInner({
           >
             Edit Settings
           </a>
+        </div>
+        <div
+          className="cursor-pointer hover:underline"
+          onClick={onClickManageData}
+        >
+          Manage Data
         </div>
         <div
           className="cursor-pointer hover:underline"

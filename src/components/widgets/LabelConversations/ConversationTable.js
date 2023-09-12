@@ -14,13 +14,9 @@ export default function ConversationTable({
   yaml,
   controlledProperties,
 }) {
-  const defaultWhereClauses = [
-    {
-      isConversation: true,
-    },
-  ];
+  const defaultWhereClauses = [];
   const pageSize = 10;
-  const [activities, setActivities] = React.useState([]);
+  const [conversations, setConversations] = React.useState([]);
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [loadingRows, setLoadingRows] = React.useState([]);
   const [filters, setFilters] = React.useState([]);
@@ -35,7 +31,7 @@ export default function ConversationTable({
   const [totalCount, setTotalCount] = React.useState(null);
   const [refetchNow, setRefetchNow] = React.useState(1);
   const [loading, setLoading] = React.useState(false);
-  const [sort, setSort] = React.useState({ timestampInt: "DESC" });
+  const [sort, setSort] = React.useState({ lastActivityTimestamp: "DESC" });
   const projectId = project.id;
   const childProps = {
     project,
@@ -44,8 +40,8 @@ export default function ConversationTable({
     yaml,
     yamlPropertyName,
     controlledProperties,
-    activities,
-    setActivities,
+    conversations,
+    setConversations,
     selectedRows,
     setSelectedRows,
     loadingRows,
@@ -82,7 +78,7 @@ export default function ConversationTable({
         <Pagination {...childProps} />
       </div>
       <div className="overflow-auto h-[calc(100vh-120px)]">
-        <table className="text-sm border-collapse table-auto">
+        <table className="w-full text-sm border-collapse table-auto">
           <TableHeader {...childProps} />
           <TableBody {...childProps} />
         </table>
@@ -99,7 +95,7 @@ const Pagination = ({
   limit,
   setLimit,
   setOffset,
-  activities,
+  conversations,
   totalCount,
   setTotalCount,
   setSelectAllCheckboxValue,
@@ -108,7 +104,7 @@ const Pagination = ({
   loading,
 }) => {
   const hasPreviousPage = offset > 0;
-  const hasNextPage = offset + activities.length < totalCount;
+  const hasNextPage = offset + conversations.length < totalCount;
 
   const { refetch } = useQuery(GetConversationsCountQuery, {
     notifyOnNetworkStatusChange: true, // so that loading is true on refetch
@@ -120,7 +116,7 @@ const Pagination = ({
       const {
         projects: [
           {
-            activitiesAggregate: { count },
+            conversationsAggregate: { count },
           },
         ],
       } = data;
@@ -166,9 +162,9 @@ const Pagination = ({
           </button>
         </>
       )}
-      {totalCount > 0 && activities.length > 0 && (
+      {totalCount > 0 && conversations.length > 0 && (
         <div>
-          Showing {offset + 1} - {offset + activities.length} of {totalCount}
+          Showing {offset + 1} - {offset + conversations.length} of {totalCount}
         </div>
       )}
       {hasNextPage && (

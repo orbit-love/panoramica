@@ -24,13 +24,13 @@ export default function Search({ project, api, containerApi, handlers }) {
     [updateTitle]
   );
 
-  const renderResults = ({ activities, appliedTerm }) => {
+  const renderResults = ({ conversations, appliedTerm }) => {
     return (
       <div className="flex flex-col space-y-0">
-        {activities.map((activity) => (
+        {conversations.map((conversation) => (
           <ConversationFeedItem
-            key={activity.id}
-            activity={activity}
+            key={conversation.id}
+            conversation={conversation}
             project={project}
             handlers={handlers}
             term={appliedTerm}

@@ -2,7 +2,7 @@ import { generate, expandArrayProperties } from "./index";
 
 const resolveGenerateProperties = async ({
   projectId,
-  activityId,
+  conversationId,
   definitions,
   modelName,
   temperature,
@@ -41,7 +41,7 @@ YOUR ANSWER:`;
 
   const [text, _] = await generate({
     projectId,
-    activityId,
+    conversationId,
     modelName,
     temperature,
     prompt,
