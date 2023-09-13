@@ -32,6 +32,7 @@ export default function ManageData({ project }) {
 
 const ManageQueues = ({}) => {
   const [status, setStatus] = React.useState("");
+  const [processing, setProcessing] = React.useState(false);
 
   const postAdminQueues = React.useCallback(async () => {
     setStatus("");
@@ -41,22 +42,26 @@ const ManageQueues = ({}) => {
     setStatus(`Queues started`);
   }, [setStatus]);
 
-  const putAdminQueues = React.useCallback(async () => {
-    setStatus("");
-    const response = await fetch(`/api/admin/queues`, {
-      method: "PUT",
-    });
-    const { jobsProcessed } = await response.json();
-    setStatus(`Worker processed ${jobsProcessed} jobs`);
-  }, [setStatus]);
+  // set up a useEffect that detects changes in the processing function
+  // and starts and stops processing accordingly
+  React.useEffect(() => {
+    if (processing) {
+      const interval = setInterval(async () => {
+        setStatus("Processing...");
+        const response = await fetch(`/api/admin/queues`, { method: "PUT" });
+        const data = await response.json();
+        setStatus(`${data.jobsProcessed} jobs processed`);
+      }, 5000);
+      return () => clearInterval(interval);
+    } else {
+      setStatus("Processing stopped");
+    }
+  }, [processing, setStatus]);
 
   return (
     <div className="flex flex-col space-y-1">
       <div className="underline cursor-pointer" onClick={postAdminQueues}>
         Start Workers
-      </div>
-      <div className="underline cursor-pointer" onClick={putAdminQueues}>
-        Run Workers Synchronously
       </div>
       <a
         className="underline cursor-pointer"
@@ -65,6 +70,23 @@ const ManageQueues = ({}) => {
       >
         View Queue Information
       </a>
+      {processing && (
+        <div
+          className="text-blue-500 underline cursor-pointer"
+          onClick={() => setProcessing(false)}
+        >
+          Stop Processing...
+        </div>
+      )}
+      {!processing && (
+        <div
+          className="underline cursor-pointer"
+          onClick={() => setProcessing(true)}
+        >
+          Start Processing (Sync)
+        </div>
+      )}
+      <div></div>
       {status && <div className="text-green-500">{status}</div>}
     </div>
   );

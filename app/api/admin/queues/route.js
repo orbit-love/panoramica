@@ -15,7 +15,15 @@ const postHandler = async () => {
 const putHandler = async () => {
   const token = "josh";
   var jobsProcessed = 0;
+  // keep a timer and don't process any more jobs if 50 seconds have gone by
+  const startTime = new Date().getTime();
+  // 10s of headroom
+  const timeout = 60000 - 10000;
   while (true) {
+    if (new Date().getTime() - startTime > timeout) {
+      console.log("Nearing the timeout, stopping processing");
+      break;
+    }
     const job = await worker.getNextJob(token);
     if (job) {
       try {
