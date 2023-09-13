@@ -2,6 +2,7 @@ query {
   prismaProjects {
     id
     name
+    demo
     prismaUser {
       id
       email
