@@ -4,6 +4,9 @@ const nextConfig = {
   basePath: process.env.BASE_PATH || "",
   reactStrictMode: false,
   pageExtensions: ["ts", "tsx", "js", "jsx"],
+  experimental: {
+    serverComponentsExternalPackages: ["bullmq"],
+  },
   webpack: (config) => {
     config.module.rules.push(
       {
