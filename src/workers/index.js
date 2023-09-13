@@ -9,12 +9,16 @@ const opts = { connection };
 
 function startWorker(queueName, callbacks) {
   const queue = new Queue(queueName, opts);
+  const workerOpts = {
+    ...opts,
+    ...(callbacks.limiter ? { limiter: callbacks.limiter } : {}),
+  };
   const worker = new Worker(
     queue.name,
     async (job) => {
       callbacks.perform(job);
     },
-    callbacks.limiter ? { limiter: callbacks.limiter } : {}
+    workerOpts
   );
 
   worker.on("completed", callbacks.onCompleted);
