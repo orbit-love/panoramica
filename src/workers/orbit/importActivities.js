@@ -58,7 +58,7 @@ const worker = new Worker(
       });
 
       if (nextUrl) {
-        queue.add(nextUrl, {
+        await queue.add(nextUrl, {
           project,
           url: nextUrl,
         });
