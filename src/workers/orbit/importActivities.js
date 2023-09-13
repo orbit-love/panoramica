@@ -18,14 +18,19 @@ export const queue = new Queue(queueName, options);
 const worker = new Worker(
   queueName,
   async (job) => {
-    const { url, project } = job.data;
-    const { apiKey } = project;
-
     var session;
     try {
+      if (!job.data) {
+        console.log("[Worker][ImportOrbitActivities] No job data!", job.id);
+        return;
+      }
+
+      const { url, project } = job.data;
+      const { apiKey } = project;
+
       session = graph.session();
       console.log(
-        "[Worker][orbit/ImportActivities] Fetching activities for ",
+        "[Worker][ImportOrbitActivities] Fetching activities for ",
         url
       );
 
