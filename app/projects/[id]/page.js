@@ -24,7 +24,7 @@ export default async function Page({ params }) {
   // with the prisma project for now
   const project = {
     ...prismaProject,
-    properties: graphProject.properties,
+    properties: graphProject?.properties,
   };
 
   return (
