@@ -421,5 +421,6 @@ export const fetchActivitiesPage = async ({ url, apiKey }) => {
     };
   } catch (error) {
     console.log("Orbit API: Failed to fetch data", error);
+    throw error;
   }
 };
