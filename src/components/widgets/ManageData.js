@@ -22,7 +22,7 @@ export default function ManageData({ project }) {
           </div>
           <div>
             <div className="text-tertiary font-light">Manage Queues</div>
-            <StartQueues />
+            <ManageQueues />
           </div>
         </div>
       </div>
@@ -30,7 +30,7 @@ export default function ManageData({ project }) {
   );
 }
 
-const StartQueues = ({}) => {
+const ManageQueues = ({}) => {
   const [status, setStatus] = React.useState("");
 
   const postAdminQueues = React.useCallback(async () => {
@@ -41,10 +41,22 @@ const StartQueues = ({}) => {
     setStatus(`Queues started`);
   }, [setStatus]);
 
+  const putAdminQueues = React.useCallback(async () => {
+    setStatus("");
+    const response = await fetch(`/api/admin/queues`, {
+      method: "PUT",
+    });
+    const { jobsProcessed } = await response.json();
+    setStatus(`Worker processed ${jobsProcessed} jobs`);
+  }, [setStatus]);
+
   return (
     <div className="flex flex-col space-y-1">
       <div className="underline cursor-pointer" onClick={postAdminQueues}>
-        Start Queues
+        Start Workers
+      </div>
+      <div className="underline cursor-pointer" onClick={putAdminQueues}>
+        Run Workers Synchronously
       </div>
       <a
         className="underline cursor-pointer"

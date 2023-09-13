@@ -5,10 +5,26 @@ import {
   getQueueInfo,
   clearQueue,
 } from "src/workers/queues/shared";
+import worker, { perform } from "src/workers/orbit/importActivities";
 
 const postHandler = async () => {
-  await import("src/workers/orbit/importActivities");
+  worker.run();
   return NextResponse.json({ started: "true" });
+};
+
+const putHandler = async () => {
+  const token = "josh";
+  var jobsProcessed = 0;
+  while (true) {
+    const job = await worker.getNextJob(token);
+    if (job) {
+      await perform(job);
+      jobsProcessed++;
+    } else {
+      break;
+    }
+  }
+  return NextResponse.json({ started: "true", jobsProcessed });
 };
 
 const deleteHandler = async () => {
@@ -29,4 +45,9 @@ const getHandler = async () => {
   return NextResponse.json({ result });
 };
 
-export { getHandler as GET, postHandler as POST, deleteHandler as DELETE };
+export {
+  getHandler as GET,
+  postHandler as POST,
+  deleteHandler as DELETE,
+  putHandler as PUT,
+};
