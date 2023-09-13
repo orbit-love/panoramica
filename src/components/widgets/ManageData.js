@@ -46,6 +46,13 @@ const StartQueues = ({}) => {
       <div className="underline cursor-pointer" onClick={postAdminQueues}>
         Start Queues
       </div>
+      <a
+        className="underline cursor-pointer"
+        target="_blank"
+        href="/api/admin/queues"
+      >
+        View Queue Information
+      </a>
       {status && <div className="text-green-500">{status}</div>}
     </div>
   );

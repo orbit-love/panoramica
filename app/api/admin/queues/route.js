@@ -2,7 +2,7 @@ import { connection } from "src/data/db/redis";
 import { NextResponse } from "next/server";
 import {
   getQueueNames,
-  displayQueueInfo,
+  getQueueInfo,
   clearQueue,
 } from "src/workers/queues/shared";
 
@@ -24,7 +24,7 @@ const getHandler = async () => {
   const result = {};
   const queueNames = await getQueueNames({ connection });
   for (const queueName of queueNames) {
-    result[queueName] = await displayQueueInfo({ queueName, connection });
+    result[queueName] = await getQueueInfo({ queueName, connection });
   }
   return NextResponse.json({ result });
 };

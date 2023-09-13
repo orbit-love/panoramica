@@ -1,6 +1,6 @@
 const Redis = require("ioredis");
 
-import { getQueueNames, displayQueueInfo } from "./shared";
+import { getQueueNames, printQueueInfo } from "./shared";
 
 const main = async () => {
   const { REDIS_URL, NODE_ENV } = process.env;
@@ -16,7 +16,7 @@ const main = async () => {
     }
   } else {
     for (const queueName of queueNames) {
-      await displayQueueInfo({ queueName, connection });
+      await printQueueInfo({ queueName, connection });
     }
   }
 };

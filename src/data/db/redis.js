@@ -7,4 +7,4 @@ if (NODE_ENV === "production") {
   // replace the redis:// with rediss://
   finalRedisUrl = REDIS_URL.replace("redis://", "rediss://");
 }
-export const connection = new Redis(finalRedisUrl, options);
+export const connection = new Redis(finalRedisUrl);

@@ -16,10 +16,14 @@ const worker = new Worker(
   async (job) => {
     const { url, project } = job.data;
     const { apiKey } = project;
-    const session = graph.session();
 
+    var session;
     try {
-      console.log(`[Worker][orbit/ImportActivities] Fetching activities...`);
+      session = graph.session();
+      console.log(
+        "[Worker][orbit/ImportActivities] Fetching activities for ",
+        url
+      );
 
       // only get one page at a time here
       const { activities, nextUrl } = await fetchActivitiesPage({
@@ -45,19 +49,53 @@ const worker = new Worker(
           project,
           url: nextUrl,
         });
+        console.log(
+          "[Worker][ImportOrbitActivities] Enqueued Next Job for: ",
+          nextUrl
+        );
+      } else {
+        console.log(
+          "[Worker][ImportOrbitActivities] No nextUrl, Import Finished",
+          url
+        );
       }
     } catch (e) {
-      console.log("[Worker][ImportOrbitActivities] Error:", e);
+      console.error("[Worker][ImportOrbitActivities] Error:", e);
     } finally {
-      session.close();
+      if (session) {
+        session.close();
+      }
     }
   },
   options
 );
 
+worker.on("waiting", (job) => {
+  console.info(
+    `[Worker][ImportOrbitActivities] Waiting: Job waiting with job ID ${job.id}`
+  );
+});
+
+worker.on("active", (job) => {
+  console.info(
+    `[Worker][ImportOrbitActivities] Waiting: Job waiting with job ID ${job.id}`
+  );
+});
+
+worker.on("added", (job) => {
+  console.info(
+    `[Worker][ImportOrbitActivities] Waiting: Job waiting with job ID ${job.id}`
+  );
+});
+
 worker.on("completed", (job) => {
   const { project } = job.data;
   console.log(`Finished job ${job.id} for project ${project.name}`);
+});
+
+worker.on("failed", (job, error) => {
+  console.error(`Job ${job.name} failed with the following error:`);
+  console.error(error);
 });
 
 export default worker;
