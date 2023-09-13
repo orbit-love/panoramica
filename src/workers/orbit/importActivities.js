@@ -10,7 +10,6 @@ import { syncActivities } from "src/data/graph/mutations";
 const queueName = "ImportOrbitActivities";
 const options = {
   connection,
-  concurrency: 1,
 };
 
 export const queue = new Queue(queueName, options);
@@ -80,7 +79,10 @@ const worker = new Worker(
       }
     }
   },
-  options
+  {
+    ...options,
+    concurrency: 1,
+  }
 );
 
 worker.on("waiting", (job) => {
