@@ -8,4 +8,5 @@ if (NODE_ENV === "production") {
   finalRedisUrl = REDIS_URL.replace("redis://", "rediss://");
 }
 const options = NODE_ENV === "production" ? { tls: {} } : {};
+options.maxRetriesPerRequest = null;
 export const connection = new Redis(finalRedisUrl, options);
