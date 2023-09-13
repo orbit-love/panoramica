@@ -4,9 +4,13 @@ import { connection } from "src/data/db/redis";
 import { fetchActivitiesPage } from "src/integrations/orbit/api";
 import { syncActivities } from "src/data/graph/mutations";
 
+// we should only have one import per project going at any time
+// concurrent imports will cause conflicting transaction failures
+// so we just limit to 1 across the instance for now
 const queueName = "ImportOrbitActivities";
 const options = {
   connection,
+  concurrency: 1,
 };
 
 export const queue = new Queue(queueName, options);
