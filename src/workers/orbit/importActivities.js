@@ -36,16 +36,20 @@ const worker = new Worker(
       });
 
       await session.writeTransaction(async (tx) => {
-        // this is a quick and dirty way to remove duplicate sourceId from
-        // the same batch - the Orbit API has returned two activities with the same
-        // source id at times
-        var sourceIds = activities.map((r) => r.sourceId);
-        const filteredActivities = activities.filter((record, index) => {
-          return sourceIds.indexOf(record.sourceId) === index;
-        });
+        try {
+          // this is a quick and dirty way to remove duplicate sourceId from
+          // the same batch - the Orbit API has returned two activities with the same
+          // source id at times
+          var sourceIds = activities.map((r) => r.sourceId);
+          const filteredActivities = activities.filter((record, index) => {
+            return sourceIds.indexOf(record.sourceId) === index;
+          });
 
-        await syncActivities({ tx, activities: filteredActivities, project });
-        console.log("Saved activities: " + filteredActivities.length);
+          await syncActivities({ tx, activities: filteredActivities, project });
+          console.log("Saved activities: " + filteredActivities.length);
+        } catch (e) {
+          console.error("[Worker][ImportActivities] Transaction failed", e);
+        }
       });
 
       if (nextUrl) {
