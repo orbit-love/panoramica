@@ -5,6 +5,7 @@ import { BookmarksContext } from "src/components/context/BookmarksContext";
 import PreviewView from "src/components/domains/conversation/views/PreviewView";
 import FullThreadView from "src/components/domains/conversation/views/FullThreadView";
 import Toolbar from "src/components/domains/conversation/Toolbar";
+import ErrorBoundary from "src/components/widgets/base/ErrorBoundary";
 
 // activity is passed in also and passed through; it is up to the caller to
 // pass in the conversation, whether it is the activity or an ancestor
@@ -47,24 +48,32 @@ export default function ConversationFeedItem(props) {
         }
       )}
     >
-      {expanded && <FullThreadView {...props} conversation={conversation} />}
-      {!expanded && (
-        <PreviewView
+      <ErrorBoundary
+        fallback={
+          <div className="p-4 text-red-500">
+            Error! Conversation: {conversation.id}
+          </div>
+        }
+      >
+        {expanded && <FullThreadView {...props} conversation={conversation} />}
+        {!expanded && (
+          <PreviewView
+            {...props}
+            onExpand={onExpand}
+            conversation={conversation}
+          />
+        )}
+        <Toolbar
           {...props}
+          activity={conversation}
+          canExpand={canExpand}
+          expanded={expanded}
+          setExpanded={setExpanded}
+          onOpen={onOpen}
           onExpand={onExpand}
-          conversation={conversation}
+          bookmark={bookmark}
         />
-      )}
-      <Toolbar
-        {...props}
-        activity={conversation}
-        canExpand={canExpand}
-        expanded={expanded}
-        setExpanded={setExpanded}
-        onOpen={onOpen}
-        onExpand={onExpand}
-        bookmark={bookmark}
-      />
+      </ErrorBoundary>
     </div>
   );
 }
