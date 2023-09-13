@@ -4,7 +4,7 @@ import { getBaseClient as getClient } from "src/graphql/apollo-client";
 import { ApolloBaseWrapper } from "src/graphql/apollo-wrapper";
 import { getSession } from "src/auth";
 import ProjectsPage from "app/projects/ProjectsPage";
-import LoadProjectsQuery from "./LoadProjects.gql";
+import LoadPrismaProjectsQuery from "src/graphql/queries/LoadPrismaProjects.gql";
 
 export const metadata = {
   title: "Projects",
@@ -21,7 +21,7 @@ export default async function Page() {
   const {
     data: { prismaProjects: projects },
   } = await getClient().query({
-    query: LoadProjectsQuery,
+    query: LoadPrismaProjectsQuery,
   });
 
   const demoSite = !!process.env.DEMO_SITE;
