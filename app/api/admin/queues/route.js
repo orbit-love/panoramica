@@ -18,12 +18,19 @@ const putHandler = async () => {
   while (true) {
     const job = await worker.getNextJob(token);
     if (job) {
-      await perform(job);
-      jobsProcessed++;
+      try {
+        await perform(job);
+        await job.moveToCompleted("Job complete", token, false);
+        jobsProcessed++;
+      } catch (e) {
+        console.error("Job failed", e);
+        await job.moveToFailed(e, token, false);
+      }
     } else {
       break;
     }
   }
+  await worker.close();
   return NextResponse.json({ started: "true", jobsProcessed });
 };
 
