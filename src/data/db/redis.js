@@ -7,4 +7,5 @@ if (NODE_ENV === "production") {
   // replace the redis:// with rediss://
   finalRedisUrl = REDIS_URL.replace("redis://", "rediss://");
 }
-export const connection = new Redis(finalRedisUrl);
+const options = NODE_ENV === "production" ? { tls: {} } : {};
+export const connection = new Redis(finalRedisUrl, options);
