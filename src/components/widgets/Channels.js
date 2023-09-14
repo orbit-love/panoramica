@@ -4,22 +4,25 @@ import SourceIcon from "src/components/domains/activity/SourceIcon";
 import { Frame, Header } from "src/components/widgets";
 import utils from "src/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useSuspenseQuery } from "@apollo/experimental-nextjs-app-support/ssr";
+import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 import GetSourceChannelsQuery from "./Channels/GetSourceChannels.gql";
 
 export default function Channels({ project, params, handlers }) {
+  const [sourceChannels, setSourceChannels] = React.useState([]);
   var { source } = params;
   var { onClickChannel } = handlers;
 
   const { id: projectId } = project;
-  const {
-    data: {
-      projects: [{ sourceChannels }],
-    },
-  } = useSuspenseQuery(GetSourceChannelsQuery, {
+  useQuery(GetSourceChannelsQuery, {
     variables: {
       projectId,
       source,
+    },
+    onCompleted: (data) => {
+      const {
+        projects: [{ sourceChannels }],
+      } = data;
+      setSourceChannels(sourceChannels);
     },
   });
 

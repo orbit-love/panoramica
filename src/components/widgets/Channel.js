@@ -2,17 +2,16 @@ import React from "react";
 import { Frame, Header } from "src/components/widgets";
 import ConversationFeed from "src/components/domains/feed/ConversationFeed";
 import SourceIcon from "src/components/domains/activity/SourceIcon";
-import GetActivitiesQuery from "./Channel/GetActivities.gql";
+import GetConversationsConnectionQuery from "src/graphql/queries/GetConversationsConnection.gql";
 
 export default function Channel({ project, params, handlers }) {
   var { source, sourceChannel } = params;
 
   const { id: projectId } = project;
-  const query = GetActivitiesQuery;
+  const where = { AND: [{ node: { source, sourceChannel } }] };
+  const query = GetConversationsConnectionQuery;
   const variables = {
     projectId,
-    source,
-    sourceChannel,
   };
 
   return (
@@ -26,6 +25,7 @@ export default function Channel({ project, params, handlers }) {
         project={project}
         query={query}
         variables={variables}
+        where={where}
       />
     </Frame>
   );
