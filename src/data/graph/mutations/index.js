@@ -329,12 +329,30 @@ export const mergeConversations = async ({ tx, activities, project }) => {
                             END,
           c.activityCount = c.activityCount + 1
         WITH c, collect(DISTINCT member.id) AS memberIds
-        SET c.memberCount = size(memberIds), c.members = memberIds
-        WITH c
-        MATCH (c)-[:INCLUDES]->(a:Activity)<-[r:INCLUDES]-(otherC:Conversation)
-        WHERE c <> otherC
-        DELETE r`,
+        SET c.memberCount = size(memberIds), c.members = memberIds`,
     { activityIds, projectId }
   );
   console.log("Memgraph: Merged (Conversation) nodes");
+
+  // if data is imported reverse chronologically, some conversations will no
+  // longer be their own conversation but part of another conversation with an
+  // earlier starter. in this case, we can delete these, although in the future
+  // we could consider doing things like migrating and merging properties
+  // to avoid data being delete, importing data chronologically is recommended
+  // to find the conversations to remove, we look for any conversation that has
+  // a starter with a parent - that is not allowed; we detach delete so that any
+  // relationships the conversation has are also deleted
+  // do not contrain to activities in activityIds, as a new activity in the batch
+  // could be a parent for activities in previous batches, and those activities
+  // who now have a parent will need their conversations deleted
+  await tx.run(
+    `MATCH (p:Project { id: $projectId })
+      WITH p
+        MATCH (p)-[:OWNS]->(starter:Activity)-[:BEGINS]->(conversation:Conversation)
+          WHERE EXISTS ((starter)-[:REPLIES_TO]->(:Activity))
+        WITH conversation
+        DETACH DELETE conversation`,
+    { projectId }
+  );
+  console.log("Memgraph: Removed old (Conversation) nodes");
 };
