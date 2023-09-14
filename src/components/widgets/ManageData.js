@@ -18,14 +18,14 @@ export default function ManageData({ project }) {
             )}
           </div>
           <div>
-            <div className="text-tertiary text-lg font-light">Remove Data</div>
-            <RemoveData project={project} />
-          </div>
-          <div>
             <div className="text-tertiary text-lg font-light">
               Manage Queues
             </div>
             <ManageQueues setRefetchNow={setRefetchNow} />
+          </div>
+          <div>
+            <div className="text-tertiary text-lg font-light">Danger Zone</div>
+            <RemoveData project={project} />
           </div>
         </div>
       </div>
@@ -149,36 +149,39 @@ const ManageQueues = ({ setRefetchNow }) => {
   );
 
   return (
-    <div className="mt-1 space-y-1">
+    <div className="flex flex-col items-start mt-1 space-y-1">
       {status && (
         <div>
           <div className="text-green-500">{status}</div>
         </div>
       )}
-      <div
+      <button
         className="cursor-pointer hover:underline"
         onClick={deleteAdminQueues}
       >
         Clear Queues
-      </div>
-      <div className="cursor-pointer hover:underline" onClick={postAdminQueues}>
-        Start Workers
-      </div>
+      </button>
+      <button
+        className="cursor-pointer hover:underline"
+        onClick={postAdminQueues}
+      >
+        Start Workers (Background)
+      </button>
       {processing && (
-        <div
+        <button
           className="text-blue-500 cursor-pointer hover:underline"
           onClick={() => setProcessing(false)}
         >
           Stop Processing (Sync)
-        </div>
+        </button>
       )}
       {!processing && (
-        <div
+        <button
           className="cursor-pointer hover:underline"
           onClick={() => setProcessing(true)}
         >
           Start Processing (Sync)
-        </div>
+        </button>
       )}
       <div className="h-4"></div>
       <QueueStats stats={stats} refresh={getAdminQueues} />
@@ -223,19 +226,19 @@ const RemoveData = ({ project }) => {
   }, [setStatus, deleteAllConversationPropertiesMutation]);
 
   return (
-    <div className="flex flex-col space-y-1">
-      <div
+    <div className="flex flex-col items-start space-y-1">
+      <button
         className="text-red-500 cursor-pointer hover:underline"
         onClick={clearProject}
       >
         Remove all data from this project
-      </div>
-      <div
+      </button>
+      <button
         className="text-red-500 cursor-pointer hover:underline"
         onClick={deleteProperties}
       >
         Delete all generated properties
-      </div>
+      </button>
       {status && <div className="text-green-500">{status}</div>}
     </div>
   );
