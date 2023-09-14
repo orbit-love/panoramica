@@ -13,12 +13,12 @@ export const perform = async (job) => {
     }
 
     const { url, project } = job.data;
-    const { apiKey } = project;
+    const { name, apiKey } = project;
 
     session = graph.session();
     console.log(
       "[Worker][ImportOrbitActivities] Fetching activities for ",
-      url
+      name
     );
 
     // only get one page at a time here
@@ -45,18 +45,18 @@ export const perform = async (job) => {
     });
 
     if (nextUrl) {
-      await queue.add(nextUrl, {
+      await queue.add(`ImportOrbitActivities-${project.id}`, {
         project,
         url: nextUrl,
       });
       console.log(
         "[Worker][ImportOrbitActivities] Enqueued Next Job for: ",
-        nextUrl
+        name
       );
     } else {
       console.log(
-        "[Worker][ImportOrbitActivities] No nextUrl, Import Finished",
-        url
+        "[Worker][ImportOrbitActivities] No nextUrl, Import finished for: ",
+        name
       );
     }
   } catch (e) {

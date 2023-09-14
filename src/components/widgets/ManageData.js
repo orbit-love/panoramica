@@ -6,23 +6,26 @@ import { orbitImportReady } from "src/integrations/ready";
 import DeleteAllConversationPropertiesMutation from "src/graphql/mutations/DeleteAllConversationProperties.gql";
 
 export default function ManageData({ project }) {
+  const [refetchNow, setRefetchNow] = React.useState(false);
+
   return (
-    <Frame>
+    <Frame fullWidth>
       <div className="p-4">
-        <div className="text-tertiary pb-4 text-lg font-light">Manage Data</div>
         <div className="flex flex-col space-y-10">
           <div>
             {orbitImportReady(project) && (
-              <ImportActivities project={project} />
+              <ImportActivities project={project} refetchNow={refetchNow} />
             )}
           </div>
           <div>
-            <div className="text-tertiary font-light">Remove Data</div>
+            <div className="text-tertiary text-lg font-light">Remove Data</div>
             <RemoveData project={project} />
           </div>
           <div>
-            <div className="text-tertiary font-light">Manage Queues</div>
-            <ManageQueues />
+            <div className="text-tertiary text-lg font-light">
+              Manage Queues
+            </div>
+            <ManageQueues setRefetchNow={setRefetchNow} />
           </div>
         </div>
       </div>
@@ -30,9 +33,10 @@ export default function ManageData({ project }) {
   );
 }
 
-const ManageQueues = ({}) => {
+const ManageQueues = ({ setRefetchNow }) => {
   const [status, setStatus] = React.useState("");
   const [processing, setProcessing] = React.useState(false);
+  const [stats, setStats] = React.useState({});
 
   const postAdminQueues = React.useCallback(async () => {
     setStatus("");
@@ -42,52 +46,142 @@ const ManageQueues = ({}) => {
     setStatus(`Queues started`);
   }, [setStatus]);
 
+  const getAdminQueues = React.useCallback(async () => {
+    const response = await fetch(`/api/admin/queues`);
+    const json = await response.json();
+    setStats(json.result);
+  }, [setStats]);
+
+  const deleteAdminQueues = React.useCallback(async () => {
+    if (confirm("Delete all queues?")) {
+      setStatus("");
+      await fetch(`/api/admin/queues`, {
+        method: "DELETE",
+      });
+      setStatus("Queues deleted");
+      getAdminQueues();
+    }
+  }, [setStatus, getAdminQueues]);
+
+  React.useEffect(() => {
+    getAdminQueues();
+  }, [getAdminQueues]);
+
   // set up a useEffect that detects changes in the processing function
   // and starts and stops processing accordingly
   React.useEffect(() => {
+    var timeout;
+    const putAdminQueues = async () => {
+      await getAdminQueues();
+      setStatus("Processing...");
+      const response = await fetch(`/api/admin/queues`, { method: "PUT" });
+      const data = await response.json();
+      setStatus(`${data.jobsProcessed} jobs processed`);
+      timeout = setTimeout(putAdminQueues, 5000);
+    };
+
     if (processing) {
-      const interval = setInterval(async () => {
-        setStatus("Processing...");
-        const response = await fetch(`/api/admin/queues`, { method: "PUT" });
-        const data = await response.json();
-        setStatus(`${data.jobsProcessed} jobs processed`);
-      }, 5000);
-      return () => clearInterval(interval);
+      putAdminQueues();
     } else {
-      setStatus("Processing stopped");
+      setStatus("");
     }
-  }, [processing, setStatus]);
+
+    return () => timeout && clearTimeout(timeout);
+  }, [processing, setStatus, getAdminQueues]);
+
+  React.useEffect(() => {
+    if (processing) {
+      const interval = setInterval(() => {
+        getAdminQueues();
+        setRefetchNow((refetchNow) => refetchNow + 1);
+      }, 1000);
+      return () => interval && clearInterval(interval);
+    }
+  }, [processing, setRefetchNow, getAdminQueues]);
+
+  const QueueStats = ({ stats, refresh }) => (
+    <div className="space-y-1">
+      <div className="flex space-x-2">
+        <div className="text-tertiary text-lg font-light">
+          Queue Information
+        </div>
+        <button type="button" className="hover:underline" onClick={refresh}>
+          refresh
+        </button>
+      </div>
+      <table className="border-spacing-5 -ml-1 text-left table-auto">
+        <thead>
+          <th>
+            <div className="p-1 font-semibold">Queue</div>
+          </th>
+          <th>
+            <div className="p-1">Waiting</div>
+          </th>
+          <th>
+            <div className="p-1">Active</div>
+          </th>
+          <th>
+            <div className="p-1">Completed</div>
+          </th>
+          <th>
+            <div className="p-1">Failed</div>
+          </th>
+          <th>
+            <div className="p-1">Delayed</div>
+          </th>
+        </thead>
+        <tbody>
+          {Object.values(stats).map(
+            ({ queueName, waiting, active, completed, failed, delayed }) => (
+              <tr key={queueName}>
+                <td className="p-1">{queueName}</td>
+                <td className="p-1">{waiting}</td>
+                <td className="p-1">{active}</td>
+                <td className="p-1">{completed}</td>
+                <td className="p-1">{failed}</td>
+                <td className="p-1">{delayed}</td>
+              </tr>
+            )
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
 
   return (
-    <div className="flex flex-col space-y-1">
-      <div className="underline cursor-pointer" onClick={postAdminQueues}>
+    <div className="mt-1 space-y-1">
+      {status && (
+        <div>
+          <div className="text-green-500">{status}</div>
+        </div>
+      )}
+      <div
+        className="cursor-pointer hover:underline"
+        onClick={deleteAdminQueues}
+      >
+        Clear Queues
+      </div>
+      <div className="cursor-pointer hover:underline" onClick={postAdminQueues}>
         Start Workers
       </div>
-      <a
-        className="underline cursor-pointer"
-        target="_blank"
-        href="/api/admin/queues"
-      >
-        View Queue Information
-      </a>
       {processing && (
         <div
-          className="text-blue-500 underline cursor-pointer"
+          className="text-blue-500 cursor-pointer hover:underline"
           onClick={() => setProcessing(false)}
         >
-          Stop Processing...
+          Stop Processing (Sync)
         </div>
       )}
       {!processing && (
         <div
-          className="underline cursor-pointer"
+          className="cursor-pointer hover:underline"
           onClick={() => setProcessing(true)}
         >
           Start Processing (Sync)
         </div>
       )}
-      <div></div>
-      {status && <div className="text-green-500">{status}</div>}
+      <div className="h-4"></div>
+      <QueueStats stats={stats} refresh={getAdminQueues} />
     </div>
   );
 };
@@ -131,13 +225,13 @@ const RemoveData = ({ project }) => {
   return (
     <div className="flex flex-col space-y-1">
       <div
-        className="text-red-500 underline cursor-pointer"
+        className="text-red-500 cursor-pointer hover:underline"
         onClick={clearProject}
       >
         Remove all data from this project
       </div>
       <div
-        className="text-red-500 underline cursor-pointer"
+        className="text-red-500 cursor-pointer hover:underline"
         onClick={deleteProperties}
       >
         Delete all generated properties

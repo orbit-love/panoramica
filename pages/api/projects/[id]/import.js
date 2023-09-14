@@ -34,12 +34,13 @@ export default async function handler(req, res) {
     if (endDate) {
       url = `${url}&end_date=${endDate}`;
     }
-    console.log("Using Import URL ", url);
 
-    await queue.add(url, {
+    await queue.add(`ImportOrbitActivities-${project.id}`, {
       project,
       url,
     });
+
+    console.log("Using Import URL ", url);
 
     res.status(200).json({ result: { status: "Enqueued" } });
     console.log("Orbit import enqueued");

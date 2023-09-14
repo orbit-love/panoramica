@@ -6,7 +6,7 @@ import { putProjectImport } from "src/data/client/fetches";
 import Loader from "src/components/domains/ui/Loader";
 import utils from "src/utils";
 
-export default function ImportActivities({ project }) {
+export default function ImportActivities({ project, refetchNow }) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [loading, setLoading] = useState(false);
@@ -14,6 +14,7 @@ export default function ImportActivities({ project }) {
   const [stats, setStats] = useState(null);
 
   const { refetch } = useQuery(query, {
+    notifyOnNetworkStatusChange: true,
     variables: {
       projectId: project.id,
     },
@@ -30,8 +31,19 @@ export default function ImportActivities({ project }) {
       } = data;
       const { min, max } = timestampInt;
       setStats({ min, max, count });
+      setEndDate(new Date(min).toISOString().slice(0, 10));
+      // set the start date to 6 months earlier
+      const d = new Date(min);
+      d.setMonth(d.getMonth() - 6);
+      setStartDate(d.toISOString().slice(0, 10));
     },
   });
+
+  React.useEffect(() => {
+    if (refetchNow) {
+      refetch();
+    }
+  }, [refetchNow, refetch]);
 
   const importProject = useCallback(async () => {
     setStatus("");
@@ -55,9 +67,9 @@ export default function ImportActivities({ project }) {
   };
 
   return (
-    <form className="inline-flex-col space-y-2" onSubmit={onSubmit}>
-      <div className="text-tertiary font-light">Import Activities</div>
-      <div>
+    <form className="space-y-2" onSubmit={onSubmit}>
+      <div className="text-tertiary text-lg font-light">Import Activities</div>
+      <div className="space-y-1">
         <div className="flex space-x-1">
           <label className="font-semibold">Workspace:</label>
           <div>{project.workspace}</div>
@@ -108,7 +120,14 @@ export default function ImportActivities({ project }) {
       <div />
       <div className="inline-flex items-center space-x-4">
         <button type="submit" className="btn">
-          {loading ? <Loader className="text-white" /> : <span>Import</span>}
+          {loading ? <Loader className="text-white" /> : <span>Enqueue</span>}
+        </button>
+        <button
+          type="button"
+          className="btn !bg-gray-500"
+          onClick={() => refetch()}
+        >
+          <span>Refresh</span>
         </button>
         {status && <div className="text-green-500">{status}</div>}
       </div>
