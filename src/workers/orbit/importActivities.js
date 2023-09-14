@@ -65,6 +65,7 @@ export const fetchAndSaveActivities = async ({ url, project }) => {
         console.log("Saved activities: " + filteredActivities.length);
       } catch (e) {
         console.error("[Worker][ImportActivities] Transaction failed", e);
+        throw e;
       }
     });
 
