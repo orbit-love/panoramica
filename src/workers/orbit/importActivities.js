@@ -81,7 +81,6 @@ export const queue = new Queue(queueName, options);
 const worker = new Worker(queueName, perform, {
   ...options,
   autorun: false,
-  concurrency: 1,
 });
 
 export default worker;
