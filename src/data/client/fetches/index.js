@@ -35,10 +35,6 @@ const handleResult =
     setLoading && setLoading(false);
   };
 
-export async function getProject({ project, onSuccess, setLoading }) {
-  makeRequest({ url: `/api/projects/${project.id}`, onSuccess, setLoading });
-}
-
 export async function getJWT({ onSuccess, setLoading }) {
   makeRequest({ url: `/api/user/jwt`, onSuccess, setLoading });
 }
@@ -119,21 +115,4 @@ export async function deleteQa({ project, qaId, setLoading, onSuccess }) {
       setLoading,
     });
   }
-}
-
-export async function postCreateActivitiesProperties({ project, body }) {
-  const url = `/api/projects/${project.id}/activities/properties`;
-  return fetch(url, {
-    method: "POST",
-    headers,
-    body,
-  });
-}
-
-export async function postCreateConversationProperties({ project, activity }) {
-  const url = `/api/projects/${project.id}/${activity.id}/properties`;
-  return fetch(url, {
-    method: "POST",
-    headers,
-  });
 }
