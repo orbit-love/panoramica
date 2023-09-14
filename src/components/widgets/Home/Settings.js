@@ -37,21 +37,6 @@ export default function Settings({
 
   return (
     <>
-      {project.demo && (
-        <div className="flex flex-col items-start w-full">
-          <div className="text-tertiary pt-2 font-semibold">Portal</div>
-          <div className="flex flex-col items-start">
-            <Link
-              target="_blank"
-              href={`/projects/${project.id}/welcome`}
-              prefetch={false}
-              className="hover:underline"
-            >
-              <FontAwesomeIcon icon="arrow-up-right-from-square" /> View Site
-            </Link>
-          </div>
-        </div>
-      )}
       <div className="flex flex-col items-start w-full">
         <div className="text-tertiary pb-1 pt-2 font-semibold">Settings</div>
         <div className="flex flex-col items-start">

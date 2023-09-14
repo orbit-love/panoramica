@@ -176,15 +176,6 @@ export const TitleBar = ({
         </React.Suspense>
         <SimilarAction conversation={conversation} />
         <SourceAction conversation={conversation} />
-        {project.demo && (
-          <Link
-            href={`/projects/${project.id}/welcome/${conversation.id}`}
-            target="_blank"
-            title="View on public site"
-          >
-            <FontAwesomeIcon icon="external-link" />
-          </Link>
-        )}
       </div>
     </div>
   );
