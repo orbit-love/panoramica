@@ -31,11 +31,13 @@ export default function ImportActivities({ project, refetchNow }) {
       } = data;
       const { min, max } = timestampInt;
       setStats({ min, max, count });
-      setEndDate(new Date(min).toISOString().slice(0, 10));
-      // set the start date to 6 months earlier
-      const d = new Date(min);
-      d.setMonth(d.getMonth() - 6);
-      setStartDate(d.toISOString().slice(0, 10));
+      if (min && max) {
+        setEndDate(new Date(min).toISOString().slice(0, 10));
+        // set the start date to 6 months earlier
+        const d = new Date(min);
+        d.setMonth(d.getMonth() - 6);
+        setStartDate(d.toISOString().slice(0, 10));
+      }
     },
   });
 
@@ -71,7 +73,7 @@ export default function ImportActivities({ project, refetchNow }) {
       <div className="text-tertiary text-lg font-light">Import Activities</div>
       <div className="space-y-1">
         <div className="flex space-x-1">
-          <label className="font-semibold">Workspace:</label>
+          <label className="font-semibold">Orbit Workspace:</label>
           <div>{project.workspace}</div>
         </div>
         {stats && (

@@ -5,19 +5,43 @@ import { fetchActivitiesPage } from "src/integrations/orbit/api";
 import { syncActivities } from "src/data/graph/mutations";
 
 export const perform = async (job) => {
-  var session;
   try {
     if (!job.data) {
       console.log("[Worker][ImportOrbitActivities] No job data!", job.id);
       return;
     }
 
-    const { url, project } = job.data;
+    const { project } = job.data;
+    const { name } = project;
+    const nextUrl = await fetchAndSaveActivities(job.data);
+    if (nextUrl) {
+      await queue.add(`ImportOrbitActivities-${project.id}`, {
+        project,
+        url: nextUrl,
+      });
+      console.log(
+        "[Worker][ImportOrbitActivities] Enqueued Next Job for:",
+        name
+      );
+    } else {
+      console.log(
+        "[Worker][ImportOrbitActivities] No nextUrl, Import finished for:",
+        name
+      );
+    }
+  } catch (e) {
+    console.error("[Worker][ImportOrbitActivities] Error:", e);
+  }
+};
+
+export const fetchAndSaveActivities = async ({ url, project }) => {
+  var session;
+  try {
     const { name, apiKey } = project;
 
     session = graph.session();
     console.log(
-      "[Worker][ImportOrbitActivities] Fetching activities for ",
+      "[Worker][ImportOrbitActivities] Fetching activities for",
       name
     );
 
@@ -44,23 +68,10 @@ export const perform = async (job) => {
       }
     });
 
-    if (nextUrl) {
-      await queue.add(`ImportOrbitActivities-${project.id}`, {
-        project,
-        url: nextUrl,
-      });
-      console.log(
-        "[Worker][ImportOrbitActivities] Enqueued Next Job for: ",
-        name
-      );
-    } else {
-      console.log(
-        "[Worker][ImportOrbitActivities] No nextUrl, Import finished for: ",
-        name
-      );
-    }
+    return nextUrl;
   } catch (e) {
     console.error("[Worker][ImportOrbitActivities] Error:", e);
+    throw e;
   } finally {
     if (session) {
       session.close();

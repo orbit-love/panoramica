@@ -13,7 +13,10 @@ const postHandler = async () => {
 };
 
 const putHandler = async () => {
-  const token = "josh";
+  // https://docs.bullmq.io/patterns/manually-fetching-jobs#checking-for-stalled-jobs
+  await worker.startStalledCheckTimer();
+
+  const token = "josh-" + Math.random() + "-token";
   var jobsProcessed = 0;
   // keep a timer and don't process any more jobs if 50 seconds have gone by
   const startTime = new Date().getTime();
@@ -38,7 +41,6 @@ const putHandler = async () => {
       break;
     }
   }
-  await worker.close();
   return NextResponse.json({ started: "true", jobsProcessed });
 };
 

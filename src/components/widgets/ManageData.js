@@ -18,14 +18,14 @@ export default function ManageData({ project }) {
             )}
           </div>
           <div>
+            <div className="text-tertiary text-lg font-light">Danger Zone</div>
+            <RemoveData project={project} />
+          </div>
+          <div>
             <div className="text-tertiary text-lg font-light">
               Manage Queues
             </div>
             <ManageQueues setRefetchNow={setRefetchNow} />
-          </div>
-          <div>
-            <div className="text-tertiary text-lg font-light">Danger Zone</div>
-            <RemoveData project={project} />
           </div>
         </div>
       </div>
@@ -69,15 +69,17 @@ const ManageQueues = ({ setRefetchNow }) => {
 
   // set up a useEffect that detects changes in the processing function
   // and starts and stops processing accordingly
+  const processingRef = React.useRef(processing);
   React.useEffect(() => {
     var timeout;
     const putAdminQueues = async () => {
-      await getAdminQueues();
       setStatus("Processing...");
       const response = await fetch(`/api/admin/queues`, { method: "PUT" });
       const data = await response.json();
       setStatus(`${data.jobsProcessed} jobs processed`);
-      timeout = setTimeout(putAdminQueues, 5000);
+      if (processingRef.current) {
+        timeout = setTimeout(putAdminQueues, 5000);
+      }
     };
 
     if (processing) {
@@ -87,7 +89,7 @@ const ManageQueues = ({ setRefetchNow }) => {
     }
 
     return () => timeout && clearTimeout(timeout);
-  }, [processing, setStatus, getAdminQueues]);
+  }, [processing, setStatus]);
 
   React.useEffect(() => {
     if (processing) {
@@ -111,24 +113,26 @@ const ManageQueues = ({ setRefetchNow }) => {
       </div>
       <table className="border-spacing-5 -ml-1 text-left table-auto">
         <thead>
-          <th>
-            <div className="p-1 font-semibold">Queue</div>
-          </th>
-          <th>
-            <div className="p-1">Waiting</div>
-          </th>
-          <th>
-            <div className="p-1">Active</div>
-          </th>
-          <th>
-            <div className="p-1">Completed</div>
-          </th>
-          <th>
-            <div className="p-1">Failed</div>
-          </th>
-          <th>
-            <div className="p-1">Delayed</div>
-          </th>
+          <tr>
+            <th>
+              <div className="p-1 font-semibold">Queue</div>
+            </th>
+            <th>
+              <div className="p-1">Waiting</div>
+            </th>
+            <th>
+              <div className="p-1">Active</div>
+            </th>
+            <th>
+              <div className="p-1">Completed</div>
+            </th>
+            <th>
+              <div className="p-1">Failed</div>
+            </th>
+            <th>
+              <div className="p-1">Delayed</div>
+            </th>
+          </tr>
         </thead>
         <tbody>
           {Object.values(stats).map(
@@ -157,12 +161,6 @@ const ManageQueues = ({ setRefetchNow }) => {
       )}
       <button
         className="cursor-pointer hover:underline"
-        onClick={deleteAdminQueues}
-      >
-        Clear Queues
-      </button>
-      <button
-        className="cursor-pointer hover:underline"
         onClick={postAdminQueues}
       >
         Start Workers (Background)
@@ -183,6 +181,12 @@ const ManageQueues = ({ setRefetchNow }) => {
           Start Processing (Sync)
         </button>
       )}
+      <button
+        className="text-red-500 cursor-pointer hover:underline"
+        onClick={deleteAdminQueues}
+      >
+        Clear Queues
+      </button>
       <div className="h-4"></div>
       <QueueStats stats={stats} refresh={getAdminQueues} />
     </div>

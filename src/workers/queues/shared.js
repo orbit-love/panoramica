@@ -29,6 +29,11 @@ export const getQueueInfo = async ({ queueName, connection }) => {
   const failed = await queue.getFailedCount();
   const delayed = await queue.getDelayedCount();
 
+  const waitingJobs = await queue.getWaiting();
+  for (const job of waitingJobs) {
+    console.log(`Waiting: ${job.id} ${job.data.url}`);
+  }
+
   return {
     queueName,
     waiting,
