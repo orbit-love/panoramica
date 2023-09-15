@@ -66,10 +66,13 @@ export default function LabelConversations({
 
 const ChoosePropertyName = ({ project, setYamlPropertyName }) => {
   const [propertyName, setPropertyName] = React.useState("");
-  const onSubmit = (e) => {
-    e.preventDefault();
-    setYamlPropertyName(propertyName);
-  };
+  const onSubmit = React.useCallback(
+    (e) => {
+      e.preventDefault();
+      setYamlPropertyName(propertyName);
+    },
+    [propertyName, setYamlPropertyName]
+  );
   const yamlPropertyNames = project.properties.filter((p) =>
     p.name.endsWith(".yaml")
   );

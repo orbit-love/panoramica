@@ -187,5 +187,6 @@ const onClearCallback =
     setFilters((filters) =>
       filters.filter(({ name: filterName }) => filterName !== name)
     );
+    // this causes some strange behaviors, forego for now
     // setOpenFilter && setOpenFilter(null);
   };
