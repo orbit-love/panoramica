@@ -31,6 +31,7 @@ export const perform = async (job) => {
     }
   } catch (e) {
     console.error("[Worker][ImportOrbitActivities] Error:", e);
+    throw e;
   }
 };
 
