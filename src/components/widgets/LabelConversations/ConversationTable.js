@@ -14,15 +14,12 @@ export default function ConversationTable({
   yaml,
   controlledProperties,
 }) {
-  const defaultWhereClauses = [];
   const pageSize = 10;
   const [conversations, setConversations] = React.useState([]);
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [loadingRows, setLoadingRows] = React.useState([]);
   const [filters, setFilters] = React.useState([]);
-  const [where, setWhere] = React.useState({
-    AND: defaultWhereClauses,
-  });
+  const [where, setWhere] = React.useState({});
   const [limit, setLimit] = React.useState(pageSize);
   const [offset, setOffset] = React.useState(0);
   const [propertyFilters, setPropertyFilters] = React.useState([]);
@@ -63,12 +60,17 @@ export default function ConversationTable({
     setRefetchNow,
     where,
     setWhere,
-    defaultWhereClauses,
     sort,
     setSort,
     loading,
     setLoading,
   };
+
+  React.useEffect(() => {
+    setWhere({
+      AND: filters.map(({ where }) => where),
+    });
+  }, [filters, setWhere]);
 
   return (
     <div className="flex flex-col space-y-4">

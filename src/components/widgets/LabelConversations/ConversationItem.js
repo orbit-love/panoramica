@@ -81,7 +81,7 @@ export default function ConversationItem({
       </td>
       <td className="relative py-2 px-4">
         <div
-          className="flex flex-col space-y-1 w-[350px] overflow-hidden"
+          className="flex flex-col space-y-1 w-[325px] overflow-hidden"
           onClick={toggleSelection}
         >
           <div className="font-semibold">
@@ -100,12 +100,6 @@ export default function ConversationItem({
             >
               {conversation.descendants.length - 1} replies
             </div>
-            <div className="flex items-center space-x-1">
-              <SourceIcon activity={activity} />
-              {activity.sourceChannel && (
-                <span>{activity.sourceChannel?.split("/")?.slice(-1)}</span>
-              )}
-            </div>
             <TimeAgo
               date={activity.timestamp}
               title={utils.formatDate(activity.timestamp)}
@@ -122,6 +116,16 @@ export default function ConversationItem({
               <FullThreadView conversation={conversation} handlers={handlers} />
             </div>
           )}
+        </div>
+      </td>
+      <td className="py-2 px-4">
+        <div>
+          <div className="flex items-center space-x-1 whitespace-nowrap">
+            <SourceIcon activity={activity} />
+            {activity.sourceChannel && (
+              <span>{activity.sourceChannel?.split("/")?.slice(-1)}</span>
+            )}
+          </div>
         </div>
       </td>
       {controlledProperties.map(({ name, values }) => (

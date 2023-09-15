@@ -4,6 +4,8 @@ fragment ConversationFields on Conversation {
   lastActivityTimestamp
   memberCount
   activityCount
+  source
+  sourceChannel
   properties {
     name
     type

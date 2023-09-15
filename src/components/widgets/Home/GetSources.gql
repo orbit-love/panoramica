@@ -1,5 +1,9 @@
 query ($projectId: ID!) {
   projects(where: { id: $projectId }) {
-    sources
+    sources {
+      name
+      conversationCount
+      lastActivityTimestamp
+    }
   }
 }

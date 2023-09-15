@@ -47,12 +47,24 @@ const resolvers = {
       const { records } = await graphConnection.run(
         `MATCH (p:Project { id: $projectId })
             WITH p
-          MATCH (p)-[:OWNS]->(a:Activity)
-            WITH DISTINCT(a.source) AS source
-          RETURN source`,
+          MATCH (p)-[:OWNS]->(c:Conversation)
+            WITH
+              DISTINCT(c.source) AS name,
+              COUNT(c) AS conversationCount,
+              MAX(c.lastActivityTimestamp) AS lastActivityTimestamp
+          RETURN name, conversationCount, lastActivityTimestamp
+            ORDER BY lastActivityTimestamp DESC`,
         { projectId }
       );
-      return records.map((record) => record.get("source")) || [];
+      return (
+        records
+          .map((record) => ({
+            name: record.get("name"),
+            conversationCount: record.get("conversationCount").low,
+            lastActivityTimestamp: record.get("lastActivityTimestamp"),
+          }))
+          .filter((record) => record.name) || []
+      );
     },
     async sourceChannels(parent, args) {
       const graphConnection = new GraphConnection();
@@ -61,25 +73,21 @@ const resolvers = {
       const { records } = await graphConnection.run(
         `MATCH (p:Project { id: $projectId })
             WITH p
-          MATCH (p)-[:OWNS]->(a:Activity)
-            WHERE a.source = $source
-            WITH
-              DISTINCT(a.sourceChannel) AS name
-            WITH name
-              MATCH (p)-[:OWNS]->(a:Activity {sourceChannel: name})
-            WITH name,
-                COUNT(a) AS activityCount,
-                MAX(a.timestamp) AS lastActivityAt
-          RETURN name, activityCount, lastActivityAt
-          ORDER BY lastActivityAt DESC`,
+          MATCH (p)-[:OWNS]->(c:Conversation)
+            WHERE c.source = $source
+            WITH DISTINCT(c.sourceChannel) AS name,
+                COUNT(c) AS conversationCount,
+                MAX(c.lastActivityTimestamp) AS lastActivityTimestamp
+          RETURN name, conversationCount, lastActivityTimestamp
+            ORDER BY lastActivityTimestamp DESC`,
         { projectId, source }
       );
       return (
         records
           .map((record) => ({
             name: record.get("name"),
-            activityCount: record.get("activityCount").low,
-            lastActivityAt: record.get("lastActivityAt"),
+            conversationCount: record.get("conversationCount").low,
+            lastActivityTimestamp: record.get("lastActivityTimestamp"),
           }))
           .filter((record) => record.name) || []
       );

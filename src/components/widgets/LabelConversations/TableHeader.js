@@ -3,8 +3,10 @@ import classnames from "classnames";
 import { useQuery } from "@apollo/experimental-nextjs-app-support/ssr";
 
 import GetPropertyFiltersQuery from "src/graphql/queries/GetPropertyFilters.gql";
-import PropertyFilter from "./PropertyFilter";
+import { PropertyFilter, SourceAndChannelsFilter } from "./filters";
+import FilterCell from "src/components/FilterCell";
 import Loader from "src/components/domains/ui/Loader";
+import DeleteConversationProperty from "./DeleteConversationProperty";
 
 export default function TableHeader({
   project,
@@ -20,9 +22,8 @@ export default function TableHeader({
   loadingRows,
   propertyNames,
   refetchNow,
-  setWhere,
-  defaultWhereClauses,
 }) {
+  const [openFilter, setOpenFilter] = React.useState(null);
   const { refetch } = useQuery(GetPropertyFiltersQuery, {
     notifyOnNetworkStatusChange: true, // so that loading is true on refetch
     variables: {
@@ -108,24 +109,62 @@ export default function TableHeader({
             />
           </div>
         </th>
-        <th className="py-2 px-4 text-xs font-semibold">Conversation</th>
+        <th className="py-2 px-4 font-semibold">Conversation</th>
+        <th className="font-semibold border-x border-gray-200 dark:border-gray-700">
+          <FilterCell
+            name="source"
+            displayName="Source"
+            active={filters.find(({ name }) =>
+              ["source", "sourceChannel"].includes(name)
+            )}
+            openFilter={openFilter}
+            setOpenFilter={setOpenFilter}
+          >
+            <SourceAndChannelsFilter
+              project={project}
+              filters={filters}
+              setFilters={setFilters}
+              setOpenFilter={setOpenFilter}
+            ></SourceAndChannelsFilter>
+          </FilterCell>
+        </th>
         {propertyFilters.map(({ name, values }) => {
           return (
             <th
               key={name}
               className="font-semibold border-x border-gray-200 dark:border-gray-700"
             >
-              <PropertyFilter
+              <FilterCell
                 name={name}
                 displayName={propertyDisplayName(name)}
-                values={values}
-                filters={filters}
-                setFilters={setFilters}
-                defaultWhereClauses={defaultWhereClauses}
-                project={project}
-                setWhere={setWhere}
-                refetch={refetch}
-              />
+                active={filters.find((filter) => filter.name === name)}
+                openFilter={openFilter}
+                setOpenFilter={setOpenFilter}
+              >
+                <PropertyFilter
+                  name={name}
+                  displayName={propertyDisplayName(name)}
+                  values={values}
+                  filters={filters}
+                  setFilters={setFilters}
+                  setOpenFilter={setOpenFilter}
+                />
+                {name.indexOf(".status") === -1 && (
+                  <tr>
+                    <td colSpan={4} className="p-2 text-center">
+                      <DeleteConversationProperty
+                        propertyName={name}
+                        project={project}
+                        onComplete={() => {
+                          refetch();
+                        }}
+                      >
+                        <span className="text-red-500">delete property</span>
+                      </DeleteConversationProperty>
+                    </td>
+                  </tr>
+                )}
+              </FilterCell>
             </th>
           );
         })}

@@ -20,17 +20,17 @@ export default function Sources({ project, handlers, newPanelPosition }) {
   return (
     <div className="flex flex-col items-start w-full">
       <div className="text-tertiary font-semibold">Sources</div>
-      {sources.map((source) => (
+      {sources.map(({ name }) => (
         <div
-          key={source}
+          key={name}
           className="flex items-center space-x-1 cursor-pointer hover:underline"
           onClick={(e) =>
-            onClickSource(e, source, {
+            onClickSource(e, name, {
               position: newPanelPosition(),
             })
           }
         >
-          <div>{utils.titleize(source)}</div>
+          <div>{utils.titleize(name)}</div>
         </div>
       ))}
     </div>

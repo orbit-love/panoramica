@@ -35,7 +35,7 @@ export default function LabelConversations({
   return (
     <Frame fullWidth>
       <div className="flex overflow-x-scroll flex-col space-y-2 w-full">
-        <div className="flex items-center px-4 pt-4  space-x-1 text-lg">
+        <div className="flex items-center px-4 pt-4 space-x-1 text-lg">
           <div className="text-tertiary text-lg font-light">
             Label Conversations
           </div>

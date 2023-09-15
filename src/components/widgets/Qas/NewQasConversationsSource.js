@@ -14,7 +14,7 @@ export default function NewQasConversationsSource({
 
   const {
     data: {
-      projects: [{ sources }],
+      projects: [{ sources: fetchedSources }],
     },
   } = useSuspenseQuery(GetSourcesQuery, {
     variables: {
@@ -33,6 +33,7 @@ export default function NewQasConversationsSource({
     },
   });
 
+  const sources = fetchedSources?.map(({ name }) => name);
   const sourceChannels = fetchedSourceChannels?.map(({ name }) => name);
 
   return (

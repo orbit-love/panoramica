@@ -118,7 +118,6 @@ const typeDefs = gql`
     pins: [Conversation!]!
       @relationship(type: "PINS", direction: OUT, properties: "Pinned")
     members: [Member!]! @relationship(type: "OWNS", direction: OUT)
-    sources: [String!]! @customResolver(requires: ["id"])
     creator: User! @relationship(type: "CREATED", direction: IN)
     prompts: [Prompt!]! @relationship(type: "OWNS", direction: OUT)
     properties: [Property!]! @relationship(type: "HAS", direction: OUT)
@@ -126,6 +125,7 @@ const typeDefs = gql`
       propertyNames: [String]
       where: PropertyFilterInput
     ): [PropertyFilter!]! @customResolver(requires: ["id"])
+    sources: [Source!]! @customResolver(requires: ["id"])
     sourceChannels(source: String!): [SourceChannel!]!
       @customResolver(requires: ["id"])
     searchConversations(query: String!): [SearchResult!]!
@@ -135,12 +135,18 @@ const typeDefs = gql`
       @customResolver(requires: ["id"])
   }
 
+  type Source @query(read: false, aggregate: false) @mutation(operations: []) {
+    name: String!
+    conversationCount: Int!
+    lastActivityTimestamp: String!
+  }
+
   type SourceChannel
     @query(read: false, aggregate: false)
     @mutation(operations: []) {
     name: String!
-    activityCount: Int!
-    lastActivityAt: String!
+    conversationCount: Int!
+    lastActivityTimestamp: String!
   }
 
   type SearchResult
@@ -203,7 +209,7 @@ const typeDefs = gql`
     activityCount: Int
     missingParent: String
     source: String!
-    sourceChannel: String!
+    sourceChannel: String
     project: Project! @relationship(type: "OWNS", direction: IN)
     properties: [Property!]! @relationship(type: "HAS", direction: OUT)
     beginsWith: [Activity!]! @relationship(type: "BEGINS", direction: IN)

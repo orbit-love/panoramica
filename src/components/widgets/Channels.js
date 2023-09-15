@@ -42,21 +42,23 @@ export default function Channels({ project, params, handlers }) {
               <td>Channel</td>
               <td>Last Active</td>
             </tr>
-            {sourceChannels.map(({ name, activityCount, lastActivityAt }) => (
-              <tr
-                key={name}
-                onClick={(e) => onClickChannel(e, source, name)}
-                className="group text-secondary cursor-pointer"
-              >
-                <td className="text-right">{activityCount}</td>
-                <td>
-                  <div className="group-hover:underline hover:underline">
-                    {utils.displayChannel(name)}
-                  </div>
-                </td>
-                <td>{utils.formatDateShort(lastActivityAt)}</td>
-              </tr>
-            ))}
+            {sourceChannels.map(
+              ({ name, conversationCount, lastActivityTimestamp }) => (
+                <tr
+                  key={name}
+                  onClick={(e) => onClickChannel(e, source, name)}
+                  className="group text-secondary cursor-pointer"
+                >
+                  <td className="text-right">{conversationCount}</td>
+                  <td>
+                    <div className="group-hover:underline hover:underline">
+                      {utils.displayChannel(name)}
+                    </div>
+                  </td>
+                  <td>{utils.formatDateShort(lastActivityTimestamp)}</td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>

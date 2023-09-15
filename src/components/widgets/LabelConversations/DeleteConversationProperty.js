@@ -35,17 +35,21 @@ export default function DeleteAllActivityProperties({
   );
 
   const confirmDelete = React.useCallback(() => {
-    if (window.confirm("Are you sure you want to delete this property?")) {
+    if (
+      window.confirm(
+        "This will delete this property for ALL conversations in the project and it will no longer appear in the table. Is that what you want to do?"
+      )
+    ) {
       deleteProperty();
     }
   }, [deleteProperty]);
 
   return (
-    <div className="cursor-pointer" onClick={confirmDelete}>
+    <button className="cursor-pointer" onClick={confirmDelete}>
       {children}
       {!children && (
         <FontAwesomeIcon icon="trash" className="text-sm cursor-pointer" />
       )}
-    </div>
+    </button>
   );
 }
