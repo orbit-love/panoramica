@@ -69,16 +69,19 @@ const ManageQueues = ({ setRefetchNow }) => {
 
   // set up a useEffect that detects changes in the processing function
   // and starts and stops processing accordingly
-  const processingRef = React.useRef(processing);
   React.useEffect(() => {
     var timeout;
     const putAdminQueues = async () => {
       setStatus("Processing...");
-      const response = await fetch(`/api/admin/queues`, { method: "PUT" });
-      const data = await response.json();
-      setStatus(`${data.jobsProcessed} jobs processed`);
-      if (processingRef.current) {
-        timeout = setTimeout(putAdminQueues, 5000);
+      while (true) {
+        const response = await fetch(`/api/admin/queues`, { method: "PUT" });
+        const { jobsProcessed } = await response.json();
+        setStatus(`${jobsProcessed} jobs processed`);
+        if (jobsProcessed === 0) {
+          setStatus("Reached end of queue");
+          setProcessing(false);
+          break;
+        }
       }
     };
 
@@ -96,7 +99,7 @@ const ManageQueues = ({ setRefetchNow }) => {
       const interval = setInterval(() => {
         getAdminQueues();
         setRefetchNow((refetchNow) => refetchNow + 1);
-      }, 1000);
+      }, 5000);
       return () => interval && clearInterval(interval);
     }
   }, [processing, setRefetchNow, getAdminQueues]);
