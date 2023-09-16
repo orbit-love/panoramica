@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { checkApp } from "src/auth";
 import { getBaseClient as getClient } from "src/graphql/apollo-client";
 import { mergeProject } from "src/data/graph/mutations";
-import LoadPrismaProjectsQuery from "src/graphql/queries/LoadPrismaProjects.gql";
+import GetPrismaProjectsQuery from "src/graphql/queries/GetPrismaProjects.gql";
 import { graph } from "src/data/db";
 
 const putHandler = async () => {
@@ -23,12 +23,16 @@ const putHandler = async () => {
     const {
       data: { prismaProjects },
     } = await getClient().query({
-      query: LoadPrismaProjectsQuery,
+      query: GetPrismaProjectsQuery,
     });
 
     await session.writeTransaction(async (tx) => {
-      for (const project of prismaProjects) {
-        await mergeProject({ project, user, tx });
+      for (const prismaProject of prismaProjects) {
+        await mergeProject({
+          project: prismaProject,
+          user: prismaProject.user,
+          tx,
+        });
       }
     });
 
