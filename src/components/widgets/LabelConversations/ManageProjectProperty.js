@@ -17,6 +17,7 @@ export default function ManageProjectProperty({
   const projectId = project.id;
   const [value, setValue] = React.useState(property?.value);
 
+  // note: this mutation requires that the property exist
   const [updateProjectProperty] = useMutation(UpdateProjectPropertyMutation, {
     variables: {
       projectId,

@@ -1,4 +1,5 @@
 import React from "react";
+import { useMutation } from "@apollo/client";
 import { createPortal } from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import jsyaml from "js-yaml";
@@ -64,17 +65,48 @@ export default function LabelConversations({
   );
 }
 
+import CreateProjectPropertyMutation from "src/graphql/mutations/CreateProjectProperty.gql";
+import { ProjectDispatchContext } from "src/components/context/ProjectContext";
+
 const ChoosePropertyName = ({ project, setYamlPropertyName }) => {
+  const dispatch = React.useContext(ProjectDispatchContext);
   const [propertyName, setPropertyName] = React.useState("");
-  const onSubmit = React.useCallback(
-    (e) => {
-      e.preventDefault();
-      setYamlPropertyName(propertyName);
-    },
-    [propertyName, setYamlPropertyName]
-  );
   const yamlPropertyNames = project.properties.filter((p) =>
     p.name.endsWith(".yaml")
+  );
+
+  const [createProjectProperty] = useMutation(CreateProjectPropertyMutation, {
+    variables: {
+      projectId: project.id,
+    },
+  });
+
+  const onSubmit = React.useCallback(
+    async (e) => {
+      e.preventDefault();
+      const value = `name1: instruction1\nname2: instruction2\n`;
+      await createProjectProperty({
+        variables: {
+          name: propertyName,
+          value,
+        },
+      });
+      dispatch({
+        type: "updateProject",
+        project: {
+          ...project,
+          properties: [
+            ...project.properties.filter((p) => p.name !== propertyName),
+            {
+              name: propertyName,
+              value,
+            },
+          ],
+        },
+      });
+      setYamlPropertyName(propertyName);
+    },
+    [propertyName, setYamlPropertyName, createProjectProperty, project]
   );
   return (
     <form className="p-4 space-y-4" onSubmit={onSubmit}>
