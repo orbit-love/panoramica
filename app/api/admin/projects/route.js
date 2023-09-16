@@ -30,7 +30,7 @@ const putHandler = async () => {
       for (const prismaProject of prismaProjects) {
         await mergeProject({
           project: prismaProject,
-          user: prismaProject.user,
+          user: prismaProject.prismaUser,
           tx,
         });
       }
