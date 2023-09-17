@@ -2,6 +2,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import utils from "src/utils";
 
+const availableOperations = [
+  "Equals",
+  "Not Equals",
+  // "Contains", doesn't work yet
+  "Exists",
+  "Not Exists",
+];
+
 export default function BaseFilter({
   name,
   displayName = name,
@@ -10,6 +18,7 @@ export default function BaseFilter({
   values,
   onChange,
   onClear,
+  operations = availableOperations,
 }) {
   const [operation, setOperation] = React.useState(initialOperation);
   const [value, setValue] = React.useState(initialValue);
@@ -58,11 +67,11 @@ export default function BaseFilter({
             setValue("");
           }}
         >
-          <option value="Equals">Equals</option>
-          <option value="Not Equals">Not Equals</option>
-          <option value="Contains">Contains</option>
-          <option value="Exists">Exists</option>
-          <option value="Not Exists">Not Exists</option>
+          {operations.map((operation) => (
+            <option key={operation} value={operation}>
+              {operation}
+            </option>
+          ))}
         </select>
       </td>
       <td className="p-2">
