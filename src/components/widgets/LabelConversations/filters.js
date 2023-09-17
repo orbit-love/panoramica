@@ -98,18 +98,22 @@ function SourceChannelsFilter({
   )?.value;
 
   return (
-    <BaseFilter
-      name="sourceChannel"
-      displayName="Channel"
-      initialValue={initialValue}
-      values={values}
-      onChange={updateFiltersCallback({
-        setOpenFilter,
-        setFilters,
-        toWhere: fieldToWhere,
-      })}
-      onClear={onClearCallback({ setOpenFilter, setFilters })}
-    ></BaseFilter>
+    <>
+      {values.length > 0 && (
+        <BaseFilter
+          name="sourceChannel"
+          displayName="Channel"
+          initialValue={initialValue}
+          values={values}
+          onChange={updateFiltersCallback({
+            setOpenFilter,
+            setFilters,
+            toWhere: fieldToWhere,
+          })}
+          onClear={onClearCallback({ setOpenFilter, setFilters })}
+        ></BaseFilter>
+      )}
+    </>
   );
 }
 

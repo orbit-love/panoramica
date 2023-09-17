@@ -13,6 +13,9 @@ export default function BaseFilter({
 }) {
   const [operation, setOperation] = React.useState(initialOperation);
   const [value, setValue] = React.useState(initialValue);
+  const [inputValue, setInputValue] = React.useState(
+    initialOperation === "Contains" ? initialValue : ""
+  );
   const previousValue = utils.usePrevious(value);
   const previousOperation = utils.usePrevious(operation);
 
@@ -80,15 +83,27 @@ export default function BaseFilter({
           </select>
         )}
         {operation === "Contains" && (
-          <div>
-            <input
-              type="text"
-              value={value}
-              required
-              onChange={(e) => {
-                setValue(e.target.value);
+          <div className="flex space-x-2">
+            <div>
+              <input
+                type="text"
+                value={inputValue}
+                required
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                }}
+              />
+            </div>
+            <button
+              type="button"
+              className="btn"
+              disabled={value === inputValue}
+              onClick={() => {
+                setValue(inputValue);
               }}
-            />
+            >
+              Apply
+            </button>
           </div>
         )}
       </td>
