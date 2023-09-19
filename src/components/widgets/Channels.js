@@ -52,7 +52,7 @@ export default function Channels({ project, params, handlers }) {
                   <td className="text-right">{conversationCount}</td>
                   <td>
                     <div className="group-hover:underline hover:underline">
-                      {utils.displayChannel(name)}
+                      {name}
                     </div>
                   </td>
                   <td>{utils.formatDateShort(lastActivityTimestamp)}</td>

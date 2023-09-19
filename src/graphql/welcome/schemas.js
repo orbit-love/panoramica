@@ -88,7 +88,7 @@ const typeDefs = gql`
     activityCount: Int!
     missingParent: String
     source: String!
-    sourceChannel: String!
+    sourceChannel: String
     project: Project! @relationship(type: "OWNS", direction: IN)
     properties: [Property!]! @relationship(type: "HAS", direction: OUT)
     beginsWith: [Activity!]! @relationship(type: "BEGINS", direction: IN)
