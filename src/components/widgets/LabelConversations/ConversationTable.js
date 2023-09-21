@@ -14,13 +14,12 @@ export default function ConversationTable({
   yaml,
   controlledProperties,
 }) {
-  const pageSize = 10;
   const [conversations, setConversations] = React.useState([]);
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [loadingRows, setLoadingRows] = React.useState([]);
   const [filters, setFilters] = React.useState([]);
   const [where, setWhere] = React.useState({});
-  const [limit, setLimit] = React.useState(pageSize);
+  const [limit, setLimit] = React.useState(10);
   const [offset, setOffset] = React.useState(0);
   const [propertyFilters, setPropertyFilters] = React.useState([]);
   const [selectAllCheckboxValue, setSelectAllCheckboxValue] =
@@ -45,7 +44,6 @@ export default function ConversationTable({
     setLoadingRows,
     filters,
     setFilters,
-    pageSize,
     limit,
     setLimit,
     offset,
@@ -92,7 +90,6 @@ export default function ConversationTable({
 const Pagination = ({
   projectId,
   where,
-  pageSize,
   offset,
   limit,
   setLimit,
@@ -157,7 +154,7 @@ const Pagination = ({
             onClick={() => {
               setSelectAllCheckboxValue(0);
               setSelectedRows([]);
-              setOffset((offset) => offset - pageSize);
+              setOffset((offset) => offset - limit);
             }}
           >
             Previous
@@ -175,7 +172,7 @@ const Pagination = ({
           onClick={() => {
             setSelectAllCheckboxValue(0);
             setSelectedRows([]);
-            setOffset((offset) => offset + pageSize);
+            setOffset((offset) => offset + limit);
           }}
         >
           Next
@@ -187,7 +184,7 @@ const Pagination = ({
           onClick={() => {
             setSelectAllCheckboxValue(0);
             setSelectedRows([]);
-            setOffset(Math.floor(totalCount / pageSize) * pageSize);
+            setOffset(Math.floor(totalCount / limit) * limit);
           }}
         >
           Last

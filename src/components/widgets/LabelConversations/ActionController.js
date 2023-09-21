@@ -45,7 +45,7 @@ export default function ActionController({
     processConversation: processObject,
   }) => {
     let index = 0;
-    let maxConcurrency = 5;
+    let maxConcurrency = 3;
     let activePromises = [];
 
     async function handlePromise(promise) {
