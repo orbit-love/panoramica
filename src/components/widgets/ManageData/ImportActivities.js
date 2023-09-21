@@ -29,8 +29,8 @@ export default function ImportActivities({ project, refetchNow }) {
           },
         ],
       } = data;
-      const { min, max } = timestampInt;
-      setStats({ min, max, count });
+      var { min, max } = timestampInt;
+      setStats({ min: parseInt(min), max: parseInt(max), count });
       if (min && max) {
         setEndDate(new Date(min).toISOString().slice(0, 10));
         // set the start date to 6 months earlier
