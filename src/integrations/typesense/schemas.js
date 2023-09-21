@@ -1,5 +1,4 @@
 export const DEFAULT_CONVERSATIONS_SCHEMA = {
-  default_sorting_field: "lastActivityTimestampInt",
   enable_nested_fields: true,
   fields: [
     {
@@ -43,13 +42,13 @@ export const DEFAULT_CONVERSATIONS_SCHEMA = {
     },
     {
       name: "firstActivityTimestampInt",
-      type: "int32",
+      type: "int64",
       facet: false,
       sort: true,
     },
     {
       name: "lastActivityTimestampInt",
-      type: "int32",
+      type: "int64",
       facet: false,
       sort: true,
     },

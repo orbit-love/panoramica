@@ -96,7 +96,20 @@ export default async function handler(req, res) {
       batches.push(conversations.slice(i, i + batchSize));
     }
     for (let batch of batches) {
-      await indexConversations({ project, conversations: batch });
+      // the *Int timestamps are the BigInt data type and thus returned as
+      // strings; before we can send them to Typesense, we need to convert them
+      await indexConversations({
+        project,
+        conversations: batch.map((conversation) => ({
+          ...conversation,
+          firstActivityTimestampInt: parseInt(
+            conversation.firstActivityTimestampInt
+          ),
+          lastActivityTimestamp: parseInt(
+            conversation.lastActivityTimestampInt
+          ),
+        })),
+      });
       console.log("Indexed conversation batch - ", batch.length);
     }
 

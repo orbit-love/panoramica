@@ -173,7 +173,7 @@ const typeDefs = gql`
     referenceId: String
     referenceTitle: String
     type: String
-    timestamp: Int
+    timestamp: BigInt
   }
 
   type QaSummary
