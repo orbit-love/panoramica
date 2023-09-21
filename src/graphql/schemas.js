@@ -39,12 +39,12 @@ const typeDefs = gql`
 
   interface Bookmarked @relationshipProperties {
     createdAt: String!
-    createdAtInt: Float!
+    createdAtInt: BigInt!
   }
 
   interface Pinned @relationshipProperties {
     createdAt: String!
-    createdAtInt: Float!
+    createdAtInt: BigInt!
   }
 
   type User
@@ -189,7 +189,6 @@ const typeDefs = gql`
     name: String!
     type: String!
     value: String!
-    confidence: Float
   }
 
   input GeneratePropertyInput {
@@ -205,8 +204,8 @@ const typeDefs = gql`
     id: ID! @id
     firstActivityTimestamp: String
     lastActivityTimestamp: String
-    firstActivityTimestampInt: Float
-    lastActivityTimestampInt: Float
+    firstActivityTimestampInt: BigInt
+    lastActivityTimestampInt: BigInt
     memberCount: Int
     activityCount: Int
     missingParent: String

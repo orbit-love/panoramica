@@ -5,7 +5,7 @@ const typeDefs = gql`
 
   interface Pinned @relationshipProperties {
     createdAt: String!
-    createdAtInt: Float!
+    createdAtInt: BigInt!
   }
 
   type PropertyFilterOption @query(read: false, aggregate: false) {
@@ -77,15 +77,14 @@ const typeDefs = gql`
     name: String!
     type: String!
     value: String!
-    confidence: Float
   }
 
   type Conversation @query(read: false, aggregate: false) {
     id: ID! @id
     firstActivityTimestamp: String!
     lastActivityTimestamp: String!
-    firstActivityTimestampInt: Float!
-    lastActivityTimestampInt: Float!
+    firstActivityTimestampInt: BigInt!
+    lastActivityTimestampInt: BigInt!
     memberCount: Int!
     activityCount: Int!
     missingParent: String
