@@ -104,49 +104,93 @@ export const searchProjectQas = async ({ project, searchRequest }) => {
 
 // CREATE
 
+const toDocument = ({ conversation }) => {
+  const activities = conversation.descendants;
+  // const body = toPageContent(activities);
+  // const bodyLength = body.length;
+
+  // create a string of each activity that can be snippeted to the
+  // end user; we will do some post-processing on the display side
+  // so that it looks good
+  var text = "";
+  for (const activity of activities) {
+    text += utils.stripHtmlTags(activity.textHtml);
+    text += "\n\n";
+  }
+  const textLength = text.length;
+
+  if (textLength === 0) {
+    return null;
+  }
+
+  const {
+    id,
+    source,
+    sourceChannel,
+    firstActivityTimestamp,
+    lastActivityTimestamp,
+    firstActivityTimestampInt,
+    lastActivityTimestampInt,
+    memberCount,
+    activityCount,
+    properties,
+  } = conversation;
+
+  const duration = lastActivityTimestampInt - firstActivityTimestampInt;
+  const actors = conversation.members.map((member) => member.globalActorName);
+
+  // turn the properties into one field each; when there are multiple properties
+  // with the same name, e.g. tags, those become a single array
+  var propertiesToIndex = {};
+  for (const { name, value } of properties) {
+    const existing = propertiesToIndex[name];
+    if (!existing) {
+      propertiesToIndex[name] = value;
+    } else if (Array.isArray(existing)) {
+      propertiesToIndex[name] = [...existing, value];
+    } else {
+      propertiesToIndex[name] = [existing, value];
+    }
+  }
+
+  // add "properties." to the name to the name of each property
+  propertiesToIndex = Object.fromEntries(
+    Object.entries(propertiesToIndex).map(([name, value]) => [
+      `properties.${name}`,
+      value,
+    ])
+  );
+
+  const viewObject = conversation;
+
+  return {
+    id,
+    text,
+    textLength,
+    actors,
+    source,
+    sourceChannel,
+    firstActivityTimestamp,
+    firstActivityTimestampInt,
+    lastActivityTimestamp,
+    lastActivityTimestampInt,
+    duration,
+    activityCount,
+    memberCount,
+    viewObject,
+    ...propertiesToIndex,
+  };
+};
+
 export const indexConversations = async ({ project, conversations }) => {
   const typesenseClient = getTypesenseClient({ project });
   if (!typesenseClient) return;
 
   const documents = [];
-  for (let [conversationId, activities] of Object.entries(conversations)) {
-    const body = toPageContent(activities);
-
-    if (activities.length === 0) {
-      // this should not happen but there may be conversations that are
-      // created and not cleaned up in the new path - tbd
-      console.log("No activities for conversation ", conversationId);
-      continue;
-    }
-    // grab the most recent activity for the timestamp
-    const firstActivity = activities[0];
-    const lastActivity = activities[activities.length - 1];
-    // add the source and source channel to the metadata
-    const { source, sourceChannel } = lastActivity;
-    // add a contentLength for query-time filtering
-    const contentLength = body.length;
-
-    const startTimestamp = new Date(firstActivity.timestamp).getTime();
-    const endTimestamp = new Date(lastActivity.timestamp).getTime();
-
-    // if no content is left, don't index the doc
-    if (contentLength > 0) {
-      documents.push({
-        id: conversationId,
-        body,
-        body_length: body.length,
-        // Add the actors for use in filters
-        actors: activities.map((activity) => activity.globalActorName),
-        // add the timestamp of the last activity to the metadata
-        start_timestamp: startTimestamp,
-        end_timestamp: endTimestamp,
-        duration: endTimestamp - startTimestamp,
-        // add the number of activities as a relevance marker
-        activity_count: activities.length,
-        source,
-        source_channel: sourceChannel,
-        // TODO: Also add properties here
-      });
+  for (let conversation of conversations) {
+    const document = toDocument({ conversation });
+    if (document) {
+      documents.push(document);
     }
   }
 
@@ -161,6 +205,7 @@ export const indexConversations = async ({ project, conversations }) => {
     collectionName,
     modelApiKey: project.modelApiKey,
     schema: DEFAULT_CONVERSATIONS_SCHEMA,
+    addEmbedding: false,
   });
 
   return await bulkUpsertTypesenseDocuments({ collection, documents });

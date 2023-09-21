@@ -1,4 +1,5 @@
 import { check, redirect, authorizeProject, createJWT } from "src/auth";
+import { gql } from "graphql-tag";
 import { aiReady } from "src/integrations/ready";
 import {
   deleteConversationsCollection,
@@ -42,40 +43,60 @@ export default async function handler(req, res) {
 
     const result = await Project.find({
       where: { id: projectId },
-      selectionSet: `
-      {
-        conversations {
-          id
-          descendants(options: { sort: { timestamp: ASC } }) {
+      selectionSet: gql`
+        {
+          conversations(options: { sort: { lastActivityTimestamp: DESC } }) {
             id
             source
             sourceChannel
-            globalActorName
-            textHtml
-            timestamp
+            memberCount
+            activityCount
+            firstActivityTimestamp
+            firstActivityTimestampInt
+            lastActivityTimestamp
+            lastActivityTimestampInt
+            members {
+              globalActor
+              globalActorName
+            }
+            properties {
+              name
+              type
+              value
+            }
+            descendants(options: { sort: { timestamp: ASC } }) {
+              id
+              sourceId
+              globalActor
+              globalActorName
+              textHtml
+              timestamp
+              url
+              parent {
+                id
+              }
+              member {
+                id
+                globalActor
+                globalActorName
+              }
+            }
           }
         }
-      }`,
+      `,
       context,
     });
 
     const [{ conversations }] = result;
 
     // in batches of 100, process the conversations
-    const batchSize = 100;
+    const batchSize = 500;
     const batches = [];
     for (let i = 0; i < conversations.length; i += batchSize) {
       batches.push(conversations.slice(i, i + batchSize));
     }
     for (let batch of batches) {
-      // create a map of conversations and activities for
-      // conversation-level embeds
-      const conversationMap = batch.reduce((acc, conversation) => {
-        acc[conversation.id] = conversation.descendants;
-        return acc;
-      }, {});
-
-      await indexConversations({ project, conversations: conversationMap });
+      await indexConversations({ project, conversations: batch });
       console.log("Indexed conversation batch - ", batch.length);
     }
 

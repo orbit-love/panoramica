@@ -307,10 +307,13 @@ export const mergeConversations = async ({ tx, activities, project }) => {
           NOT EXISTS((starter)-[:REPLIES_TO]->(:Activity))
         MERGE (p)-[:OWNS]->(c:Conversation { id: starter.id })
         ON CREATE SET
-          c.firstActivityTimestamp = starter.timestamp,
-          c.lastActivityTimestamp = starter.timestamp,
           c.memberCount = 1, c.activityCount = 1,
-          c.members = [m.id],
+          c.memberIds = [m.id], c.activityIds = [starter.id],
+          c.lastActivityTimestamp = starter.timestamp,
+          c.lastActivityTimestampInt = starter.timestampInt
+        SET
+          c.firstActivityTimestamp = starter.timestamp,
+          c.firstActivityTimestampInt = starter.timestampInt,
           c.missingParent = starter.sourceParentId,
           c.source = starter.source,
           c.sourceChannel = starter.sourceChannel
@@ -322,14 +325,23 @@ export const mergeConversations = async ({ tx, activities, project }) => {
         MERGE (c)-[:INCLUDES]->(reply)
         MERGE (c)-[:INCLUDES]->(member)
         ON MATCH SET
-          c.timestampLast = CASE
-                              WHEN c.timestampLast < reply.timestamp
+          c.lastActivityTimestamp = CASE
+                              WHEN c.lastActivityTimestamp < reply.timestamp
                               THEN reply.timestamp
-                              ELSE c.timestampLast
+                              ELSE c.lastActivityTimestamp
                             END,
-          c.activityCount = c.activityCount + 1
-        WITH c, collect(DISTINCT member.id) AS memberIds
-        SET c.memberCount = size(memberIds), c.members = memberIds`,
+          c.lastActivityTimestampInt = CASE
+                              WHEN c.lastActivityTimestampInt < reply.timestampInt
+                              THEN reply.timestampInt
+                              ELSE c.lastActivityTimestampInt
+                            END
+        WITH c,
+             COLLECT(DISTINCT member.id) AS memberIds,
+             COLLECT(DISTINCT reply.id) AS activityIds
+        SET c.memberIds = memberIds,
+            c.memberCount = size(memberIds),
+            c.activityIds = activityIds,
+            c.activityCount = size(activityIds)`,
     { activityIds, projectId }
   );
   console.log("Memgraph: Merged (Conversation) nodes");

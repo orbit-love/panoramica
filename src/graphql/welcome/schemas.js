@@ -84,6 +84,8 @@ const typeDefs = gql`
     id: ID! @id
     firstActivityTimestamp: String!
     lastActivityTimestamp: String!
+    firstActivityTimestampInt: Float!
+    lastActivityTimestampInt: Float!
     memberCount: Int!
     activityCount: Int!
     missingParent: String

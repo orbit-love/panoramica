@@ -1,27 +1,33 @@
 export const DEFAULT_CONVERSATIONS_SCHEMA = {
+  default_sorting_field: "lastActivityTimestampInt",
+  enable_nested_fields: true,
   fields: [
     {
-      name: "body",
+      name: "text",
       type: "string",
       facet: false,
     },
     {
       name: "actors",
       type: "string[]",
-      facet: false,
+      facet: true,
     },
     {
-      name: "body_length",
+      name: "textLength",
       type: "int32",
       facet: false,
-      index: false,
       optional: true,
     },
     {
-      name: "activity_count",
+      name: "activityCount",
       type: "int32",
       facet: false,
-      index: false,
+      optional: true,
+    },
+    {
+      name: "memberCount",
+      type: "int32",
+      facet: false,
       optional: true,
     },
     {
@@ -30,34 +36,63 @@ export const DEFAULT_CONVERSATIONS_SCHEMA = {
       facet: true,
     },
     {
-      name: "source_channel",
+      name: "sourceChannel",
       type: "string",
       facet: true,
       optional: true,
     },
     {
-      name: "start_timestamp",
-      type: "int64",
+      name: "firstActivityTimestampInt",
+      type: "int32",
+      facet: false,
+      sort: true,
+    },
+    {
+      name: "lastActivityTimestampInt",
+      type: "int32",
+      facet: false,
+      sort: true,
+    },
+    // dont index the string timestamps, they are just to make it easier
+    // to see what's in the index and debug
+    {
+      name: "firstActivityTimestamp",
+      type: "string",
+      facet: false,
+      index: false,
+      optional: true,
+    },
+    {
+      name: "lastActivityTimestamp",
+      type: "string",
       facet: false,
       index: false,
       optional: true,
     },
     {
       name: "duration",
-      type: "int64",
-      facet: false,
-      index: false,
+      type: "int32",
       optional: true,
+      facet: false,
+      sort: false,
+      index: false,
     },
     {
-      name: "end_timestamp",
-      type: "int64",
-      facet: false,
+      name: "properties.*",
+      type: "auto",
+    },
+    {
+      name: "properties.tags",
+      type: "auto",
+      facet: true,
+    },
+    {
+      name: "viewObject",
+      type: "object",
       index: false,
       optional: true,
     },
   ],
-  embedding: ["body", "actors"],
 };
 
 export const DEFAULT_QAS_SCHEMA = {

@@ -38,26 +38,33 @@ export const findOrCreateTypesenseCollection = async ({
   schema,
   modelApiKey,
   modelName = "text-embedding-ada-002",
+  addEmbedding = true,
 }) => {
   let collection;
   try {
     collection = await typesenseClient.collections(collectionName).retrieve();
   } catch (e) {
+    const { fields, embedding, ...other } = schema;
     const structure = {
       name: collectionName,
       fields: [
-        {
-          name: "embedding",
-          type: "float[]",
-          embed: {
-            from: schema.embedding,
-            model_config: {
-              model_name: `openai/${modelName}`,
-              api_key: modelApiKey,
-            },
-          },
-        },
-      ].concat(schema.fields),
+        ...(addEmbedding
+          ? [
+              {
+                name: "embedding",
+                type: "float[]",
+                embed: {
+                  from: embedding,
+                  model_config: {
+                    model_name: `openai/${modelName}`,
+                    api_key: modelApiKey,
+                  },
+                },
+              },
+            ]
+          : []),
+      ].concat(fields),
+      ...other,
     };
     collection = await typesenseClient.collections().create(structure);
   }
