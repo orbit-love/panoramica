@@ -2,7 +2,7 @@ import { ApolloServer } from "@apollo/server";
 import { startServerAndCreateNextHandler } from "@as-integrations/next";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "app/api/auth/[...nextauth]/route";
+import { authOptions } from "src/auth/nextAuthOptions";
 import { graph } from "src/data/db";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { checkJWT, createJWT } from "src/auth";

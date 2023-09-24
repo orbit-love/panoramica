@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCsrfToken } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "app/api/auth/[...nextauth]/route";
+import { authOptions } from "src/auth/nextAuthOptions";
 
 import HomePage from "app/HomePage";
 
