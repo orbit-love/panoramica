@@ -106,7 +106,13 @@ const ChoosePropertyName = ({ project, setYamlPropertyName }) => {
       });
       setYamlPropertyName(propertyName);
     },
-    [propertyName, setYamlPropertyName, createProjectProperty, project]
+    [
+      propertyName,
+      setYamlPropertyName,
+      createProjectProperty,
+      project,
+      dispatch,
+    ]
   );
   return (
     <form className="p-4 space-y-4" onSubmit={onSubmit}>
