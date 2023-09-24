@@ -15,7 +15,7 @@ export default async function Page() {
   return <HomePage {...props} />;
 }
 
-export async function getProps() {
+async function getProps() {
   const session = await getServerSession(authOptions);
   const csrfToken = (await getCsrfToken(authOptions)) || "";
   return {
