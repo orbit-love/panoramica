@@ -92,7 +92,7 @@ const typeDefs = gql`
     sourceChannel: String
     project: Project! @relationship(type: "OWNS", direction: IN)
     properties: [Property!]! @relationship(type: "HAS", direction: OUT)
-    beginsWith: [Activity!]! @relationship(type: "BEGINS", direction: IN)
+    startsWith: [Activity!]! @relationship(type: "STARTS_WITH", direction: OUT)
     descendants: [Activity!]! @relationship(type: "INCLUDES", direction: OUT)
     members: [Member!]! @relationship(type: "INCLUDES", direction: OUT)
     similarConversations: [SearchResult!]! @customResolver(requires: ["id"])
@@ -104,6 +104,7 @@ const typeDefs = gql`
     actorName: String
     globalActor: String
     globalActorName: String
+    globalActorAvatar: String
     source: String
     sourceId: String
     sourceParentId: String
@@ -118,7 +119,7 @@ const typeDefs = gql`
     member: Member! @relationship(type: "DID", direction: IN)
     mentions: [Member!]! @relationship(type: "MENTIONS", direction: OUT)
     conversation: Conversation! @relationship(type: "INCLUDES", direction: IN)
-    begins: [Conversation!]! @relationship(type: "BEGINS", direction: OUT)
+    starts: [Conversation!]! @relationship(type: "STARTS_WITH", direction: IN)
     parent: Activity @relationship(type: "REPLIES_TO", direction: OUT)
     replies: [Activity!]! @relationship(type: "REPLIES_TO", direction: IN)
   }
@@ -127,6 +128,7 @@ const typeDefs = gql`
     id: ID!
     globalActor: String!
     globalActorName: String!
+    globalActorAvatar: String
   }
 `;
 
