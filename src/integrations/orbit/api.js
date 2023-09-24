@@ -354,11 +354,12 @@ const getFields = async ({ activity, included }) => {
   var sourceId = activity.id;
   var sourceType = activity.type;
   var timestamp = activity.attributes.occurred_at;
+  var timestampInt = Date.parse(activity.attributes.occurred_at);
 
   // get the member to provide a global actor_identity for the activity
   // we do this to avoid any identity stitching on the client side
   var member = getMember({ activity, included });
-  var { name, slug } = member.attributes;
+  var { name, slug, avatar_url: globalActorAvatar } = member.attributes;
 
   const { activity_link, properties } = activity.attributes;
   var typeFields = await getTypeFields({
@@ -382,15 +383,16 @@ const getFields = async ({ activity, included }) => {
 
   const fields = {
     timestamp,
+    timestampInt,
     sourceId,
     sourceType,
     text,
     ...typeFields,
     globalActor,
     globalActorName,
+    globalActorAvatar,
     tags: properties,
     url: activity_link,
-    payload: {},
   };
 
   return fields;
