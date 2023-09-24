@@ -50,10 +50,10 @@ const main = async () => {
 
   const session = graph.session();
 
-  // ensure index is there for importing - without it is 1000x slower
-  await session.run("CREATE CONSTRAINT ON (p:Project) ASSERT p.id IS UNIQUE");
-  await session.run("CREATE CONSTRAINT ON (p:Project) ASSERT p.id IS UNIQUE");
-  await session.run("CREATE INDEX ON :Project(id)");
+  // ensure indices are there for importing - without it is 1000x slower
+  // this causes crashes for some reason, so just leave them out for now
+  // await session.run("CREATE CONSTRAINT ON (p:Project) ASSERT p.id IS UNIQUE");
+  // await session.run("CREATE INDEX ON :Project(id)");
 
   await session.run("CREATE CONSTRAINT ON (m:Member) ASSERT m.id IS UNIQUE");
   await session.run("CREATE CONSTRAINT ON (m:Member) ASSERT m.key IS UNIQUE");
@@ -79,9 +79,14 @@ const main = async () => {
 
   console.log("Indices created");
 
-  if (process.argv[4] === "--clear") {
+  if (process.argv[4] === "--setup") {
     await session.writeTransaction(async (tx) => {
       await setupProject({ tx, project, user: project.user });
+    });
+  }
+
+  if (process.argv[4] === "--clear") {
+    await session.writeTransaction(async (tx) => {
       await clearProject({ tx, project });
     });
   }
@@ -114,7 +119,11 @@ const main = async () => {
     });
   }
 
-  console.log("Done!");
+  console.log("Reading file line by line with readline done.");
+  const used = process.memoryUsage().heapUsed / 1024 / 1024;
+  console.log(
+    `The script uses approximately ${Math.round(used * 100) / 100} MB`
+  );
 };
 
 main()

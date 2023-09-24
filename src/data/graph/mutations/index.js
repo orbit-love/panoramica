@@ -50,8 +50,13 @@ export async function clearProject({ project, tx }) {
   const projectId = project.id;
   // delete existing nodes and relationships
   await tx.run(
-    `MATCH (p:Project { id: $projectId })-[*..4]->(n)
-        DETACH DELETE n`,
+    `MATCH (p:Project { id: $projectId })
+       WITH p
+       MATCH (p)-[]->(n)
+         WHERE n:Activity OR n:Member or n:Conversation
+         WITH n
+          OPTIONAL MATCH (n)-[]-(i:Identity)
+          DETACH DELETE n, i`,
     { projectId }
   );
   console.log("Memgraph: Cleared project");
