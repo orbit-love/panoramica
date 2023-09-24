@@ -21,7 +21,7 @@ export default function PreviewView(props) {
   const replies = descendants.filter((a) => a.parent?.id === activity.id);
 
   const showConversation = activity.id !== starter.id;
-  const showParent = parent && parent.id !== conversation.id;
+  const showParent = parent && parent.id !== starter.id;
 
   return (
     <div onClick={onExpand} className="flex flex-col p-6 cursor-pointer">
