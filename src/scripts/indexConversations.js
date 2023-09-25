@@ -46,7 +46,7 @@ const main = async () => {
   const [{ conversations }] = result;
 
   // in batches of 100, process the conversations
-  const batchSize = 500;
+  const batchSize = 100;
   const batches = [];
   for (let i = 0; i < conversations.length; i += batchSize) {
     batches.push(conversations.slice(i, i + batchSize));
