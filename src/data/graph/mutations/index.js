@@ -166,7 +166,8 @@ export async function postProcessActivities({ tx, project }) {
             m.id = uuid,
             m.globalActor = activity.globalActor
           SET
-            m.globalActorName = activity.globalActorName
+            m.globalActorName = activity.globalActorName,
+            m.globalActorAvatar = activity.globalActorAvatar
           MERGE (m)-[:DID]->(activity)
           MERGE (p)-[:OWNS]->(m)
           RETURN count(DISTINCT m) AS count`,

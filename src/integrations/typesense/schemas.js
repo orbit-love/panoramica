@@ -91,7 +91,7 @@ export const DEFAULT_CONVERSATIONS_SCHEMA = {
     },
     {
       name: "viewObject",
-      type: "object",
+      type: "string",
       index: false,
       optional: true,
     },

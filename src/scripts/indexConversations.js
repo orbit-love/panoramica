@@ -2,6 +2,7 @@ import {
   deleteConversationsCollection,
   indexConversations,
 } from "src/integrations/typesense";
+import { prisma } from "src/data/db";
 import { createJWT } from "src/auth";
 import { gql } from "graphql-tag";
 import { ogm, Project } from "src/models";
@@ -14,8 +15,17 @@ const main = async () => {
 
   const projectId = process.argv[2];
 
-  const project = { id: projectId };
-  if (process.argv[4] === "--clear") {
+  let where = { id: projectId };
+  let project = await prisma.project.findFirst({
+    where,
+  });
+
+  if (!project) {
+    console.error("Project not found!");
+    process.exit(1);
+  }
+
+  if (process.argv[3] === "--clear") {
     // Drop the whole collection (if it exists) so that it's rebuilt with the latest schema
     await deleteConversationsCollection({ project });
   }
@@ -96,9 +106,8 @@ const selectionSet = gql`
       descendants(options: { sort: { timestamp: ASC } }) {
         id
         sourceId
-        globalActor
-        globalActorName
-        globalActorAvatar
+        actor
+        actorName
         textHtml
         timestamp
         url

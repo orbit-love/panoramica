@@ -106,8 +106,6 @@ export const searchProjectQas = async ({ project, searchRequest }) => {
 
 const toDocument = ({ conversation }) => {
   const activities = conversation.descendants;
-  // const body = toPageContent(activities);
-  // const bodyLength = body.length;
 
   // create a string of each activity that can be snippeted to the
   // end user; we will do some post-processing on the display side
@@ -161,7 +159,7 @@ const toDocument = ({ conversation }) => {
     ])
   );
 
-  const viewObject = conversation;
+  const viewObject = JSON.stringify(conversation);
 
   return {
     id,
