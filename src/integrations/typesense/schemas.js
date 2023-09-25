@@ -86,6 +86,10 @@ export const DEFAULT_CONVERSATIONS_SCHEMA = {
       facet: true,
     },
     {
+      name: "properties.title",
+      type: "auto",
+    },
+    {
       name: "viewObject",
       type: "object",
       index: false,
