@@ -77,16 +77,18 @@ export const DEFAULT_CONVERSATIONS_SCHEMA = {
       index: false,
     },
     {
-      name: "properties.*",
-      type: "auto",
+      name: "searchable.title",
+      type: "string",
+      optional: true,
     },
     {
-      name: "properties.tags",
-      type: "auto",
+      name: "searchable.tags",
+      type: "string[]",
       facet: true,
+      optional: true,
     },
     {
-      name: "properties.title",
+      name: "properties.*",
       type: "auto",
     },
     {
