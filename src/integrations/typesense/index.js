@@ -182,7 +182,9 @@ const toDocument = ({ conversation }) => {
 
 export const indexConversations = async ({ project, conversations }) => {
   const typesenseClient = getTypesenseClient({ project });
-  if (!typesenseClient) return;
+  if (!typesenseClient) {
+    throw new Error("No Typesense client found!");
+  }
 
   const documents = [];
   for (let conversation of conversations) {
@@ -193,6 +195,7 @@ export const indexConversations = async ({ project, conversations }) => {
   }
 
   if (documents.length === 0) {
+    console.log("No conversation documents to index!");
     return;
   }
 

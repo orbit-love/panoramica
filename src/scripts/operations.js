@@ -236,7 +236,7 @@ export const indexConversations = async ({ id, clear, startDate, endDate }) => {
   for (let batch of batches) {
     // the *Int timestamps are the BigInt data type and thus returned as
     // strings; before we can send them to Typesense, we need to convert them
-    await indexConversationsTypesense({
+    const result = await indexConversationsTypesense({
       project,
       conversations: batch.map((conversation) => ({
         ...conversation,
@@ -244,9 +244,22 @@ export const indexConversations = async ({ id, clear, startDate, endDate }) => {
           conversation.firstActivityTimestampInt
         ),
         lastActivityTimestamp: parseInt(conversation.lastActivityTimestampInt),
+        properties: [
+          ...conversation.properties,
+          {
+            name: "tags",
+            type: "String",
+            value: [],
+          },
+          {
+            name: "title",
+            type: "String",
+            value: "",
+          },
+        ],
       })),
     });
-    console.log("Indexed conversation batch - ", batch.length);
+    console.log("Indexed conversation batch - ", result.length);
   }
 
   console.log("Indexing complete!");

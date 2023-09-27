@@ -1,7 +1,13 @@
 import { prisma, graph } from "src/data/db";
 import { setupProject } from "src/data/graph/mutations";
 
-export const execute = async ({ workspace, name = workspace, apiKey }) => {
+export const execute = async ({
+  workspace,
+  name = workspace,
+  apiKey,
+  typesenseUrl,
+  typesenseApiKey,
+}) => {
   let user = await prisma.user.findFirst({
     where: {
       admin: true,
@@ -19,24 +25,25 @@ export const execute = async ({ workspace, name = workspace, apiKey }) => {
     },
   });
 
+  const data = {
+    name: name,
+    apiKey: apiKey,
+    demo: true,
+    typesenseUrl,
+    typesenseApiKey,
+  };
+
   if (existingProject) {
     await prisma.project.update({
       where: {
         id: existingProject.id,
       },
-      data: {
-        name: name,
-        apiKey: apiKey,
-        demo: true,
-      },
+      data,
     });
   } else {
     await prisma.project.create({
       data: {
-        name: name,
-        workspace: workspace,
-        apiKey: apiKey,
-        demo: true,
+        ...data,
         user: {
           connect: { email: user.email },
         },
@@ -74,13 +81,18 @@ export const execute = async ({ workspace, name = workspace, apiKey }) => {
 const main = async () => {
   const workspace = process.argv[process.argv.indexOf("--workspace") + 1];
   const apiKey = process.env.ORBIT_ADMIN_API_KEY;
+  const typesenseUrl =
+    process.argv[process.argv.indexOf("--typesense-url") + 1];
+  const typesenseApiKey = process.env.TYPESENSE_API_KEY;
 
-  if (!workspace || !apiKey) {
-    console.error("Workspace and API key are required!");
+  if (!workspace || !apiKey || !typesenseUrl || !typesenseApiKey) {
+    console.error(
+      "Workspace and API key and Typesense url/apiKey are required!"
+    );
     process.exit(1);
   }
 
-  await execute({ workspace, apiKey });
+  await execute({ workspace, apiKey, typesenseUrl, typesenseApiKey });
 };
 
 main()
