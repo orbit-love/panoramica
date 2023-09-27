@@ -243,7 +243,9 @@ export const indexConversations = async ({ id, clear, startDate, endDate }) => {
         firstActivityTimestampInt: parseInt(
           conversation.firstActivityTimestampInt
         ),
-        lastActivityTimestamp: parseInt(conversation.lastActivityTimestampInt),
+        lastActivityTimestampInt: parseInt(
+          conversation.lastActivityTimestampInt
+        ),
         properties: [
           ...conversation.properties,
           {
