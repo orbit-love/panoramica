@@ -14,9 +14,8 @@ export const execute = async ({ id, path, clear, startDate, endDate }) => {
 
 const main = async () => {
   const id = process.argv[2];
-  const path = process.argv[process.argv.length - 1];
 
-  if (!id || !path) {
+  if (!id) {
     console.error("Project id and path are required!");
     process.exit(1);
   }
@@ -26,8 +25,10 @@ const main = async () => {
   const startDateFlag = process.argv.indexOf("--start-date");
   const endDateFlag = process.argv.indexOf("--end-date");
 
-  const startDate = startDateFlag > -1 ? process.argv[startDateFlag + 1] : null;
-  const endDate = endDateFlag > -1 ? process.argv[endDateFlag + 1] : null;
+  const startDate = startDateFlag > -1 ? process.argv[startDateFlag + 1] : "";
+  const endDate = endDateFlag > -1 ? process.argv[endDateFlag + 1] : "";
+
+  const path = `./tmp/${id}-${startDate}-${endDate}.json`;
 
   await execute({ id, path, clear, startDate, endDate });
 };
