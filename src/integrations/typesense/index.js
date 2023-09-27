@@ -135,10 +135,9 @@ const toDocument = ({ conversation }) => {
   } = conversation;
 
   const duration = lastActivityTimestampInt - firstActivityTimestampInt;
-  const actors = conversation.members.map((member) => member.globalActorName);
 
   // turn the properties into one field each; when there are multiple properties
-  // with the same name, e.g. tags, those become a single array
+  // with the same name, e.g. keywords, those become a single array
   var propertiesToIndex = {};
   for (const { name, value } of properties) {
     const existing = propertiesToIndex[name];
@@ -161,21 +160,40 @@ const toDocument = ({ conversation }) => {
 
   const viewObject = JSON.stringify(conversation);
 
+  const title =
+    conversation.properties.find((property) => property.name === "title")
+      ?.value || "";
+  const keywords = conversation.properties
+    .filter((property) => property.name === "keyword")
+    .map((p) => p.value);
+
+  // null values here will break typesense
+  const members = conversation.members.map(
+    ({ globalActor, globalActorName, globalActorAvatar }) => ({
+      globalActor: globalActor,
+      globalActorName: globalActorName || "",
+      globalActorAvatar: globalActorAvatar || "",
+    })
+  );
+
   return {
     id,
     text,
     textLength,
-    actors,
+    members,
     source,
     sourceChannel,
     firstActivityTimestamp,
-    firstActivityTimestampInt,
     lastActivityTimestamp,
-    lastActivityTimestampInt,
+    // the *Int timestamps are the BigInt data type and thus returned as
+    // strings; before we can send them to Typesense, we need to convert them
+    firstActivityTimestampInt: parseInt(firstActivityTimestampInt),
+    lastActivityTimestampInt: parseInt(lastActivityTimestampInt),
     duration,
     activityCount,
     memberCount,
     viewObject,
+    searchable: { title, keywords },
     ...propertiesToIndex,
   };
 };

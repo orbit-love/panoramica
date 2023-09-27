@@ -7,9 +7,8 @@ export const DEFAULT_CONVERSATIONS_SCHEMA = {
       facet: false,
     },
     {
-      name: "actors",
-      type: "string[]",
-      facet: true,
+      name: "members",
+      type: "object[]",
     },
     {
       name: "textLength",
@@ -82,7 +81,7 @@ export const DEFAULT_CONVERSATIONS_SCHEMA = {
       optional: true,
     },
     {
-      name: "searchable.tags",
+      name: "searchable.keywords",
       type: "string[]",
       facet: true,
       optional: true,
