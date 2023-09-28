@@ -1,5 +1,6 @@
 import fs from "fs";
 import { prisma, graph } from "src/data/db";
+import jsyaml from "js-yaml";
 import {
   setupProject,
   clearProject,
@@ -66,7 +67,7 @@ export const pullActivities = async ({ id, path, startDate, endDate }) => {
   console.log("pullActivities Complete!");
 };
 
-export const loadActivities = async ({ id, path, clear, setup }) => {
+export const loadActivities = async ({ id, path, clear, setup, config }) => {
   let where = { id };
   let project = await prisma.project.findFirst({
     where,
@@ -88,12 +89,39 @@ export const loadActivities = async ({ id, path, clear, setup }) => {
     process.exit(1);
   }
 
+  // keys are the source names and values are the allowed channel names
+  var allowedChannels = {};
+  if (config) {
+    const fileContents = fs.readFileSync(config, "utf-8");
+    allowedChannels = jsyaml.load(fileContents);
+  }
+
   const activities = [];
   const lines = fs.readFileSync(path, "utf-8").split("\n").filter(Boolean);
   for (const line of lines) {
     if (line) {
-      const json = JSON.parse(line);
-      activities.push(json);
+      const activity = JSON.parse(line);
+      var skipActivity = false;
+
+      const { source, sourceChannel } = activity;
+      const allowedSource = allowedChannels[source];
+      if (!allowedSource) {
+        skipActivity = true;
+      } else {
+        if (allowedSource !== "*") {
+          const allowedChannel = allowedSource.find(
+            (channel) => channel === sourceChannel
+          );
+          if (!allowedChannel) {
+            console.log(`Skipping ${source} ${sourceChannel}`);
+            skipActivity = true;
+          }
+        }
+      }
+
+      if (!skipActivity) {
+        activities.push(activity);
+      }
     }
   }
 

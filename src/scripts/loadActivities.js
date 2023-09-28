@@ -10,8 +10,9 @@ const main = async () => {
   const path = process.argv[3];
   const setup = process.argv.indexOf("--setup") > -1;
   const clear = process.argv.indexOf("--clear") > -1;
+  const config = process.argv[process.argv.indexOf("--config") + 1];
 
-  await loadActivities({ id, path, clear, setup });
+  await loadActivities({ id, path, clear, setup, config });
 };
 
 main()

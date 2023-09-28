@@ -25,13 +25,17 @@ export const execute = async ({
     },
   });
 
-  const data = {
-    name: name,
-    apiKey: apiKey,
+  const possibleData = {
+    name,
+    apiKey,
     demo: true,
     typesenseUrl,
     typesenseApiKey,
   };
+  // filter out any absent values
+  const data = Object.fromEntries(
+    Object.entries(possibleData).filter(([_, v]) => v != null)
+  );
 
   if (existingProject) {
     await prisma.project.update({

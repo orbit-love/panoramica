@@ -1,4 +1,4 @@
-import { postProcess } from "src/scripts/postProcess";
+import { postProcess } from "src/scripts/operations";
 
 const main = async () => {
   const id = process.argv[2];

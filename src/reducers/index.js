@@ -4,7 +4,7 @@ export const projectReducer = (object, { type, community, project }) => {
       return { ...object, community };
     }
     case "updateProject": {
-      return { ...object, project };
+      return { ...object, project: { ...object.project, ...project } };
     }
   }
 };

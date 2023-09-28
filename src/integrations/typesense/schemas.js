@@ -15,6 +15,7 @@ export const DEFAULT_CONVERSATIONS_SCHEMA = {
       type: "int32",
       facet: false,
       optional: true,
+      sort: false,
     },
     {
       name: "activityCount",
