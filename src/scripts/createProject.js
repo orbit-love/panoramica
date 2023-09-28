@@ -21,12 +21,13 @@ export const execute = async ({
 
   const existingProject = await prisma.project.findFirst({
     where: {
-      workspace: workspace,
+      workspace,
     },
   });
 
   const possibleData = {
     name,
+    workspace,
     apiKey,
     demo: true,
     typesenseUrl,
@@ -45,7 +46,7 @@ export const execute = async ({
       data,
     });
   } else {
-    await prisma.project.create({
+    const result = await prisma.project.create({
       data: {
         ...data,
         user: {
@@ -53,12 +54,13 @@ export const execute = async ({
         },
       },
     });
+    console.log("Created project", result);
   }
 
   // refind the project with all the select fields needed for setupProject
   var project = await prisma.project.findFirst({
     where: {
-      workspace: workspace,
+      workspace,
     },
     select: {
       id: true,
@@ -73,6 +75,11 @@ export const execute = async ({
     },
   });
 
+  if (!project) {
+    console.log("Project could not be updated or created!");
+    process.exit(1);
+  }
+
   const session = graph.session();
   await session.writeTransaction(async (tx) => {
     await setupProject({ tx, project, user: project.user });
@@ -84,7 +91,7 @@ export const execute = async ({
 
 const main = async () => {
   const workspace = process.argv[process.argv.indexOf("--workspace") + 1];
-  const apiKey = process.env.ORBIT_ADMIN_API_KEY;
+  const apiKey = process.env.ORBIT_API_KEY;
   const typesenseUrl =
     process.argv[process.argv.indexOf("--typesense-url") + 1];
   const typesenseApiKey = process.env.TYPESENSE_API_KEY;

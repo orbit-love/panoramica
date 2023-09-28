@@ -113,7 +113,6 @@ export const loadActivities = async ({ id, path, clear, setup, config }) => {
             (channel) => channel === sourceChannel
           );
           if (!allowedChannel) {
-            console.log(`Skipping ${source} ${sourceChannel}`);
             skipActivity = true;
           }
         }
