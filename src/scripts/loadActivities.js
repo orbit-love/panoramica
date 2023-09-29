@@ -10,7 +10,12 @@ const main = async () => {
   const path = process.argv[3];
   const setup = process.argv.indexOf("--setup") > -1;
   const clear = process.argv.indexOf("--clear") > -1;
-  const config = process.argv[process.argv.indexOf("--config") + 1];
+
+  const configIndex = process.argv.indexOf("--config");
+  if (configIndex === -1) {
+    throw new Error("Config required to filter source & channel!");
+  }
+  const config = process.argv[configIndex + 1];
 
   await loadActivities({ id, path, clear, setup, config });
 };

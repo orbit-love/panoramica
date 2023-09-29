@@ -23,9 +23,15 @@ const main = async () => {
   const id = process.argv[2];
 
   if (!id) {
-    console.error("Project id and path are required!");
+    console.error("Project id is required!");
     process.exit(1);
   }
+
+  const configIndex = process.argv.indexOf("--config");
+  if (configIndex === -1) {
+    throw new Error("Config required to filter source & channel!");
+  }
+  const config = process.argv[configIndex + 1];
 
   const clear = process.argv.indexOf("--clear") > -1;
 
@@ -34,7 +40,6 @@ const main = async () => {
 
   const startDate = startDateFlag > -1 ? process.argv[startDateFlag + 1] : "";
   const endDate = endDateFlag > -1 ? process.argv[endDateFlag + 1] : "";
-  const config = process.argv[process.argv.indexOf("--config") + 1];
 
   const path = `./tmp/${id}-${startDate}-${endDate}.json`;
 
