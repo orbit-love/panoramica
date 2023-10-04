@@ -98,14 +98,12 @@ export default function TableHeader({
       <tr className="text-left bg-gray-50 border-y border-gray-200 dark:bg-gray-900 dark:border-gray-700">
         <th className="py-2 pl-4">
           <div className="flex justify-center">
-            {loadingRows.length > 0 && <Loader />}
             <input
               type="checkbox"
               onChange={(e) => {
                 setSelectAllCheckboxValue(e.target.checked);
               }}
               checked={selectAllCheckboxValue}
-              className={classnames({ hidden: loadingRows.length > 0 })}
             />
           </div>
         </th>
