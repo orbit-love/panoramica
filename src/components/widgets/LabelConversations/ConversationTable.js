@@ -7,6 +7,23 @@ import TableBody from "./TableBody";
 import TableHeader from "./TableHeader";
 import ActionController from "./ActionController";
 
+const defaultWheres = [
+  {
+    memberCount_GTE: 2,
+    source: "discord",
+    // these channels are likely to contain product knowledge
+    sourceChannel_IN: [
+      "Product/product-discussion",
+      "Product/help",
+      "Product/feedback-and-questions",
+      "Product/bugs",
+      "Product/developers",
+      "Community-Discussion/best-practices",
+      "Product/Product",
+    ],
+  },
+];
+
 export default function ConversationTable({
   project,
   propertyNames,
@@ -66,7 +83,7 @@ export default function ConversationTable({
 
   React.useEffect(() => {
     setWhere({
-      AND: filters.map(({ where }) => where),
+      AND: [...filters.map(({ where }) => where), ...defaultWheres],
     });
   }, [filters, setWhere]);
 

@@ -58,13 +58,17 @@ export const labelConversation = async ({
     })
   );
 
-  await client.mutate({
-    mutation: CreateConversationPropertiesMutation,
-    variables: {
-      id: conversationId,
-      properties: propertiesWithNode,
-    },
-  });
+  // doing these one at a time is a workaround for a memgraph crash
+  // related to use of with *
+  for (let propertyWithNode of propertiesWithNode) {
+    await client.mutate({
+      mutation: CreateConversationPropertiesMutation,
+      variables: {
+        id: conversationId,
+        properties: [propertyWithNode],
+      },
+    });
+  }
 
   // push the new properties on
   finalProperties.push(...generatePropertiesFromYaml);

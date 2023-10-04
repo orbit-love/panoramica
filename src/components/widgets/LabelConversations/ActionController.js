@@ -17,16 +17,21 @@ export default function ActionController({
   const processConversation = React.useCallback(
     async (conversation) => {
       setLoadingRows((loadingRows) => [...loadingRows, conversation.id]);
-      const newConversation = await labelConversation({
-        project,
-        conversation,
-        yaml,
-      });
-      setConversations((conversations) =>
-        conversations.map((a) =>
-          a.id === conversation.id ? newConversation : a
-        )
-      );
+      // log the failure but make sure to remove the loading state
+      try {
+        const newConversation = await labelConversation({
+          project,
+          conversation,
+          yaml,
+        });
+        setConversations((conversations) =>
+          conversations.map((a) =>
+            a.id === conversation.id ? newConversation : a
+          )
+        );
+      } catch (e) {
+        console.error("Could not label conversation", e);
+      }
       setSelectedRows((selectedRows) =>
         selectedRows.filter((id) => id !== conversation.id)
       );
@@ -45,7 +50,7 @@ export default function ActionController({
     processConversation: processObject,
   }) => {
     let index = 0;
-    let maxConcurrency = 3;
+    let maxConcurrency = 1;
     let activePromises = [];
 
     async function handlePromise(promise) {
