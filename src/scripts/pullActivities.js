@@ -2,7 +2,8 @@ import { pullActivities } from "src/scripts/operations";
 
 const main = async () => {
   const id = process.argv[2];
-  const path = process.argv[process.argv.length - 1];
+  const pathFlag = process.argv.indexOf("--path");
+  const path = process.argv[pathFlag + 1];
 
   if (!id || !path) {
     console.error("Project id and path are required!");

@@ -12,8 +12,9 @@ export const execute = async ({
   clear,
   startDate,
   endDate,
+  pullFirst,
 }) => {
-  await pullActivities({ id, path, startDate, endDate });
+  pullFirst && (await pullActivities({ id, path, startDate, endDate }));
   await loadActivities({ id, clear, config, path });
   await postProcess({ id });
   await indexConversations({ id, clear, startDate, endDate });
@@ -41,9 +42,16 @@ const main = async () => {
   const startDate = startDateFlag > -1 ? process.argv[startDateFlag + 1] : "";
   const endDate = endDateFlag > -1 ? process.argv[endDateFlag + 1] : "";
 
-  const path = `./tmp/${id}-${startDate}-${endDate}.json`;
+  const pathFlagIndex = process.argv.indexOf("--path");
+  const pathFlag =
+    pathFlagIndex === -1 ? null : process.argv[pathFlagIndex + 1];
+  const path = pathFlag || `./tmp/${id}-${startDate}-${endDate}.json`;
 
-  await execute({ id, path, config, clear, startDate, endDate });
+  // if a path is provided, assume the activities are already there and we don't need
+  // to do anything
+  const pullFirst = !pathFlag;
+
+  await execute({ id, path, config, clear, startDate, endDate, pullFirst });
 };
 
 main()
