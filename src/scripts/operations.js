@@ -253,8 +253,8 @@ export const indexConversations = async ({ id, clear, startDate, endDate }) => {
 
   const [{ conversations }] = result;
 
-  // in batches of 100, process the conversations
-  const batchSize = 100;
+  // in batches of 50, process the conversations
+  const batchSize = 50;
   const batches = [];
   for (let i = 0; i < conversations.length; i += batchSize) {
     batches.push(conversations.slice(i, i + batchSize));
