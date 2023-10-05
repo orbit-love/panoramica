@@ -3,12 +3,13 @@ import { pullActivities } from "src/scripts/operations";
 const main = async () => {
   const id = process.argv[2];
   const pathFlag = process.argv.indexOf("--path");
-  const path = process.argv[pathFlag + 1];
 
-  if (!id || !path) {
+  if (!id || pathFlag === -1) {
     console.error("Project id and path are required!");
     process.exit(1);
   }
+
+  const path = process.argv[pathFlag + 1];
 
   const startDateFlag = process.argv.indexOf("--start-date");
   const endDateFlag = process.argv.indexOf("--end-date");
