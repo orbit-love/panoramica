@@ -33,6 +33,9 @@ export function getAPIUrl({ workspace, timeframe = "", items = 100 }) {
     "tweet:sent",
     "slack:message:sent",
     "slack:thread:replied",
+    "discussions:comment",
+    "discussions:reply",
+    "discussions:discussion_created",
   ];
 
   let activityTypeStr = activityTypes.join("%2C");
@@ -276,9 +279,81 @@ const getGitHubFields = async ({ activity, member, included }) => {
     textHtml = "";
   if (g_title) {
     text = [g_title, g_body].filter((e) => e).join("—");
-    textHtml = `<div>${g_title}</div>${bodyHtml}`;
+    textHtml = `<p><strong>${g_title}</strong></p>${bodyHtml}`;
   } else if (g_body) {
     text = g_body;
+    textHtml = bodyHtml;
+  }
+
+  let githubIdentity = getIdentity({
+    type: "github_identity",
+    member,
+    included,
+  });
+  if (githubIdentity) {
+    let { username, name } = githubIdentity.attributes;
+    actor = username;
+    actorName = name || username;
+  }
+
+  return {
+    sourceId,
+    sourceParentId,
+    source,
+    sourceChannel,
+    text,
+    textHtml,
+    actor,
+    actorName,
+    mentions,
+  };
+};
+
+const getDiscussionsFields = async ({ activity, member, included }) => {
+  let { key, body, g_title, properties, referenced_activities } =
+    activity.attributes;
+  let sourceId = key;
+  let source = "discussions";
+  let sourceParentId;
+
+  // community/community/discussions/69167#discussioncomment-7195885
+  if (
+    activity.type === "github_discussion_comment_activity" ||
+    activity.type === "github_discussion_comment_reply_activity"
+  ) {
+    sourceParentId = referenced_activities?.find(
+      (refActivity) => !!refActivity.key
+    )?.key;
+  }
+
+  let repository = properties["github_repository"];
+  let sourceChannel = repository;
+
+  // parse out any mentions
+  let mentions = getMentions(body);
+  let actor;
+  let actorName;
+
+  let bodyHtml = "";
+  if (body) {
+    let doc = await remark()
+      .use(remarkParse)
+      .use(remarkGfm)
+      .use(remarkGithub, { repository, mentionStrong: false })
+      .use(remarkRehype)
+      .use(rehypeStringify)
+      .process(body);
+    bodyHtml = String(doc);
+  }
+
+  // only the top-level activity has a title; for that, add it
+  let text = "",
+    textHtml = "";
+  if (g_title) {
+    text = [g_title, body].filter((e) => e).join("—");
+    textHtml = `<p><strong>${g_title}</strong></p>${bodyHtml}`;
+  } else if (body) {
+    text = body;
     textHtml = bodyHtml;
   }
 
@@ -325,6 +400,10 @@ const getTypeFields = async (props) => {
     case "issue_comment_activity":
     case "fork_activity":
       return await getGitHubFields(props);
+    case "github_discussion_activity":
+    case "github_discussion_comment_activity":
+    case "github_discussion_comment_reply_activity":
+      return await getDiscussionsFields(props);
     case "slack_thread_replied_activity":
     case "slack_message_sent_activity":
       return await getSlackFields(props);
