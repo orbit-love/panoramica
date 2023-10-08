@@ -16,7 +16,7 @@
   "dependencies": {
     "@apollo/client": "^3.8.0-rc.2",
     "@apollo/experimental-nextjs-app-support": "^0.4.1",
-    "@apollo/server": "^4.9.1",
+    "@apollo/server": "^4.9.3",
     "@as-integrations/next": "^2.0.1",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
