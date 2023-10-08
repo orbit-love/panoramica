@@ -24,6 +24,10 @@ const nextConfig = {
   headers() {
     return [
       {
+        source: "/api/:path*",
+        headers: graphQLHeaders,
+      },
+      {
         source: "/api/welcome/graphql",
         headers: graphQLHeaders,
       },
