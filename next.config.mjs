@@ -24,7 +24,7 @@ const nextConfig = {
   headers() {
     return [
       {
-        source: "/api/:path*",
+        source: "/api/(.*)",
         headers: graphQLHeaders,
       },
       {
@@ -50,6 +50,6 @@ const graphQLHeaders = [
   },
   {
     key: "Access-Control-Allow-Methods",
-    value: "GET,POST,HEAD,OPTIONS",
+    value: "GET,PUT,POST,DELETE,HEAD,OPTIONS",
   },
 ];
