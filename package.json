@@ -43,7 +43,7 @@
     "js-tiktoken": "^1.0.7",
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.1",
-    "langchain": "^0.0.101",
+    "langchain": "^0.0.162",
     "luxon": "^3.3.0",
     "markdown-it": "^13.0.1",
     "neo4j-driver": "^5.11.0",
@@ -65,7 +65,9 @@
     "remark-parse": "^10.0.2",
     "remark-rehype": "^10.1.0",
     "turndown": "^7.1.2",
-    "typesense": "^1.7.1"
+    "typesense": "^1.7.1",
+    "zod": "^3.22.4",
+    "zod-to-json-schema": "^3.21.4"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.2",
