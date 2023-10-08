@@ -37,7 +37,7 @@
     "dockview": "^1.7.6",
     "dotenv": "^16.3.1",
     "encoding": "^0.1.13",
-    "graphql": "^16.7.1",
+    "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "highlight.js": "^11.8.0",
     "js-tiktoken": "^1.0.7",
