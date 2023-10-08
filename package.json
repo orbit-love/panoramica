@@ -65,9 +65,7 @@
     "remark-parse": "^10.0.2",
     "remark-rehype": "^10.1.0",
     "turndown": "^7.1.2",
-    "typesense": "^1.7.1",
-    "zod": "^3.22.4",
-    "zod-to-json-schema": "^3.21.4"
+    "typesense": "^1.7.1"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.2",
