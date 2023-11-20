@@ -47,7 +47,7 @@
     "luxon": "^3.3.0",
     "markdown-it": "^13.0.1",
     "neo4j-driver": "^5.11.0",
-    "next-auth": "^4.22.1",
+    "next-auth": "^4.24.5",
     "next@canary": "^13.4.19",
     "nodemailer": "^6.9.3",
     "raw-loader": "^4.0.2",
